@@ -139,29 +139,38 @@ function chargeCard(c) {
   <div style="color:var(--mut);font-size:11px;margin-top:6px">${esc(c.src === 'tesla' ? 'Tesla Supercharger bill' : (c.src || ''))}${tou ? ' · ' + tou : ''}${c.est ? ' · estimated' : ''}</div></div>`;
 }
 const MAPS = {};
-function pin(color, ring) {
-  return L.divIcon({ className: '', iconSize: [18, 18], iconAnchor: [9, 9],
-    html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:3px solid ${ring};box-shadow:0 0 0 1px rgba(0,0,0,.5)"></div>` });
+function pinEl(color, ring) {
+  const d = document.createElement('div');
+  d.style.cssText = `width:14px;height:14px;border-radius:50%;background:${color};border:3px solid ${ring};box-shadow:0 0 0 1px rgba(0,0,0,.5)`;
+  return d;
 }
 function toggleMap(id) {
   const t = TRIPS[id], el = document.getElementById('map-' + id); if (!el) return;
   const card = el.closest('.trip'), open = el.classList.toggle('hidden') === false;
   card.querySelector('.maptoggle span').textContent = open ? '▴' : '▾';
-  if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].invalidateSize(), 50); return; }
-  const m = L.map(el, { zoomControl: false, attributionControl: true, scrollWheelZoom: false });
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    subdomains: 'abcd', maxZoom: 19, attribution: '&copy; OpenStreetMap contributors &copy; CARTO' }).addTo(m);
-  const line = (t.route && t.route.length > 1) ? t.route : t.gps;
+  if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].resize(), 50); return; }
+  const line = ((t.route && t.route.length > 1) ? t.route : t.gps).map(p => [p[1], p[0]]);
+  const gps = (t.gps || []).map(p => [p[1], p[0]]);
   const est = t.rsrc === 'estimated' || !t.route;
-  L.polyline(line, { color: '#3e8bff', weight: 5, opacity: .95, dashArray: est ? '8 8' : null }).addTo(m);
-  (t.gps || []).slice(1, -1).forEach(p => L.circleMarker(p, { radius: 3, color: '#9cc3ff', weight: 1, fillOpacity: .9 }).addTo(m));
-  const a = (t.gps && t.gps[0]) || line[0], b = (t.gps && t.gps[t.gps.length - 1]) || line[line.length - 1];
-  L.marker(a, { icon: pin('#c7ccd3', '#5a616b') }).addTo(m).bindTooltip('Start · ' + timeTs(t.s));
-  L.marker(b, { icon: pin('#ff4d4d', '#7a1c1c') }).addTo(m).bindTooltip('End · ' + timeTs(t.e));
-  m.fitBounds(L.latLngBounds(line.concat([a, b])), { padding: [24, 24] });
-  const note = L.control({ position: 'topleft' });
-  note.onAdd = () => { const d = L.DomUtil.create('div', 'mapnote'); d.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${(t.gps || []).length} GPS fixes, road-matched`; return d; };
-  note.addTo(m);
+  const all = line.concat(gps), bounds = new maplibregl.LngLatBounds(all[0], all[0]);
+  all.forEach(c => bounds.extend(c));
+  const m = new maplibregl.Map({ container: el, style: 'https://tiles.openfreemap.org/styles/dark', bounds,
+    fitBoundsOptions: { padding: 32 }, attributionControl: { compact: true }, cooperativeGestures: true, dragRotate: false, pitchWithRotate: false });
+  m.on('load', () => {
+    const at = el.querySelector('.maplibregl-ctrl-attrib'); if (at) at.classList.remove('maplibregl-compact-show');
+    m.addSource('route', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'LineString', coordinates: line } } });
+    const paint = { 'line-color': '#3e8bff', 'line-width': 5, 'line-opacity': .95 };
+    if (est) paint['line-dasharray'] = [1.5, 1.5];
+    m.addLayer({ id: 'route', type: 'line', source: 'route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint });
+    m.addSource('gps', { type: 'geojson', data: { type: 'FeatureCollection', features: gps.slice(1, -1).map(c => ({ type: 'Feature', geometry: { type: 'Point', coordinates: c } })) } });
+    m.addLayer({ id: 'gps', type: 'circle', source: 'gps', paint: { 'circle-radius': 2.5, 'circle-color': '#cfe1ff', 'circle-opacity': .8 } });
+  });
+  const a = gps[0] || line[0], b = gps[gps.length - 1] || line[line.length - 1];
+  new maplibregl.Marker({ element: pinEl('#c7ccd3', '#5a616b') }).setLngLat(a).setPopup(new maplibregl.Popup({ closeButton: false }).setText('Start · ' + timeTs(t.s))).addTo(m);
+  new maplibregl.Marker({ element: pinEl('#ff4d4d', '#7a1c1c') }).setLngLat(b).setPopup(new maplibregl.Popup({ closeButton: false }).setText('End · ' + timeTs(t.e))).addTo(m);
+  const note = document.createElement('div'); note.className = 'mapnote';
+  note.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${gps.length} GPS fixes, road-matched`;
+  el.appendChild(note);
   MAPS[id] = m;
 }
 async function viewDay() {

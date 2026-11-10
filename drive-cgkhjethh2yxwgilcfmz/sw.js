@@ -1,5 +1,5 @@
-const C = 'ht-shell-v2';
-const SHELL = ['./', 'index.html', 'style.css?v=2', 'app.js?v=2', 'leaflet.js', 'leaflet.css', 'manifest.webmanifest', 'icon-192.png'];
+const C = 'ht-shell-v3';
+const SHELL = ['./', 'index.html', 'style.css?v=3', 'app.js?v=3', 'maplibre-gl.js', 'maplibre-gl.css', 'manifest.webmanifest', 'icon-192.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(C).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener('fetch', e => {
