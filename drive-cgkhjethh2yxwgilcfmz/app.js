@@ -137,7 +137,7 @@ function chargeCard(c) {
   return `<div class="trip"><div class="hd"><span>${kind}</span><span>${timeTs(c.s)} – ${timeTs(c.e)}</span></div>
   <div style="margin:8px 0">${esc(c.where || '')}</div>
   <div class="money"><span>+${num(c.kwh, 1)} kWh${c.wall ? ` (${num(c.wall, 1)} from wall)` : ''}</span><span>${c.soc0 != null ? c.soc0 + '→' + c.soc1 + '%' : ''}</span><span class="g" style="color:var(--tx)">${money(c.cost)}</span></div>
-  <div style="color:var(--mut);font-size:11px;margin-top:6px">${esc(c.src === 'tesla' ? 'Tesla Supercharger bill' : (c.src || ''))}${tou ? ' · ' + tou : ''}${c.est ? ' · estimated' : ''}</div></div>`;
+  <div style="color:var(--mut);font-size:11px;margin-top:6px">${esc(c.src === 'tesla' ? 'Tesla Supercharger bill' : (c.src || ''))}${c.note ? ' · ' + esc(c.note) : ''}${tou ? ' · ' + tou : ''}${c.est ? ' · estimated' : ''}</div></div>`;
 }
 const MAPS = {};
 function pinEl(color, ring) {
@@ -152,7 +152,7 @@ function toggleMap(id) {
   if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].resize(), 50); return; }
   const line = ((t.route && t.route.length > 1) ? t.route : t.gps).map(p => [p[1], p[0]]);
   const gps = (t.gps || []).map(p => [p[1], p[0]]);
-  const est = t.rsrc === 'estimated' || (!t.route && t.rsrc !== 'gps');
+  const est = t.rsrc === 'estimated' || (!t.route && t.rsrc !== 'gps' && t.rsrc !== 'tessie');
   const all = line.concat(gps), bounds = new maplibregl.LngLatBounds(all[0], all[0]);
   all.forEach(c => bounds.extend(c));
   const m = new maplibregl.Map({ container: el, style: 'https://tiles.openfreemap.org/styles/dark', bounds,
@@ -189,7 +189,7 @@ function toggleMap(id) {
   new maplibregl.Marker({ element: pinEl('#ff4d4d', '#7a1c1c') }).setLngLat(b).setPopup(new maplibregl.Popup({ closeButton: false }).setText('End · ' + timeTs(t.e))).addTo(m);
   const note = document.createElement('div'); note.className = 'mapnote';
   if (hasFsd) note.innerHTML = '<span style="color:#2fd5a0">━ FSD</span> &nbsp;<span style="color:#3e8bff">━ manual</span> &nbsp;<span style="color:#2fd5a0">●</span> on <span style="color:#ffb340">●</span> off';
-  else note.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${gps.length} GPS fixes${t.rsrc === 'gps' ? '' : ', road-matched'}`;
+  else note.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${gps.length} GPS fixes${t.rsrc === 'gps' ? '' : t.rsrc === 'tessie' ? ' (Tessie history)' : ', road-matched'}`;
   el.appendChild(note);
   MAPS[id] = m;
 }
