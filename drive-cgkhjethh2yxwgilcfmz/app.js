@@ -126,6 +126,7 @@ function tripCard(t) {
   <div class="rt"><div>${esc(t.from)}</div><div>${esc(t.to)}</div></div>
   <div class="tg"><div><b>${num(t.mi, 2)}</b><span>mi</span></div><div><b>${t.soc0 ?? '–'}→${t.soc1 ?? '–'}%</b><span>battery</span></div>
   <div><b>${num(t.kwh, 2)}</b><span>kWh</span></div><div><b>${t.whmi ?? '–'}</b><span>Wh/mi</span></div></div>
+  ${t.fsd ? `<div class="fsdbar"><span>Self-driving</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span>${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
   <div class="money"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">Saved ${money(t.save)}</span></div>
   ${hasMap ? `<div class="maptoggle">Route map <span>▾</span></div><div class="map hidden" id="map-${t.id}"></div>` : ''}
   <div style="color:var(--mut);font-size:11px;margin-top:6px">Battery energy ${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) : ''}/gal (${esc(t.garea || '')}) @ ${S.meta.mpg} mpg</div></div>`;
@@ -151,25 +152,44 @@ function toggleMap(id) {
   if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].resize(), 50); return; }
   const line = ((t.route && t.route.length > 1) ? t.route : t.gps).map(p => [p[1], p[0]]);
   const gps = (t.gps || []).map(p => [p[1], p[0]]);
-  const est = t.rsrc === 'estimated' || !t.route;
+  const est = t.rsrc === 'estimated' || (!t.route && t.rsrc !== 'gps');
   const all = line.concat(gps), bounds = new maplibregl.LngLatBounds(all[0], all[0]);
   all.forEach(c => bounds.extend(c));
   const m = new maplibregl.Map({ container: el, style: 'https://tiles.openfreemap.org/styles/dark', bounds,
     fitBoundsOptions: { padding: 32 }, attributionControl: { compact: true }, cooperativeGestures: true, dragRotate: false, pitchWithRotate: false });
+  const flags = (t.gps || []).map(p => p.length > 2 ? p[2] : null);
+  const hasFsd = flags.some(f => f === 1);
   m.on('load', () => {
     const at = el.querySelector('.maplibregl-ctrl-attrib'); if (at) at.classList.remove('maplibregl-compact-show');
-    m.addSource('route', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'LineString', coordinates: line } } });
-    const paint = { 'line-color': '#3e8bff', 'line-width': 5, 'line-opacity': .95 };
+    const feats = [];
+    if (hasFsd) {   // colour the GPS breadcrumb by FSD state
+      let seg = [gps[0]], cur = flags[1] === 1;
+      for (let i = 1; i < gps.length; i++) {
+        const f = flags[i] === 1;
+        if (f !== cur) { feats.push({ type: 'Feature', properties: { fsd: cur ? 1 : 0 }, geometry: { type: 'LineString', coordinates: seg } }); seg = [gps[i - 1]]; cur = f; }
+        seg.push(gps[i]);
+      }
+      feats.push({ type: 'Feature', properties: { fsd: cur ? 1 : 0 }, geometry: { type: 'LineString', coordinates: seg } });
+    } else feats.push({ type: 'Feature', properties: { fsd: 0 }, geometry: { type: 'LineString', coordinates: line } });
+    m.addSource('route', { type: 'geojson', data: { type: 'FeatureCollection', features: feats } });
+    const paint = { 'line-color': ['case', ['==', ['get', 'fsd'], 1], '#2fd5a0', '#3e8bff'], 'line-width': ['case', ['==', ['get', 'fsd'], 1], 6, 5], 'line-opacity': .95 };
     if (est) paint['line-dasharray'] = [1.5, 1.5];
     m.addLayer({ id: 'route', type: 'line', source: 'route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint });
-    m.addSource('gps', { type: 'geojson', data: { type: 'FeatureCollection', features: gps.slice(1, -1).map(c => ({ type: 'Feature', geometry: { type: 'Point', coordinates: c } })) } });
-    m.addLayer({ id: 'gps', type: 'circle', source: 'gps', paint: { 'circle-radius': 2.5, 'circle-color': '#cfe1ff', 'circle-opacity': .8 } });
+    if (!hasFsd) {
+      m.addSource('gps', { type: 'geojson', data: { type: 'FeatureCollection', features: gps.slice(1, -1).map(c => ({ type: 'Feature', geometry: { type: 'Point', coordinates: c } })) } });
+      m.addLayer({ id: 'gps', type: 'circle', source: 'gps', paint: { 'circle-radius': 2.5, 'circle-color': '#cfe1ff', 'circle-opacity': .8 } });
+    }
   });
+  if (hasFsd) for (let i = 1; i < gps.length; i++) {
+    if (flags[i] === 1 && flags[i - 1] !== 1) new maplibregl.Marker({ element: pinEl('#2fd5a0', '#0b4d3a') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD engaged (≈ within 1 mi)')).addTo(m);
+    if (flags[i] !== 1 && flags[i - 1] === 1) new maplibregl.Marker({ element: pinEl('#ffb340', '#6b4300') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD off / took over (≈ within 1 mi)')).addTo(m);
+  }
   const a = gps[0] || line[0], b = gps[gps.length - 1] || line[line.length - 1];
   new maplibregl.Marker({ element: pinEl('#c7ccd3', '#5a616b') }).setLngLat(a).setPopup(new maplibregl.Popup({ closeButton: false }).setText('Start · ' + timeTs(t.s))).addTo(m);
   new maplibregl.Marker({ element: pinEl('#ff4d4d', '#7a1c1c') }).setLngLat(b).setPopup(new maplibregl.Popup({ closeButton: false }).setText('End · ' + timeTs(t.e))).addTo(m);
   const note = document.createElement('div'); note.className = 'mapnote';
-  note.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${gps.length} GPS fixes, road-matched`;
+  if (hasFsd) note.innerHTML = '<span style="color:#2fd5a0">━ FSD</span> &nbsp;<span style="color:#3e8bff">━ manual</span> &nbsp;<span style="color:#2fd5a0">●</span> on <span style="color:#ffb340">●</span> off';
+  else note.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${gps.length} GPS fixes${t.rsrc === 'gps' ? '' : ', road-matched'}`;
   el.appendChild(note);
   MAPS[id] = m;
 }
