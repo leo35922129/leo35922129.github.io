@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b0d10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Happy Truck">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css?v=1">
+<title>Happy Truck · Drives</title>
+</head>
+<body>
+<div id="lock" class="lock hidden">
+  <div class="lockbox">
+    <div class="logo">⚡︎</div>
+    <h1>Happy Truck</h1>
+    <p>Enter your passcode once. It stays on this device.</p>
+    <form id="lockform"><input id="pass" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" placeholder="xxxx-xxxx-xxxx-xxxx"><button>Unlock</button></form>
+    <div id="lockerr" class="err"></div>
+  </div>
+</div>
+<div id="app" class="hidden">
+  <header>
+    <div class="toprow">
+      <button id="prev" class="nav" aria-label="Previous">‹</button>
+      <div id="title" class="title"></div>
+      <button id="next" class="nav" aria-label="Next">›</button>
+      <button id="today" class="pill">Today</button>
+    </div>
+    <div class="seg" id="seg">
+      <button data-v="day">Day</button><button data-v="week">Week</button><button data-v="month">Month</button><button data-v="year">Year</button>
+    </div>
+  </header>
+  <section id="summary" class="summary"></section>
+  <main id="main"></main>
+  <footer id="foot"></footer>
+</div>
+<div id="sheet" class="sheet hidden"><div class="sheetbody" id="sheetbody"></div></div>
+<script src="app.js?v=1"></script>
+</body>
+</html>
