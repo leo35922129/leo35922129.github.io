@@ -160,7 +160,7 @@ function toggleMap(id) {
   L.marker(b, { icon: pin('#ff4d4d', '#7a1c1c') }).addTo(m).bindTooltip('End · ' + timeTs(t.e));
   m.fitBounds(L.latLngBounds(line.concat([a, b])), { padding: [24, 24] });
   const note = L.control({ position: 'topleft' });
-  note.onAdd = () => { const d = L.DomUtil.create('div', 'mapnote'); d.textContent = est ? `Route estimated from ${(t.gps || []).length} GPS fixes` : `${(t.gps || []).length} GPS fixes, road-matched`; return d; };
+  note.onAdd = () => { const d = L.DomUtil.create('div', 'mapnote'); d.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${(t.gps || []).length} GPS fixes, road-matched`; return d; };
   note.addTo(m);
   MAPS[id] = m;
 }
