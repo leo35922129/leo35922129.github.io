@@ -118,12 +118,16 @@ function viewYear() {
   }
   return h + '</div>';
 }
+const TRIPS = {};
 function tripCard(t) {
-  return `<div class="trip"><div class="hd"><span>${timeTs(t.s)}${t.est ? '<span class="tag"> ~start</span>' : ''} – ${timeTs(t.e)}</span><span>${t.min} min</span></div>
+  TRIPS[t.id] = t;
+  const hasMap = (t.route && t.route.length > 1) || (t.gps && t.gps.length > 1);
+  return `<div class="trip" data-trip="${t.id}"><div class="hd"><span>${timeTs(t.s)}${t.est ? '<span class="tag"> ~start</span>' : ''} – ${timeTs(t.e)}</span><span>${t.min} min</span></div>
   <div class="rt"><div>${esc(t.from)}</div><div>${esc(t.to)}</div></div>
   <div class="tg"><div><b>${num(t.mi, 2)}</b><span>mi</span></div><div><b>${t.soc0 ?? '–'}→${t.soc1 ?? '–'}%</b><span>battery</span></div>
   <div><b>${num(t.kwh, 2)}</b><span>kWh</span></div><div><b>${t.whmi ?? '–'}</b><span>Wh/mi</span></div></div>
   <div class="money"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">Saved ${money(t.save)}</span></div>
+  ${hasMap ? `<div class="maptoggle">Route map <span>▾</span></div><div class="map hidden" id="map-${t.id}"></div>` : ''}
   <div style="color:var(--mut);font-size:11px;margin-top:6px">Battery energy ${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) : ''}/gal (${esc(t.garea || '')}) @ ${S.meta.mpg} mpg</div></div>`;
 }
 function chargeCard(c) {
@@ -133,6 +137,32 @@ function chargeCard(c) {
   <div style="margin:8px 0">${esc(c.where || '')}</div>
   <div class="money"><span>+${num(c.kwh, 1)} kWh${c.wall ? ` (${num(c.wall, 1)} from wall)` : ''}</span><span>${c.soc0 != null ? c.soc0 + '→' + c.soc1 + '%' : ''}</span><span class="g" style="color:var(--tx)">${money(c.cost)}</span></div>
   <div style="color:var(--mut);font-size:11px;margin-top:6px">${esc(c.src === 'tesla' ? 'Tesla Supercharger bill' : (c.src || ''))}${tou ? ' · ' + tou : ''}${c.est ? ' · estimated' : ''}</div></div>`;
+}
+const MAPS = {};
+function pin(color, ring) {
+  return L.divIcon({ className: '', iconSize: [18, 18], iconAnchor: [9, 9],
+    html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:3px solid ${ring};box-shadow:0 0 0 1px rgba(0,0,0,.5)"></div>` });
+}
+function toggleMap(id) {
+  const t = TRIPS[id], el = document.getElementById('map-' + id); if (!el) return;
+  const card = el.closest('.trip'), open = el.classList.toggle('hidden') === false;
+  card.querySelector('.maptoggle span').textContent = open ? '▴' : '▾';
+  if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].invalidateSize(), 50); return; }
+  const m = L.map(el, { zoomControl: false, attributionControl: true, scrollWheelZoom: false });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    subdomains: 'abcd', maxZoom: 19, attribution: '&copy; OpenStreetMap contributors &copy; CARTO' }).addTo(m);
+  const line = (t.route && t.route.length > 1) ? t.route : t.gps;
+  const est = t.rsrc === 'estimated' || !t.route;
+  L.polyline(line, { color: '#3e8bff', weight: 5, opacity: .95, dashArray: est ? '8 8' : null }).addTo(m);
+  (t.gps || []).slice(1, -1).forEach(p => L.circleMarker(p, { radius: 3, color: '#9cc3ff', weight: 1, fillOpacity: .9 }).addTo(m));
+  const a = (t.gps && t.gps[0]) || line[0], b = (t.gps && t.gps[t.gps.length - 1]) || line[line.length - 1];
+  L.marker(a, { icon: pin('#c7ccd3', '#5a616b') }).addTo(m).bindTooltip('Start · ' + timeTs(t.s));
+  L.marker(b, { icon: pin('#ff4d4d', '#7a1c1c') }).addTo(m).bindTooltip('End · ' + timeTs(t.e));
+  m.fitBounds(L.latLngBounds(line.concat([a, b])), { padding: [24, 24] });
+  const note = L.control({ position: 'topleft' });
+  note.onAdd = () => { const d = L.DomUtil.create('div', 'mapnote'); d.textContent = est ? `Route estimated from ${(t.gps || []).length} GPS fixes` : `${(t.gps || []).length} GPS fixes, road-matched`; return d; };
+  note.addTo(m);
+  MAPS[id] = m;
 }
 async function viewDay() {
   const k = keyOf(S.cur), m = await month(k.slice(0, 7));
@@ -145,6 +175,7 @@ async function viewDay() {
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 async function render() {
+  for (const k in MAPS) { try { MAPS[k].remove(); } catch (e) {} delete MAPS[k]; }
   localStorage.setItem('ht_view', S.view);
   setTitle(); renderSummary();
   const main = $('#main');
@@ -180,6 +211,7 @@ function wire() {
   $('#today').onclick = () => { S.cur = todayD(); render(); };
   document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { S.view = b.dataset.v; render(); });
   $('#main').addEventListener('click', e => {
+    const mt = e.target.closest('.maptoggle'); if (mt) { toggleMap(+mt.closest('.trip').dataset.trip); return; }
     const d = e.target.closest('[data-day]'), m = e.target.closest('[data-month]');
     if (d) { const [y, mo, da] = d.dataset.day.split('-').map(Number); S.cur = new Date(y, mo - 1, da); S.view = 'day'; render(); }
     else if (m) { S.cur = new Date(S.cur.getFullYear(), +m.dataset.month, 1); S.view = 'month'; render(); }
