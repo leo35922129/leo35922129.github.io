@@ -275,11 +275,10 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
   el.appendChild(badge);
   const bar = document.createElement('div'); bar.className = 'playbar';
   bar.innerHTML = `<div class="prow"><button class="pbtn play" aria-label="Play">▶</button><button class="pbtn rst" aria-label="Restart">↺</button>
-    <input class="prange" type="range" min="0" max="1000" value="0" aria-label="Position"><span class="ptime"></span></div>
-    <div class="prow chips">${[['auto', 'Auto'], ['1', '1×'], ['10', '10×'], ['60', '60×']].map(([k, l]) => `<button data-r="${k}" class="${k === 'auto' ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+    <input class="prange" type="range" min="0" max="1000" value="0" aria-label="Position"><span class="ptime"></span></div>`;
   el.after(bar);
   const $b = q => bar.querySelector(q), spd = badge.querySelector('.spd'), clk = badge.querySelector('.clk'), wheel = badge.querySelector('.wheel');
-  const rate = () => P.mode === 'auto' ? Math.max(1, total / 20) : +P.mode;   // auto: whole trip in ~20 s
+  const rate = () => Math.max(1, total / 20);   // always: whole trip in ~20 s
   const fmtDur = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   function draw() {
     let lo = 0, hi = n - 1;
@@ -312,9 +311,6 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
   $b('.play').addEventListener('click', () => setPlaying(!P.playing));
   $b('.rst').addEventListener('click', () => { P.pt = 0; draw(); setPlaying(true); });
   $b('.prange').addEventListener('input', e => { P.pt = e.target.value / 1000 * total; draw(); });
-  bar.querySelectorAll('.chips button').forEach(btn => btn.addEventListener('click', () => {
-    P.mode = btn.dataset.r; bar.querySelectorAll('.chips button').forEach(x => x.classList.toggle('on', x === btn));
-  }));
   draw();
 }
 async function viewDay() {
