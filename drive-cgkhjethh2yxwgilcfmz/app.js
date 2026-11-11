@@ -130,7 +130,7 @@ function tripCard(t) {
   ${t.fsd ? `<div class="fsdbar"><span>Self-driving</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span>${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
   <div class="money tm"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">Saved ${money(t.save)}</span></div>
   <div class="ratecap">${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) + '/gal' : ''} ${esc(t.garea || '')} · ${S.meta.mpg} mpg</div>
-  ${hasMap ? `<button type="button" class="maptoggle" aria-expanded="false"><svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg><span class="ml">Show route &amp; playback</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="map hidden" id="map-${t.id}"></div>` : ''}
+  ${hasMap ? `<div class="routebox"><button type="button" class="maptoggle" aria-expanded="false"><svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg><span class="ml">Show route &amp; playback</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="rbody"><div class="rinner"><div class="map" id="map-${t.id}"></div></div></div></div>` : ''}
   </div>`;
 }
 function chargeCard(c) {
@@ -149,13 +149,13 @@ function pinEl(color, ring) {
 }
 function toggleMap(id) {
   const t = TRIPS[id], el = document.getElementById('map-' + id); if (!el) return;
-  const card = el.closest('.trip'), open = el.classList.toggle('hidden') === false;
-  const mt = card.querySelector('.maptoggle');
+  const box = el.closest('.routebox'), open = !box.classList.contains('open');
+  box.classList.toggle('open', open);
+  const mt = box.querySelector('.maptoggle');
   mt.classList.toggle('open', open); mt.setAttribute('aria-expanded', open);
   mt.querySelector('.ml').textContent = open ? 'Hide route' : 'Show route & playback';
-  const pb = card.querySelector('.playbar'); if (pb) pb.classList.toggle('hidden', !open);
   if (!open && PLAYERS[id]) PLAYERS[id].pause();
-  if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].resize(), 50); return; }
+  if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].resize(), 350); return; }
   const line = ((t.route && t.route.length > 1) ? t.route : t.gps).map(p => [p[1], p[0]]);
   const gps = (t.gps || []).map(p => [p[1], p[0]]);
   const est = t.rsrc === 'estimated' || (!t.route && t.rsrc !== 'gps' && t.rsrc !== 'tessie');
