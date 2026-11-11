@@ -124,11 +124,10 @@ function tripCard(t) {
   const hasMap = (t.route && t.route.length > 1) || (t.gps && t.gps.length > 1);
   return `<div class="trip" data-trip="${t.id}"><div class="hd"><span>${timeTs(t.s)}${t.est ? '<span class="tag"> ~start</span>' : ''} – ${timeTs(t.e)}</span><span>${t.min} min</span></div>
   <div class="rt"><div>${esc(t.from)}</div><div>${esc(t.to)}</div></div>
-  <div class="tg"><div><b>${num(t.mi, 2)}</b><span>mi</span></div><div><b>${t.soc0 ?? '–'}→${t.soc1 ?? '–'}%</b><span>battery</span></div>
-  <div><b>${num(t.kwh, 2)}</b><span>kWh</span></div><div><b>${t.whmi ?? '–'}</b><span>Wh/mi</span></div></div>
-  ${t.fsd ? `<div class="fsdbar"><span>Self-driving</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span>${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
-  <div class="money"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">Saved ${money(t.save)}</span></div>
+  ${t.fsd ? `<div class="fsdbar"><span class="lb">Self-driving</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span class="of">${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
+  <div class="cost"><div><b>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</b><span>electric</span></div><div><b>⛽ ${money(t.gas)}</b><span>premium gas</span></div><div class="g"><b>${money(t.save)}</b><span>saved</span></div></div>
   <div class="ratecap">Battery energy ${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) : ''}/gal (${esc(t.garea || '')}) @ ${S.meta.mpg} mpg</div>
+  <div class="tg2"><span><b>${num(t.mi, 2)}</b> mi</span><span><b>${t.soc0 ?? '–'}→${t.soc1 ?? '–'}</b>%</span><span><b>${num(t.kwh, 2)}</b> kWh</span><span><b>${t.whmi ?? '–'}</b> Wh/mi</span></div>
   ${hasMap ? `<div class="maptoggle">Route map <span>▾</span></div><div class="map hidden" id="map-${t.id}"></div>` : ''}
   </div>`;
 }
