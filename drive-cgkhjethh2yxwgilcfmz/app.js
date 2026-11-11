@@ -229,13 +229,13 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
   const dur = Math.max(1, t.e - t.s);
   if (routeLine && routeLine.length > gps0.length) {
     // sparse fixes + road-snapped route: drive along the road; time each vertex by its nearest fix (else by distance)
-    const fixT = t.gps.map(p => p.length > 3 ? p[3] : null), fixV = t.gps.map(p => p.length > 4 ? p[4] : null);
+    const fixT = t.gps.map(p => p.length > 3 ? p[3] : null), fixV = t.gps.map(p => p.length > 4 ? p[4] : null), fixB = t.gps.map(p => p.length > 5 ? p[5] : null);
     let k = 0;
     raw = routeLine.map(c => {
       let best = k, bd = Infinity;
       for (let j = k; j < gps0.length; j++) { const d = distM(c, gps0[j]); if (d < bd) { bd = d; best = j; } }
-      if (bd < 60 && fixT[best] != null) { k = best; return [c[1], c[0], null, fixT[best], fixV[best]]; }
-      return [c[1], c[0], null, null, null];
+      if (bd < 60 && fixT[best] != null) { k = best; return [c[1], c[0], null, fixT[best], fixV[best], fixB[best]]; }
+      return [c[1], c[0], null, null, null, null];
     });
     // fill missing times by distance between known anchors
     const cum = [0]; for (let i = 1; i < raw.length; i++) cum.push(cum[i - 1] + distM(routeLine[i - 1], routeLine[i]));
@@ -265,19 +265,49 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
     const a = Math.max(0, i - 1), b = Math.min(n - 1, i + 1), dt = T[b] - T[a];
     return dt > 0 ? distM(gps[a], gps[b]) / dt * 2.23694 : 0;
   });
+  // battery %: per-point where published, else interpolated in time between known values (trip start/end % as anchors)
+  const B = raw.map(p => p.length > 5 && p[5] != null ? +p[5] : null);
+  const known = [];
+  if (B[0] == null && t.soc0 != null) known.push([0, +t.soc0]);
+  B.forEach((b, i) => { if (b != null) known.push([T[i], b]); });
+  if (B[n - 1] == null && t.soc1 != null) known.push([total, +t.soc1]);
+  const batAt = tt => {
+    if (!known.length) return null;
+    if (tt <= known[0][0]) return known[0][1];
+    for (let i = 1; i < known.length; i++) if (tt <= known[i][0]) {
+      const [t0, b0] = known[i - 1], [t1, b1] = known[i];
+      return t1 > t0 ? b0 + (b1 - b0) * (tt - t0) / (t1 - t0) : b1;
+    }
+    return known[known.length - 1][1];
+  };
   const P = { pt: 0, playing: false, mode: 'auto', raf: 0, last: 0, brg: 0 };
   PLAYERS[id] = P;
   for (let i = 1; i < n; i++) if (distM(gps[0], gps[i]) > 3) { P.brg = bearingDeg(gps[0], gps[i]); break; }
   const tel = document.createElement('div'); tel.className = 'truck'; tel.innerHTML = TRUCK_SVG;
   const truck = new maplibregl.Marker({ element: tel, rotationAlignment: 'map', pitchAlignment: 'map', rotation: P.brg }).setLngLat(gps[0]).addTo(m);
   const badge = document.createElement('div'); badge.className = 'pbadge';
-  badge.innerHTML = `<span class="wheel">${WHEEL_SVG}</span><b class="spd">0</b><span class="u">mph</span><span class="clk"></span>`;
+  badge.innerHTML = `<span class="clk"></span>`;
   el.appendChild(badge);
+  const lab = document.createElement('div'); lab.className = 'tlabel';
+  lab.innerHTML = `<span class="wheel">${WHEEL_SVG}</span><b class="spd">0</b><span class="u">mph</span><span class="sep"></span><b class="bat">–</b><span class="u">%</span>`;
+  const label = new maplibregl.Marker({ element: lab, anchor: 'center' }).setLngLat(gps[0]).addTo(m);
   const bar = document.createElement('div'); bar.className = 'playbar';
   bar.innerHTML = `<div class="prow"><button class="pbtn play" aria-label="Play">▶</button><button class="pbtn rst" aria-label="Restart">↺</button>
     <input class="prange" type="range" min="0" max="1000" value="0" aria-label="Position"><span class="ptime"></span></div>`;
   el.after(bar);
-  const $b = q => bar.querySelector(q), spd = badge.querySelector('.spd'), clk = badge.querySelector('.clk'), wheel = badge.querySelector('.wheel');
+  const $b = q => bar.querySelector(q), spd = lab.querySelector('.spd'), bat = lab.querySelector('.bat'), clk = badge.querySelector('.clk'), wheel = lab.querySelector('.wheel');
+  function placeLabel(pos) {   // keep the label beside the truck but inside the map
+    const W = el.clientWidth, H = el.clientHeight, w = lab.offsetWidth || 120, h = lab.offsetHeight || 28, gap = 20;
+    const pt = m.project(pos);
+    let dx = pt.x + gap + w <= W - 4 ? gap + w / 2 : -(gap + w / 2);
+    if (pt.x + dx - w / 2 < 4) dx = 4 + w / 2 - pt.x;
+    if (pt.x + dx + w / 2 > W - 4) dx = W - 4 - w / 2 - pt.x;
+    let dy = 0;
+    if (pt.y - h / 2 < 4) dy = 4 + h / 2 - pt.y;
+    if (pt.y + h / 2 > H - 4) dy = H - 4 - h / 2 - pt.y;
+    label.setLngLat(pos).setOffset([dx, dy]);
+  }
+  m.on('move', () => placeLabel(truck.getLngLat().toArray()));
   const rate = () => Math.max(1, total / 20);   // always: whole trip in ~20 s
   const fmtDur = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   function draw() {
@@ -286,9 +316,10 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
     const seg = T[hi] - T[lo], f = seg > 0 ? Math.min(1, Math.max(0, (P.pt - T[lo]) / seg)) : 1;
     const a = gps[lo], b = gps[hi], pos = [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
     if (distM(a, b) > 3) P.brg = bearingDeg(a, b);
-    truck.setLngLat(pos).setRotation(P.brg);
-    const v = V[lo] + (V[hi] - V[lo]) * f, fsd = flags[hi] === 1;
+    truck.setLngLat(pos).setRotation(P.brg); placeLabel(pos);
+    const v = V[lo] + (V[hi] - V[lo]) * f, fsd = flags[hi] === 1, bv = batAt(P.pt);
     spd.textContent = Math.round(v);
+    bat.textContent = socI(bv);
     wheel.className = 'wheel' + (fsd ? ' fsd' : '');
     wheel.title = fsd ? 'Self-driving' : 'Manual';
     clk.textContent = clockTs(t.s + P.pt);
