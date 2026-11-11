@@ -124,10 +124,11 @@ function tripCard(t) {
   const hasMap = (t.route && t.route.length > 1) || (t.gps && t.gps.length > 1);
   return `<div class="trip" data-trip="${t.id}"><div class="hd"><span>${timeTs(t.s)}${t.est ? '<span class="tag"> ~start</span>' : ''} – ${timeTs(t.e)}</span><span>${t.min} min</span></div>
   <div class="rt"><div>${esc(t.from)}</div><div>${esc(t.to)}</div></div>
-  ${t.fsd ? `<div class="fsdbar"><span class="lb">Self-driving</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span class="of">${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
-  <div class="cost"><div><b>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</b><span>electric</span></div><div><b>⛽ ${money(t.gas)}</b><span>premium gas</span></div><div class="g"><b>${money(t.save)}</b><span>saved</span></div></div>
-  <div class="ratecap">Battery energy ${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) : ''}/gal (${esc(t.garea || '')}) @ ${S.meta.mpg} mpg</div>
-  <div class="tg2"><span><b>${num(t.mi, 2)}</b> mi</span><span><b>${t.soc0 ?? '–'}→${t.soc1 ?? '–'}</b>%</span><span><b>${num(t.kwh, 2)}</b> kWh</span><span><b>${t.whmi ?? '–'}</b> Wh/mi</span></div>
+  <div class="tg tt"><div><b>${num(t.mi, 2)}</b><span>mi</span></div><div><b>${t.soc0 ?? '–'}→${t.soc1 ?? '–'}%</b><span>battery</span></div>
+  <div><b>${num(t.kwh, 2)}</b><span>kWh</span></div><div><b>${t.whmi ?? '–'}</b><span>Wh/mi</span></div></div>
+  ${t.fsd ? `<div class="fsdbar"><span>Self-driving</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span>${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
+  <div class="money tm"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">Saved ${money(t.save)}</span></div>
+  <div class="ratecap">${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) + '/gal' : ''} ${esc(t.garea || '')} · ${S.meta.mpg} mpg</div>
   ${hasMap ? `<button type="button" class="maptoggle" aria-expanded="false"><svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg><span class="ml">Show route &amp; playback</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="map hidden" id="map-${t.id}"></div>` : ''}
   </div>`;
 }
@@ -160,7 +161,7 @@ function toggleMap(id) {
   const all = line.concat(gps), bounds = new maplibregl.LngLatBounds(all[0], all[0]);
   all.forEach(c => bounds.extend(c));
   const m = new maplibregl.Map({ container: el, style: 'https://tiles.openfreemap.org/styles/dark', bounds,
-    fitBoundsOptions: { padding: 32 }, attributionControl: { compact: true }, cooperativeGestures: true, dragRotate: false, pitchWithRotate: false });
+    fitBoundsOptions: { padding: { top: 64, bottom: 30, left: 30, right: 30 } }, attributionControl: { compact: true }, cooperativeGestures: true, dragRotate: false, pitchWithRotate: false });
   const flags = (t.gps || []).map(p => p.length > 2 ? p[2] : null);
   const hasFsd = flags.some(f => f === 1);
   m.on('load', () => {
