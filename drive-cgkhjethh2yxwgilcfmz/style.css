@@ -72,4 +72,4 @@ footer a{color:var(--acc)}
 .prange{flex:1;min-width:0;height:30px;accent-color:#3e8bff}.ptime{font-size:11px;color:#8b94a1;font-variant-numeric:tabular-nums;white-space:nowrap}
 .chips button{flex:1;height:32px;border-radius:8px;background:#161a20;color:#c7ccd3;border:1px solid #2a3038;font-size:13px;touch-action:manipulation}.chips button.on{background:#25303d;border-color:#3e8bff;color:#fff}
 .ratecap{color:var(--mut);font-size:11px;line-height:1.35;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tt b{font-weight:500}.trip .fsdbar span,.trip .fsdbar b{font-weight:700}.tm span{font-weight:700}
+.tt b{font-weight:500}.trip .fsdbar span,.trip .fsdbar b{font-weight:700}.tm span{font-weight:700}.money.tm{font-size:18px;align-items:center}.trip .ratecap{font-size:10.5px}
