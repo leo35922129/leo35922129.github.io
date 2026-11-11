@@ -128,8 +128,9 @@ function tripCard(t) {
   <div><b>${num(t.kwh, 2)}</b><span>kWh</span></div><div><b>${t.whmi ?? '–'}</b><span>Wh/mi</span></div></div>
   ${t.fsd ? `<div class="fsdbar"><span>Self-driving</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span>${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
   <div class="money"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">Saved ${money(t.save)}</span></div>
+  <div class="ratecap">Battery energy ${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) : ''}/gal (${esc(t.garea || '')}) @ ${S.meta.mpg} mpg</div>
   ${hasMap ? `<div class="maptoggle">Route map <span>▾</span></div><div class="map hidden" id="map-${t.id}"></div>` : ''}
-  <div style="color:var(--mut);font-size:11px;margin-top:6px">Battery energy ${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) : ''}/gal (${esc(t.garea || '')}) @ ${S.meta.mpg} mpg</div></div>`;
+  </div>`;
 }
 function chargeCard(c) {
   const kind = { home: '🏠 Home charging', supercharger: '⚡ Supercharger', other: '🔌 Public charger' }[c.kind] || c.kind;
