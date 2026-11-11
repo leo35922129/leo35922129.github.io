@@ -149,6 +149,8 @@ function toggleMap(id) {
   const t = TRIPS[id], el = document.getElementById('map-' + id); if (!el) return;
   const card = el.closest('.trip'), open = el.classList.toggle('hidden') === false;
   card.querySelector('.maptoggle span').textContent = open ? '▴' : '▾';
+  const pb = card.querySelector('.playbar'); if (pb) pb.classList.toggle('hidden', !open);
+  if (!open && PLAYERS[id]) PLAYERS[id].pause();
   if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].resize(), 50); return; }
   const line = ((t.route && t.route.length > 1) ? t.route : t.gps).map(p => [p[1], p[0]]);
   const gps = (t.gps || []).map(p => [p[1], p[0]]);
@@ -175,10 +177,6 @@ function toggleMap(id) {
     const paint = { 'line-color': ['case', ['==', ['get', 'fsd'], 1], '#2fd5a0', '#3e8bff'], 'line-width': ['case', ['==', ['get', 'fsd'], 1], 6, 5], 'line-opacity': .95 };
     if (est) paint['line-dasharray'] = [1.5, 1.5];
     m.addLayer({ id: 'route', type: 'line', source: 'route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint });
-    if (!hasFsd) {
-      m.addSource('gps', { type: 'geojson', data: { type: 'FeatureCollection', features: gps.slice(1, -1).map(c => ({ type: 'Feature', geometry: { type: 'Point', coordinates: c } })) } });
-      m.addLayer({ id: 'gps', type: 'circle', source: 'gps', paint: { 'circle-radius': 2.5, 'circle-color': '#cfe1ff', 'circle-opacity': .8 } });
-    }
   });
   if (hasFsd) for (let i = 1; i < gps.length; i++) {
     if (flags[i] === 1 && flags[i - 1] !== 1) new maplibregl.Marker({ element: pinEl('#2fd5a0', '#0b4d3a') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD engaged (≈ within 1 mi)')).addTo(m);
@@ -192,6 +190,128 @@ function toggleMap(id) {
   else note.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${gps.length} GPS fixes${t.rsrc === 'gps' ? '' : t.rsrc === 'tessie' ? ' (Tessie history)' : ', road-matched'}`;
   el.appendChild(note);
   MAPS[id] = m;
+  if (gps.length > 1) setupPlayer(id, t, m, gps, flags, el, t.route && t.route.length > 1 ? line : null);
+}
+
+// ---------------- route playback ----------------
+const PLAYERS = {};
+const TRUCK_SVG = `<svg viewBox="0 0 24 48" width="22" height="44" aria-hidden="true">
+  <polygon points="6,2 18,2 21,7 21,44 19,46.5 5,46.5 3,44 3,7" fill="#c9ced6" stroke="#15181d" stroke-width="1.2" stroke-linejoin="round"/>
+  <rect x="5.5" y="2.6" width="13" height="1.3" rx=".4" fill="#f4f7fb"/>
+  <polygon points="2,12 3,11 3,14" fill="#9aa1ab"/><polygon points="22,12 21,11 21,14" fill="#9aa1ab"/>
+  <polygon points="5.5,9.5 18.5,9.5 17.5,20 6.5,20" fill="#20262e"/>
+  <polygon points="6.5,20 17.5,20 17.5,26.5 6.5,26.5" fill="#aeb4bd"/>
+  <polygon points="6.5,26.5 17.5,26.5 18.5,31 5.5,31" fill="#2a3038"/>
+  <rect x="5.5" y="31.5" width="13" height="12.5" fill="#b9bfc8" stroke="#8e959f" stroke-width=".5"/>
+  <line x1="5.5" y1="35.5" x2="18.5" y2="35.5" stroke="#8e959f" stroke-width=".5"/><line x1="5.5" y1="39.5" x2="18.5" y2="39.5" stroke="#8e959f" stroke-width=".5"/>
+  <rect x="5" y="45.2" width="14" height="1" rx=".4" fill="#ff3b3b"/></svg>`;
+const WHEEL_SVG = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+  <circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="2.6"/><path d="M2.8 11.2 L9.4 11.6 M14.6 11.6 L21.2 11.2 M12 14.6 L12 21.4"/></g></svg>`;
+const toRad = d => d * Math.PI / 180;
+function bearingDeg(a, b) {   // a, b = [lng, lat]
+  const y = Math.sin(toRad(b[0] - a[0])) * Math.cos(toRad(b[1])),
+    x = Math.cos(toRad(a[1])) * Math.sin(toRad(b[1])) - Math.sin(toRad(a[1])) * Math.cos(toRad(b[1])) * Math.cos(toRad(b[0] - a[0]));
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+function distM(a, b) {
+  const dLat = toRad(b[1] - a[1]), dLon = toRad(b[0] - a[0]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[1])) * Math.cos(toRad(b[1])) * Math.sin(dLon / 2) ** 2;
+  return 12742000 * Math.asin(Math.sqrt(h));
+}
+const clockTs = ts => new Date(ts * 1000).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit', second: '2-digit' });
+function stopPlayers() { for (const k in PLAYERS) { cancelAnimationFrame(PLAYERS[k].raf); delete PLAYERS[k]; } }
+function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
+  let raw = t.gps, gps = gps0, flags = flags0;
+  const dur = Math.max(1, t.e - t.s);
+  if (routeLine && routeLine.length > gps0.length) {
+    // sparse fixes + road-snapped route: drive along the road; time each vertex by its nearest fix (else by distance)
+    const fixT = t.gps.map(p => p.length > 3 ? p[3] : null), fixV = t.gps.map(p => p.length > 4 ? p[4] : null);
+    let k = 0;
+    raw = routeLine.map(c => {
+      let best = k, bd = Infinity;
+      for (let j = k; j < gps0.length; j++) { const d = distM(c, gps0[j]); if (d < bd) { bd = d; best = j; } }
+      if (bd < 60 && fixT[best] != null) { k = best; return [c[1], c[0], null, fixT[best], fixV[best]]; }
+      return [c[1], c[0], null, null, null];
+    });
+    // fill missing times by distance between known anchors
+    const cum = [0]; for (let i = 1; i < raw.length; i++) cum.push(cum[i - 1] + distM(routeLine[i - 1], routeLine[i]));
+    const L = cum[cum.length - 1] || 1;
+    raw[0][3] = 0; if (raw[raw.length - 1][3] == null) raw[raw.length - 1][3] = dur;
+    let a = 0;
+    for (let i = 1; i < raw.length; i++) if (raw[i][3] != null) {
+      for (let j = a + 1; j < i; j++) raw[j][3] = raw[a][3] + (raw[i][3] - raw[a][3]) * (cum[j] - cum[a]) / ((cum[i] - cum[a]) || 1);
+      a = i;
+    }
+    void L;
+    gps = routeLine; flags = raw.map(() => null);
+  }
+  const n = gps.length;
+  // per-point times (s from start): real where published, else spread by distance over the trip duration
+  let T = raw.map(p => p.length > 3 && p[3] != null ? Math.max(0, p[3]) : null);
+  if (T.some(v => v == null)) {
+    const cum = [0]; for (let i = 1; i < n; i++) cum.push(cum[i - 1] + distM(gps[i - 1], gps[i]));
+    const L = cum[n - 1] || 1; T = cum.map(c => c / L * dur);
+  }
+  for (let i = 1; i < n; i++) if (T[i] < T[i - 1]) T[i] = T[i - 1];
+  const T0 = T[0]; T = T.map(v => v - T0);
+  const total = Math.max(T[n - 1], 1);
+  let V = raw.map(p => p.length > 4 ? p[4] : null);
+  V = V.map((v, i) => {
+    if (v != null) return v;
+    const a = Math.max(0, i - 1), b = Math.min(n - 1, i + 1), dt = T[b] - T[a];
+    return dt > 0 ? distM(gps[a], gps[b]) / dt * 2.23694 : 0;
+  });
+  const P = { pt: 0, playing: false, mode: 'auto', raf: 0, last: 0, brg: 0 };
+  PLAYERS[id] = P;
+  for (let i = 1; i < n; i++) if (distM(gps[0], gps[i]) > 3) { P.brg = bearingDeg(gps[0], gps[i]); break; }
+  const tel = document.createElement('div'); tel.className = 'truck'; tel.innerHTML = TRUCK_SVG;
+  const truck = new maplibregl.Marker({ element: tel, rotationAlignment: 'map', pitchAlignment: 'map', rotation: P.brg }).setLngLat(gps[0]).addTo(m);
+  const badge = document.createElement('div'); badge.className = 'pbadge';
+  badge.innerHTML = `<span class="wheel">${WHEEL_SVG}</span><b class="spd">0</b><span class="u">mph</span><span class="clk"></span>`;
+  el.appendChild(badge);
+  const bar = document.createElement('div'); bar.className = 'playbar';
+  bar.innerHTML = `<div class="prow"><button class="pbtn play" aria-label="Play">▶</button><button class="pbtn rst" aria-label="Restart">↺</button>
+    <input class="prange" type="range" min="0" max="1000" value="0" aria-label="Position"><span class="ptime"></span></div>
+    <div class="prow chips">${[['auto', 'Auto'], ['1', '1×'], ['10', '10×'], ['60', '60×']].map(([k, l]) => `<button data-r="${k}" class="${k === 'auto' ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+  el.after(bar);
+  const $b = q => bar.querySelector(q), spd = badge.querySelector('.spd'), clk = badge.querySelector('.clk'), wheel = badge.querySelector('.wheel');
+  const rate = () => P.mode === 'auto' ? Math.max(1, total / 20) : +P.mode;   // auto: whole trip in ~20 s
+  const fmtDur = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  function draw() {
+    let lo = 0, hi = n - 1;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (T[mid] <= P.pt) lo = mid; else hi = mid; }
+    const seg = T[hi] - T[lo], f = seg > 0 ? Math.min(1, Math.max(0, (P.pt - T[lo]) / seg)) : 1;
+    const a = gps[lo], b = gps[hi], pos = [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+    if (distM(a, b) > 3) P.brg = bearingDeg(a, b);
+    truck.setLngLat(pos).setRotation(P.brg);
+    const v = V[lo] + (V[hi] - V[lo]) * f, fsd = flags[hi] === 1;
+    spd.textContent = Math.round(v);
+    wheel.className = 'wheel' + (fsd ? ' fsd' : '');
+    wheel.title = fsd ? 'Self-driving' : 'Manual';
+    clk.textContent = clockTs(t.s + P.pt);
+    $b('.prange').value = Math.round(P.pt / total * 1000);
+    $b('.ptime').textContent = `${fmtDur(P.pt)} / ${fmtDur(total)}`;
+  }
+  function frame(ts) {
+    if (!P.playing) return;
+    if (P.last) P.pt = Math.min(total, P.pt + (ts - P.last) / 1000 * rate());
+    P.last = ts; draw();
+    if (P.pt >= total) { setPlaying(false); return; }
+    P.raf = requestAnimationFrame(frame);
+  }
+  function setPlaying(on) {
+    P.playing = on; P.last = 0; cancelAnimationFrame(P.raf);
+    $b('.play').textContent = on ? '❚❚' : '▶'; $b('.play').setAttribute('aria-label', on ? 'Pause' : 'Play');
+    if (on) { if (P.pt >= total) P.pt = 0; P.raf = requestAnimationFrame(frame); }
+  }
+  P.pause = () => setPlaying(false);
+  $b('.play').addEventListener('click', () => setPlaying(!P.playing));
+  $b('.rst').addEventListener('click', () => { P.pt = 0; draw(); setPlaying(true); });
+  $b('.prange').addEventListener('input', e => { P.pt = e.target.value / 1000 * total; draw(); });
+  bar.querySelectorAll('.chips button').forEach(btn => btn.addEventListener('click', () => {
+    P.mode = btn.dataset.r; bar.querySelectorAll('.chips button').forEach(x => x.classList.toggle('on', x === btn));
+  }));
+  draw();
 }
 async function viewDay() {
   const k = keyOf(S.cur), m = await month(k.slice(0, 7));
@@ -204,6 +324,7 @@ async function viewDay() {
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 async function render() {
+  stopPlayers();
   for (const k in MAPS) { try { MAPS[k].remove(); } catch (e) {} delete MAPS[k]; }
   localStorage.setItem('ht_view', S.view);
   setTitle(); renderSummary();
