@@ -56,7 +56,8 @@ footer a{color:var(--acc)}
 .sheetbody{background:var(--card);width:100%;border-radius:16px 16px 0 0;padding:18px 18px calc(env(safe-area-inset-bottom) + 18px);max-height:80vh;overflow:auto}
 .sheetbody table{width:100%;font-size:14px;border-collapse:collapse}.sheetbody td{padding:5px 0;border-bottom:1px solid var(--line)}.sheetbody td:last-child{text-align:right}
 @media(min-width:700px){main,.summary{max-width:760px;margin:0 auto}.summary{grid-template-columns:repeat(6,1fr)}}
-.maptoggle{margin-top:10px;padding:8px 0 2px;color:var(--acc);font-size:13px;font-weight:600;display:flex;justify-content:space-between;border-top:1px solid var(--line);cursor:pointer}
+.maptoggle{width:100%;min-height:44px;margin-top:12px;padding:0 12px 0 14px;display:flex;align-items:center;gap:10px;border-radius:12px;border:1px solid rgba(62,139,255,.35);background:rgba(62,139,255,.12);color:#8fb8ff;font:inherit;font-size:15px;font-weight:600;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none}
+.maptoggle .ml{flex:1;text-align:left}.maptoggle .mico{color:#3e8bff;flex:none}.maptoggle .chev{flex:none;transition:transform .2s}.maptoggle.open .chev{transform:rotate(180deg)}.maptoggle:active{background:rgba(62,139,255,.22)}.maptoggle.open{background:rgba(62,139,255,.07)}
 .map{height:260px;border-radius:12px;margin-top:8px;background:#1b1f24;overflow:hidden}
 .mapnote{background:rgba(11,13,16,.8);color:#c7ccd3;font-size:11px;padding:3px 7px;border-radius:6px}
 .mapnote{position:absolute;top:8px;left:8px;z-index:2}.map{position:relative}.maplibregl-ctrl-attrib{background:rgba(11,13,16,.7)!important}.maplibregl-ctrl-attrib a{color:#8b94a1!important}.maplibregl-popup-content{background:#15181d;color:#e9edf2;padding:6px 10px;font-size:12px}.maplibregl-popup-tip{display:none}

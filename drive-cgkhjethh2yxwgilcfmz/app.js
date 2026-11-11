@@ -128,7 +128,7 @@ function tripCard(t) {
   <div class="cost"><div><b>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</b><span>electric</span></div><div><b>⛽ ${money(t.gas)}</b><span>premium gas</span></div><div class="g"><b>${money(t.save)}</b><span>saved</span></div></div>
   <div class="ratecap">Battery energy ${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) : ''}/gal (${esc(t.garea || '')}) @ ${S.meta.mpg} mpg</div>
   <div class="tg2"><span><b>${num(t.mi, 2)}</b> mi</span><span><b>${t.soc0 ?? '–'}→${t.soc1 ?? '–'}</b>%</span><span><b>${num(t.kwh, 2)}</b> kWh</span><span><b>${t.whmi ?? '–'}</b> Wh/mi</span></div>
-  ${hasMap ? `<div class="maptoggle">Route map <span>▾</span></div><div class="map hidden" id="map-${t.id}"></div>` : ''}
+  ${hasMap ? `<button type="button" class="maptoggle" aria-expanded="false"><svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg><span class="ml">Show route &amp; playback</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="map hidden" id="map-${t.id}"></div>` : ''}
   </div>`;
 }
 function chargeCard(c) {
@@ -148,7 +148,9 @@ function pinEl(color, ring) {
 function toggleMap(id) {
   const t = TRIPS[id], el = document.getElementById('map-' + id); if (!el) return;
   const card = el.closest('.trip'), open = el.classList.toggle('hidden') === false;
-  card.querySelector('.maptoggle span').textContent = open ? '▴' : '▾';
+  const mt = card.querySelector('.maptoggle');
+  mt.classList.toggle('open', open); mt.setAttribute('aria-expanded', open);
+  mt.querySelector('.ml').textContent = open ? 'Hide route' : 'Show route & playback';
   const pb = card.querySelector('.playbar'); if (pb) pb.classList.toggle('hidden', !open);
   if (!open && PLAYERS[id]) PLAYERS[id].pause();
   if (!open || MAPS[id]) { if (MAPS[id]) setTimeout(() => MAPS[id].resize(), 50); return; }
