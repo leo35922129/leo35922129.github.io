@@ -102,10 +102,10 @@ function viewWeek() {
   const s = weekStart(S.cur); const rows = []; let max = 0.01;
   for (let i = 0; i < 7; i++) { const d = addDays(s, i), x = S.meta.days[keyOf(d)] || {}; max = Math.max(max, x.gas || 0); rows.push([d, x]); }
   return rows.map(([d, x]) => `<div class="row" data-day="${keyOf(d)}"><div class="d"><span>${DOW[d.getDay()]}</span><b>${d.getDate()}</b></div>
-    <div class="bar"><div class="b" style="width:${Math.round(100 * (x.gas || 0) / max)}%;background:#3a4150"><div class="b" style="margin:0;width:${x.gas ? Math.round(100 * (x.elec || 0) / x.gas) : 0}%;background:var(--acc)"></div></div>
+    <div class="bar"><div class="b" style="width:${Math.round(100 * (x.gas || 0) / max)}%;background:rgba(220,60,60,.55)"><div class="b" style="margin:0;width:${x.gas ? Math.round(100 * (x.elec || 0) / x.gas) : 0}%;background:#f5c518"></div></div>
     <div class="l"><span>${x.n || 0} trips · ${num(x.mi || 0, 1)} mi</span><span>${money(x.elec || 0)} / ${money(x.gas || 0)}</span></div></div>
     <div class="r"><div class="g">${money(x.save || 0)}</div><div style="color:var(--mut);font-size:11px">saved</div></div></div>`).join('') +
-    '<p class="empty" style="padding:6px 0;font-size:12px">Blue = electric cost, grey = what premium gas would cost</p>';
+    '<p class="empty" style="padding:6px 0;font-size:12px">Yellow = electric cost, red = what premium gas would cost</p>';
 }
 function viewYear() {
   const y = S.cur.getFullYear(); let h = '<div class="year">';
