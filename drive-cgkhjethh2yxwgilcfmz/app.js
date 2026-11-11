@@ -118,13 +118,14 @@ function viewYear() {
   }
   return h + '</div>';
 }
+const socI = v => v == null || v === '' || isNaN(+v) ? '–' : Math.trunc(+v);   // battery %: integer part only (54.7 -> 54)
 const TRIPS = {};
 function tripCard(t) {
   TRIPS[t.id] = t;
   const hasMap = (t.route && t.route.length > 1) || (t.gps && t.gps.length > 1);
   return `<div class="trip" data-trip="${t.id}"><div class="hd"><span>${timeTs(t.s)}${t.est ? '<span class="tag"> ~start</span>' : ''} – ${timeTs(t.e)}</span><span>${t.min} min</span></div>
   <div class="rt"><div>${esc(t.from)}</div><div>${esc(t.to)}</div></div>
-  <div class="tg tt"><div><b>${num(t.mi, 2)}</b><span>mi</span></div><div><b>${t.soc0 ?? '–'}→${t.soc1 ?? '–'}%</b><span>battery</span></div>
+  <div class="tg tt"><div><b>${num(t.mi, 2)}</b><span>mi</span></div><div><b>${socI(t.soc0)}→${socI(t.soc1)}%</b><span>battery</span></div>
   <div><b>${num(t.kwh, 2)}</b><span>kWh</span></div><div><b>${t.whmi ?? '–'}</b><span>Wh/mi</span></div></div>
   ${t.fsd ? `<div class="fsdbar"><span>Self-driving</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span>${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
   <div class="money tm"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">Saved ${money(t.save)}</span></div>
@@ -137,7 +138,7 @@ function chargeCard(c) {
   const tou = c.tou ? Object.entries(c.tou).map(([p, v]) => `${p} ${num(v.kwh, 1)} kWh ${money(v.cost)}`).join(' · ') : '';
   return `<div class="trip"><div class="hd"><span>${kind}</span><span>${timeTs(c.s)} – ${timeTs(c.e)}</span></div>
   <div style="margin:8px 0">${esc(c.where || '')}</div>
-  <div class="money"><span>+${num(c.kwh, 1)} kWh${c.wall ? ` (${num(c.wall, 1)} from wall)` : ''}</span><span>${c.soc0 != null ? c.soc0 + '→' + c.soc1 + '%' : ''}</span><span class="g" style="color:var(--tx)">${money(c.cost)}</span></div>
+  <div class="money"><span>+${num(c.kwh, 1)} kWh${c.wall ? ` (${num(c.wall, 1)} from wall)` : ''}</span><span>${c.soc0 != null ? socI(c.soc0) + '→' + socI(c.soc1) + '%' : ''}</span><span class="g" style="color:var(--tx)">${money(c.cost)}</span></div>
   <div style="color:var(--mut);font-size:11px;margin-top:6px">${esc(c.src === 'tesla' ? 'Tesla Supercharger bill' : (c.src || ''))}${c.note ? ' · ' + esc(c.note) : ''}${tou ? ' · ' + tou : ''}${c.est ? ' · estimated' : ''}</div></div>`;
 }
 const MAPS = {};
