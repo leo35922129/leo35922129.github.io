@@ -100,13 +100,19 @@ function viewMonth() {
   return h + '</div><p class="empty" style="padding:10px 0;font-size:12px">Green = saved vs. gas that day · tap a day for trips</p>';
 }
 function viewWeek() {
-  const s = weekStart(S.cur); const rows = []; let max = 0.01;
-  for (let i = 0; i < 7; i++) { const d = addDays(s, i), x = S.meta.days[keyOf(d)] || {}; max = Math.max(max, x.gas || 0); rows.push([d, x]); }
-  return rows.map(([d, x]) => `<div class="row" data-day="${keyOf(d)}"><div class="d"><span>${DOW[d.getDay()]}</span><b>${d.getDate()}</b></div>
-    <div class="bar"><div class="b" style="width:${Math.round(100 * (x.gas || 0) / max)}%;background:rgba(220,60,60,.55)"><div class="b" style="margin:0;width:${x.gas ? Math.round(100 * (x.elec || 0) / x.gas) : 0}%;background:#f5c518"></div></div>
-    <div class="l"><span>${x.n || 0} trips · ${num(x.mi || 0, 1)} mi</span><span>${money(x.elec || 0)} / ${money(x.gas || 0)}</span></div></div>
-    <div class="r"><div class="g">${SAVED_ICO} ${money(x.save || 0)}</div><div style="color:var(--mut);font-size:11px">saved</div></div></div>`).join('') +
-    '<p class="empty" style="padding:6px 0;font-size:12px">Yellow = electric cost, red = what premium gas would cost</p>';
+  const s = weekStart(S.cur); let h = '';
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(s, i), k = keyOf(d), x = S.meta.days[k] || {}, dc = `<div class="d"><span>${DOW[d.getDay()]}</span><b>${d.getDate()}</b></div>`;
+    if (!x.n) { h += `<div class="row wrow nod" data-day="${k}">${dc}<div class="wm"><span class="none">No drives</span></div></div>`; continue; }
+    // FSD % over miles that have FSD data; '~' when some of the day's miles have none
+    const pct = x.fsdk ? Math.min(100, Math.round(100 * (x.fsd || 0) / x.fsdk)) : null, part = x.fsdk && x.fsdk < (x.mi || 0) - 0.05;
+    h += `<div class="row wrow" data-day="${k}">${dc}
+    <div class="wm"><div class="wf"><span class="fl">FSD</span><div class="fb"><div style="width:${pct ?? 0}%"></div></div><b>${pct == null ? '–' : (part ? '~' : '') + pct + '%'}</b></div>
+    <div class="wl"><span>${x.n} trip${x.n === 1 ? '' : 's'}</span><span>${num(x.mi || 0, 1)} mi</span></div></div>
+    <div class="wc"><span>⚡ ${money(x.elec || 0)}</span><span>⛽ ${money(x.gas || 0)}</span></div>
+    <div class="r"><div class="g">${SAVED_ICO} ${money(x.save || 0)}</div><div class="sv">saved</div></div></div>`;
+  }
+  return h;
 }
 function viewYear() {
   const y = S.cur.getFullYear(); let h = '<div class="year">';
