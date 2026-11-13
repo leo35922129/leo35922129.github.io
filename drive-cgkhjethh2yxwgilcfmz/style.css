@@ -91,10 +91,13 @@ footer a{color:var(--acc)}
 /* v22: week rows (FSD bar + trips/miles; costs + saved on one baseline) */
 .row.wrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto;grid-template-areas:"d m c";align-items:center;gap:6px 16px}
 .wrow .d{grid-area:d}.wrow .wm{grid-area:m;min-width:0}.wrow .wc{grid-area:c}
-.wf{display:flex;align-items:center;gap:8px}.wf .fl{color:#2fd5a0;font-weight:700;font-size:14px}
-.wf .fb{flex:1;height:6px;border-radius:3px;background:#2a3038;overflow:hidden}.wf .fb div{height:100%;background:#2fd5a0}
-.wf b{color:#2fd5a0;font-size:16px;font-weight:700;min-width:50px;text-align:right}
-.wl{display:flex;gap:16px;margin-top:5px;font-size:14px;color:var(--mut)}
+/* v23: FSD track length = day miles / week max (--w); % follows bar end; miles right-aligned under bar end; 58px reserved for % */
+.wrow .wm{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:8px;--pr:58px}
+.wm .fl{color:#2fd5a0;font-weight:700;font-size:14px}
+.wtk{display:flex;align-items:center;gap:6px;width:calc((100% - var(--pr)) * var(--w) + var(--pr))}
+.wtk .fb{flex:1;min-width:0;height:6px;border-radius:3px;background:#4a525e;overflow:hidden}.wtk .fb div{height:100%;background:#2fd5a0}
+.wtk b{flex:0 0 52px;color:#2fd5a0;font-size:16px;font-weight:700;text-align:left;white-space:nowrap}
+.wl{grid-column:2;display:flex;justify-content:space-between;gap:10px;margin-top:5px;font-size:14px;color:var(--mut);white-space:nowrap;width:calc((100% - var(--pr)) * var(--w));min-width:max-content}
 .wc{display:flex;align-items:baseline;gap:10px;font-size:16px;font-weight:700;white-space:nowrap}
 .wc>span{display:inline-block;text-align:right;min-width:84px}.wc>span:nth-child(2){min-width:92px}
 .wc .cs{position:relative;color:var(--grn);min-width:90px}
@@ -105,5 +108,5 @@ footer a{color:var(--acc)}
   .row.wrow.nod{grid-template-columns:44px 1fr;padding-bottom:8px}
   .row.wrow .d{width:44px}
   .wc{font-size:15px;gap:6px;justify-content:space-between}.wc>span{min-width:0;text-align:left}.wc .cs{text-align:right;min-width:0}
-  .wl{font-size:13px}.wf b{font-size:15px}
+  .wl{font-size:13px}.wtk b{font-size:15px;flex-basis:48px}.wrow .wm{--pr:54px}
 }
