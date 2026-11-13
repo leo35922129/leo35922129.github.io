@@ -73,7 +73,7 @@ function renderSummary() {
   const [a, b] = periodRange(); const t = sumDays(rangeKeys(a, b));
   const whmi = t.mi ? Math.round(t.kwh * 1000 / t.mi) : null;
   $('#summary').innerHTML = [
-    ['⚡ Electric spent', money(t.elec), ''], ['⛽ Gas would cost', money(t.gas), ''], [SAVED_ICO + ' Saved', money(t.save), 'grn'],
+    ['⚡ Electric', money(t.elec), ''], ['⛽ Gas', money(t.gas), ''], [SAVED_ICO + ' Saved', money(t.save), 'grn'],
     ['Miles', num(t.mi, 1), ''], ['Energy', num(t.kwh, 1) + ' kWh', ''], ['Efficiency', whmi ? whmi + ' Wh/mi' : '–', ''],
   ].map(([k, v, c]) => `<div class="stat"><div class="k">${k}</div><div class="v ${c}">${v}</div></div>`).join('');
 }
