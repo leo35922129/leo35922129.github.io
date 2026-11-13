@@ -68,11 +68,12 @@ function periodRange() {
   if (S.view === 'month') return [new Date(c.getFullYear(), c.getMonth(), 1), new Date(c.getFullYear(), c.getMonth() + 1, 0)];
   return [new Date(c.getFullYear(), 0, 1), new Date(c.getFullYear(), 11, 31)];
 }
+const SAVED_ICO = '<svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><text x="12" y="17.2" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif" font-size="15.5" font-weight="800" fill="#0b2a14">$</text></svg>';   // Saved badge (inline SVG, no fetch)
 function renderSummary() {
   const [a, b] = periodRange(); const t = sumDays(rangeKeys(a, b));
   const whmi = t.mi ? Math.round(t.kwh * 1000 / t.mi) : null;
   $('#summary').innerHTML = [
-    ['Electric spent', money(t.elec), ''], ['Gas would cost', money(t.gas), ''], ['Saved', money(t.save), 'grn'],
+    ['⚡ Electric spent', money(t.elec), ''], ['⛽ Gas would cost', money(t.gas), ''], [SAVED_ICO + ' Saved', money(t.save), 'grn'],
     ['Miles', num(t.mi, 1), ''], ['Energy', num(t.kwh, 1) + ' kWh', ''], ['Efficiency', whmi ? whmi + ' Wh/mi' : '–', ''],
   ].map(([k, v, c]) => `<div class="stat"><div class="k">${k}</div><div class="v ${c}">${v}</div></div>`).join('');
 }
@@ -104,7 +105,7 @@ function viewWeek() {
   return rows.map(([d, x]) => `<div class="row" data-day="${keyOf(d)}"><div class="d"><span>${DOW[d.getDay()]}</span><b>${d.getDate()}</b></div>
     <div class="bar"><div class="b" style="width:${Math.round(100 * (x.gas || 0) / max)}%;background:rgba(220,60,60,.55)"><div class="b" style="margin:0;width:${x.gas ? Math.round(100 * (x.elec || 0) / x.gas) : 0}%;background:#f5c518"></div></div>
     <div class="l"><span>${x.n || 0} trips · ${num(x.mi || 0, 1)} mi</span><span>${money(x.elec || 0)} / ${money(x.gas || 0)}</span></div></div>
-    <div class="r"><div class="g">${money(x.save || 0)}</div><div style="color:var(--mut);font-size:11px">saved</div></div></div>`).join('') +
+    <div class="r"><div class="g">${SAVED_ICO} ${money(x.save || 0)}</div><div style="color:var(--mut);font-size:11px">saved</div></div></div>`).join('') +
     '<p class="empty" style="padding:6px 0;font-size:12px">Yellow = electric cost, red = what premium gas would cost</p>';
 }
 function viewYear() {
@@ -128,7 +129,7 @@ function tripCard(t) {
   <div class="tg tt"><div><b>${num(t.mi, 2)}</b><span>mi</span></div><div><b>${socI(t.soc0)}→${socI(t.soc1)}%</b><span>battery</span></div>
   <div><b>${num(t.kwh, 2)}</b><span>kWh</span></div><div><b>${t.whmi ?? '–'}</b><span>Wh/mi</span></div></div>
   ${t.fsd ? `<div class="fsdbar"><span>FSD</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span>${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
-  <div class="money tm"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">Saved ${money(t.save)}</span></div>
+  <div class="money tm"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">${SAVED_ICO} ${money(t.save)}<span class="lbl">saved</span></span></div>
   <div class="cap ratecap">${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) + '/gal' : ''} ${esc(t.garea || '')} · ${S.meta.mpg} mpg</div>
   ${hasMap ? `<div class="routebox"><button type="button" class="maptoggle" aria-expanded="false"><svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg><span class="ml">Show route &amp; playback</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="rbody"><div class="rinner"><div class="map" id="map-${t.id}"></div></div></div></div>` : ''}
   </div>`;

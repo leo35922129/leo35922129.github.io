@@ -82,3 +82,8 @@ footer a{color:var(--acc)}
 .tlabel .wheel{display:flex;color:#6b7380}.tlabel .wheel svg{width:16px;height:16px}.tlabel .wheel.fsd{color:#3e8bff;filter:drop-shadow(0 0 3px rgba(62,139,255,.9))}
 .tlabel b{font-size:14px;font-weight:700}.tlabel .u{font-size:10px;color:#8b94a1}.tlabel .sep{width:1px;height:14px;background:#2f3742;margin:0 3px}
 .pbadge .clk{font-size:12px;color:#c7ccd3;margin:0;border:0;padding:0}
+
+/* v19: Saved badge icon */
+.si{width:1.2em;height:1.2em;vertical-align:-0.2em;display:inline-block}.si circle{fill:var(--grn)}
+.money .g .lbl{font-size:12px;font-weight:600;color:var(--grn);opacity:.85;margin-left:3px}
+.stat .k .si{width:1.15em;height:1.15em;vertical-align:-0.2em}
