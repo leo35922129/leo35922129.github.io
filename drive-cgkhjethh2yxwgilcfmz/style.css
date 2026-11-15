@@ -411,27 +411,30 @@ footer a{color:var(--acc)}
 
 .si{width:1.2em;height:1.2em;vertical-align:-0.2em;display:inline-block}.si circle{fill:var(--grn)}
 
-/* v23 Saving week rows: teal FSD bar, length ∝ miles */
+/* Saving week rows: FSD + costs match Day trip cards. Bar length ∝ miles. */
 .row.wrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto;grid-template-areas:"d m c";align-items:center;gap:6px 16px;background:var(--card);border-radius:12px;padding:12px;margin-bottom:8px}
 .wrow .d{grid-area:d;width:52px;text-align:center}.wrow .d b{display:block;font-size:20px}.wrow .d span{color:var(--mut);font-size:12px}
 .wrow .wm{grid-area:m;min-width:0}.wrow .wc{grid-area:c}
-.wrow .wm{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:8px;--pr:58px}
-.wm .fl{color:#2fd5a0;font-weight:700;font-size:14px}
+.wrow .wm{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:8px;--pr:50px}
+.wm .fl{color:var(--fsd);font-weight:600;font-size:12px}
 .wtk{display:flex;align-items:center;gap:6px;width:calc((100% - var(--pr)) * var(--w) + var(--pr))}
-.wtk .fb{flex:1;min-width:0;height:6px;border-radius:3px;background:#4a525e;overflow:hidden}.wtk .fb div{height:100%;background:#2fd5a0}
-.wtk b{flex:0 0 52px;color:#2fd5a0;font-size:16px;font-weight:700;text-align:left;white-space:nowrap}
+.wtk .fb{flex:1;min-width:0;height:8px;border-radius:4px;background:#2a3038;overflow:hidden}.wtk .fb div{height:100%;background:var(--fsd);border-radius:4px}
+.wtk b{flex:0 0 46px;color:var(--fsd);font-size:14px;font-weight:700;text-align:left;white-space:nowrap}
 .wl{grid-column:2;display:flex;justify-content:space-between;gap:10px;margin-top:5px;font-size:14px;color:var(--mut);white-space:nowrap;width:calc((100% - var(--pr)) * var(--w));min-width:max-content}
-.wc{display:flex;align-items:baseline;gap:10px;font-size:16px;font-weight:700;white-space:nowrap}
-.wc>span{display:inline-block;text-align:right;min-width:84px}.wc>span:nth-child(2){min-width:92px}
-.wc .cs{position:relative;color:var(--grn);min-width:90px}
-.wc .cs small{position:absolute;right:0;top:100%;margin-top:1px;font-size:11px;font-weight:400;color:var(--mut)}
+.wc{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:20px;font-weight:400;letter-spacing:-.02em;white-space:nowrap}
+.wc>span{display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0}
+.wc .g{color:var(--lime);gap:7px}
+.wc .g .dbadge{width:22px;height:22px;font-size:13px;background:var(--lime);color:#111}
+.wc .g .sv{font-size:15px;font-weight:500;color:var(--lime);margin-left:1px}
 .row.wrow.nod{opacity:.45;padding:8px 12px;grid-template-columns:52px 1fr;grid-template-areas:"d m"}.wrow.nod .d b{font-size:16px}.wrow .none{color:var(--mut);font-size:13px}
 @media (max-width:520px){
-  .row.wrow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"d m" "d c";gap:8px 12px;padding-bottom:22px}
+  .row.wrow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"d m" "d c";gap:8px 12px;padding-bottom:12px}
   .row.wrow.nod{grid-template-columns:44px 1fr;padding-bottom:8px}
   .row.wrow .d{width:44px}
-  .wc{font-size:15px;gap:6px;justify-content:space-between}.wc>span{min-width:0;text-align:left}.wc .cs{text-align:right;min-width:0}
-  .wl{font-size:13px}.wtk b{font-size:15px;flex-basis:48px}.wrow .wm{--pr:54px}
+  .wc{font-size:17px;gap:6px;justify-content:space-between}
+  .wc .g .dbadge{width:20px;height:20px;font-size:12px}
+  .wc .g .sv{font-size:13px}
+  .wl{font-size:13px}.wtk b{font-size:14px;flex-basis:46px}.wrow .wm{--pr:50px}
 }
 
 .mcol[data-day],.ewk[data-day],.cell[data-day]{cursor:pointer}

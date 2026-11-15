@@ -397,7 +397,7 @@ function viewWeekSaving() {
     h += `<div class="row wrow" data-day="${k}">${dc}
     <div class="wm" style="--w:${w.toFixed(3)}"><span class="fl">FSD</span><div class="wtk"><div class="fb"><div style="width:${pct ?? 0}%"></div></div><b>${pct == null ? '–' : (part ? '~' : '') + pct + '%'}</b></div>
     <div class="wl"><span>${x.n} trip${x.n === 1 ? '' : 's'}</span><span>${num(x.mi || 0, 1)} mi</span></div></div>
-    <div class="wc"><span>⚡ ${money(x.elec || 0)}</span><span>⛽ ${money(x.gas || 0)}</span><span class="cs">${SAVED_ICO} ${money(x.save || 0)}<small>saved</small></span></div></div>`;
+    <div class="wc"><span>⚡ ${money(x.elec || 0)}</span><span class="pump">⛽ ${money(x.gas || 0)}</span><span class="g">${DBADGE} ${money(x.save || 0)}<span class="sv">saved</span></span></div></div>`;
   }
   return h;
 }
