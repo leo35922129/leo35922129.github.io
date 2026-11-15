@@ -161,7 +161,8 @@ main{padding:8px 12px 24px}
 .hd .when{color:var(--mut);font-size:16px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .hd .right{margin-left:auto;display:flex;align-items:center;gap:8px;
   color:var(--mut);font-size:16px;letter-spacing:-.02em;white-space:nowrap;flex:none}
-.where{color:var(--mut);font-size:15px;font-weight:500;margin:8px 2px 10px}
+.where{color:var(--mut);font-size:15px;font-weight:500;margin:8px 2px 10px;line-height:1.4;overflow-wrap:anywhere}
+.where .chinfo{font-size:13px;font-weight:400;color:var(--mut);letter-spacing:-.01em}
 
 /* address timeline */
 .rt{margin:10px 0 12px;position:relative;padding-left:18px}

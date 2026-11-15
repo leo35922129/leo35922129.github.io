@@ -321,22 +321,47 @@ function tripCard(t, idx, total) {
   </div>`;
 }
 
+function chargeBatLabel(a, b) {
+  const ok = v => v != null && v !== '' && !isNaN(+v);
+  if (!ok(a) && !ok(b)) return '–';
+  const ri = v => ok(v) ? Math.round(+v) : null;
+  const d1 = v => ok(v) ? (Math.round(+v * 10) / 10).toFixed(1) : '–';
+  const ra = ri(a), rb = ri(b);
+  if (ra != null && rb != null && ra !== rb) return `${ra}% → ${rb}%`;
+  if (ok(a) && ok(b) && Math.round(+a * 10) !== Math.round(+b * 10)) return `${d1(a)}% → ${d1(b)}%`;
+  if (ra != null && rb != null) return `${ra}% → ${rb}%`;
+  return `${ok(a) ? ra : '–'}% → ${ok(b) ? rb : '–'}%`;
+}
+function chargeInfoLine(it) {
+  const bits = [];
+  if (it.volts && it.amps != null) bits.push(`${Math.round(it.volts)} V · ${it.amps} A`);
+  else if (it.volts) bits.push(`${Math.round(it.volts)} V`);
+  else if (it.amps != null) bits.push(`${it.amps} A`);
+  if (it.cost != null) bits.push(money(it.cost));
+  if (it.mi != null && it.mi > 0) bits.push('+' + num(it.mi, it.mi >= 10 ? 0 : 1) + ' mi');
+  return bits.join(' · ');
+}
 function chargeCard(it) {
-  const when = `${timeTs(it.s)} – ${timeTs(it.e)}`;
+  const ongoing = !!it.open;
+  const when = `${timeTs(it.s)} – ${ongoing ? 'now' : timeTs(it.e)}`;
   const dur = fmtSpan(it.s, it.e);
   const added = it.added != null ? it.added : it.kwh;
   const kw = it.kw != null ? num(it.kw, 2) : '–';
   const label = it.label || it.where || 'Charger';
-  return `<div class="card charge">
+  const info = chargeInfoLine(it);
+  const right = ongoing
+    ? `<span>${esc(dur)}</span><span>Charging</span>`
+    : `<span>${esc(dur)}</span>`;
+  return `<div class="card charge${ongoing ? ' live' : ''}">
     <div class="hd">
       <span class="badge chg">${PLUG_ICO} Charging</span>
       <span class="when">${esc(when)}</span>
-      <span class="right"><span>${esc(dur)}</span><span>Parked</span></span>
+      <span class="right">${right}</span>
     </div>
-    <div class="where">${esc(label)}</div>
+    <div class="where">${esc(label)}${info ? `<span class="chinfo"> · ${esc(info)}</span>` : ''}</div>
     ${statBoxes([
       { v: added != null ? '+' + num(added, added >= 10 ? 1 : 2) : '–', k: 'kWh' },
-      { v: batLabel(it.soc0, it.soc1), k: 'battery' },
+      { v: chargeBatLabel(it.soc0, it.soc1), k: 'battery' },
       { v: kw, k: 'kW' },
       { v: esc(dur), k: 'duration' },
     ])}
