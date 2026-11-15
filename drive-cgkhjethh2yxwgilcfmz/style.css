@@ -52,44 +52,45 @@ header{
 .mode{
   display:flex;align-items:center;flex:none;
   border:1.5px solid #2c3138;border-radius:999px;
-  padding:2px;gap:1px;background:#0e1014;
+  padding:3px;gap:2px;background:#0e1014;
+  height:38px;min-width:125px;box-sizing:border-box;
 }
 .mode button{
   display:flex;align-items:center;gap:6px;
-  border:0;background:none;padding:3px 6px 3px 3px;
+  border:0;background:none;padding:3px;
   border-radius:999px;color:var(--mut);line-height:1;
+  height:32px;box-sizing:border-box;
 }
-.mode .mlab{font-size:14px;font-weight:500;padding-right:6px;letter-spacing:-.01em}
+.mode .mlab{font-size:14px;font-weight:500;letter-spacing:-.01em;min-width:42px}
 .dbadge{
   width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:15px;font-weight:800;background:#1a1e24;color:var(--lime);line-height:1;
+  flex:none;
 }
 .bolt{
   width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  background:#1a1e24;
+  background:#1a1e24;flex:none;
 }
 .bolt svg{width:16px;height:16px;fill:var(--bolt)}
 
-/* Saving on: filled lime $ + label in a raised pill; bolt icon-only */
-.mode.saving .msave{background:#1c2026}
+/* Saving on: left pill = green $ circle + Saving; right = bolt icon-only */
+.mode.saving .msave{background:#1c2026;padding:3px 8px 3px 3px}
 .mode.saving .msave .dbadge{background:var(--lime);color:#111}
 .mode.saving .msave .mlab{color:#d0d4da}
-.mode.saving .menergy{padding:3px}
 .mode.saving .menergy .mlab{display:none}
 .mode.saving .menergy .bolt{background:#16181d}
 
-/* Energy on: $ icon-only; filled yellow bolt + "Energy" in a raised pill (mirrors Saving) */
-.mode.energy .menergy{background:#1c2026}
+/* Energy on: left = $ icon-only; right pill = Energy text + yellow bolt on the RIGHT */
+.mode.energy .menergy{background:#1c2026;padding:3px 3px 3px 8px}
 .mode.energy .menergy .mlab{color:#d0d4da}
 .mode.energy .menergy .bolt{background:var(--bolt)}
 .mode.energy .menergy .bolt svg{fill:#111}
-.mode.energy .msave{padding:3px}
 .mode.energy .msave .mlab{display:none}
 .mode.energy .msave .dbadge{background:#1a1e24;color:var(--lime)}
 
-.daterow{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;gap:2px}
+.daterow{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;gap:18px}
 .title{
-  font-size:16px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;
+  font-size:22px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;
   text-align:center;
 }
 .nav{
@@ -108,8 +109,8 @@ header{
   gap:8px;padding:12px 12px 6px;
 }
 .stat{
-  background:var(--card);border-radius:16px;padding:12px 6px 10px;
-  min-height:84px;display:flex;flex-direction:column;justify-content:space-between;
+  background:var(--card);border-radius:16px;padding:16px 8px 14px;
+  min-height:114px;display:flex;flex-direction:column;justify-content:space-between;
   min-width:0;overflow:hidden;
 }
 .stat .k{
@@ -120,7 +121,7 @@ header{
 .stat .k .ico{width:16px;height:16px;flex:none;display:block}
 .stat .v{
   font-size:22px;font-weight:400;letter-spacing:-.03em;
-  text-align:center;margin-top:10px;white-space:nowrap;
+  text-align:center;margin-top:16px;white-space:nowrap;
   font-variant-numeric:tabular-nums;color:var(--tx);
   display:flex;align-items:baseline;justify-content:center;gap:3px;
   min-width:0;overflow:hidden;
@@ -343,18 +344,21 @@ footer{color:var(--mut);font-size:12px;padding:8px 14px calc(env(safe-area-inset
 @media(min-width:700px){
   header,main,.summary,footer{max-width:760px;margin-left:auto;margin-right:auto}
   header{max-width:760px}
-  .title{font-size:18px}
+  .title{font-size:24px}
   .stat .v{font-size:26px}.stat .v small{font-size:13px}
-  .stat{min-height:92px;padding:14px 10px 12px}
+  .stat{min-height:128px;padding:18px 10px 16px}
   .tg b{font-size:18px}
   .cost .row{font-size:22px}
 }
-@media(max-width:430px){
+@media(max-width:620px){
   .toprow{flex-wrap:wrap;gap:6px 8px;padding:10px 0 8px}
-  .daterow{flex:1 0 100%;order:3;padding-top:2px}
-  .title{font-size:16px}
+  .daterow{flex:1 0 100%;order:3;padding-top:4px;gap:20px}
+  .title{font-size:24px}
+}
+@media(max-width:430px){
   .mode{transform:scale(.98);transform-origin:left center}
-  .stat .v{font-size:20px}.stat .v small{font-size:10px}
+  .stat{min-height:110px;padding:16px 6px 14px}
+  .stat .v{font-size:22px}.stat .v small{font-size:11px}
   .stat .k{font-size:11px;gap:3px}
   .pill{padding:7px 12px;font-size:14px}
   .tg b{font-size:13.5px}
