@@ -123,6 +123,7 @@ const SAVED_ICO = '<svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circl
 const DBADGE = '<span class="dbadge" aria-hidden="true">$</span>';
 const WHEEL = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#3e8bff" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.25"/><circle cx="12" cy="12" r="2.15"/><path d="M12 9.85V3.75M3.75 13h6.1M14.15 13h6.1"/></svg>';
 const BOLT_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f5d031" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg>';
+const ELEC_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#f5d031" stroke-width="1.8"/><g transform="translate(12 12) scale(0.46) translate(-12 -12)"><path fill="#f5d031" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></g></svg>';
 const PLUG_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.2 10.15h6.6c.4 0 .7.3.7.7v2.3c0 .4-.3.7-.7.7H3.2c-.7 0-1.2-.5-1.2-1.15v-1.4c0-.65.5-1.15 1.2-1.15z"/><rect x="9.4" y="7.6" width="7" height="8.8" rx="1.8" fill="currentColor"/><rect x="16.2" y="9.15" width="4.6" height="1.7" rx=".7" fill="currentColor"/><rect x="16.2" y="13.15" width="4.6" height="1.7" rx=".7" fill="currentColor"/></svg>';
 const PUMP_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#ff5a4e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.8" y="3.5" width="9.2" height="16.5" rx="1.4"/><path d="M7 8h3.2M13 8.2h2.4c1.15 0 2.2.95 2.2 2.15V15"/><circle cx="17.6" cy="16.4" r="1.55" fill="#ff5a4e" stroke="none"/></svg>';
 const PARK_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.2" fill="#f0b040"/><path fill="#1a1408" d="M8.55 6.55h4.7c2.35 0 3.85 1.35 3.85 3.5 0 2.15-1.55 3.55-3.85 3.55h-2.1V17.45H8.55V6.55zm2.55 2.15v2.7h1.9c1.05 0 1.7-.55 1.7-1.35s-.65-1.35-1.7-1.35h-1.9z"/></svg>';
@@ -283,7 +284,7 @@ function renderSummary() {
     const mi = t.mi >= 1000 ? fmtCom(t.mi, 0) : fmtCom(t.mi, 1);
     tiles = [
       { k: `${WHEEL} Miles`, v: val(mi, 'mi'), cls: '' },
-      { k: `${BOLT_ICO} Electric Cost`, v: val(money(t.elec)), cls: '' },
+      { k: `${ELEC_ICO} Electric Cost`, v: val(money(t.elec)), cls: '' },
       { k: `${PUMP_ICO} Gas Cost`, v: val(money(t.gas)), cls: '' },
       { k: `${DBADGE} Saved`, v: val(money(t.save)), cls: 'hi-save' },
     ];
@@ -360,7 +361,7 @@ function routeBox(t) {
 function costRow(t) {
   return `<div class="cost">
     <div class="row">
-      <span>${BOLT_ICO} ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span>
+      <span>${ELEC_ICO} ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span>
       <span class="pump">${PUMP_ICO} ${money(t.gas)}</span>
       <span class="g">${DBADGE} ${money(t.save)}<span class="sv">saved</span></span>
     </div>
@@ -496,7 +497,7 @@ function viewWeekSaving() {
     h += `<div class="row wrow" data-day="${k}">${dc}
     <div class="wm" style="--w:${w.toFixed(3)}"><span class="fl">FSD</span><div class="wtk"><div class="fb"><div style="width:${pct ?? 0}%"></div></div><b>${pct == null ? '–' : (part ? '~' : '') + pct + '%'}</b></div>
     <div class="wl"><span>${x.n} trip${x.n === 1 ? '' : 's'}</span><span>${num(x.mi || 0, 1)} mi</span></div></div>
-    <div class="wc"><span>${BOLT_ICO} ${money(x.elec || 0)}</span><span class="pump">${PUMP_ICO} ${money(x.gas || 0)}</span><span class="g">${DBADGE} ${money(x.save || 0)}<span class="sv">saved</span></span></div></div>`;
+    <div class="wc"><span>${ELEC_ICO} ${money(x.elec || 0)}</span><span class="pump">${PUMP_ICO} ${money(x.gas || 0)}</span><span class="g">${DBADGE} ${money(x.save || 0)}<span class="sv">saved</span></span></div></div>`;
   }
   return h;
 }
