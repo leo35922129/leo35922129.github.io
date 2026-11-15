@@ -1,9 +1,17 @@
 'use strict';
 const TZ = 'America/Detroit';
 const $ = s => document.querySelector(s);
-const S = { view: localStorage.getItem('ht_view') || 'month', cur: new Date(), meta: null, months: {}, key: null };
+const S = {
+  view: localStorage.getItem('ht_view') || 'month',
+  mode: (localStorage.getItem('ht_mode') === 'energy' ? 'energy' : 'saving'),
+  cur: new Date(), meta: null, months: {}, key: null
+};
 const money = v => (v == null ? '–' : (v < 0 ? '-$' : '$') + Math.abs(v).toFixed(2));
 const num = (v, d = 1) => (v == null ? '–' : (+v).toFixed(d));
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtCom = (v, d = 1) => Number(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmtKwh = (v, d = 2) => (+v).toFixed(d);
+const fmtW = w => (w == null ? '–' : Math.round(w).toLocaleString('en-US'));
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const pad = n => String(n).padStart(2, '0');
@@ -14,6 +22,23 @@ const timeTs = ts => new Date(ts * 1000).toLocaleTimeString('en-US', { timeZone:
 const todayD = () => { const [y, m, d] = fmtParts.format(new Date()).split('-').map(Number); return new Date(y, m - 1, d); };
 const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
 const weekStart = d => addDays(d, -d.getDay());
+const socI = v => v == null || v === '' || isNaN(+v) ? '–' : Math.trunc(+v);
+const TRIPS = {};
+const OPEN = new Set();
+const energyMode = () => S.mode === 'energy';
+
+function fmtSpan(s, e) {
+  const m = Math.max(0, Math.round((e - s) / 60));
+  const h = Math.floor(m / 60), mm = m % 60;
+  if (h && mm) return h + ' hr ' + mm + ' min';
+  if (h) return h + ' hr';
+  return m + ' min';
+}
+function fmtMd(key) {
+  if (!key) return '';
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
 
 // ---------- crypto ----------
 const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
@@ -37,7 +62,7 @@ async function getBlob(path) {
 async function unlock(pass) {
   const blob = await getBlob('d/meta.json');
   const raw = await deriveKey(pass, blob.salt, blob.iter);
-  const meta = await decrypt(blob, raw);  // throws if wrong passcode
+  const meta = await decrypt(blob, raw);
   localStorage.setItem('ht_key', btoa(String.fromCharCode(...raw)));
   localStorage.setItem('ht_salt', blob.salt);
   S.key = raw; S.meta = meta;
@@ -49,9 +74,12 @@ async function loadMeta() {
 }
 async function month(ym) {
   if (S.months[ym]) return S.months[ym];
-  if (!S.meta.months.includes(ym)) return (S.months[ym] = { trips: [], charges: [] });
+  if (!S.meta.months.includes(ym)) return (S.months[ym] = { trips: [], charges: [], parked: [], charge_slices: [] });
   S.months[ym] = await decrypt(await getBlob(`d/${ym}.json`), S.key);
-  return S.months[ym];
+  const m = S.months[ym];
+  if (!m.parked) m.parked = [];
+  if (!m.charge_slices) m.charge_slices = [];
+  return m;
 }
 
 // ---------- aggregates ----------
@@ -59,6 +87,28 @@ function sumDays(keys) {
   const t = { mi: 0, kwh: 0, elec: 0, gas: 0, save: 0, n: 0, chg: 0, min: 0 };
   for (const k of keys) { const d = S.meta.days[k]; if (d) for (const f in t) t[f] += d[f] || 0; }
   return t;
+}
+function energySum(keys) {
+  let driving = 0, parked = 0, known = false, charge = 0, parkedWkh = 0, parkedH = 0;
+  for (const k of keys) {
+    const d = S.meta.days[k]; if (!d) continue;
+    driving += d.kwh || 0;
+    charge += d.charge_added || 0;
+    if (d.parked_known) {
+      known = true;
+      parked += d.parked || 0;
+      if (d.parked_w && d.parked) {
+        const hours = d.parked * 1000 / d.parked_w;
+        if (hours > 0) { parkedWkh += d.parked; parkedH += hours; }
+      }
+    }
+  }
+  const total = known ? driving + parked : driving;
+  return {
+    driving, parked: known ? parked : null, known, total, charge_added: charge,
+    parked_w: parkedH ? Math.round(parkedWkh * 1000 / parkedH) : null,
+    whmi: sumDays(keys).mi ? Math.round(driving * 1000 / sumDays(keys).mi) : null
+  };
 }
 function rangeKeys(a, b) { const out = []; for (let d = new Date(a); d <= b; d = addDays(d, 1)) out.push(keyOf(d)); return out; }
 function periodRange() {
@@ -68,17 +118,251 @@ function periodRange() {
   if (S.view === 'month') return [new Date(c.getFullYear(), c.getMonth(), 1), new Date(c.getFullYear(), c.getMonth() + 1, 0)];
   return [new Date(c.getFullYear(), 0, 1), new Date(c.getFullYear(), 11, 31)];
 }
-const SAVED_ICO = '<svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><text x="12" y="17.2" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif" font-size="15.5" font-weight="800" fill="#0b2a14">$</text></svg>';   // Saved badge (inline SVG, no fetch)
-function renderSummary() {
-  const [a, b] = periodRange(); const t = sumDays(rangeKeys(a, b));
-  const whmi = t.mi ? Math.round(t.kwh * 1000 / t.mi) : null;
-  $('#summary').innerHTML = [
-    ['⚡ Electric', money(t.elec), ''], ['⛽ Gas', money(t.gas), ''], [SAVED_ICO + ' Saved', money(t.save), 'grn'],
-    ['Miles', num(t.mi, 1), ''], ['Energy', num(t.kwh, 1) + ' kWh', ''], ['Efficiency', whmi ? whmi + ' Wh/mi' : '–', ''],
-  ].map(([k, v, c]) => `<div class="stat"><div class="k">${k}</div><div class="v ${c}">${v}</div></div>`).join('');
+
+const SAVED_ICO = '<svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><text x="12" y="17.2" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif" font-size="15.5" font-weight="800" fill="#0b2a14">$</text></svg>';
+const DBADGE = '<span class="dbadge" aria-hidden="true">$</span>';
+const WHEEL = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#3e8bff" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.25"/><circle cx="12" cy="12" r="2.15"/><path d="M12 9.85V3.75M3.75 13h6.1M14.15 13h6.1"/></svg>';
+const BOLT_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f5d031" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg>';
+const PLUG_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.2 10.15h6.6c.4 0 .7.3.7.7v2.3c0 .4-.3.7-.7.7H3.2c-.7 0-1.2-.5-1.2-1.15v-1.4c0-.65.5-1.15 1.2-1.15z"/><rect x="9.4" y="7.6" width="7" height="8.8" rx="1.8" fill="currentColor"/><rect x="16.2" y="9.15" width="4.6" height="1.7" rx=".7" fill="currentColor"/><rect x="16.2" y="13.15" width="4.6" height="1.7" rx=".7" fill="currentColor"/></svg>';
+const PUMP_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#ff5a4e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.8" y="3.5" width="9.2" height="16.5" rx="1.4"/><path d="M7 8h3.2M13 8.2h2.4c1.15 0 2.2.95 2.2 2.15V15"/><circle cx="17.6" cy="16.4" r="1.55" fill="#ff5a4e" stroke="none"/></svg>';
+const PARK_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.2" fill="#f0b040"/><path fill="#1a1408" d="M8.55 6.55h4.7c2.35 0 3.85 1.35 3.85 3.5 0 2.15-1.55 3.55-3.85 3.55h-2.1V17.45H8.55V6.55zm2.55 2.15v2.7h1.9c1.05 0 1.7-.55 1.7-1.35s-.65-1.35-1.7-1.35h-1.9z"/></svg>';
+const GAUGE_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#f0b040" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 17.4a8.6 8.6 0 1 1 14.8 0"/><path d="M12 17.4 16.1 9.7"/><circle cx="12" cy="17.4" r="1.55" fill="#f0b040" stroke="none"/></svg>';
+const MAP_ICO = '<svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg>';
+const CHEV = '<svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+const ICO = {
+  driving: '<path d="M5 16.5 6.8 11h8.4L18 16.5M5 16.5h13.5M7.2 16.5a1.6 1.6 0 1 0 0 0.01M16.2 16.5a1.6 1.6 0 1 0 0 0.01M8 11l.8-2.4h5.2L15 11"/>',
+  climate: '<path d="M10 4.8h4v8.2a3.4 3.4 0 1 1-4 0z"/><path d="M10.2 7.2h2.3M10.2 9.4h2.3"/>',
+  batt: '<rect x="4" y="8" width="14" height="10" rx="1.8"/><path d="M18 11.2V14.8h1.6c.6 0 .9-.3.9-.8v-2c0-.5-.3-.8-.9-.8zM9.2 11.2v3.6M12 11.2v3.6M14.8 11.2v3.6"/>',
+  elevation: '<path d="m4 16 5.2-8 3.4 5.2L16.2 9 20 16z"/>',
+  other: '<circle cx="7" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="17" cy="12" r="1.3"/>',
+  sentry: '<path d="M4.8 9.2 12 5.5l7.2 3.7v4.4c0 3.6-2.8 5.7-7.2 7-4.4-1.3-7.2-3.4-7.2-7z"/><circle cx="12" cy="12.2" r="2.2"/>',
+  cop: '<circle cx="12" cy="12" r="3.2"/><path d="M12 5.2v1.6M12 17.2v1.6M5.2 12h1.6M17.2 12h1.6M7.2 7.2l1.1 1.1M15.7 15.7l1.1 1.1M16.8 7.2l-1.1 1.1M8.3 15.7l-1.1 1.1"/>',
+  precond: '<path d="M16.4 8A6 6 0 1 0 18 12.2"/><path d="M16.4 5.4v2.8h2.8"/>',
+  outlets: '<path d="M8 8.5V4.8M16 8.5V4.8M6.5 8.5h11v4.2A5.5 5.5 0 0 1 12 18.2 5.5 5.5 0 0 1 6.5 12.7zM12 18.2V21"/>',
+  screen: '<rect x="3.5" y="5.5" width="17" height="12" rx="2"/><path d="M8 20h8"/>',
+  app: '<rect x="7" y="3.5" width="10" height="17" rx="2"/><path d="M11 18h2"/>',
+  standby: '<path d="M12 3.5v8"/><path d="M7.3 5.8a7 7 0 1 0 9.4 0"/>',
+};
+const FEAT_LABEL = {
+  driving: 'Driving', climate: 'Climate', batt: 'Battery Conditioning',
+  elevation: 'Elevation', other: 'Everything Else',
+  sentry: 'Sentry Mode', cop: 'Cabin Overheat Protection', precond: 'Preconditioning',
+  outlets: 'Outlets', screen: 'Screen Time', app: 'Mobile App', standby: 'Vehicle Standby',
+};
+const TRIP_FEATS = [['driving', 80], ['climate', 8], ['batt', 12], ['elevation', -2], ['other', 2]];
+const PARK_FEATS = [['sentry', 55], ['cop', 0], ['precond', 15], ['outlets', 0], ['screen', 2], ['app', 1], ['standby', 27]];
+const PERIOD_TRIP_FEATS = [['driving', 78], ['climate', 9], ['batt', 11], ['elevation', 0], ['other', 2]];
+
+function ico(id) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[id] || ICO.other}</svg>`;
+}
+function exampleSplit(total, specs) {
+  if (total == null) return [];
+  const out = [];
+  let used = 0;
+  specs.forEach(([id, pct], i) => {
+    let kwh;
+    if (i === specs.length - 1) kwh = Math.round((total - used) * 100) / 100;
+    else { kwh = Math.round(total * pct / 100 * 100) / 100; used += kwh; }
+    out.push({ id, kwh, pct });
+  });
+  return out;
 }
 
-// ---------- views ----------
+function setModeClass() {
+  const el = $('#mode');
+  if (!el) return;
+  el.classList.toggle('saving', S.mode === 'saving');
+  el.classList.toggle('energy', S.mode === 'energy');
+  el.querySelector('.msave').classList.toggle('on', S.mode === 'saving');
+  el.querySelector('.menergy').classList.toggle('on', S.mode === 'energy');
+  el.querySelector('.msave').setAttribute('aria-selected', S.mode === 'saving' ? 'true' : 'false');
+  el.querySelector('.menergy').setAttribute('aria-selected', S.mode === 'energy' ? 'true' : 'false');
+}
+
+function val(n, unit) {
+  if (n == null || n === '–') return '–';
+  const u = unit ? `<small>${esc(unit)}</small>` : '';
+  return `${n}${u}`;
+}
+function kwhVal(v) {
+  if (v == null) return '–';
+  return val(fmtCom(v, v >= 1000 ? 0 : 1), 'kWh');
+}
+
+function renderSummary() {
+  const [a, b] = periodRange();
+  const keys = rangeKeys(a, b);
+  const t = sumDays(keys);
+  const en = energySum(keys);
+  const whmi = t.mi ? Math.round(t.kwh * 1000 / t.mi) : null;
+  let tiles;
+  if (!energyMode()) {
+    const mi = t.mi >= 1000 ? fmtCom(t.mi, 0) : fmtCom(t.mi, 1);
+    tiles = [
+      { k: `${WHEEL} Miles`, v: val(mi, 'mi'), cls: '' },
+      { k: `${BOLT_ICO} Electric Cost`, v: val(money(t.elec)), cls: '' },
+      { k: `${PUMP_ICO} Gas Cost`, v: val(money(t.gas)), cls: '' },
+      { k: `${DBADGE} Saved`, v: val(money(t.save)), cls: 'hi-save' },
+    ];
+  } else {
+    tiles = [
+      { k: `${BOLT_ICO} Energy`, v: kwhVal(en.total), cls: '' },
+      { k: `${WHEEL} Driving`, v: kwhVal(en.driving), cls: '' },
+      { k: `${PARK_ICO} Parked`, v: en.known ? kwhVal(en.parked) : 'n/a', cls: '' },
+      { k: `${GAUGE_ICO} Efficiency`, v: whmi != null ? val(whmi, 'Wh/mi') : '–', cls: 'hi-eff' },
+    ];
+  }
+  $('#summary').innerHTML = tiles.map(x =>
+    `<div class="stat ${x.cls}"><div class="k">${x.k}</div><div class="v">${x.v}</div></div>`
+  ).join('');
+}
+
+function featureRows(feats, tone) {
+  return (feats || []).map(f => {
+    const name = FEAT_LABEL[f.id] || f.id;
+    const zero = !f.kwh;
+    const neg = f.kwh < 0;
+    const width = Math.min(100, Math.abs(f.pct));
+    const kwh = `${neg ? '−' : ''}${fmtKwh(Math.abs(f.kwh))}<small>kWh</small>`;
+    const pct = `${neg ? '−' : ''}${Math.abs(f.pct)}%`;
+    return `<div class="feat ${tone}${zero ? ' zero' : ''}${neg ? ' neg' : ''}">
+      <span class="fico">${ico(f.id)}</span>
+      <div class="fn">${esc(name)}</div>
+      <div class="fk">${kwh}</div>
+      <div class="fbar" aria-hidden="true"><i class="${neg ? 'neg' : ''}" style="width:${width}%"></i></div>
+      <div class="fp">${pct}</div>
+    </div>`;
+  }).join('');
+}
+function featureBox(id, feats, tone) {
+  if (!feats || !feats.length) return '';
+  const open = OPEN.has(id);
+  return `<div class="fbox${open ? ' open' : ''}" data-id="${esc(id)}">
+    <button type="button" class="fhd" aria-expanded="${open ? 'true' : 'false'}">
+      <span>Feature energy usage</span>${CHEV}
+    </button>
+    <div class="fbody">
+      <div class="exnote">Example numbers, not from the truck</div>
+      ${featureRows(feats, tone)}
+    </div>
+  </div>`;
+}
+function periodFeatureBox(id, driving, parked, parkedNote) {
+  const open = OPEN.has(id);
+  return `<div class="fbox${open ? ' open' : ''}" data-id="${esc(id)}">
+    <button type="button" class="fhd" aria-expanded="${open ? 'true' : 'false'}">
+      <span>Feature energy usage</span>${CHEV}
+    </button>
+    <div class="fbody">
+      <div class="exnote">Example numbers, not from the truck</div>
+      <div class="exsec">While driving</div>
+      ${featureRows(exampleSplit(driving, PERIOD_TRIP_FEATS), 'trip')}
+      <div class="exsec">While parked${parkedNote ? ` · ${esc(parkedNote)}` : ''}</div>
+      ${featureRows(exampleSplit(parked || 0, PARK_FEATS), 'parked')}
+    </div>
+  </div>`;
+}
+
+function fsdRow(t) {
+  if (!t.fsd) return '';
+  return `<div class="fsdbar"><span>FSD</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span class="of">${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>`;
+}
+function routeBox(t) {
+  const hasMap = (t.route && t.route.length > 1) || (t.gps && t.gps.length > 1);
+  if (!hasMap) return '';
+  return `<div class="routebox"><button type="button" class="maptoggle" aria-expanded="false">${MAP_ICO}<span class="ml">Show route &amp; playback</span>${CHEV}</button><div class="rbody"><div class="rinner"><div class="map" id="map-${t.id}"></div></div></div></div>`;
+}
+function costRow(t) {
+  return `<div class="cost">
+    <div class="row">
+      <span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span>
+      <span class="pump">⛽ ${money(t.gas)}</span>
+      <span class="g">${DBADGE} ${money(t.save)}<span class="sv">saved</span></span>
+    </div>
+    <div class="cap ratecap">${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) + '/gal' : ''} ${esc(t.garea || '')} · ${S.meta.mpg} mpg</div>
+  </div>`;
+}
+function statBoxes(cells) {
+  return `<div class="tg">${cells.map(c => `<div><b>${c.v}</b><span>${esc(c.k)}</span></div>`).join('')}</div>`;
+}
+function batLabel(a, b) {
+  const x = socI(a), y = socI(b);
+  return (x === '–' && y === '–') ? '–' : `${x}% → ${y}%`;
+}
+
+function tripCard(t, idx, total) {
+  TRIPS[t.id] = t;
+  const n = idx + 1;
+  const dur = (t.min != null ? t.min + ' min' : fmtSpan(t.s, t.e));
+  const right = energyMode()
+    ? `<span>${esc(dur)}</span><span>${t.mi >= 10 ? num(t.mi, 1) : num(t.mi, 2)} mi</span>`
+    : `<span>${esc(dur)}</span>`;
+  const when = `${timeTs(t.s)}${t.est ? '<span class="tag"> ~start</span>' : ''} – ${timeTs(t.e)}`;
+  const featId = 'trip-' + t.id;
+  return `<div class="card trip" data-trip="${t.id}">
+    <div class="hd">
+      <span class="badge trip">${WHEEL} Trip ${n}/${total}</span>
+      <span class="when">${when}</span>
+      <span class="right">${right}</span>
+    </div>
+    <div class="rt"><div>${esc(t.from)}</div><div>${esc(t.to)}</div></div>
+    ${statBoxes([
+      { v: num(t.mi, 2), k: 'mi' },
+      { v: batLabel(t.soc0, t.soc1), k: 'battery' },
+      { v: num(t.kwh, 2), k: 'kWh' },
+      { v: t.whmi ?? '–', k: 'Wh/mi' },
+    ])}
+    ${energyMode() ? '' : costRow(t)}
+    ${fsdRow(t)}
+    ${energyMode() ? featureBox(featId, exampleSplit(t.kwh || 0, TRIP_FEATS), 'trip') : ''}
+    ${routeBox(t)}
+  </div>`;
+}
+
+function chargeCard(it) {
+  const when = `${timeTs(it.s)} – ${timeTs(it.e)}`;
+  const dur = fmtSpan(it.s, it.e);
+  const added = it.added != null ? it.added : it.kwh;
+  const kw = it.kw != null ? num(it.kw, 2) : '–';
+  const label = it.label || it.where || 'Charger';
+  return `<div class="card charge">
+    <div class="hd">
+      <span class="badge chg">${PLUG_ICO} Charging</span>
+      <span class="when">${esc(when)}</span>
+      <span class="right"><span>${esc(dur)}</span><span>Parked</span></span>
+    </div>
+    <div class="where">${esc(label)}</div>
+    ${statBoxes([
+      { v: added != null ? '+' + num(added, added >= 10 ? 1 : 2) : '–', k: 'kWh' },
+      { v: batLabel(it.soc0, it.soc1), k: 'battery' },
+      { v: kw, k: 'kW' },
+      { v: esc(dur), k: 'duration' },
+    ])}
+  </div>`;
+}
+
+function parkedCard(it) {
+  const when = `${timeTs(it.s)} – ${timeTs(it.e)}`;
+  const dur = fmtSpan(it.s, it.e);
+  const featId = 'parked-' + it.s;
+  return `<div class="card parked">
+    <div class="hd">
+      <span class="badge park">Parked</span>
+      <span class="when">${esc(when)}</span>
+      <span class="right"><span>${esc(dur)}</span></span>
+    </div>
+    ${statBoxes([
+      { v: num(it.kwh, 2), k: 'kWh' },
+      { v: batLabel(it.soc0, it.soc1), k: 'battery' },
+      { v: it.w != null ? fmtW(it.w) : '–', k: 'W' },
+      { v: it.kwh_day != null ? num(it.kwh_day, 1) : '–', k: 'kWh/day' },
+    ])}
+    ${energyMode() ? featureBox(featId, exampleSplit(it.kwh || 0, PARK_FEATS), 'parked') : ''}
+  </div>`;
+}
+
 function setTitle() {
   const c = S.cur; let t;
   if (S.view === 'day') t = c.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
@@ -87,8 +371,10 @@ function setTitle() {
   else t = String(c.getFullYear());
   $('#title').textContent = t;
   document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.v === S.view));
+  setModeClass();
 }
-function viewMonth() {
+
+function viewMonthSaving() {
   const c = S.cur, first = new Date(c.getFullYear(), c.getMonth(), 1), start = weekStart(first), tk = keyOf(todayD());
   let h = `<div class="dow">${DOW.map(d => `<div>${d[0]}</div>`).join('')}</div><div class="grid">`;
   for (let i = 0; i < 42; i++) {
@@ -99,15 +385,15 @@ function viewMonth() {
   }
   return h + '</div><p class="empty" style="padding:10px 0;font-size:12px">Green = saved vs. gas that day · tap a day for trips</p>';
 }
-function viewWeek() {
+
+function viewWeekSaving() {
   const s = weekStart(S.cur); let h = '', mx = 0;
   for (let i = 0; i < 7; i++) mx = Math.max(mx, (S.meta.days[keyOf(addDays(s, i))] || {}).mi || 0);
   for (let i = 0; i < 7; i++) {
     const d = addDays(s, i), k = keyOf(d), x = S.meta.days[k] || {}, dc = `<div class="d"><span>${DOW[d.getDay()]}</span><b>${d.getDate()}</b></div>`;
     if (!x.n) { h += `<div class="row wrow nod" data-day="${k}">${dc}<div class="wm"><span class="none">No drives</span></div></div>`; continue; }
-    // FSD % over miles that have FSD data; '~' when some of the day's miles have none
     const pct = x.fsdk ? Math.min(100, Math.round(100 * (x.fsd || 0) / x.fsdk)) : null, part = x.fsdk && x.fsdk < (x.mi || 0) - 0.05;
-    const w = mx ? Math.max(0.15, (x.mi || 0) / mx) : 1;   // bar track length ∝ miles vs the week's longest day (min 15% so it stays visible)
+    const w = mx ? Math.max(0.15, (x.mi || 0) / mx) : 1;
     h += `<div class="row wrow" data-day="${k}">${dc}
     <div class="wm" style="--w:${w.toFixed(3)}"><span class="fl">FSD</span><div class="wtk"><div class="fb"><div style="width:${pct ?? 0}%"></div></div><b>${pct == null ? '–' : (part ? '~' : '') + pct + '%'}</b></div>
     <div class="wl"><span>${x.n} trip${x.n === 1 ? '' : 's'}</span><span>${num(x.mi || 0, 1)} mi</span></div></div>
@@ -115,7 +401,8 @@ function viewWeek() {
   }
   return h;
 }
-function viewYear() {
+
+function viewYearSaving() {
   const y = S.cur.getFullYear(); let h = '<div class="year">';
   for (let m = 0; m < 12; m++) {
     const first = new Date(y, m, 1), last = new Date(y, m + 1, 0), t = sumDays(rangeKeys(first, last));
@@ -126,29 +413,233 @@ function viewYear() {
   }
   return h + '</div>';
 }
-const socI = v => v == null || v === '' || isNaN(+v) ? '–' : Math.trunc(+v);   // battery %: integer part only (54.7 -> 54)
-const TRIPS = {};
-function tripCard(t) {
-  TRIPS[t.id] = t;
-  const hasMap = (t.route && t.route.length > 1) || (t.gps && t.gps.length > 1);
-  return `<div class="trip" data-trip="${t.id}"><div class="hd cap"><span>${timeTs(t.s)}${t.est ? '<span class="tag"> ~start</span>' : ''} – ${timeTs(t.e)}</span><span>${t.min} min</span></div>
-  <div class="rt"><div>${esc(t.from)}</div><div>${esc(t.to)}</div></div>
-  <div class="tg tt"><div><b>${num(t.mi, 2)}</b><span>mi</span></div><div><b>${socI(t.soc0)}→${socI(t.soc1)}%</b><span>battery</span></div>
-  <div><b>${num(t.kwh, 2)}</b><span>kWh</span></div><div><b>${t.whmi ?? '–'}</b><span>Wh/mi</span></div></div>
-  ${t.fsd ? `<div class="fsdbar"><span>FSD</span><div class="fb"><div style="width:${t.fsd.pct}%"></div></div><b>${t.fsd.pct}%</b><span>${num(t.fsd.mi, 0)} of ${num(t.mi, 0)} mi</span></div>` : ''}
-  <div class="money tm"><span>⚡ ${money(t.elec)}${t.cest ? '<span class="tag"> est</span>' : ''}</span><span>⛽ ${money(t.gas)}</span><span class="g">${SAVED_ICO} ${money(t.save)}<span class="lbl">saved</span></span></div>
-  <div class="cap ratecap">${t.rate ? '$' + t.rate.toFixed(3) + '/kWh' : ''} · premium ${t.gp ? '$' + t.gp.toFixed(2) + '/gal' : ''} ${esc(t.garea || '')} · ${S.meta.mpg} mpg</div>
-  ${hasMap ? `<div class="routebox"><button type="button" class="maptoggle" aria-expanded="false"><svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg><span class="ml">Show route &amp; playback</span><svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="rbody"><div class="rinner"><div class="map" id="map-${t.id}"></div></div></div></div>` : ''}
+
+function splitLegend(driving, parked) {
+  const d = driving || 0, p = parked || 0, tot = d + p;
+  const dp = tot ? (100 * d / tot) : 50;
+  const parkPct = 100 - dp;
+  const parkStyle = `width:${parkPct}%` + ((p > 0 && parkPct < 4) ? ';min-width:6px' : '');
+  return `<div class="espl">
+    <div class="ebar" aria-hidden="true"><i class="ed" style="width:${dp}%"></i><i class="ep" style="${parkStyle}"></i></div>
+    <div class="eleg">
+      <div class="lg"><i class="sw ed"></i><b>Driving ${fmtCom(d, 1)}</b><span class="u">kWh</span></div>
+      <div class="lg"><i class="sw ep"></i><b>Parked ${parked == null ? 'n/a' : fmtCom(p, 1)}</b><span class="u">kWh</span></div>
+    </div>
   </div>`;
 }
-function chargeCard(c) {
-  const kind = { home: '🏠 Home charging', supercharger: '⚡ Supercharger', other: '🔌 Public charger' }[c.kind] || c.kind;
-  const tou = c.tou ? Object.entries(c.tou).map(([p, v]) => `${p} ${num(v.kwh, 1)} kWh ${money(v.cost)}`).join(' · ') : '';
-  return `<div class="trip"><div class="hd cap"><span>${kind}</span><span>${timeTs(c.s)} – ${timeTs(c.e)}</span></div>
-  <div style="margin:8px 0">${esc(c.where || '')}</div>
-  <div class="money"><span>+${num(c.kwh, 1)} kWh${c.wall ? ` (${num(c.wall, 1)} from wall)` : ''}</span><span>${c.soc0 != null ? socI(c.soc0) + '→' + socI(c.soc1) + '%' : ''}</span><span class="g" style="color:var(--tx)">${money(c.cost)}</span></div>
-  <div style="color:var(--mut);font-size:11px;margin-top:6px">${esc(c.src === 'tesla' ? 'Tesla Supercharger bill' : (c.src || ''))}${c.note ? ' · ' + esc(c.note) : ''}${tou ? ' · ' + tou : ''}${c.est ? ' · estimated' : ''}</div></div>`;
+
+function periodNote(kind, keys, en) {
+  const from = S.meta.energy_from;
+  const bits = [];
+  if (from) bits.push(`Parked drain starts ${fmtMd(from)}${kind === 'week' ? ', when telemetry began' : ''}.`);
+  if (kind === 'week' || kind === 'month') {
+    const na = keys.filter(k => {
+      const d = S.meta.days[k];
+      return d && d.n && !(d.parked_known);
+    });
+    if (na.length) {
+      const names = na.map(k => {
+        const [y, m, d] = k.split('-').map(Number);
+        return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: kind === 'week' ? 'short' : 'month', day: kind === 'month' ? 'numeric' : undefined });
+      });
+      bits.push(kind === 'week' ? `${names.join(' and ')} are driving only.` : `Earlier days show driving only.`);
+    }
+  }
+  const today = keyOf(todayD());
+  if (keys.includes(today)) {
+    const d = S.meta.days[today] || {};
+    const tot = (d.kwh || 0) + (d.parked_known ? (d.parked || 0) : 0);
+    if (!d.n && d.parked_known && tot === 0 && (d.charge_added || 0) > 0) {
+      const name = todayD().toLocaleDateString('en-US', { weekday: 'long' });
+      bits.push(`${name} is today — charging, no use so far.`);
+    }
+  }
+  if (kind === 'month') {
+    const last = keys[keys.length - 1];
+    const future = keys.filter(k => k > today);
+    if (future.length) {
+      const a = fmtMd(future[0]), b = fmtMd(future[future.length - 1]);
+      bits.push(`${a}–${b.replace(/^[A-Za-z]+ /, '')} have no data yet.`);
+    }
+    void last;
+  }
+  if (kind === 'year') {
+    const days = Object.keys(S.meta.days || {}).filter(k => k.startsWith(String(S.cur.getFullYear()))).sort();
+    if (days.length) bits.unshift(`Trip data starts ${fmtMd(days[0])}.`);
+    if (from && from.slice(0, 4) === String(S.cur.getFullYear())) {
+      const before = [];
+      for (let m = 0; m < 12; m++) {
+        const ym = `${S.cur.getFullYear()}-${pad(m + 1)}`;
+        const start = `${ym}-01`;
+        if (start < from) {
+          const has = days.some(k => k.startsWith(ym) && (S.meta.days[k] || {}).n);
+          if (has) before.push(MONTHS[m]);
+        }
+      }
+      if (before.length) bits.push(`So ${before.join(' and ')} ${before.length === 1 ? 'is' : 'are'} driving only.`);
+    }
+  }
+  return bits.join(' ');
 }
+
+function viewWeekEnergy() {
+  const s = weekStart(S.cur);
+  const keys = rangeKeys(s, addDays(s, 6));
+  const en = energySum(keys);
+  let mx = 0;
+  const days = keys.map(k => {
+    const d = addDays(s, keys.indexOf(k)); // unreliable if? keys are consecutive
+    return k;
+  }).map(k => {
+    const dt = new Date(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8, 10));
+    const x = S.meta.days[k] || {};
+    const known = !!x.parked_known;
+    const driving = x.kwh || 0;
+    const parked = known ? (x.parked || 0) : null;
+    const tot = known ? driving + (parked || 0) : driving;
+    if (tot) mx = Math.max(mx, tot);
+    return { k, dt, x, known, driving, parked, tot };
+  });
+  if (!mx) mx = 1;
+  const rows = days.map(d => {
+    const dc = `<div class="d"><span>${DOW[d.dt.getDay()]}</span><b>${d.dt.getDate()}</b></div>`;
+    const emptyChg = !d.x.n && d.known && d.tot === 0 && (d.x.charge_added || 0) > 0;
+    if (emptyChg) {
+      return `<div class="ewk nod" data-day="${d.k}">${dc}<div class="em"><span class="none chg-note">${PLUG_ICO} Charging · no use so far</span></div></div>`;
+    }
+    if (!d.x.n && d.tot === 0) {
+      return `<div class="ewk nod" data-day="${d.k}">${dc}<div class="em"><span class="none">No use</span></div></div>`;
+    }
+    const w = Math.max(0.18, d.tot / mx);
+    const drvPct = d.tot ? (100 * d.driving / d.tot) : 0;
+    const parkPct = d.known && d.tot ? (100 * (d.parked || 0) / d.tot) : 0;
+    const bits = [`${fmtCom(d.driving, 1)} driving`];
+    if (d.known) {
+      bits.push(`${fmtCom(d.parked || 0, 1)} parked`);
+      if (d.x.parked_w) bits.push(fmtW(d.x.parked_w) + ' W');
+    } else bits.push('parked n/a');
+    const label = d.known ? fmtCom(d.tot, 1) : fmtCom(d.driving, 1);
+    return `<div class="ewk" data-day="${d.k}">
+      ${dc}
+      <div class="em" style="--w:${w.toFixed(3)}">
+        <div class="etk"><div class="estk"><i class="ed" style="width:${drvPct}%"></i>${d.known ? `<i class="ep" style="width:${parkPct}%"></i>` : ''}</div><b class="et">${label}</b></div>
+        <div class="ecap">${bits.join(' · ')}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const from = fmtMd(S.meta.energy_from);
+  return `<div class="pcard">
+    <div class="cap enote">${esc(periodNote('week', keys, en) || '')}</div>
+    ${splitLegend(en.driving, en.parked)}
+    <div class="elist period">${rows}</div>
+    ${periodFeatureBox('week-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}
+  </div>`;
+}
+
+function viewMonthEnergy() {
+  const c = S.cur, first = new Date(c.getFullYear(), c.getMonth(), 1), last = new Date(c.getFullYear(), c.getMonth() + 1, 0);
+  const start = weekStart(first), tk = keyOf(todayD());
+  const monthKeys = rangeKeys(first, last);
+  const en = energySum(monthKeys);
+  let mx = 1;
+  for (const k of monthKeys) {
+    const x = S.meta.days[k] || {};
+    const tot = x.parked_known ? (x.kwh || 0) + (x.parked || 0) : (x.kwh || 0);
+    if (tot > mx) mx = tot;
+  }
+  const cells = [];
+  for (let i = 0; i < 42; i++) {
+    const d = addDays(start, i);
+    if (i >= 35 && d.getMonth() !== c.getMonth()) break;
+    const k = keyOf(d), inMon = d.getMonth() === c.getMonth();
+    const x = S.meta.days[k] || {};
+    const known = !!x.parked_known;
+    const driving = x.kwh || 0;
+    const parked = known ? (x.parked || 0) : 0;
+    const tot = known ? driving + parked : driving;
+    const future = k > tk;
+    const empty = !inMon || future || (!x.n && !known && !(x.charge_added) && !driving);
+    const chargeOnly = inMon && !x.n && known && !tot && (x.charge_added || 0) > 0;
+    const cls = ['mcol'];
+    if (k === tk && inMon) cls.push('today');
+    if (!inMon || future) cls.push('out');
+    else if (empty || chargeOnly) cls.push('nod');
+    let bar = '', val = '';
+    if (inMon && !future && !empty && !chargeOnly) {
+      const h = Math.max(12, Math.round(100 * tot / mx));
+      const drvPct = tot ? (100 * driving / tot) : 0;
+      const parkPct = known && tot && parked ? (100 - drvPct) : 0;
+      bar = `<div class="bstk" style="height:${h}%"><i class="ed" style="flex:${known ? drvPct : 1} 0 0"></i>${parkPct ? `<i class="ep" style="flex:${parkPct} 0 0"></i>` : ''}</div>`;
+      val = known ? fmtCom(tot, tot >= 10 ? 0 : 1) : fmtCom(driving, driving >= 10 ? 0 : 1);
+    }
+    const dayAttr = inMon ? ` data-day="${k}"` : '';
+    cells.push(`<div class="${cls.join(' ')}"${dayAttr}><div class="bh">${bar}</div><div class="n">${d.getDate()}</div><div class="v">${val}</div></div>`);
+  }
+  const avgs = [];
+  const drivenDays = monthKeys.filter(k => (S.meta.days[k] || {}).n).length;
+  const parkedDays = monthKeys.filter(k => (S.meta.days[k] || {}).parked_known);
+  if (drivenDays) avgs.push(`<span>Avg <b>${fmtCom(en.driving / drivenDays, 1)} kWh</b>/day driven</span>`);
+  if (parkedDays.length && en.known) avgs.push(`<span><b>${fmtCom(en.parked / parkedDays.length, 1)} kWh</b>/day parked since ${esc(fmtMd(S.meta.energy_from))}</span>`);
+  if (en.whmi) avgs.push(`<span><b>${en.whmi} Wh/mi</b></span>`);
+  const from = fmtMd(S.meta.energy_from);
+  return `<div class="pcard">
+    <div class="cap enote">${esc(periodNote('month', monthKeys, en) || '')}</div>
+    ${splitLegend(en.driving, en.parked)}
+    <div class="avgs">${avgs.join('')}</div>
+    <div class="mhead">${['S','M','T','W','T','F','S'].map(x => `<div>${x}</div>`).join('')}</div>
+    <div class="mchart">${cells.join('')}</div>
+    ${periodFeatureBox('month-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}
+  </div>`;
+}
+
+function viewYearEnergy() {
+  const y = S.cur.getFullYear();
+  const yearKeys = rangeKeys(new Date(y, 0, 1), new Date(y, 11, 31));
+  const en = energySum(yearKeys);
+  let mx = 1;
+  const months = [];
+  for (let m = 0; m < 12; m++) {
+    const first = new Date(y, m, 1), last = new Date(y, m + 1, 0);
+    const keys = rangeKeys(first, last);
+    const e = energySum(keys);
+    const t = sumDays(keys);
+    const has = t.n > 0 || e.driving > 0 || (e.known && e.parked > 0);
+    if (has) mx = Math.max(mx, e.total || e.driving || 0);
+    months.push({ m, first, last, keys, e, t, has });
+  }
+  const rows = months.map(mo => {
+    if (!mo.has) {
+      return `<div class="ewk nod" data-month="${mo.m}"><div class="d" style="text-align:left;width:auto"><b style="font-size:15px">${MONTHS[mo.m].slice(0, 3)}</b></div><div class="em"><span class="none">No data</span></div></div>`;
+    }
+    const tot = mo.e.total || mo.e.driving;
+    const w = Math.max(0.15, tot / mx);
+    const drvPct = tot ? (100 * mo.e.driving / tot) : 0;
+    const parkPct = mo.e.known && tot ? (100 * (mo.e.parked || 0) / tot) : 0;
+    const bits = [`${fmtCom(mo.t.mi, 0)} mi`];
+    if (mo.e.whmi) bits.push(`${mo.e.whmi} Wh/mi`);
+    if (mo.e.known) bits.push(`${fmtCom(mo.e.parked, 1)} parked from ${fmtMd(S.meta.energy_from)}`);
+    else bits.push('parked n/a');
+    return `<div class="ewk" data-month="${mo.m}">
+      <div class="d" style="text-align:left;width:auto"><b style="font-size:16px">${MONTHS[mo.m].slice(0, 3)}</b></div>
+      <div class="em" style="--w:${w.toFixed(3)}">
+        <div class="etk"><div class="estk"><i class="ed" style="width:${drvPct}%"></i>${mo.e.known ? `<i class="ep" style="width:${parkPct}%"></i>` : ''}</div><b class="et">${fmtCom(tot, tot >= 100 ? 0 : 1)}</b></div>
+        <div class="ecap">${bits.join(' · ')}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const from = fmtMd(S.meta.energy_from);
+  return `<div class="pcard">
+    <div class="cap enote">${esc(periodNote('year', yearKeys, en) || '')}</div>
+    ${splitLegend(en.driving, en.parked)}
+    <div class="elist period">${rows}</div>
+    ${periodFeatureBox('year-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}
+  </div>`;
+}
+
+function viewWeek() { return energyMode() ? viewWeekEnergy() : viewWeekSaving(); }
+function viewMonth() { return energyMode() ? viewMonthEnergy() : viewMonthSaving(); }
+function viewYear() { return energyMode() ? viewYearEnergy() : viewYearSaving(); }
+
 const MAPS = {};
 function pinEl(color, ring) {
   const d = document.createElement('div');
@@ -352,37 +843,53 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
   $b('.prange').addEventListener('input', e => { P.pt = e.target.value / 1000 * total; draw(); });
   draw();
 }
+
 async function viewDay() {
   const k = keyOf(S.cur), m = await month(k.slice(0, 7));
-  const trips = m.trips.filter(t => dayKeyTs(t.s) === k).sort((a, b) => a.s - b.s);
-  const ch = m.charges.filter(c => dayKeyTs(c.s) === k).sort((a, b) => a.s - b.s);
-  let h = trips.length ? trips.map(tripCard).join('') : '<div class="empty">No trips this day</div>';
-  if (ch.length) h += '<h2>Charging</h2>' + ch.map(chargeCard).join('');
-  return h;
+  const trips = (m.trips || []).filter(t => dayKeyTs(t.s) === k).sort((a, b) => a.s - b.s);
+  if (!energyMode()) {
+    return trips.length ? trips.map((t, i) => tripCard(t, i, trips.length)).join('') : '<div class="empty">No trips this day</div>';
+  }
+  const t0 = S.cur, start = Date.UTC(t0.getFullYear(), t0.getMonth(), t0.getDate());
+  // Use payload timestamps in local day via dayKeyTs / overlap with the local day
+  const parked = (m.parked || []).filter(p => dayKeyTs(p.s) === k || dayKeyTs(p.e - 1) === k)
+    .filter(p => (p.kwh || 0) > 0.005)
+    .sort((a, b) => a.s - b.s);
+  const slices = (m.charge_slices || []).filter(c => dayKeyTs(c.s) === k || (c.e > c.s && dayKeyTs(c.e - 1) === k))
+    .sort((a, b) => a.s - b.s);
+  const items = [
+    ...trips.map(t => ({ kind: 'trip', s: t.s, t })),
+    ...slices.map(c => ({ kind: 'charge', s: c.s, c })),
+    ...parked.map(p => ({ kind: 'parked', s: p.s, p })),
+  ].sort((a, b) => a.s - b.s);
+  if (!items.length) return '<div class="empty">No energy use this day</div>';
+  let ti = 0;
+  return items.map(it => {
+    if (it.kind === 'trip') return tripCard(it.t, ti++, trips.length);
+    if (it.kind === 'charge') return chargeCard(it.c);
+    return parkedCard(it.p);
+  }).join('');
 }
-const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 async function render() {
   stopPlayers();
   for (const k in MAPS) { try { MAPS[k].remove(); } catch (e) {} delete MAPS[k]; }
   localStorage.setItem('ht_view', S.view);
+  localStorage.setItem('ht_mode', S.mode);
   setTitle(); renderSummary();
   const main = $('#main');
   try {
     main.innerHTML = S.view === 'day' ? await viewDay() : S.view === 'week' ? viewWeek() : S.view === 'month' ? viewMonth() : viewYear();
   } catch (e) { main.innerHTML = `<div class="empty">Couldn't load: ${esc(e.message)}</div>`; }
-  const m = S.meta, upd = new Date(m.generated * 1000).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-  $('#foot').innerHTML = `Updated ${upd} ET · DTE ${esc(m.plan)} · premium $${(+m.gas_home).toFixed(2)} · ${m.mpg} mpg${m.pending ? ` · <span class="tag">${m.pending} charge price to confirm</span>` : ''}<br><a href="#" id="info">How costs are calculated</a> · <a href="#" id="lockout">Lock</a>`;
+  const meta = S.meta, upd = new Date(meta.generated * 1000).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  $('#foot').innerHTML = `Updated ${upd} ET · DTE ${esc(meta.plan)} · premium $${(+meta.gas_home).toFixed(2)} · ${meta.mpg} mpg${meta.pending ? ` · <span class="tag">${meta.pending} charge price to confirm</span>` : ''}<br><a href="#" id="info">How costs are calculated</a> · <a href="#" id="lockout">Lock</a>`;
   $('#info').onclick = e => { e.preventDefault(); showInfo(); };
   $('#lockout').onclick = e => { e.preventDefault(); localStorage.removeItem('ht_key'); location.reload(); };
 }
+
 function showInfo() {
   const m = S.meta, r = m.home_rates || {};
   $('#sheetbody').innerHTML = `<h3 style="margin-top:0">How costs are calculated</h3>
-  <table><tr><td>Home plan</td><td>DTE ${esc(m.plan)} ${esc(m.plan_name)}</td></tr>
-  ${Object.entries(r).map(([k, v]) => `<tr><td>Home ${k} (incl. PSCR)</td><td>${(v * 100).toFixed(2)}¢/kWh</td></tr>`).join('')}
-  <tr><td>Energy now in battery</td><td>${m.battery_rate ? '$' + (+m.battery_rate).toFixed(3) + '/kWh' : '–'}</td></tr>
-  <tr><td>Premium gas (home area)</td><td>$${(+m.gas_home).toFixed(2)}/gal</td></tr><tr><td>Gas comparison</td><td>${m.mpg} mpg</td></tr></table>
   <p style="color:var(--mut);font-size:13px">Each trip's electric cost = kWh used × the average cost of the energy in the battery. Home charging is priced minute by minute by DTE time-of-day period (with charging losses); Supercharger sessions use Tesla's actual bill; other chargers use the price you confirm. Gas cost = miles ÷ mpg × that day's local premium price (AAA metro average, adjusted to your ${esc(m.gas_station)} baseline at home). Saved = gas − electric.</p>
   <button class="pill" onclick="document.getElementById('sheet').classList.add('hidden')">Close</button>`;
   $('#sheet').classList.remove('hidden');
@@ -393,17 +900,33 @@ function move(dir) {
   else if (S.view === 'week') c.setDate(c.getDate() + 7 * dir);
   else if (S.view === 'month') { c.setDate(1); c.setMonth(c.getMonth() + dir); }
   else c.setFullYear(c.getFullYear() + dir);
-  S.cur = c; render();
+  S.cur = c; OPEN.clear(); render();
 }
 function wire() {
   $('#prev').onclick = () => move(-1); $('#next').onclick = () => move(1);
-  $('#today').onclick = () => { S.cur = todayD(); render(); };
-  document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { S.view = b.dataset.v; render(); });
+  $('#today').onclick = () => { S.cur = todayD(); OPEN.clear(); render(); };
+  document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { S.view = b.dataset.v; OPEN.clear(); render(); });
+  $('#mode').addEventListener('click', ev => {
+    const btn = ev.target.closest('button[data-mode]');
+    if (!btn || btn.dataset.mode === S.mode) return;
+    S.mode = btn.dataset.mode === 'energy' ? 'energy' : 'saving';
+    localStorage.setItem('ht_mode', S.mode);
+    OPEN.clear();
+    render();
+  });
   $('#main').addEventListener('click', e => {
+    const fh = e.target.closest('.fhd');
+    if (fh) {
+      const box = fh.closest('.fbox'), id = box && box.dataset.id;
+      const open = box.classList.toggle('open');
+      fh.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (id) { if (open) OPEN.add(id); else OPEN.delete(id); }
+      return;
+    }
     const mt = e.target.closest('.maptoggle'); if (mt) { toggleMap(+mt.closest('.trip').dataset.trip); return; }
-    const d = e.target.closest('[data-day]'), m = e.target.closest('[data-month]');
-    if (d) { const [y, mo, da] = d.dataset.day.split('-').map(Number); S.cur = new Date(y, mo - 1, da); S.view = 'day'; render(); }
-    else if (m) { S.cur = new Date(S.cur.getFullYear(), +m.dataset.month, 1); S.view = 'month'; render(); }
+    const d = e.target.closest('[data-day]'), mo = e.target.closest('[data-month]');
+    if (d) { const [y, mon, da] = d.dataset.day.split('-').map(Number); S.cur = new Date(y, mon - 1, da); S.view = 'day'; OPEN.clear(); render(); }
+    else if (mo) { S.cur = new Date(S.cur.getFullYear(), +mo.dataset.month, 1); S.view = 'month'; OPEN.clear(); render(); }
   });
   $('#sheet').onclick = e => { if (e.target.id === 'sheet') $('#sheet').classList.add('hidden'); };
   let x0 = null, y0 = null;

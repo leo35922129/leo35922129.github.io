@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=23">
+<link rel="stylesheet" href="style.css?v=24">
 <title>Happy Truck · Drives</title>
 </head>
 <body>
@@ -29,14 +29,26 @@
 </div>
 <div id="app" class="hidden">
   <header>
-    <div class="toprow">
-      <button id="prev" class="nav" aria-label="Previous">‹</button>
-      <div id="title" class="title"></div>
-      <button id="next" class="nav" aria-label="Next">›</button>
-      <button id="today" class="pill">Today</button>
-    </div>
     <div class="seg" id="seg">
       <button data-v="day">Day</button><button data-v="week">Week</button><button data-v="month">Month</button><button data-v="year">Year</button>
+    </div>
+    <div class="toprow">
+      <div class="mode" id="mode" role="tablist" aria-label="Saving or Energy">
+        <button type="button" class="msave on" data-mode="saving" role="tab" aria-selected="true">
+          <span class="dbadge" aria-hidden="true">$</span>
+          <span class="mlab">Saving</span>
+        </button>
+        <button type="button" class="menergy" data-mode="energy" role="tab" aria-selected="false">
+          <span class="bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg></span>
+          <span class="mlab">Energy</span>
+        </button>
+      </div>
+      <div class="daterow">
+        <button id="prev" class="nav" aria-label="Previous">‹</button>
+        <div id="title" class="title"></div>
+        <button id="next" class="nav" aria-label="Next">›</button>
+      </div>
+      <button id="today" class="pill">Today</button>
     </div>
   </header>
   <section id="summary" class="summary"></section>
@@ -45,6 +57,6 @@
 </div>
 <div id="sheet" class="sheet hidden"><div class="sheetbody" id="sheetbody"></div></div>
 <script src="maplibre-gl.js"></script>
-<script src="app.js?v=23"></script>
+<script src="app.js?v=24"></script>
 </body>
 </html>
