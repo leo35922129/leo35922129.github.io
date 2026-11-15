@@ -192,7 +192,7 @@ main{padding:8px 12px 24px}
   font-size:20px;font-weight:400;letter-spacing:-.02em;
 }
 .cost .row span{display:flex;align-items:center;gap:6px;white-space:nowrap}
-.cost .row .ico,.wc .ico{width:20px;height:20px;flex:none;display:block}
+.cost .row .ico{width:20px;height:20px;flex:none;display:block}
 .cost .bolt{width:auto;height:auto;background:none;font-size:inherit}
 .cost .g{color:var(--lime);gap:7px}
 .cost .g .dbadge{width:22px;height:22px;font-size:13px;background:var(--lime);color:#111}
@@ -414,8 +414,8 @@ footer a{color:var(--acc)}
 
 .si{width:1.2em;height:1.2em;vertical-align:-0.2em;display:inline-block}.si circle{fill:var(--grn)}
 
-/* Saving week rows: FSD + costs match Day trip cards. Bar length ∝ miles. */
-.row.wrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto;grid-template-areas:"d m c";align-items:center;gap:6px 16px;background:var(--card);border-radius:12px;padding:12px;margin-bottom:8px}
+/* Saving week rows: compact cost column so the FSD track can run longer. Bar length ∝ miles. */
+.row.wrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto;grid-template-areas:"d m c";align-items:center;gap:6px 12px;background:var(--card);border-radius:12px;padding:12px;margin-bottom:8px}
 .wrow .d{grid-area:d;width:52px;text-align:center}.wrow .d b{display:block;font-size:20px}.wrow .d span{color:var(--mut);font-size:12px}
 .wrow .wm{grid-area:m;min-width:0}.wrow .wc{grid-area:c}
 .wrow .wm{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:8px;--pr:50px}
@@ -424,20 +424,18 @@ footer a{color:var(--acc)}
 .wtk .fb{flex:1;min-width:0;height:8px;border-radius:4px;background:#2a3038;overflow:hidden}.wtk .fb div{height:100%;background:var(--fsd);border-radius:4px}
 .wtk b{flex:0 0 46px;color:var(--fsd);font-size:14px;font-weight:700;text-align:left;white-space:nowrap}
 .wl{grid-column:2;display:flex;justify-content:space-between;gap:10px;margin-top:5px;font-size:14px;color:var(--mut);white-space:nowrap;width:calc((100% - var(--pr)) * var(--w));min-width:max-content}
-.wc{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:20px;font-weight:400;letter-spacing:-.02em;white-space:nowrap}
-.wc>span{display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0}
-.wc .g{color:var(--lime);gap:7px}
-.wc .g .dbadge{width:22px;height:22px;font-size:13px;background:var(--lime);color:#111}
-.wc .g .sv{font-size:15px;font-weight:500;color:var(--lime);margin-left:1px}
+.wc{display:flex;align-items:center;justify-content:flex-start;gap:6px;font-size:14px;font-weight:400;letter-spacing:-.02em;white-space:nowrap}
+.wc>span{display:flex;align-items:center;gap:3px;white-space:nowrap;min-width:0}
+.wc .ico{width:15px;height:15px;flex:none;display:block}
+.wc .g{color:var(--lime);gap:4px}
+.wc .g .dbadge{width:17px;height:17px;font-size:10px;background:var(--lime);color:#111}
+.wc .g .sv{font-size:12px;font-weight:500;color:var(--lime);margin-left:0}
 .row.wrow.nod{opacity:.45;padding:8px 12px;grid-template-columns:52px 1fr;grid-template-areas:"d m"}.wrow.nod .d b{font-size:16px}.wrow .none{color:var(--mut);font-size:13px}
 @media (max-width:520px){
   .row.wrow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"d m" "d c";gap:8px 12px;padding-bottom:12px}
   .row.wrow.nod{grid-template-columns:44px 1fr;padding-bottom:8px}
   .row.wrow .d{width:44px}
-  .wc{font-size:17px;gap:6px;justify-content:space-between}
-  .wc .ico{width:18px;height:18px}
-  .wc .g .dbadge{width:20px;height:20px;font-size:12px}
-  .wc .g .sv{font-size:13px}
+  .wc{gap:8px}
   .wl{font-size:13px}.wtk b{font-size:14px;flex-basis:46px}.wrow .wm{--pr:50px}
 }
 
