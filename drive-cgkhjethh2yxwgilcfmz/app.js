@@ -485,15 +485,99 @@ function periodNote(kind, keys, en) {
   return bits.join(' ');
 }
 
-function viewWeekEnergy() {
+
+function dayStartTs(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d).getTime() / 1000;
+}
+function monthRecsForTs(ts) {
+  const recs = [];
+  const seen = new Set();
+  const d = new Date(ts * 1000);
+  for (const off of [-1, 0, 1]) {
+    const x = new Date(d); x.setDate(x.getDate() + off);
+    const ym = `${x.getFullYear()}-${pad(x.getMonth() + 1)}`;
+    if (seen.has(ym)) continue;
+    seen.add(ym);
+    if (S.months[ym]) recs.push(S.months[ym]);
+  }
+  return recs;
+}
+function socAtMidnight(ts) {
+  const tol = 2;
+  let found = null;
+  for (const rec of monthRecsForTs(ts)) {
+    for (const sl of rec.charge_slices || []) {
+      if (Math.abs((sl.e || 0) - ts) <= tol && sl.soc1 != null) found = sl.soc1;
+      if (Math.abs((sl.s || 0) - ts) <= tol && sl.soc0 != null) found = sl.soc0;
+    }
+    for (const p of rec.parked || []) {
+      if (Math.abs((p.e || 0) - ts) <= tol && p.soc1 != null) found = p.soc1;
+      if (Math.abs((p.s || 0) - ts) <= tol && p.soc0 != null) found = p.soc0;
+    }
+  }
+  return found;
+}
+function socPctLabel(v) {
+  return v == null || v === '' || isNaN(+v) ? 'n/a' : Math.round(+v) + '%';
+}
+async function ensureMonthsForKeys(keys) {
+  const yms = new Set(keys.map(k => k.slice(0, 7)));
+  for (const k of [keys[0], keys[keys.length - 1]]) {
+    if (!k) continue;
+    const [y, m, d] = k.split('-').map(Number);
+    yms.add(keyOf(addDays(new Date(y, m - 1, d), -1)).slice(0, 7));
+    yms.add(keyOf(addDays(new Date(y, m - 1, d), 1)).slice(0, 7));
+  }
+  for (const ym of yms) await month(ym);
+}
+function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, charge, soc0, soc1, mx }) {
+  const tot = known ? driving + (parked || 0) : driving;
+  const w = mx ? tot / mx : 0;
+  const drvPct = tot ? (100 * driving / tot) : 0;
+  const parkPct = known && tot ? (100 * (parked || 0) / tot) : 0;
+  const chgW = (charge > 0 && mx) ? Math.min(1, charge / mx) : 0;
+  const capped = charge > 0 && mx && charge > mx + 0.05;
+  const kwhDec = tot >= 100 ? 0 : 1;
+  const label = known ? fmtCom(tot, kwhDec) : fmtCom(driving, kwhDec);
+  const segs = `<i class="ed" style="width:${drvPct}%"></i>`
+    + (known && parkPct ? `<i class="ep" style="width:${parkPct}%"></i>` : '');
+  const chgBar = chgW ? `<div class="echg${capped ? ' cap' : ''}" style="--cw:${chgW.toFixed(3)}" title="${capped ? 'Charging exceeds this scale' : ''}"></div>` : '';
+  const dDec = driving >= 100 ? 0 : 1;
+  const pDec = (parked || 0) >= 100 ? 0 : 1;
+  const cDec = charge >= 100 ? 0 : 1;
+  const bits = [`<span class="ei drv">${WHEEL} ${fmtCom(driving, dDec)}</span>`];
+  if (known) {
+    const wBit = parked_w ? ` <span class="w">${fmtW(parked_w)} W</span>` : '';
+    bits.push(`<span class="ei park">${PARK_ICO} ${fmtCom(parked || 0, pDec)}${wBit}</span>`);
+  } else {
+    bits.push(`<span class="ei park mute">${PARK_ICO} n/a</span>`);
+  }
+  if (charge) bits.push(`<span class="ei chg">${PLUG_ICO} +${fmtCom(charge, cDec)}</span>`);
+  return `<div class="ewk" ${dataAttr || ''}>
+    ${labelHtml}
+    <div class="em" style="--w:${Math.max(0, w).toFixed(3)}">
+      <div class="etk">
+        <span class="ebat">${socPctLabel(soc0)}</span>
+        <div class="ebars">
+          <div class="etrack"><div class="estk">${segs}</div></div>
+          ${chgBar}
+        </div>
+        <span class="ebat end">${socPctLabel(soc1)}</span>
+        <b class="et">${label}</b>
+      </div>
+      <div class="ecap">${bits.join('')}</div>
+    </div>
+  </div>`;
+}
+
+async function viewWeekEnergy() {
   const s = weekStart(S.cur);
   const keys = rangeKeys(s, addDays(s, 6));
+  await ensureMonthsForKeys(keys);
   const en = energySum(keys);
   let mx = 0;
   const days = keys.map(k => {
-    const d = addDays(s, keys.indexOf(k)); // unreliable if? keys are consecutive
-    return k;
-  }).map(k => {
     const dt = new Date(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8, 10));
     const x = S.meta.days[k] || {};
     const known = !!x.parked_known;
@@ -501,34 +585,27 @@ function viewWeekEnergy() {
     const parked = known ? (x.parked || 0) : null;
     const tot = known ? driving + (parked || 0) : driving;
     if (tot) mx = Math.max(mx, tot);
-    return { k, dt, x, known, driving, parked, tot };
+    const t0 = dayStartTs(k);
+    const t1 = dayStartTs(keyOf(addDays(dt, 1)));
+    return { k, dt, x, known, driving, parked, tot, charge: x.charge_added || 0, soc0: socAtMidnight(t0), soc1: socAtMidnight(t1) };
   });
   if (!mx) mx = 1;
   const rows = days.map(d => {
     const dc = `<div class="d"><span>${DOW[d.dt.getDay()]}</span><b>${d.dt.getDate()}</b></div>`;
-    const emptyChg = !d.x.n && d.known && d.tot === 0 && (d.x.charge_added || 0) > 0;
+    const emptyChg = !d.x.n && d.known && d.tot === 0 && d.charge > 0;
     if (emptyChg) {
       return `<div class="ewk nod" data-day="${d.k}">${dc}<div class="em"><span class="none chg-note">${PLUG_ICO} Charging · no use so far</span></div></div>`;
     }
-    if (!d.x.n && d.tot === 0) {
+    if (!d.x.n && d.tot === 0 && !d.charge) {
       return `<div class="ewk nod" data-day="${d.k}">${dc}<div class="em"><span class="none">No use</span></div></div>`;
     }
-    const w = Math.max(0.18, d.tot / mx);
-    const drvPct = d.tot ? (100 * d.driving / d.tot) : 0;
-    const parkPct = d.known && d.tot ? (100 * (d.parked || 0) / d.tot) : 0;
-    const bits = [`${fmtCom(d.driving, 1)} driving`];
-    if (d.known) {
-      bits.push(`${fmtCom(d.parked || 0, 1)} parked`);
-      if (d.x.parked_w) bits.push(fmtW(d.x.parked_w) + ' W');
-    } else bits.push('parked n/a');
-    const label = d.known ? fmtCom(d.tot, 1) : fmtCom(d.driving, 1);
-    return `<div class="ewk" data-day="${d.k}">
-      ${dc}
-      <div class="em" style="--w:${w.toFixed(3)}">
-        <div class="etk"><div class="estk"><i class="ed" style="width:${drvPct}%"></i>${d.known ? `<i class="ep" style="width:${parkPct}%"></i>` : ''}</div><b class="et">${label}</b></div>
-        <div class="ecap">${bits.join(' · ')}</div>
-      </div>
-    </div>`;
+    return energyUseRow({
+      labelHtml: dc,
+      dataAttr: `data-day="${d.k}"`,
+      driving: d.driving, parked: d.parked, known: d.known,
+      parked_w: d.x.parked_w, charge: d.charge,
+      soc0: d.soc0, soc1: d.soc1, mx,
+    });
   }).join('');
   const from = fmtMd(S.meta.energy_from);
   const note = periodNote('week', keys, en);
@@ -595,9 +672,10 @@ function viewMonthEnergy() {
   </div>`;
 }
 
-function viewYearEnergy() {
+async function viewYearEnergy() {
   const y = S.cur.getFullYear();
   const yearKeys = rangeKeys(new Date(y, 0, 1), new Date(y, 11, 31));
+  await ensureMonthsForKeys(yearKeys);
   const en = energySum(yearKeys);
   let mx = 1;
   const months = [];
@@ -606,29 +684,25 @@ function viewYearEnergy() {
     const keys = rangeKeys(first, last);
     const e = energySum(keys);
     const t = sumDays(keys);
-    const has = t.n > 0 || e.driving > 0 || (e.known && e.parked > 0);
+    const has = t.n > 0 || e.driving > 0 || (e.known && e.parked > 0) || (e.charge_added || 0) > 0;
     if (has) mx = Math.max(mx, e.total || e.driving || 0);
-    months.push({ m, first, last, keys, e, t, has });
+    const soc0 = socAtMidnight(first.getTime() / 1000);
+    const next = new Date(y, m + 1, 1);
+    const soc1 = socAtMidnight(next.getTime() / 1000);
+    months.push({ m, first, last, keys, e, t, has, soc0, soc1 });
   }
   const rows = months.map(mo => {
+    const dc = `<div class="d" style="text-align:left;width:auto"><b style="font-size:16px">${MONTHS[mo.m].slice(0, 3)}</b></div>`;
     if (!mo.has) {
-      return `<div class="ewk nod" data-month="${mo.m}"><div class="d" style="text-align:left;width:auto"><b style="font-size:15px">${MONTHS[mo.m].slice(0, 3)}</b></div><div class="em"><span class="none">No data</span></div></div>`;
+      return `<div class="ewk nod" data-month="${mo.m}">${dc}<div class="em"><span class="none">No data</span></div></div>`;
     }
-    const tot = mo.e.total || mo.e.driving;
-    const w = Math.max(0.15, tot / mx);
-    const drvPct = tot ? (100 * mo.e.driving / tot) : 0;
-    const parkPct = mo.e.known && tot ? (100 * (mo.e.parked || 0) / tot) : 0;
-    const bits = [`${fmtCom(mo.t.mi, 0)} mi`];
-    if (mo.e.whmi) bits.push(`${mo.e.whmi} Wh/mi`);
-    if (mo.e.known) bits.push(`${fmtCom(mo.e.parked, 1)} parked from ${fmtMd(S.meta.energy_from)}`);
-    else bits.push('parked n/a');
-    return `<div class="ewk" data-month="${mo.m}">
-      <div class="d" style="text-align:left;width:auto"><b style="font-size:16px">${MONTHS[mo.m].slice(0, 3)}</b></div>
-      <div class="em" style="--w:${w.toFixed(3)}">
-        <div class="etk"><div class="estk"><i class="ed" style="width:${drvPct}%"></i>${mo.e.known ? `<i class="ep" style="width:${parkPct}%"></i>` : ''}</div><b class="et">${fmtCom(tot, tot >= 100 ? 0 : 1)}</b></div>
-        <div class="ecap">${bits.join(' · ')}</div>
-      </div>
-    </div>`;
+    return energyUseRow({
+      labelHtml: dc,
+      dataAttr: `data-month="${mo.m}"`,
+      driving: mo.e.driving, parked: mo.e.parked, known: mo.e.known,
+      parked_w: mo.e.parked_w, charge: mo.e.charge_added || 0,
+      soc0: mo.soc0, soc1: mo.soc1, mx,
+    });
   }).join('');
   const from = fmtMd(S.meta.energy_from);
   const note = periodNote('year', yearKeys, en);
@@ -882,7 +956,7 @@ async function render() {
   setTitle(); renderSummary();
   const main = $('#main');
   try {
-    main.innerHTML = S.view === 'day' ? await viewDay() : S.view === 'week' ? viewWeek() : S.view === 'month' ? viewMonth() : viewYear();
+    main.innerHTML = S.view === 'day' ? await viewDay() : S.view === 'week' ? await viewWeek() : S.view === 'month' ? viewMonth() : await viewYear();
   } catch (e) { main.innerHTML = `<div class="empty">Couldn't load: ${esc(e.message)}</div>`; }
   const meta = S.meta, upd = new Date(meta.generated * 1000).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   $('#foot').innerHTML = `Updated ${upd} ET · DTE ${esc(meta.plan)} · premium $${(+meta.gas_home).toFixed(2)} · ${meta.mpg} mpg${meta.pending ? ` · <span class="tag">${meta.pending} charge price to confirm</span>` : ''}<br><a href="#" id="info">How costs are calculated</a> · <a href="#" id="lockout">Lock</a>`;
