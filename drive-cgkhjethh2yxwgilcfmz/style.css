@@ -191,6 +191,7 @@ main{padding:8px 12px 24px}
   font-size:20px;font-weight:400;letter-spacing:-.02em;
 }
 .cost .row span{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.cost .row .ico,.wc .ico{width:20px;height:20px;flex:none;display:block}
 .cost .bolt{width:auto;height:auto;background:none;font-size:inherit}
 .cost .g{color:var(--lime);gap:7px}
 .cost .g .dbadge{width:22px;height:22px;font-size:13px;background:var(--lime);color:#111}
@@ -373,6 +374,7 @@ footer{color:var(--mut);font-size:12px;padding:8px 14px calc(env(safe-area-inset
   .pill{padding:7px 12px;font-size:14px}
   .tg b{font-size:13.5px}
   .cost .row{font-size:17px}
+  .cost .row .ico{width:18px;height:18px}
   .exnote{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
 
@@ -432,6 +434,7 @@ footer a{color:var(--acc)}
   .row.wrow.nod{grid-template-columns:44px 1fr;padding-bottom:8px}
   .row.wrow .d{width:44px}
   .wc{font-size:17px;gap:6px;justify-content:space-between}
+  .wc .ico{width:18px;height:18px}
   .wc .g .dbadge{width:20px;height:20px;font-size:12px}
   .wc .g .sv{font-size:13px}
   .wl{font-size:13px}.wtk b{font-size:14px;flex-basis:46px}.wrow .wm{--pr:50px}
