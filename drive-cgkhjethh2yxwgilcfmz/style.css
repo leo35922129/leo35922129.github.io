@@ -118,7 +118,7 @@ header{
   color:var(--mut);font-size:15px;font-weight:500;line-height:1.2;
   letter-spacing:-.02em;white-space:nowrap;
 }
-.stat .k .ico{width:20px;height:20px;flex:none;display:block}
+.stat .k .ico{width:22px;height:22px;flex:none;display:block}
 .stat .v{
   font-size:26px;font-weight:400;letter-spacing:-.04em;
   text-align:center;margin-top:16px;white-space:nowrap;
@@ -202,7 +202,7 @@ main{padding:8px 12px 24px}
   font-size:20px;font-weight:400;letter-spacing:-.02em;
 }
 .cost .row span{display:flex;align-items:center;gap:6px;white-space:nowrap}
-.cost .row .ico{width:20px;height:20px;flex:none;display:block}
+.cost .row .ico{width:22px;height:22px;flex:none;display:block}
 .cost .bolt{width:auto;height:auto;background:none;font-size:inherit}
 .cost .g{color:var(--lime);gap:7px}
 .cost .g .dbadge{width:22px;height:22px;font-size:13px;background:var(--lime);color:#111}
@@ -396,7 +396,7 @@ footer{color:var(--mut);font-size:12px;padding:8px 14px calc(env(safe-area-inset
   .effnote{padding:0 8px 8px}
   .stat{min-height:130px;padding:16px 2px 14px}
   .stat .k{font-size:13.5px;gap:1px;letter-spacing:-.08em}
-  .stat .k .ico{width:18px;height:18px}
+  .stat .k .ico{width:20px;height:20px}
   .stat .k .dbadge{width:20px;height:20px;font-size:12px}
   .stat .v{font-size:26px;gap:0;letter-spacing:-.06em}
   .stat .v small{font-size:13px}
@@ -411,7 +411,7 @@ footer{color:var(--mut);font-size:12px;padding:8px 14px calc(env(safe-area-inset
   .pill{padding:7px 12px;font-size:14px}
   .tg b{font-size:13.5px}
   .cost .row{font-size:17px}
-  .cost .row .ico{width:18px;height:18px}
+  .cost .row .ico{width:22px;height:22px}
   .exnote{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
 
@@ -462,7 +462,7 @@ footer a{color:var(--acc)}
 .wl{grid-column:2;display:flex;justify-content:space-between;gap:10px;margin-top:5px;font-size:14px;color:var(--mut);white-space:nowrap;width:calc((100% - var(--pr)) * var(--w));min-width:max-content}
 .wc{display:flex;align-items:center;justify-content:flex-start;gap:6px;font-size:14px;font-weight:400;letter-spacing:-.02em;white-space:nowrap}
 .wc>span{display:flex;align-items:center;gap:3px;white-space:nowrap;min-width:0}
-.wc .ico{width:15px;height:15px;flex:none;display:block}
+.wc .ico{width:17px;height:17px;flex:none;display:block}
 .wc .g{color:var(--lime);gap:4px}
 .wc .g .dbadge{width:17px;height:17px;font-size:10px;background:var(--lime);color:#111}
 .wc .g .sv{font-size:12px;font-weight:500;color:var(--lime);margin-left:0}
