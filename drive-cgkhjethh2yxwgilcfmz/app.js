@@ -315,9 +315,9 @@ function tripCard(t, idx, total) {
       { v: t.whmi ?? '–', k: 'Wh/mi' },
     ])}
     ${energyMode() ? '' : costRow(t)}
-    ${fsdRow(t)}
+    ${energyMode() ? '' : fsdRow(t)}
     ${energyMode() ? featureBox(featId, exampleSplit(t.kwh || 0, TRIP_FEATS), 'trip') : ''}
-    ${routeBox(t)}
+    ${energyMode() ? '' : routeBox(t)}
   </div>`;
 }
 
