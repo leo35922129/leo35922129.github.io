@@ -211,22 +211,27 @@ main{padding:8px 12px 24px}
 .fsdbar .of{color:var(--mut);font-weight:400;white-space:nowrap}
 
 
-/* Feature energy panel */
+/* Feature energy panel — orange counterpart of the route/playback bar */
 .fbox{
-  margin-top:12px;
-  border:1.5px solid #a06a12;
-  border-radius:14px;
-  background:#14161a;
-  overflow:hidden;
+  margin-top:12px;border-radius:12px;
+  border:1px solid rgba(240,176,64,.35);background:rgba(240,176,64,.12);
+  overflow:hidden;transition:background .25s;
 }
+.fbox.open{background:rgba(240,176,64,.07)}
 .fhd{
-  width:100%;display:flex;align-items:center;justify-content:space-between;
-  gap:8px;padding:12px 14px;border:0;background:transparent;
-  color:var(--amb);font-size:15px;font-weight:600;letter-spacing:-.01em;
-  text-align:left;
+  width:100%;min-height:44px;margin:0;padding:0 12px 0 14px;
+  display:flex;align-items:center;gap:10px;
+  border-radius:12px;border:0;background:transparent;
+  color:var(--amb);font:inherit;font-size:15px;font-weight:600;
+  cursor:pointer;touch-action:manipulation;text-align:left;
+  -webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;
 }
-.fhd .chev{width:22px;height:22px;flex:none;transition:transform .2s;stroke:var(--amb)}
+.fhd .fl{flex:1;text-align:left}
+.fhd .feico{color:var(--amb);flex:none}
+.fhd .chev{flex:none;transition:transform .2s}
 .fbox.open .fhd .chev{transform:rotate(180deg)}
+.fhd:active{background:rgba(240,176,64,.22)}
+.fbox.open .fhd{background:transparent}
 .fbody{display:none;padding:0 12px 12px}
 .fbox.open .fbody{display:block}
 .exnote{color:#c4922a;font-size:11px;margin:0 2px 10px;letter-spacing:.01em}

@@ -128,6 +128,7 @@ const PUMP_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#ff5a
 const PARK_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.2" fill="#f0b040"/><path fill="#1a1408" d="M8.55 6.55h4.7c2.35 0 3.85 1.35 3.85 3.5 0 2.15-1.55 3.55-3.85 3.55h-2.1V17.45H8.55V6.55zm2.55 2.15v2.7h1.9c1.05 0 1.7-.55 1.7-1.35s-.65-1.35-1.7-1.35h-1.9z"/></svg>';
 const GAUGE_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#f0b040" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 17.4a8.6 8.6 0 1 1 14.8 0"/><path d="M12 17.4 16.1 9.7"/><circle cx="12" cy="17.4" r="1.55" fill="#f0b040" stroke="none"/></svg>';
 const MAP_ICO = '<svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg>';
+const FEAT_ICO = '<svg class="feico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M12 20V5M19 20v-6"/></g></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const ICO = {
@@ -241,7 +242,7 @@ function featureBox(id, feats, tone) {
   const open = OPEN.has(id);
   return `<div class="fbox${open ? ' open' : ''}" data-id="${esc(id)}">
     <button type="button" class="fhd" aria-expanded="${open ? 'true' : 'false'}">
-      <span>Feature energy usage</span>${CHEV}
+      ${FEAT_ICO}<span class="fl">Feature energy usage</span>${CHEV}
     </button>
     <div class="fbody">
       <div class="exnote">Example numbers, not from the truck</div>
@@ -253,7 +254,7 @@ function periodFeatureBox(id, driving, parked, parkedNote) {
   const open = OPEN.has(id);
   return `<div class="fbox${open ? ' open' : ''}" data-id="${esc(id)}">
     <button type="button" class="fhd" aria-expanded="${open ? 'true' : 'false'}">
-      <span>Feature energy usage</span>${CHEV}
+      ${FEAT_ICO}<span class="fl">Feature energy usage</span>${CHEV}
     </button>
     <div class="fbody">
       <div class="exnote">Example numbers, not from the truck</div>
