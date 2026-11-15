@@ -22,7 +22,7 @@ const timeTs = ts => new Date(ts * 1000).toLocaleTimeString('en-US', { timeZone:
 const todayD = () => { const [y, m, d] = fmtParts.format(new Date()).split('-').map(Number); return new Date(y, m - 1, d); };
 const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
 const weekStart = d => addDays(d, -d.getDay());
-const socI = v => v == null || v === '' || isNaN(+v) ? '–' : Math.trunc(+v);
+const socI = v => v == null || v === '' || isNaN(+v) ? '–' : Math.round(+v);
 const TRIPS = {};
 const OPEN = new Set();
 const energyMode = () => S.mode === 'energy';
@@ -288,8 +288,15 @@ function statBoxes(cells) {
   return `<div class="tg">${cells.map(c => `<div><b>${c.v}</b><span>${esc(c.k)}</span></div>`).join('')}</div>`;
 }
 function batLabel(a, b) {
-  const x = socI(a), y = socI(b);
-  return (x === '–' && y === '–') ? '–' : `${x}% → ${y}%`;
+  const ok = v => v != null && v !== '' && !isNaN(+v);
+  if (!ok(a) && !ok(b)) return '–';
+  const ri = v => ok(v) ? Math.round(+v) : null;
+  const d1 = v => ok(v) ? (Math.round(+v * 10) / 10).toFixed(1) : '–';
+  const ra = ri(a), rb = ri(b);
+  if (ra != null && rb != null && ra !== rb) return `${ra}% → ${rb}%`;
+  if (ok(a) && ok(b) && Math.round(+a * 10) !== Math.round(+b * 10)) return `${d1(a)}% → ${d1(b)}%`;
+  if (ra != null && rb != null) return `${ra}% → ${rb}%`;
+  return `${ok(a) ? ra : '–'}% → ${ok(b) ? rb : '–'}%`;
 }
 
 function tripCard(t, idx, total) {
@@ -321,17 +328,6 @@ function tripCard(t, idx, total) {
   </div>`;
 }
 
-function chargeBatLabel(a, b) {
-  const ok = v => v != null && v !== '' && !isNaN(+v);
-  if (!ok(a) && !ok(b)) return '–';
-  const ri = v => ok(v) ? Math.round(+v) : null;
-  const d1 = v => ok(v) ? (Math.round(+v * 10) / 10).toFixed(1) : '–';
-  const ra = ri(a), rb = ri(b);
-  if (ra != null && rb != null && ra !== rb) return `${ra}% → ${rb}%`;
-  if (ok(a) && ok(b) && Math.round(+a * 10) !== Math.round(+b * 10)) return `${d1(a)}% → ${d1(b)}%`;
-  if (ra != null && rb != null) return `${ra}% → ${rb}%`;
-  return `${ok(a) ? ra : '–'}% → ${ok(b) ? rb : '–'}%`;
-}
 function chargeInfoLine(it) {
   const bits = [];
   if (it.volts && it.amps != null) bits.push(`${Math.round(it.volts)} V · ${it.amps} A`);
@@ -361,7 +357,7 @@ function chargeCard(it) {
     <div class="where">${esc(label)}${info ? `<span class="chinfo"> · ${esc(info)}</span>` : ''}</div>
     ${statBoxes([
       { v: added != null ? '+' + num(added, added >= 10 ? 1 : 2) : '–', k: 'kWh' },
-      { v: chargeBatLabel(it.soc0, it.soc1), k: 'battery' },
+      { v: batLabel(it.soc0, it.soc1), k: 'battery' },
       { v: kw, k: 'kW' },
       { v: esc(dur), k: 'duration' },
     ])}
