@@ -144,9 +144,7 @@ header{
 .effnote{padding:0 12px 8px;margin-top:-2px;font-size:12px;color:var(--mut);line-height:1.35}
 .ecap .ei.eff{gap:5px}
 .ecap .ei.eff .eff-chip{font-size:9px;padding:1px 9px;border-radius:6px;flex:none;line-height:1.45}
-.ecap .ei.eff.good{color:#3ee06b}
-.ecap .ei.eff.high{color:#ff9f3d}
-.ecap .ei.eff.typ{color:#c5cdd6}
+.ecap .ei.eff.good,.ecap .ei.eff.high,.ecap .ei.eff.typ{color:var(--tx)}
 .stat .k .dbadge{width:22px;height:22px;font-size:13px}
 .stat.hi-save .k .dbadge{background:var(--lime);color:#111}
 
