@@ -192,6 +192,86 @@ function kwhVal(v) {
   return val(fmtCom(v, v >= 1000 ? 0 : 1), 'kWh');
 }
 
+
+const EPA_WHMI = 430;
+
+function daysWhmi(keys) {
+  let kwh = 0, mi = 0;
+  for (const k of keys) {
+    const d = S.meta.days[k]; if (!d) continue;
+    kwh += d.kwh || 0;
+    mi += d.mi || 0;
+  }
+  return mi ? Math.round(kwh * 1000 / mi) : null;
+}
+function priorKeysBefore(startKey, nDays) {
+  const [y, m, d] = startKey.split('-').map(Number);
+  const start = new Date(y, m - 1, d);
+  const keys = [];
+  for (let i = nDays; i >= 1; i--) keys.push(keyOf(addDays(start, -i)));
+  return keys;
+}
+function periodBaseline(keys) {
+  if (!keys || !keys.length) return null;
+  let base = daysWhmi(priorKeysBefore(keys[0], 30));
+  if (base != null) return base;
+  const from = S.meta.energy_from || '2026-09-09';
+  const all = Object.keys(S.meta.days || {}).filter(k => k >= from && k < keys[0]).sort();
+  return daysWhmi(all);
+}
+function rateEff(whmi, baseline) {
+  if (whmi == null || !baseline) return null;
+  const pct = Math.round((baseline - whmi) / baseline * 100);
+  const kind = pct === 0 ? 'typ' : (pct > 0 ? 'good' : 'high');
+  const dir = pct >= 0 ? 'better' : 'worse';
+  const short = pct === 0 ? '– 0%' : (pct > 0 ? `↑ ${pct}%` : `↓ ${Math.abs(pct)}%`);
+  const vs = `${Math.abs(pct)}% ${dir} than your 30-day avg (${baseline})`;
+  return { kind, pct, short, vs, baseline };
+}
+function rateVsEpa(whmi) {
+  if (whmi == null) return null;
+  const pct = Math.round((EPA_WHMI - whmi) / EPA_WHMI * 100);
+  const kind = pct === 0 ? 'typ' : (pct > 0 ? 'good' : 'high');
+  const dir = pct >= 0 ? 'better' : 'worse';
+  const short = pct === 0 ? '– 0%' : (pct > 0 ? `↑ ${pct}%` : `↓ ${Math.abs(pct)}%`);
+  return { kind, pct, short, vs: `${Math.abs(pct)}% ${dir} than EPA`, baseline: EPA_WHMI, vsEpa: true };
+}
+function currentEffRate(whmi, keys) {
+  if (whmi == null) return null;
+  const base = periodBaseline(keys);
+  return base != null ? rateEff(whmi, base) : rateVsEpa(whmi);
+}
+function effChipHtml(rate) {
+  if (!rate) return '';
+  return `<div class="eff-gap"><span class="eff-chip ${rate.kind}" title="${esc((rate.vs || rate.short) + ' · EPA ' + EPA_WHMI + ' Wh/mi')}">${esc(rate.short)}</span></div>`;
+}
+function effNoteText(whmi, keys, kind) {
+  const parts = [];
+  const rate = currentEffRate(whmi, keys);
+  if (rate) {
+    if (rate.vsEpa) parts.push(`${rate.short} vs EPA ${EPA_WHMI} Wh/mi`);
+    else parts.push(`${rate.short} vs your 30-day avg (${rate.baseline}) · EPA ${EPA_WHMI} Wh/mi`);
+  } else if (whmi != null) {
+    parts.push(`EPA ${EPA_WHMI} Wh/mi`);
+  }
+
+  const from = S.meta.energy_from;
+  if (from) parts.push(`Parked drain starts ${fmtMd(from)}${kind === 'week' ? ', when telemetry began' : ''}`);
+  return parts.join(' · ');
+}
+function setEffNote(text) {
+  let el = document.getElementById('effnote');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'effnote';
+    el.className = 'cap effnote';
+    const sum = document.getElementById('summary');
+    sum.insertAdjacentElement('afterend', el);
+  }
+  if (text) { el.hidden = false; el.textContent = text; }
+  else { el.hidden = true; el.textContent = ''; }
+}
+
 function renderSummary() {
   const [a, b] = periodRange();
   const keys = rangeKeys(a, b);
@@ -212,12 +292,14 @@ function renderSummary() {
       { k: `${BOLT_ICO} Energy`, v: kwhVal(en.total), cls: '' },
       { k: `${WHEEL} Driving`, v: kwhVal(en.driving), cls: '' },
       { k: `${PARK_ICO} Parked`, v: en.known ? kwhVal(en.parked) : 'n/a', cls: '' },
-      { k: `${GAUGE_ICO} Efficiency`, v: whmi != null ? val(whmi, 'Wh/mi') : '–', cls: 'hi-eff' },
+      { k: `${GAUGE_ICO} Efficiency`, v: whmi != null ? val(whmi, 'Wh/mi') : '–', cls: 'hi-eff', mid: energyMode() ? effChipHtml(currentEffRate(whmi, keys)) : '' },
     ];
   }
   $('#summary').innerHTML = tiles.map(x =>
-    `<div class="stat ${x.cls}"><div class="k">${x.k}</div><div class="v">${x.v}</div></div>`
+    `<div class="stat ${x.cls}"><div class="k">${x.k}</div><div class="v">${x.v}</div><div class="stat-foot">${x.mid || ''}</div></div>`
   ).join('');
+  const kind = S.view;
+  setEffNote(energyMode() && whmi != null ? effNoteText(whmi, keys, kind) : '');
 }
 
 function featureRows(feats, tone) {
@@ -434,7 +516,7 @@ function viewYearSaving() {
 function periodNote(kind, keys, en) {
   const from = S.meta.energy_from;
   const bits = [];
-  if (from) bits.push(`Parked drain starts ${fmtMd(from)}${kind === 'week' ? ', when telemetry began' : ''}.`);
+  // Parked-drain sentence is shown under the summary tiles with the efficiency rating.
   if (kind === 'week' || kind === 'month') {
     const na = keys.filter(k => {
       const d = S.meta.days[k];
@@ -531,7 +613,7 @@ async function ensureMonthsForKeys(keys) {
   }
   for (const ym of yms) await month(ym);
 }
-function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, charge, soc0, soc1, mx, mi }) {
+function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, charge, soc0, soc1, mx, mi, baseline }) {
   const tot = known ? driving + (parked || 0) : driving;
   // Longest consumption day fills 72% of the track, leaving room for charging on the same kWh scale.
   const FILL = 0.72;
@@ -560,7 +642,12 @@ function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, c
   }
   if (charge) bits.push(`<span class="ei chg">${PLUG_ICO} +${fmtCom(charge, cDec)}</span>`);
   const whmi = mi ? Math.round(driving * 1000 / mi) : null;
-  if (whmi != null) bits.push(`<span class="ei eff">${GAUGE_ICO} ${whmi} Wh/mi</span>`);
+  if (whmi != null) {
+    const rate = baseline ? rateEff(whmi, baseline) : null;
+    const cls = rate ? `ei eff ${rate.kind}` : 'ei eff';
+    const chip = rate ? ` <span class="eff-chip ${rate.kind}">${esc(rate.short)}</span>` : '';
+    bits.push(`<span class="${cls}"${rate ? ` title="${esc(rate.vs)}"` : ''}>${GAUGE_ICO} ${whmi} Wh/mi${chip}</span>`);
+  }
   return `<div class="ewk" ${dataAttr || ''}>
     ${labelHtml}
     <div class="em" style="--w:${Math.max(0, w).toFixed(3)}">
@@ -582,6 +669,7 @@ async function viewWeekEnergy() {
   const keys = rangeKeys(s, addDays(s, 6));
   await ensureMonthsForKeys(keys);
   const en = energySum(keys);
+  const weekBase = periodBaseline(keys);
   let mx = 0;
   const days = keys.map(k => {
     const dt = new Date(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8, 10));
@@ -610,7 +698,7 @@ async function viewWeekEnergy() {
       dataAttr: `data-day="${d.k}"`,
       driving: d.driving, parked: d.parked, known: d.known,
       parked_w: d.x.parked_w, charge: d.charge,
-      soc0: d.soc0, soc1: d.soc1, mx, mi: d.x.mi || 0,
+      soc0: d.soc0, soc1: d.soc1, mx, mi: d.x.mi || 0, baseline: weekBase,
     });
   }).join('');
   const from = fmtMd(S.meta.energy_from);
@@ -707,7 +795,7 @@ async function viewYearEnergy() {
       dataAttr: `data-month="${mo.m}"`,
       driving: mo.e.driving, parked: mo.e.parked, known: mo.e.known,
       parked_w: mo.e.parked_w, charge: mo.e.charge_added || 0,
-      soc0: mo.soc0, soc1: mo.soc1, mx, mi: mo.t.mi || 0,
+      soc0: mo.soc0, soc1: mo.soc1, mx, mi: mo.t.mi || 0, baseline: periodBaseline(mo.keys),
     });
   }).join('');
   const from = fmtMd(S.meta.energy_from);

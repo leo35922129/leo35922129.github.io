@@ -110,7 +110,7 @@ header{
 }
 .stat{
   background:var(--card);border-radius:16px;padding:16px 8px 14px;
-  min-height:118px;display:flex;flex-direction:column;justify-content:space-between;
+  min-height:136px;display:flex;flex-direction:column;justify-content:space-between;
   min-width:0;overflow:hidden;
 }
 .stat .k{
@@ -135,6 +135,18 @@ header{
 .stat.hi-save .k{color:var(--saved-lab)}
 .stat.hi-eff{background:var(--eff)}
 .stat.hi-eff .k{color:var(--eff-lab)}
+.stat-foot{display:flex;justify-content:center;align-items:center;min-height:22px;margin-top:6px;flex:none}
+.eff-gap{display:flex;justify-content:center;pointer-events:none}
+.eff-chip{pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:2px 12px;font-size:10px;font-weight:700;letter-spacing:.02em;line-height:1.35;white-space:nowrap;max-width:100%;color:#fff}
+.eff-chip.good{background:#1f8a3f;color:#fff}
+.eff-chip.high{background:#e07a16;color:#fff}
+.eff-chip.typ{background:#6b7380;color:#f2f4f7}
+.effnote{padding:0 12px 8px;margin-top:-2px;font-size:12px;color:var(--mut);line-height:1.35}
+.ecap .ei.eff{gap:5px}
+.ecap .ei.eff .eff-chip{font-size:9px;padding:1px 9px;border-radius:6px;flex:none;line-height:1.45}
+.ecap .ei.eff.good{color:#3ee06b}
+.ecap .ei.eff.high{color:#ff9f3d}
+.ecap .ei.eff.typ{color:#c5cdd6}
 .stat .k .dbadge{width:22px;height:22px;font-size:13px}
 .stat.hi-save .k .dbadge{background:var(--lime);color:#111}
 
@@ -359,7 +371,7 @@ footer{color:var(--mut);font-size:12px;padding:8px 14px calc(env(safe-area-inset
   header{max-width:760px}
   .title{font-size:24px}
   .stat .v{font-size:31px}.stat .v small{font-size:15px}
-  .stat{min-height:132px;padding:18px 10px 16px}
+  .stat{min-height:152px;padding:18px 10px 16px}
   .tg b{font-size:18px}
   .cost .row{font-size:22px}
 }
@@ -370,7 +382,7 @@ footer{color:var(--mut);font-size:12px;padding:8px 14px calc(env(safe-area-inset
 }
 @media(max-width:699px){
   .summary{gap:6px;padding:12px 8px 6px}
-  .stat{min-height:110px;padding:16px 2px 14px}
+  .stat{min-height:130px;padding:16px 2px 14px}
   .stat .k{font-size:13.5px;gap:1px;letter-spacing:-.08em}
   .stat .k .ico{width:18px;height:18px}
   .stat .k .dbadge{width:20px;height:20px;font-size:12px}
