@@ -291,13 +291,8 @@ function statBoxes(cells) {
 function batLabel(a, b) {
   const ok = v => v != null && v !== '' && !isNaN(+v);
   if (!ok(a) && !ok(b)) return '–';
-  const ri = v => ok(v) ? Math.round(+v) : null;
-  const d1 = v => ok(v) ? (Math.round(+v * 10) / 10).toFixed(1) : '–';
-  const ra = ri(a), rb = ri(b);
-  if (ra != null && rb != null && ra !== rb) return `${ra}% → ${rb}%`;
-  if (ok(a) && ok(b) && Math.round(+a * 10) !== Math.round(+b * 10)) return `${d1(a)}% → ${d1(b)}%`;
-  if (ra != null && rb != null) return `${ra}% → ${rb}%`;
-  return `${ok(a) ? ra : '–'}% → ${ok(b) ? rb : '–'}%`;
+  const ri = v => ok(v) ? String(Math.round(+v)) : '–';
+  return `${ri(a)}% → ${ri(b)}%`;
 }
 
 function tripCard(t, idx, total) {
@@ -436,20 +431,6 @@ function viewYearSaving() {
   return h + '</div>';
 }
 
-function splitLegend(driving, parked) {
-  const d = driving || 0, p = parked || 0, tot = d + p;
-  const dp = tot ? (100 * d / tot) : 50;
-  const parkPct = 100 - dp;
-  const parkStyle = `width:${parkPct}%` + ((p > 0 && parkPct < 4) ? ';min-width:6px' : '');
-  return `<div class="espl">
-    <div class="ebar" aria-hidden="true"><i class="ed" style="width:${dp}%"></i><i class="ep" style="${parkStyle}"></i></div>
-    <div class="eleg">
-      <div class="lg"><i class="sw ed"></i><b>Driving ${fmtCom(d, 1)}</b><span class="u">kWh</span></div>
-      <div class="lg"><i class="sw ep"></i><b>Parked ${parked == null ? 'n/a' : fmtCom(p, 1)}</b><span class="u">kWh</span></div>
-    </div>
-  </div>`;
-}
-
 function periodNote(kind, keys, en) {
   const from = S.meta.energy_from;
   const bits = [];
@@ -550,9 +531,9 @@ function viewWeekEnergy() {
     </div>`;
   }).join('');
   const from = fmtMd(S.meta.energy_from);
+  const note = periodNote('week', keys, en);
   return `<div class="pcard">
-    <div class="cap enote">${esc(periodNote('week', keys, en) || '')}</div>
-    ${splitLegend(en.driving, en.parked)}
+    ${note ? `<div class="cap enote">${esc(note)}</div>` : ''}
     <div class="elist period">${rows}</div>
     ${periodFeatureBox('week-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}
   </div>`;
@@ -604,9 +585,9 @@ function viewMonthEnergy() {
   if (parkedDays.length && en.known) avgs.push(`<span><b>${fmtCom(en.parked / parkedDays.length, 1)} kWh</b>/day parked since ${esc(fmtMd(S.meta.energy_from))}</span>`);
   if (en.whmi) avgs.push(`<span><b>${en.whmi} Wh/mi</b></span>`);
   const from = fmtMd(S.meta.energy_from);
+  const note = periodNote('month', monthKeys, en);
   return `<div class="pcard">
-    <div class="cap enote">${esc(periodNote('month', monthKeys, en) || '')}</div>
-    ${splitLegend(en.driving, en.parked)}
+    ${note ? `<div class="cap enote">${esc(note)}</div>` : ''}
     <div class="avgs">${avgs.join('')}</div>
     <div class="mhead">${['S','M','T','W','T','F','S'].map(x => `<div>${x}</div>`).join('')}</div>
     <div class="mchart">${cells.join('')}</div>
@@ -650,9 +631,9 @@ function viewYearEnergy() {
     </div>`;
   }).join('');
   const from = fmtMd(S.meta.energy_from);
+  const note = periodNote('year', yearKeys, en);
   return `<div class="pcard">
-    <div class="cap enote">${esc(periodNote('year', yearKeys, en) || '')}</div>
-    ${splitLegend(en.driving, en.parked)}
+    ${note ? `<div class="cap enote">${esc(note)}</div>` : ''}
     <div class="elist period">${rows}</div>
     ${periodFeatureBox('year-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}
   </div>`;
