@@ -301,14 +301,14 @@ main{padding:8px 12px 24px}
 .ewk .ebat{flex:none;min-width:28px;font-size:11px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .ewk .ebat.end{text-align:right}
 .ebars{flex:1;min-width:24px}
-.etrack{width:100%;height:10px;border-radius:5px;background:#1a1d22;position:relative}
-.estk{width:calc(100% * var(--w,1));height:10px;border-radius:5px;overflow:hidden;display:flex}
+.etrack{width:100%;height:8px;border-radius:4px;background:#1a1d22;position:relative}
+.estk{width:calc(100% * var(--w,1));height:8px;border-radius:4px;overflow:hidden;display:flex}
 .estk i{display:block;height:100%;flex:none}
 .estk .ed{background:var(--fsd)}
 .estk .ep{background:var(--amb)}
 .estk .ec{background:var(--grn);position:relative}
 .estk .ec.cap{background:var(--grn)}
-.etrack .earr{position:absolute;right:0;top:50%;transform:translate(45%,-50%);border-style:solid;border-width:4.5px 0 4.5px 6px;border-color:transparent transparent transparent var(--grn);pointer-events:none}
+.etrack .earr{position:absolute;right:0;top:50%;transform:translate(45%,-50%);border-style:solid;border-width:3.6px 0 3.6px 4.8px;border-color:transparent transparent transparent var(--grn);pointer-events:none}
 .et{font-size:15px;font-weight:500;letter-spacing:-.02em;flex:none;min-width:2.1em;text-align:right}
 .ecap{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;margin-top:5px;font-size:12px;color:var(--mut);overflow:hidden}
 .ecap .ei{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--tx)}
