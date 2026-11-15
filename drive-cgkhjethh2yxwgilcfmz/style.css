@@ -12,6 +12,7 @@
   --saved:#253d18;
   --saved-lab:#6bdc6a;
   --red:#ff6b5e;
+  --gas:#ff5a4e;
   --amb:#f0b040;
   --amb-dim:#c48420;
   --eff:#4b3510;
@@ -52,14 +53,14 @@ header{
 .mode{
   display:flex;align-items:center;flex:none;
   border:1.5px solid #2c3138;border-radius:999px;
-  padding:3px;gap:2px;background:#0e1014;
-  height:38px;min-width:125px;box-sizing:border-box;
+  padding:3px;gap:4px;background:#0e1014;
+  height:44px;min-width:125px;box-sizing:border-box;
 }
 .mode button{
-  display:flex;align-items:center;gap:6px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
   border:0;background:none;padding:3px;
   border-radius:999px;color:var(--mut);line-height:1;
-  height:32px;box-sizing:border-box;
+  height:38px;min-width:44px;box-sizing:border-box;
 }
 .mode .mlab{font-size:14px;font-weight:500;letter-spacing:-.01em;min-width:42px}
 .dbadge{
@@ -73,18 +74,20 @@ header{
 }
 .bolt svg{width:16px;height:16px;fill:var(--bolt)}
 
-/* Saving on: left pill = green $ circle + Saving; right = bolt icon-only */
+/* Saving on: left pill = green $ circle + Saving; right = wide bolt target */
 .mode.saving .msave{background:#1c2026;padding:3px 8px 3px 3px}
 .mode.saving .msave .dbadge{background:var(--lime);color:#111}
 .mode.saving .msave .mlab{color:#d0d4da}
+.mode.saving .menergy{min-width:88px;padding:3px 16px;background:#16181d}
 .mode.saving .menergy .mlab{display:none}
-.mode.saving .menergy .bolt{background:#16181d}
+.mode.saving .menergy .bolt{background:#12141a}
 
-/* Energy on: left = $ icon-only; right pill = Energy text + yellow bolt on the RIGHT */
+/* Energy on: left = wide $ target; right pill = Energy text + yellow bolt on the RIGHT */
 .mode.energy .menergy{background:#1c2026;padding:3px 3px 3px 8px}
 .mode.energy .menergy .mlab{color:#d0d4da}
 .mode.energy .menergy .bolt{background:var(--bolt)}
 .mode.energy .menergy .bolt svg{fill:#111}
+.mode.energy .msave{min-width:88px;padding:3px 16px;background:#16181d}
 .mode.energy .msave .mlab{display:none}
 .mode.energy .msave .dbadge{background:#1a1e24;color:var(--lime)}
 
@@ -142,6 +145,7 @@ header{
 .eff-chip.high{background:#e07a16;color:#fff}
 .eff-chip.typ{background:#6b7380;color:#f2f4f7}
 .effnote{padding:0 12px 8px;margin-top:-2px;font-size:12px;color:var(--mut);line-height:1.35}
+.effnote.reserve{min-height:calc(13px * 1.35 * 2 + 8px)}
 .ecap .ei.eff{gap:5px}
 .ecap .ei.eff .eff-chip{font-size:9px;padding:1px 9px;border-radius:6px;flex:none;line-height:1.45}
 .ecap .ei.eff.good,.ecap .ei.eff.high,.ecap .ei.eff.typ{color:var(--tx)}
@@ -185,7 +189,7 @@ main{padding:8px 12px 24px}
   content:"";position:absolute;left:-17px;top:6px;
   width:9px;height:9px;border-radius:50%;background:var(--acc);
 }
-.rt div:last-child:before{background:#ff5a4e}
+.rt div:last-child:before{background:var(--gas)}
 
 /* 4 stat boxes */
 .tg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;text-align:center}
@@ -350,16 +354,40 @@ main{padding:8px 12px 24px}
 .cell .n{font-weight:600;font-size:14px;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .cell .s{font-size:11px;color:var(--grn);font-weight:600}
 .cell .m{font-size:10px;color:var(--mut)}
-.egrid .cell{position:relative;min-height:96px}
+.egrid .cell,.sgrid .cell{position:relative;min-height:96px;max-height:96px;overflow:hidden;gap:0}
 .ering{width:28px;height:28px;border-radius:50%;flex:none;
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5.5px),#000 calc(100% - 5px));
           mask:radial-gradient(farthest-side,transparent calc(100% - 5.5px),#000 calc(100% - 5px))}
 .cell .s.ekwh{color:var(--eff-lab)}
+.egauge{position:relative;width:42px;height:42px;flex:none;overflow:visible}
+.egauge .egsvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;display:block;pointer-events:none}
+.egauge .egsvg path{stroke:#6b7380;fill:none}
+.egauge.good .egsvg path{stroke:var(--grn)}
+.egauge.high .egsvg path{stroke:#e07a16}
+.egauge.typ .egsvg path{stroke:#6b7380}
+.egauge .eval{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:12px;font-weight:400;color:#fff;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;z-index:1;pointer-events:none}
+.egauge .eunit{position:absolute;left:50%;top:50%;transform:translate(-50%,7px);font-size:5px;color:var(--mut);line-height:1;font-weight:400;letter-spacing:0;z-index:1;pointer-events:none;white-space:nowrap}
+.egrid .cell .eff-chip{position:absolute;left:50%;bottom:0;transform:translateX(-50%);font-size:6.5px;padding:1px 3px;border-radius:4px;margin:0;letter-spacing:0;line-height:1.2;max-width:100%;z-index:1}
+.egrid .cell .m,.sgrid .cell .m{font-size:8px;line-height:1.2;margin-top:1px;flex:none}
+.sbars{display:flex;align-items:flex-end;justify-content:center;gap:5px;height:28px;width:28px;flex:none;border-bottom:1.5px solid #4a515a;padding-bottom:1px;box-sizing:content-box;margin-top:2px}
+.sbar{width:6px;border-radius:4px 4px 0 0;min-height:2px;display:block}
+.sbar.elec{background:var(--grn)}
+.sbar.gas{background:var(--gas)}
+svg.gasico,.gasico{color:var(--gas)}
+.sgrid .cell .s{font-size:11px;font-weight:500;color:var(--grn);letter-spacing:-.04em;line-height:1.15;margin-top:3px}
 @media(min-width:700px){
-  .egrid .cell{min-height:110px}
+  .egrid .cell,.sgrid .cell{min-height:110px;max-height:110px}
   .ering{width:36px;height:36px;
     -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6.5px));
             mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6.5px))}
+  .egauge{width:62px;height:62px}
+  .egauge .eval{font-size:18px;letter-spacing:-.03em}
+  .egauge .eunit{font-size:6px;transform:translate(-50%,11px)}
+  .egrid .cell .eff-chip{font-size:7.5px;padding:1px 5px;border-radius:5px;bottom:1px}
+  .egrid .cell .m,.sgrid .cell .m{font-size:10px;margin-top:1px}
+  .sbars{height:36px;width:36px;gap:7px}
+  .sbar{width:8px;border-radius:5px 5px 0 0}
+  .sgrid .cell .s{font-size:13px;margin-top:4px}
 }
 
 
@@ -407,7 +435,6 @@ footer{color:var(--mut);font-size:12px;padding:8px 14px calc(env(safe-area-inset
   .hd .right{gap:4px}
 }
 @media(max-width:430px){
-  .mode{transform:scale(.98);transform-origin:left center}
   .pill{padding:7px 12px;font-size:14px}
   .tg b{font-size:13.5px}
   .cost .row{font-size:17px}

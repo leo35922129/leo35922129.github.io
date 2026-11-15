@@ -123,9 +123,9 @@ const SAVED_ICO = '<svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circl
 const DBADGE = '<span class="dbadge" aria-hidden="true">$</span>';
 const WHEEL = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#3e8bff" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.25"/><circle cx="12" cy="12" r="2.15"/><path d="M12 9.85V3.75M3.75 13h6.1M14.15 13h6.1"/></svg>';
 const BOLT_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f5d031" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg>';
-const ELEC_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#f5d031" stroke-width="1.8"/><g transform="translate(12 12) scale(0.46) translate(-12 -12)"><path fill="#f5d031" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></g></svg>';
+const ELEC_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#34c759" stroke-width="1.8"/><g transform="translate(12 12) scale(0.46) translate(-12 -12)"><path fill="#34c759" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></g></svg>';
 const PLUG_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.2 10.15h6.6c.4 0 .7.3.7.7v2.3c0 .4-.3.7-.7.7H3.2c-.7 0-1.2-.5-1.2-1.15v-1.4c0-.65.5-1.15 1.2-1.15z"/><rect x="9.4" y="7.6" width="7" height="8.8" rx="1.8" fill="currentColor"/><rect x="16.2" y="9.15" width="4.6" height="1.7" rx=".7" fill="currentColor"/><rect x="16.2" y="13.15" width="4.6" height="1.7" rx=".7" fill="currentColor"/></svg>';
-const PUMP_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#ff5a4e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.8" y="3.5" width="9.2" height="16.5" rx="1.4"/><path d="M7 8h3.2M13 8.2h2.4c1.15 0 2.2.95 2.2 2.15V15"/><circle cx="17.6" cy="16.4" r="1.55" fill="#ff5a4e" stroke="none"/></svg>';
+const PUMP_ICO = '<svg class="ico gasico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.8" y="3.5" width="9.2" height="16.5" rx="1.4"/><path d="M7 8h3.2M13 8.2h2.4c1.15 0 2.2.95 2.2 2.15V15"/><circle cx="17.6" cy="16.4" r="1.55" fill="currentColor" stroke="none"/></svg>';
 const PARK_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.2" fill="#f0b040"/><path fill="#1a1408" d="M8.55 6.55h4.7c2.35 0 3.85 1.35 3.85 3.5 0 2.15-1.55 3.55-3.85 3.55h-2.1V17.45H8.55V6.55zm2.55 2.15v2.7h1.9c1.05 0 1.7-.55 1.7-1.35s-.65-1.35-1.7-1.35h-1.9z"/></svg>';
 const GAUGE_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#f0b040" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 17.4a8.6 8.6 0 1 1 14.8 0"/><path d="M12 17.4 16.1 9.7"/><circle cx="12" cy="17.4" r="1.55" fill="#f0b040" stroke="none"/></svg>';
 const MAP_ICO = '<svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg>';
@@ -269,8 +269,8 @@ function setEffNote(text) {
     const sum = document.getElementById('summary');
     sum.insertAdjacentElement('afterend', el);
   }
-  if (text) { el.hidden = false; el.textContent = text; }
-  else { el.hidden = true; el.textContent = ''; }
+  if (text) { el.hidden = false; el.classList.remove('reserve'); el.textContent = text; }
+  else { el.hidden = true; el.textContent = ''; el.classList.toggle('reserve', S.view === 'month'); }
 }
 
 function renderSummary() {
@@ -475,15 +475,42 @@ function setTitle() {
 }
 
 function viewMonthSaving() {
-  const c = S.cur, first = new Date(c.getFullYear(), c.getMonth(), 1), start = weekStart(first), tk = keyOf(todayD());
-  let h = `<div class="dow">${DOW.map(d => `<div>${d[0]}</div>`).join('')}</div><div class="grid">`;
+  const c = S.cur, first = new Date(c.getFullYear(), c.getMonth(), 1), last = new Date(c.getFullYear(), c.getMonth() + 1, 0);
+  const start = weekStart(first), tk = keyOf(todayD());
+  const monthKeys = rangeKeys(first, last);
+  const tsum = sumDays(monthKeys);
+  let h = `<div class="dow">${DOW.map(d => `<div>${d[0]}</div>`).join('')}</div><div class="grid sgrid">`;
   for (let i = 0; i < 42; i++) {
-    const d = addDays(start, i); if (i >= 35 && d.getMonth() !== c.getMonth()) break;
-    const k = keyOf(d), x = S.meta.days[k];
-    h += `<div class="cell ${d.getMonth() !== c.getMonth() ? 'out' : ''} ${k === tk ? 'today' : ''}" data-day="${k}"><div class="n">${d.getDate()}</div>` +
-      (x && x.n ? `<div class="s">${money(x.save)}</div><div class="m">${num(x.mi, 0)} mi</div>` : (x && x.chg ? '<div class="dot"></div>' : '')) + '</div>';
+    const d = addDays(start, i);
+    if (i >= 35 && d.getMonth() !== c.getMonth()) break;
+    const k = keyOf(d), inMon = d.getMonth() === c.getMonth();
+    const x = S.meta.days[k] || {};
+    const future = k > tk;
+    const hasDrive = inMon && !future && (x.n || 0) > 0;
+    h += `<div class="cell ${!inMon ? 'out' : ''} ${k === tk && inMon ? 'today' : ''}"${inMon ? ` data-day="${k}"` : ''}>`;
+    h += `<div class="n">${d.getDate()}</div>`;
+    if (hasDrive) {
+      const elec = x.elec || 0, gas = x.gas || 0, mx = Math.max(elec, gas, 0.01);
+      const eH = Math.max(8, Math.round(100 * elec / mx));
+      const gH = Math.max(8, Math.round(100 * gas / mx));
+      h += `<div class="sbars" aria-hidden="true"><i class="sbar elec" style="height:${eH}%"></i><i class="sbar gas" style="height:${gH}%"></i></div>`;
+      h += `<div class="s">${money(x.save || 0)}</div>`;
+      if (x.mi) h += `<div class="m">${num(x.mi, 0)} mi</div>`;
+    }
+    h += '</div>';
   }
-  return h + '</div><p class="empty" style="padding:10px 0;font-size:12px">Green = saved vs. gas that day · tap a day for trips</p>';
+  h += '</div>';
+  const avgs = [];
+  const drivenDays = monthKeys.filter(k => (S.meta.days[k] || {}).n).length;
+  if (drivenDays) {
+    avgs.push(`<span>Avg <b>${money(tsum.save / drivenDays)}</b> saved/day driven</span>`);
+    avgs.push(`<span><b>${money(tsum.elec / drivenDays)}</b> electric</span>`);
+    avgs.push(`<span><b>${fmtCom(tsum.mi / drivenDays, 1)} mi</b>/day</span>`);
+  }
+  const cap = 'Bars = electric (green) vs gas (red) · green $ is what you saved · tap a day for trips';
+  return `${h}
+    ${avgs.length ? `<div class="avgs">${avgs.join('')}</div>` : ''}
+    <p class="empty" style="padding:10px 0;font-size:12px">${esc(cap)}</p>`;
 }
 
 function viewWeekSaving() {
@@ -711,39 +738,39 @@ async function viewWeekEnergy() {
   </div>`;
 }
 
+function effGaugeSvg() {
+  const r = 15, cx = 20, cy = 20, gap = 144;
+  const a1 = (180 + gap / 2) * Math.PI / 180;
+  const a2 = (180 - gap / 2) * Math.PI / 180;
+  const x1 = cx + r * Math.sin(a1), y1 = cy - r * Math.cos(a1);
+  const x2 = cx + r * Math.sin(a2), y2 = cy - r * Math.cos(a2);
+  const d = `M ${x1.toFixed(3)} ${y1.toFixed(3)} A ${r} ${r} 0 1 1 ${x2.toFixed(3)} ${y2.toFixed(3)}`;
+  return `<svg class="egsvg" viewBox="0 0 40 40" overflow="visible" aria-hidden="true"><path d="${d}" fill="none" stroke-width="3.1" stroke-linecap="round"/></svg>`;
+}
 function viewMonthEnergy() {
   const c = S.cur, first = new Date(c.getFullYear(), c.getMonth(), 1), last = new Date(c.getFullYear(), c.getMonth() + 1, 0);
   const start = weekStart(first), tk = keyOf(todayD());
   const monthKeys = rangeKeys(first, last);
   const en = energySum(monthKeys);
+  const baseline = periodBaseline(monthKeys);
   let h = `<div class="dow">${DOW.map(d => `<div>${d[0]}</div>`).join('')}</div><div class="grid egrid">`;
   for (let i = 0; i < 42; i++) {
     const d = addDays(start, i);
     if (i >= 35 && d.getMonth() !== c.getMonth()) break;
     const k = keyOf(d), inMon = d.getMonth() === c.getMonth();
     const x = S.meta.days[k] || {};
-    const known = !!x.parked_known;
-    const driving = x.kwh || 0;
-    const parked = known ? (x.parked || 0) : 0;
-    const tot = known ? driving + parked : driving;
     const future = k > tk;
-    const hasEnergy = inMon && !future && tot >= 0.05;
     const mi = x.mi || 0;
+    const driving = x.kwh || 0;
+    const whmi = (inMon && !future && mi) ? Math.round(driving * 1000 / mi) : null;
     h += `<div class="cell ${!inMon ? 'out' : ''} ${k === tk && inMon ? 'today' : ''}"${inMon ? ` data-day="${k}"` : ''}>`;
     h += `<div class="n">${d.getDate()}</div>`;
-    if (hasEnergy) {
-      let ring;
-      if (known && parked && driving) {
-        const drvPct = 100 * driving / tot;
-        ring = `conic-gradient(from -90deg,var(--fsd) 0 ${drvPct}%,var(--amb) ${drvPct}% 100%)`;
-      } else if (known && parked && !driving) {
-        ring = 'conic-gradient(from -90deg,var(--amb) 0 100%)';
-      } else {
-        ring = 'conic-gradient(from -90deg,var(--fsd) 0 100%)';
-      }
-      const val = known ? fmtCom(tot, tot >= 10 ? 0 : 1) : fmtCom(driving, driving >= 10 ? 0 : 1);
-      h += `<div class="ering" style="background:${ring}"></div>`;
-      h += `<div class="s ekwh">${val}</div>`;
+    if (whmi != null) {
+      const rate = baseline ? rateEff(whmi, baseline) : null;
+      const kind = rate ? rate.kind : '';
+      h += `<div class="egauge${kind ? ' ' + kind : ''}">${effGaugeSvg()}<div class="eval">${whmi}</div><div class="eunit">Wh/mi</div>`;
+      if (rate) h += `<span class="eff-chip ${rate.kind}" title="${esc(rate.vs)}">${esc(rate.short)}</span>`;
+      h += `</div>`;
       if (mi) h += `<div class="m">${num(mi, 0)} mi</div>`;
     }
     h += '</div>';
@@ -756,8 +783,7 @@ function viewMonthEnergy() {
   if (parkedDays.length && en.known) avgs.push(`<span><b>${fmtCom(en.parked / parkedDays.length, 1)} kWh</b>/day parked since ${esc(fmtMd(S.meta.energy_from))}</span>`);
   if (en.whmi) avgs.push(`<span><b>${en.whmi} Wh/mi</b></span>`);
   const from = fmtMd(S.meta.energy_from);
-  const note = (periodNote('month', monthKeys, en) || '').replace(/\.$/, '');
-  const cap = ['Ring = driving (blue) + parked (amber)', note, 'tap a day for trips'].filter(Boolean).join(' · ');
+  const cap = 'Gauge = Wh/mi vs your 30-day avg · green better, orange worse · tap a day for trips';
   return `${h}
     ${avgs.length ? `<div class="avgs">${avgs.join('')}</div>` : ''}
     <p class="empty" style="padding:10px 0;font-size:12px">${esc(cap)}</p>
