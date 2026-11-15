@@ -533,16 +533,21 @@ async function ensureMonthsForKeys(keys) {
 }
 function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, charge, soc0, soc1, mx }) {
   const tot = known ? driving + (parked || 0) : driving;
-  const w = mx ? tot / mx : 0;
-  const drvPct = tot ? (100 * driving / tot) : 0;
-  const parkPct = known && tot ? (100 * (parked || 0) / tot) : 0;
-  const chgW = (charge > 0 && mx) ? Math.min(1, charge / mx) : 0;
-  const capped = charge > 0 && mx && charge > mx + 0.05;
+  // Longest consumption day fills 72% of the track, leaving room for charging on the same kWh scale.
+  const FILL = 0.72;
+  const scale = mx ? mx / FILL : 1;
+  const used = tot + (charge || 0);
+  const capped = used > scale + 0.05;
+  const w = scale ? Math.min(1, used / scale) : 0;
+  const denom = capped ? scale : (used || 1);
+  const drvPct = denom ? (100 * driving / denom) : 0;
+  const parkPct = known && denom ? (100 * (parked || 0) / denom) : 0;
+  const chgPct = charge && denom ? (capped ? Math.max(0, 100 - drvPct - parkPct) : (100 * charge / denom)) : 0;
   const kwhDec = tot >= 100 ? 0 : 1;
   const label = known ? fmtCom(tot, kwhDec) : fmtCom(driving, kwhDec);
   const segs = `<i class="ed" style="width:${drvPct}%"></i>`
-    + (known && parkPct ? `<i class="ep" style="width:${parkPct}%"></i>` : '');
-  const chgBar = chgW ? `<div class="echg${capped ? ' cap' : ''}" style="--cw:${chgW.toFixed(3)}" title="${capped ? 'Charging exceeds this scale' : ''}"></div>` : '';
+    + (known && parkPct ? `<i class="ep" style="width:${parkPct}%"></i>` : '')
+    + (chgPct ? `<i class="ec${capped ? ' cap' : ''}" style="width:${chgPct}%"></i>` : '');
   const dDec = driving >= 100 ? 0 : 1;
   const pDec = (parked || 0) >= 100 ? 0 : 1;
   const cDec = charge >= 100 ? 0 : 1;
@@ -560,8 +565,7 @@ function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, c
       <div class="etk">
         <span class="ebat">${socPctLabel(soc0)}</span>
         <div class="ebars">
-          <div class="etrack"><div class="estk">${segs}</div></div>
-          ${chgBar}
+          <div class="etrack"><div class="estk${capped ? ' cap' : ''}"${capped ? ' title="Charging exceeds this scale"' : ''}>${segs}</div>${capped ? '<i class="earr"></i>' : ''}</div>
         </div>
         <span class="ebat end">${socPctLabel(soc1)}</span>
         <b class="et">${label}</b>
