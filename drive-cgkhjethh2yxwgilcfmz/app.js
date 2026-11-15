@@ -531,7 +531,7 @@ async function ensureMonthsForKeys(keys) {
   }
   for (const ym of yms) await month(ym);
 }
-function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, charge, soc0, soc1, mx }) {
+function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, charge, soc0, soc1, mx, mi }) {
   const tot = known ? driving + (parked || 0) : driving;
   // Longest consumption day fills 72% of the track, leaving room for charging on the same kWh scale.
   const FILL = 0.72;
@@ -559,6 +559,8 @@ function energyUseRow({ labelHtml, dataAttr, driving, parked, known, parked_w, c
     bits.push(`<span class="ei park mute">${PARK_ICO} n/a</span>`);
   }
   if (charge) bits.push(`<span class="ei chg">${PLUG_ICO} +${fmtCom(charge, cDec)}</span>`);
+  const whmi = mi ? Math.round(driving * 1000 / mi) : null;
+  if (whmi != null) bits.push(`<span class="ei eff">${GAUGE_ICO} ${whmi} Wh/mi</span>`);
   return `<div class="ewk" ${dataAttr || ''}>
     ${labelHtml}
     <div class="em" style="--w:${Math.max(0, w).toFixed(3)}">
@@ -608,7 +610,7 @@ async function viewWeekEnergy() {
       dataAttr: `data-day="${d.k}"`,
       driving: d.driving, parked: d.parked, known: d.known,
       parked_w: d.x.parked_w, charge: d.charge,
-      soc0: d.soc0, soc1: d.soc1, mx,
+      soc0: d.soc0, soc1: d.soc1, mx, mi: d.x.mi || 0,
     });
   }).join('');
   const from = fmtMd(S.meta.energy_from);
@@ -705,7 +707,7 @@ async function viewYearEnergy() {
       dataAttr: `data-month="${mo.m}"`,
       driving: mo.e.driving, parked: mo.e.parked, known: mo.e.known,
       parked_w: mo.e.parked_w, charge: mo.e.charge_added || 0,
-      soc0: mo.soc0, soc1: mo.soc1, mx,
+      soc0: mo.soc0, soc1: mo.soc1, mx, mi: mo.t.mi || 0,
     });
   }).join('');
   const from = fmtMd(S.meta.energy_from);

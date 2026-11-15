@@ -307,8 +307,11 @@ main{padding:8px 12px 24px}
 .ecap .ei.chg .ico{color:var(--grn)}
 .ecap .ei .w{color:var(--mut);font-weight:500;margin-left:1px}
 .ecap .ei.mute{color:var(--mut);font-weight:500}
+.ecap .ei.eff{color:var(--tx)}
+.ecap .ei.eff .ico{flex:none}
 @media (max-width:430px){
   .ecap .ei .w{display:none}
+  .ecap{gap:6px}
 }
 .ewk.nod .none{color:var(--mut);font-size:14px}
 .chg-note{display:inline-flex;align-items:center;gap:6px;color:var(--grn)}
