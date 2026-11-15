@@ -715,13 +715,7 @@ function viewMonthEnergy() {
   const start = weekStart(first), tk = keyOf(todayD());
   const monthKeys = rangeKeys(first, last);
   const en = energySum(monthKeys);
-  let mx = 1;
-  for (const k of monthKeys) {
-    const x = S.meta.days[k] || {};
-    const tot = x.parked_known ? (x.kwh || 0) + (x.parked || 0) : (x.kwh || 0);
-    if (tot > mx) mx = tot;
-  }
-  const cells = [];
+  let h = `<div class="dow">${DOW.map(d => `<div>${d[0]}</div>`).join('')}</div><div class="grid egrid">`;
   for (let i = 0; i < 42; i++) {
     const d = addDays(start, i);
     if (i >= 35 && d.getMonth() !== c.getMonth()) break;
@@ -732,23 +726,28 @@ function viewMonthEnergy() {
     const parked = known ? (x.parked || 0) : 0;
     const tot = known ? driving + parked : driving;
     const future = k > tk;
-    const empty = !inMon || future || (!x.n && !known && !(x.charge_added) && !driving);
-    const chargeOnly = inMon && !x.n && known && !tot && (x.charge_added || 0) > 0;
-    const cls = ['mcol'];
-    if (k === tk && inMon) cls.push('today');
-    if (!inMon || future) cls.push('out');
-    else if (empty || chargeOnly) cls.push('nod');
-    let bar = '', val = '';
-    if (inMon && !future && !empty && !chargeOnly) {
-      const h = Math.max(12, Math.round(100 * tot / mx));
-      const drvPct = tot ? (100 * driving / tot) : 0;
-      const parkPct = known && tot && parked ? (100 - drvPct) : 0;
-      bar = `<div class="bstk" style="height:${h}%"><i class="ed" style="flex:${known ? drvPct : 1} 0 0"></i>${parkPct ? `<i class="ep" style="flex:${parkPct} 0 0"></i>` : ''}</div>`;
-      val = known ? fmtCom(tot, tot >= 10 ? 0 : 1) : fmtCom(driving, driving >= 10 ? 0 : 1);
+    const hasEnergy = inMon && !future && tot >= 0.05;
+    const mi = x.mi || 0;
+    h += `<div class="cell ${!inMon ? 'out' : ''} ${k === tk && inMon ? 'today' : ''}"${inMon ? ` data-day="${k}"` : ''}>`;
+    h += `<div class="n">${d.getDate()}</div>`;
+    if (hasEnergy) {
+      let ring;
+      if (known && parked && driving) {
+        const drvPct = 100 * driving / tot;
+        ring = `conic-gradient(from -90deg,var(--fsd) 0 ${drvPct}%,var(--amb) ${drvPct}% 100%)`;
+      } else if (known && parked && !driving) {
+        ring = 'conic-gradient(from -90deg,var(--amb) 0 100%)';
+      } else {
+        ring = 'conic-gradient(from -90deg,var(--fsd) 0 100%)';
+      }
+      const val = known ? fmtCom(tot, tot >= 10 ? 0 : 1) : fmtCom(driving, driving >= 10 ? 0 : 1);
+      h += `<div class="ering" style="background:${ring}"></div>`;
+      h += `<div class="s ekwh">${val}</div>`;
+      if (mi) h += `<div class="m">${num(mi, 0)} mi</div>`;
     }
-    const dayAttr = inMon ? ` data-day="${k}"` : '';
-    cells.push(`<div class="${cls.join(' ')}"${dayAttr}><div class="bh">${bar}</div><div class="n">${d.getDate()}</div><div class="v">${val}</div></div>`);
+    h += '</div>';
   }
+  h += '</div>';
   const avgs = [];
   const drivenDays = monthKeys.filter(k => (S.meta.days[k] || {}).n).length;
   const parkedDays = monthKeys.filter(k => (S.meta.days[k] || {}).parked_known);
@@ -756,14 +755,12 @@ function viewMonthEnergy() {
   if (parkedDays.length && en.known) avgs.push(`<span><b>${fmtCom(en.parked / parkedDays.length, 1)} kWh</b>/day parked since ${esc(fmtMd(S.meta.energy_from))}</span>`);
   if (en.whmi) avgs.push(`<span><b>${en.whmi} Wh/mi</b></span>`);
   const from = fmtMd(S.meta.energy_from);
-  const note = periodNote('month', monthKeys, en);
-  return `<div class="pcard">
-    ${note ? `<div class="cap enote">${esc(note)}</div>` : ''}
-    <div class="avgs">${avgs.join('')}</div>
-    <div class="mhead">${['S','M','T','W','T','F','S'].map(x => `<div>${x}</div>`).join('')}</div>
-    <div class="mchart">${cells.join('')}</div>
-    ${periodFeatureBox('month-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}
-  </div>`;
+  const note = (periodNote('month', monthKeys, en) || '').replace(/\.$/, '');
+  const cap = ['Ring = driving (blue) + parked (amber)', note, 'tap a day for trips'].filter(Boolean).join(' · ');
+  return `${h}
+    ${avgs.length ? `<div class="avgs">${avgs.join('')}</div>` : ''}
+    <p class="empty" style="padding:10px 0;font-size:12px">${esc(cap)}</p>
+    ${periodFeatureBox('month-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}`;
 }
 
 async function viewYearEnergy() {
