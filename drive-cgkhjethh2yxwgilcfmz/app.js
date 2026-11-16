@@ -474,13 +474,53 @@ function chargeInfoLine(it) {
   if (it.mi != null && it.mi > 0) bits.push('+' + num(it.mi, it.mi >= 10 ? 0 : 1) + ' mi');
   return bits.join(' · ');
 }
+function stationBadgeClass(st) {
+  if (!st) return 'pub';
+  if (st.match === 'home' || /home/i.test(st.badge || '')) return 'home';
+  if ((st.network || '').toLowerCase() === 'tesla' || /supercharger/i.test(st.badge || '')) return 'tesla';
+  return 'pub';
+}
+function stationTitle(it) {
+  const st = it.station;
+  if (!st || !st.badge) return '';
+  const chip = `<span class="stn-badge ${stationBadgeClass(st)}">${esc(st.badge)}</span>`;
+  const name = st.site_name || '';
+  const nameHtml = (st.match === 'home' || !name || name === st.badge) ? '' : `<span class="stn-name">${esc(name)}</span>`;
+  return `<div class="stn-title">${chip}${nameHtml}</div>`;
+}
+function stationWhere(it, info) {
+  const st = it.station;
+  const label = (st && st.label) || it.label || it.where || 'Charger';
+  let addr = (st && (st.address || st.official_address)) || it.where || '';
+  if (st && st.match === 'home' && (!addr || addr === 'Home' || addr === label)) addr = '';
+  if (st && addr && (addr === label || addr === st.badge)) addr = '';
+  // If we have a station title, don't repeat the label as the address line.
+  const showAddr = !!(addr && !(st && st.badge && addr === st.label));
+  if (!st || !st.badge) {
+    return `<div class="where">${esc(label)}${info ? `<span class="chinfo"> · ${esc(info)}</span>` : ''}</div>`;
+  }
+  if (!showAddr && !info) return '';
+  return `<div class="where">${showAddr ? esc(addr) : ''}${info ? `${showAddr ? '<span class="chinfo"> · ' : '<span class="chinfo">'}${esc(info)}</span>` : ''}</div>`;
+}
+function stationMeta(it) {
+  const st = it.station;
+  if (!st) return '';
+  const bits = [];
+  if (st.stalls) bits.push(st.stalls + (st.gen ? ' ' + st.gen : '') + ' stall' + (st.stalls === 1 ? '' : 's'));
+  else if (st.gen) bits.push(st.gen);
+  if (st.max_kw) bits.push(st.max_kw + '\u00a0kW max');
+  if (st.connector) bits.push(st.connector);
+  if (st.peak_kw != null) bits.push('peak ' + num(st.peak_kw, st.peak_kw >= 10 ? 0 : 1) + '\u00a0kW');
+  if (st.match_note) bits.push(st.match_note);
+  if (!bits.length) return '';
+  return `<div class="stn-meta">${esc(bits.join(' · '))}</div>`;
+}
 function chargeCard(it) {
   const ongoing = !!it.open;
   const when = `${timeTs(it.s)} – ${ongoing ? 'now' : timeTs(it.e)}`;
   const dur = fmtSpan(it.s, it.e);
   const added = it.added != null ? it.added : it.kwh;
-  const kw = it.kw != null ? num(it.kw, 2) : '–';
-  const label = it.label || it.where || 'Charger';
+  const kw = it.kw != null ? num(it.kw, 1) : '–';
   const info = chargeInfoLine(it);
   const right = ongoing
     ? `<span>${esc(dur)}</span><span>Charging</span>`
@@ -491,11 +531,13 @@ function chargeCard(it) {
       <span class="when">${esc(when)}</span>
       <span class="right">${right}</span>
     </div>
-    <div class="where">${esc(label)}${info ? `<span class="chinfo"> · ${esc(info)}</span>` : ''}</div>
+    ${stationTitle(it)}
+    ${stationWhere(it, info)}
+    ${stationMeta(it)}
     ${statBoxes([
       { v: added != null ? '+' + num(added, added >= 10 ? 1 : 2) : '–', k: 'kWh' },
       { v: batLabel(it.soc0, it.soc1), k: 'battery', cls: 'batcell' },
-      { v: kw, k: 'kW' },
+      { v: kw, k: 'avg kW' },
       { v: esc(dur), k: 'duration' },
     ])}
   </div>`;
