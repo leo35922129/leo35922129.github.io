@@ -1,0 +1,21 @@
+Autonomy Weekly, for the week of November 8 to 15, 2026. This is the three-minute summary.
+
+Headline one. Tesla opened Cybercab pre-orders for personal use. The price is 29,990 dollars, plus a 299 dollar monthly fee, with delivery estimated for December in a handful of Texas cities, and the car only drives inside geofenced areas. Elon Musk replied that the fee is too high and should be closer to 115 dollars a month. Why it matters: it is the first time Tesla is selling a car with no steering wheel to consumers.
+
+Headline two. The Cybertruck is being wound down to make room for Cybercab. Musk first said production would end around mid-2027, then extended it through the end of summer 2027 to work through the order backlog. Electrek reports Tesla also raised Cybertruck prices by up to 10 percent and paused base Dual Motor orders. For a Cybertruck owner, this is the story to follow.
+
+Headline three. Tesla Robotaxi kept expanding. It launched in San Antonio on November 9, its eighth city, with a service area of about 273 square miles. The Austin area grew to about 443 square miles, and Tesla says Robotaxi now runs 24 hours a day in every city it serves. One caution: Axios noted a tracker showed only one Tesla robotaxi in San Antonio at launch.
+
+Headline four. Tesla briefly passed Waymo on the Texas automated-vehicle register, 1,302 to 1,297, on November 10. By Sunday morning, Waymo was back ahead, 1,321 to 1,306. Registered does not mean in service.
+
+Headline five. FSD software. Version 14.3.13 continues rolling out in build 2026.38.5.13. Finland approved Tesla's system on November 10, renamed Tesla Assisted Driving, with speed offset capped. An EU-wide vote is expected this winter.
+
+Headline six. Waymo is under new federal scrutiny. NHTSA opened a recall query covering nearly 3,000 Waymo vehicles after robotaxis kept passing stopped school buses even after a software fix. Separately, video showed a Waymo trying to get around a Highway Patrol traffic break on Interstate 280.
+
+Headline seven. Zoox began rides for employees and their friends and family in Atlanta, and expanded Las Vegas service downtown with hours from 6 a.m. to 3 a.m.
+
+Headline eight. Compute. NVIDIA released Alpamayo 2 Edge, a reasoning driving model that runs on DRIVE Thor at 160 to 190 milliseconds. Kakao Mobility signed a Level 4 deal with NVIDIA, and Wayve signed a multi-year training deal with CoreWeave.
+
+What to watch next week. Baidu and XPeng report earnings Monday. NVIDIA reports Tuesday. Pony.ai reports Wednesday, and WeRide on Friday. Also watch for Cybercab rides in Dallas, which Tesla said would start this month, Rivian's point-to-point rollout, and Waymo's response to NHTSA.
+
+Every claim in this report links to its source on the page. That's the summary.

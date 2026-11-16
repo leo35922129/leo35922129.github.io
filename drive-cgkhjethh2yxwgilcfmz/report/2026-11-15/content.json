@@ -1,0 +1,106 @@
+{
+"headlines": [
+ {"h": "Tesla opens Cybercab pre-orders for personal use", "t": "Select customers can order the Cybercab at $29,990 plus a $299/month fee; delivery estimated December 2026 in a few Texas cities, geofenced operation only. Musk replied the fee is too high and should be about $115/month.", "why": "First steering-wheel-free car sold to consumers: Tesla is testing whether owners will pay for personal unsupervised autonomy.", "s": ["tc_cybercab"]},
+ {"h": "Cybertruck gets an end date, to make room for Cybercab", "t": "Musk said on Nov 6 that Giga Texas would wind down Cybertruck production around mid-2027, then on Nov 11 extended it through the end of summer 2027 to work through the backlog. Electrek reports prices rose up to 10% and base Dual Motor orders were paused (cheapest now $92,490).", "why": "For a Cybertruck owner: resale and long-term support questions; no statement on support for existing trucks appears in these sources.", "s": ["verge_ct", "electrek_ct"]},
+ {"h": "Robotaxi: San Antonio launch, bigger Austin, 24/7 everywhere", "t": "Tesla launched in San Antonio on Nov 9 (its 8th city, about 273 sq mi vs Waymo's 59). Austin's area grew to about 443 sq mi, and on Nov 11 Tesla said Robotaxi runs 24/7 in every city it serves.", "why": "Coverage is now huge on paper, but Axios noted a tracker showed just one Tesla robotaxi in San Antonio at launch.", "s": ["mashable", "axios_sa", "nata_austin", "tn_247"]},
+ {"h": "Texas register: Tesla briefly passed Waymo", "t": "Tesla Robotaxi led Waymo 1,302 to 1,297 registered Texas AVs on Nov 10; by early Nov 15 Waymo was back ahead, 1,321 to 1,306.", "why": "The best public fleet scorecard shows the two now neck and neck in Texas. Registered does not mean in service.", "s": ["evwire_pass", "evwire_tracker"]},
+ {"h": "FSD v14.3.13 keeps rolling; Finland approves it as Tesla Assisted Driving", "t": "Build 2026.38.5.13 (Nov 13) carries FSD v14.3.13 with a rewritten MLIR compiler cited for 20% faster reaction time. Finland recognised the Dutch approval on Nov 10; the speed offset is capped at 10% and an EU-wide vote is expected this winter.", "why": "This is the software in your truck, and Europe is the next big subscription market.", "s": ["teslascope", "nata_updates", "traficom"]},
+ {"h": "NHTSA opens a recall query into about 3,000 Waymo vehicles", "t": "Regulators want to know why Waymo robotaxis kept passing stopped school buses after a software fix completed in Nov 2025. Separately, ABC7 reported video of a Waymo trying to get around a CHP traffic break on I-280.", "why": "The leader's safety record is under fresh review, and it sets the bar for how regulators judge any AV software fix, Tesla's included.", "s": ["reuters_waymo", "tc_waymo", "abc7"]},
+ {"h": "Zoox starts rides in Atlanta and grows in Las Vegas", "t": "Employee, family and friends rides began in northwest Atlanta on Nov 13; Las Vegas service expanded to Downtown and the Arts District with 6 a.m.–3 a.m. hours.", "why": "The other purpose-built robotaxi (Amazon) is widening its footprint.", "s": ["zoox_atl", "zoox_lv"]},
+ {"h": "Compute: NVIDIA Alpamayo 2 Edge, Kakao L4 deal, Wayve on CoreWeave", "t": "NVIDIA's 2B-parameter reasoning driving model runs on DRIVE AGX Thor at 160–190 ms pixel-to-trajectory. Kakao Mobility signed an L4 MOU using dual Thor; Wayve signed a multi-year Blackwell training deal with CoreWeave.", "why": "NVIDIA is becoming the default car computer and training cloud for the non-Tesla field.", "s": ["nvidia", "kakao", "wayve"]}
+],
+"watch": [
+ {"t": "Mon Nov 16: Baidu (Apollo Go) and XPeng report Q3 results.", "s": ["baidu_earn", "xpeng_earn"]},
+ {"t": "Tue Nov 17: NVIDIA Q3 FY2027 results (automotive segment).", "s": ["nvda_earn"]},
+ {"t": "Wed Nov 18: Pony.ai Q3 results; Fri Nov 20: WeRide Q3 results.", "s": ["pony_earn", "weride_earn"]},
+ {"t": "Cybercab rides in Dallas: Tesla said on its Q3 call they would launch this month.", "s": ["evwire_pass"]},
+ {"t": "Rivian point-to-point rollout to employees then customers; tech event Dec 9.", "s": ["cnbc_rivian"]},
+ {"t": "Waymo's response to the NHTSA recall query; any CHP action on the I-280 incident.", "s": ["tc_waymo", "abc7"]}
+],
+"robotaxi_table": {
+ "columns": ["Operator", "Where", "Driverless status", "Fleet", "This week"],
+ "rows": [
+  [{"t":"Tesla"}, {"t":"8 US cities: Austin, Dallas, Houston, Fort Worth, San Antonio, Miami, Orlando, Tampa","s":["mashable"]}, {"t":"Driverless rides; 24/7 since Nov 11","s":["tn_247"]}, {"t":"1,306 registered in Texas (Nov 15)","s":["evwire_tracker"]}, {"t":"San Antonio launch; Austin to ~443 sq mi; Cybercab personal pre-orders","s":["axios_sa","nata_austin","tc_cybercab"]}],
+  [{"t":"Waymo"}, {"t":"14 US cities with public riders","s":["waymo14"]}, {"t":"Fully driverless, paid","s":["waymo14"]}, {"t":"4,000+ (Sep); 1,321 registered in Texas","s":["tc_waymo_sep","evwire_tracker"]}, {"t":"NHTSA recall query; I-280 CHP video; Bay Area 350 sq mi","s":["tc_waymo","abc7","kalw"]}],
+  [{"t":"Zoox"}, {"t":"Public in Las Vegas; SF early riders; testing Austin, Miami, Atlanta","s":["zoox_atl"]}, {"t":"Driverless, purpose-built; paid in Las Vegas since August","s":["rj_zoox"]}, {"t":"About 150 nationally (CEO)","s":["wsj_zoox"]}, {"t":"Atlanta employee rides; Vegas Downtown, 6am–3am","s":["zoox_atl","zoox_lv"]}],
+  [{"t":"Baidu Apollo Go"}, {"t":"28 cities","s":["baidu"]}, {"t":"240M+ fully driverless km","s":["baidu"]}, {"t":"Not stated in sources"}, {"t":"Q3 results Mon Nov 16","s":["baidu_earn"]}],
+  [{"t":"Pony.ai"}, {"t":"China core cities; Zagreb; Doha; Manchester mapping","s":["pony_blog","tab"]}, {"t":"Commercial in Zagreb since April; driverless test rides since Sept","s":["pony_blog"]}, {"t":"Target 3,500+ by end-2026","s":["pony_blog"]}, {"t":"Manchester mapping with safety drivers","s":["tab"]}]
+ ]
+},
+"adas_table": {
+ "columns": ["System", "What it does today", "Next step"],
+ "rows": [
+  [{"t":"Tesla FSD (Supervised) v14.3.13"}, {"t":"Point-to-point, hands-free incl. city streets; subscription-only in North America; 1.74M subscribers in Q3","s":["teslascope","nata_ap","mb"]}, {"t":"EU-wide vote this winter; pothole avoidance listed as upcoming","s":["traficom","teslascope"]}],
+  [{"t":"GM Super Cruise"}, {"t":"Hands-free on mapped highways; about 750,000 enabled vehicles in North America","s":["sc_eu"]}, {"t":"Europe from mid-December; eyes-off targeted for 2028","s":["sc_eu","gm_eyesoff"]}],
+  [{"t":"Rivian"}, {"t":"Hands-free highway assist","s":["cnbc_rivian"]}, {"t":"Point-to-point in coming weeks/months; broader release 2027","s":["cnbc_rivian"]}],
+  [{"t":"Mercedes MB.Drive Assist Pro"}, {"t":"Point-to-point L2; hands-free on highways, hand on wheel in cities","s":["mb"]}, {"t":"Broad rollout early next year, incl. OTA for eligible cars","s":["mb"]}],
+  [{"t":"BMW"}, {"t":"City Assistant stops/starts at lights","s":["bmw"]}, {"t":"Navigation-guided city L2 in Germany from 2027","s":["bmw"]}],
+  [{"t":"Huawei ADS 5"}, {"t":"Adds roaming cruise without a destination; spot-to-spot parking 3.0","s":["huawei"]}, {"t":"190,000+ owners joined its open contest","s":["huawei"]}],
+  [{"t":"BYD God's Eye"}, {"t":"4.19M+ cars with driver assistance; 260M km of data per day","s":["byd_data"]}, {"t":"Emergency steering demo at 130 km/h on Seal 07","s":["byd_seal"]}]
+ ]
+},
+"deep": [
+ {"h": "Tesla FSD & Robotaxi", "items": [
+  {"t": "Cybercab for owners. Buyers must accept delivery in one of a handful of Texas cities; the car runs only in geofenced areas; estimated delivery December 2026; $29,990 plus $299/month. Musk said the fee should be more like $115/month, and Ashok Elluswamy said it will run unsupervised in the same areas as Robotaxi.", "s": ["tc_cybercab"]},
+  {"t": "Cybertruck wind-down. Nov 6: production at Giga Texas to wind down around mid-2027 for Cybercab. Nov 9: \"in about 8 months.\" Nov 11: extended through end of summer 2027. Electrek estimates a pre-announcement pace of about 30,000 a year and notes no new consumer vehicle has been announced.", "s": ["verge_ct", "electrek_ct"]},
+  {"t": "San Antonio. Launched Nov 9 with a $16 test ride (vs about $23 on Waymo, per KSAT). Tesla is not yet authorized at the airport, and Axios cited a tracker showing one vehicle at launch.", "s": ["ksat", "axios_sa"]},
+  {"t": "Hours and area. Austin grew to about 443 sq mi; Robotaxi went 24/7 in all cities on Nov 11, ahead of the year-end goal Tesla gave on its Q3 call.", "s": ["nata_austin", "tn_247"]},
+  {"t": "Fleet. Tesla's Texas register count included 573 Cybercabs and 729 Model Ys when it passed Waymo on Nov 10.", "s": ["evwire_pass"]},
+  {"t": "FSD v14.3.13 notes: upgraded RL training, new vision encoder, MLIR compiler for 20% faster reaction, better handling of emergency vehicles, school buses and small animals, and an intervention-free streak counter.", "s": ["teslascope"]},
+  {"t": "Subscriptions. Not a Tesla App reports, citing a source, that Musk personally decided to drop basic Autopilot from new cars to boost FSD subscriptions; Tesla reported a record 1.74M subscribers in Q3.", "s": ["nata_ap"]},
+  {"t": "Europe. In Finland the system is now Tesla Assisted Driving, max speed offset 10% and reset each drive. Build 2026.39.100 (FSD 14.2.2.7) brings the renaming to Europe.", "s": ["traficom", "nata_eu"]},
+  {"t": "China. Electrek reports Tesla's domestic retail sales there fell 66% in October.", "s": ["electrek_ct"]}
+ ]},
+ {"h": "Robotaxi & L4 (beyond Tesla)", "items": [
+  {"t": "Waymo: NHTSA's recall query covers nearly 3,000 vehicles; Austin ISD documented 19 violations. Waymo says it has had no citations since March.", "s": ["reuters_waymo", "tc_waymo"]},
+  {"t": "Waymo: a driverless car tried twice to pass a CHP traffic break on I-280 near John Daly Blvd before officers blocked it.", "s": ["abc7"]},
+  {"t": "Waymo: South Bay expansion takes the Bay Area area to 350 sq mi; it also offers $2.85 credits for pairing rides with transit.", "s": ["kalw"]},
+  {"t": "Zoox: Atlanta rides for employees, family and friends; public Explorers program planned there in 2027. Las Vegas: Downtown, Arts District, 6 a.m.–3 a.m.", "s": ["zoox_atl", "rj_zoox"]},
+  {"t": "Pony.ai: mapping Manchester with Uber and Verne, safety drivers and no passengers; no passenger application yet.", "s": ["tab"]}
+ ]},
+ {"h": "Consumer ADAS / L2+", "items": [
+  {"t": "Rivian: CEO RJ Scaringe calls 2027 an inflection year; point-to-point driving is coming first to employees, then customers, with AVs on Uber targeted by 2028.", "s": ["cnbc_rivian"]},
+  {"t": "GM: Super Cruise launches in Europe in mid-December on the Optiq, Lyriq and Vistiq, across 111,000+ miles in 16 countries.", "s": ["sc_eu"]},
+  {"t": "Mercedes: CTO Jörg Burzer frames the hand-on-wheel city rule as the L2/L3 line; FSD users interviewed by InsideEVs were unconvinced.", "s": ["mb"]}
+ ]},
+ {"h": "Chips & compute", "items": [
+  {"t": "NVIDIA Alpamayo 2 Edge: 2B-parameter reasoning VLA that reasons only when needed; closed-loop RL improved driving 48.9%; 160–190 ms on DRIVE AGX Thor.", "s": ["nvidia"]},
+  {"t": "Kakao Mobility × NVIDIA: L4 MOU with two DRIVE AGX Thor units, Hyperion and Halos, starting on Kia PBVs; no deployment timeline set.", "s": ["kakao"]},
+  {"t": "Wayve × CoreWeave: multi-year deal on Blackwell GPUs for training, evaluation and simulation.", "s": ["wayve", "coreweave"]}
+ ]},
+ {"h": "China", "items": [
+  {"t": "Huawei: second Qiankun open contest closed Nov 13 with 190,000+ owners; ADS 5 adds roaming cruise assist and rear-collision avoidance.", "s": ["huawei"]},
+  {"t": "BYD: 4.19M+ cars with driver assistance and 260M km of data a day (up from 3.95M at end-September).", "s": ["byd_data"]},
+  {"t": "BYD Seal 07 (God's Eye B, lidar plus one Orin X) demonstrated emergency steering at 130 km/h; Denza launched the N8 on Nov 12 with God's Eye B.", "s": ["byd_seal", "denza"]},
+  {"t": "Li Auto: OTA 9.2 brings Mach VLA 2.5 with a 3D ViT perception model, such as reversing to yield on narrow roads.", "s": ["li_ota"]}
+ ]},
+ {"h": "Regulation & safety", "items": [
+  {"t": "NHTSA extended comments to Dec 10 on FMVSS 108 changes for vehicles without manual controls, including optional cyan ADS marker lamps.", "s": ["fmvss108"]},
+  {"t": "Texas liability: a lawyer told KSAT that with no human intervention the company generally stands in the shoes of the operator; Tesla's terms include arbitration.", "s": ["ksat"]},
+  {"t": "Finland approval is national; the EU-wide decision needs a TCMV vote, then about three weeks to take effect.", "s": ["traficom"]}
+ ]},
+ {"h": "SDV & OTA", "items": [
+  {"t": "Tesla: 2026.38.5.13 (Nov 13, North America) and 2026.39.100 (Nov 11, Europe).", "s": ["nata_updates"]},
+  {"t": "GM: OnStar AI Assistant premieres on the 2027 Cadillac Lyriq and can control vehicle functions; GM expects $10.5B in software and services revenue this year.", "s": ["onstar"]},
+  {"t": "Li Auto OTA 9.2 also adds a map-trip agent and CarPlay/HiCar connectivity.", "s": ["li_ota"]}
+ ]},
+ {"h": "Funding & deals", "items": [
+  {"t": "Wayve–CoreWeave compute deal and Kakao–NVIDIA L4 MOU (both Nov 9).", "s": ["wayve", "kakao"]},
+  {"t": "Lemonade expanded its FSD insurance discount (50% off FSD miles) to Ohio.", "s": ["lemonade"]},
+  {"t": "Just before the window: Neolix raised nearly $400M (Nov 2), Humble Robotics $51M (Nov 5).", "s": ["neolix", "humble"]}
+ ]}
+],
+"before": [
+ {"t": "Baidu unveiled the Apollo World simulator (Nov 3).", "s": ["baidu"]},
+ {"t": "XPeng got citywide L4 demo approval in Guangzhou; CEO expects L4 deployment around late 2028.", "s": ["xpeng_l4"]},
+ {"t": "VW China launched in-house HS8 L2++ and holds an L3 test permit in Hefei.", "s": ["vw"]},
+ {"t": "BMW: navigation-guided city L2 in Germany from 2027.", "s": ["bmw"]},
+ {"t": "Qualcomm and Infineon paired safety MCUs with Snapdragon Ride.", "s": ["qcom"]}
+],
+"analysis": [
+ "Tesla is moving from selling cars to selling autonomy: Cybercab pre-orders plus the Cybertruck end date make that explicit.",
+ "Its robotaxi footprint is growing fastest on paper, but service areas are outrunning vehicles in new cities; Waymo still leads on cities and fleet.",
+ "Waymo's school-bus query shows regulators will judge AV software fixes by real-world results, which applies to every driverless operator, Tesla included.",
+ "Outside Tesla, NVIDIA is consolidating the stack: in-car compute (Thor), models (Alpamayo) and training cloud partners."
+]
+}

@@ -3,7 +3,7 @@ const TZ = 'America/Detroit';
 const $ = s => document.querySelector(s);
 const S = {
   view: localStorage.getItem('ht_view') || 'month',
-  mode: (['energy','automation'].includes(localStorage.getItem('ht_mode')) ? localStorage.getItem('ht_mode') : 'saving'),
+  mode: (['energy','automation','report'].includes(localStorage.getItem('ht_mode')) ? localStorage.getItem('ht_mode') : 'saving'),
   cur: new Date(), meta: null, months: {}, key: null
 };
 const money = v => (v == null ? '–' : (v < 0 ? '-$' : '$') + Math.abs(v).toFixed(2));
@@ -175,8 +175,15 @@ function exampleSplit(total, specs) {
 
 function setModeClass() {
   const auto = S.mode === 'automation';
+  const report = S.mode === 'report';
   const app = $('#app');
-  if (app) app.classList.toggle('mode-auto', auto);
+  if (app) {
+    app.classList.toggle('mode-auto', auto);
+    app.classList.toggle('mode-report', report);
+    app.classList.toggle('rpt-arch', !!(report && window.REPORT && REPORT.archive));
+  }
+  const rhead = $('#reporthead');
+  if (rhead) rhead.classList.toggle('hidden', !report);
   const head = $('#autohead');
   if (head) {
     head.classList.toggle('hidden', !auto);
@@ -574,6 +581,18 @@ function parkedCard(it) {
 }
 
 function setTitle() {
+  const prev = $('#prev'), next = $('#next');
+  if (S.mode === 'report') {
+    const weeks = (window.REPORT && REPORT.weeks) || [];
+    const w = weeks[REPORT.idx] || weeks[0];
+    $('#title').textContent = (w && w.window) || '';
+    if (prev) prev.disabled = !weeks.length || REPORT.archive || REPORT.idx <= 0;
+    if (next) next.disabled = !weeks.length || REPORT.archive || REPORT.idx >= weeks.length - 1;
+    setModeClass();
+    return;
+  }
+  if (prev) prev.disabled = false;
+  if (next) next.disabled = false;
   const c = S.cur; let t;
   if (S.view === 'day') t = c.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   else if (S.view === 'week') { const s = weekStart(c), e = addDays(s, 6); t = `${s.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${e.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`; }
@@ -1439,6 +1458,10 @@ async function render() {
     renderAutomation();
     return;
   }
+  if (S.mode === 'report') {
+    if (window.renderReport) renderReport();
+    return;
+  }
   renderSummary();
   const main = $('#main');
   try {
@@ -1459,6 +1482,7 @@ function showInfo() {
 }
 function move(dir) {
   if (S.mode === 'automation') return;
+  if (S.mode === 'report') { if (window.moveReport) moveReport(dir); return; }
   const c = new Date(S.cur);
   if (S.view === 'day') c.setDate(c.getDate() + dir);
   else if (S.view === 'week') c.setDate(c.getDate() + 7 * dir);
@@ -1481,6 +1505,7 @@ function wire() {
       S.mode = mode;
       localStorage.setItem('ht_mode', S.mode);
       if (mode !== 'automation') AUTO.editing = null;
+      if (mode !== 'report' && window.REPORT) { REPORT.archive = false; if (window.stopReportAudio) stopReportAudio(); }
       OPEN.clear();
       render();
     };
@@ -1532,4 +1557,5 @@ async function start() {
 }
 function show() { $('#app').classList.remove('hidden'); wire(); render(); }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+window.htStart = start;
 start();

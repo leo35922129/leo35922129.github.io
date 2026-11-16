@@ -1,0 +1,53 @@
+Autonomy Weekly, deep dive, covering November 8 to 15, 2026. We start with Tesla, then compare it with the competition, and then go theme by theme: robotaxis, consumer driver assistance, chips and compute, China, regulation and safety, software updates, and deals.
+
+Part one. Tesla FSD and Robotaxi.
+
+The biggest Tesla story of the week was the Cybercab going on sale to individuals. On Friday evening, Tesla said select customers can pre-order the Cybercab for personal use. According to TechCrunch, buyers must accept delivery in one of a handful of Texas cities, the car works only inside geofenced areas, estimated delivery is December 2026, and on top of the 29,990 dollar price there is a 299 dollar monthly fee. Musk responded that the fee is too high and should match the cost of FSD and connectivity, more like 115 dollars a month. Tesla's Ashok Elluswamy said the Cybercab will work unsupervised inside the same areas as the Robotaxi service, serving the owner's needs.
+
+The flip side is the Cybertruck. On November 6, Musk said Tesla would wind down Cybertruck production at Giga Texas around the middle of next year to make room for more Cybercab production. On November 11 he extended that through the end of summer 2027 to work through the order backlog. Electrek reports Tesla raised Cybertruck prices by up to 10 percent the same day and paused orders for the base Dual Motor, putting the cheapest Cybertruck at 92,490 dollars. Electrek estimates the truck was selling at roughly 30,000 units a year before the announcement. Tesla has not announced a new consumer vehicle to follow it. For existing owners, the sources reviewed say nothing about changes to service or software support, so that is something to watch.
+
+On Robotaxi, Tesla launched in San Antonio on November 9. Mashable reports it is Tesla's eighth Robotaxi city, after Austin, Dallas, Houston, Miami, Fort Worth, Orlando and Tampa, with a 273 square mile area compared with Waymo's 59 square miles in San Antonio. A local TV reporter paid 16 dollars for a ride that would have cost about 23 dollars on Waymo. But Axios noted that a tracker showed only one Tesla robotaxi in San Antonio at launch, and Tesla cannot yet serve the airport. In Austin, Not a Tesla App reports the service area grew to about 443 square miles. On November 11, Tesla said Robotaxi now runs 24 hours a day, seven days a week, in every city it serves.
+
+On fleet size, the Texas DMV register is the best public scorecard. EVwire reports Tesla Robotaxi passed Waymo on November 10, 1,302 registered vehicles to 1,297, including 573 Cybercabs. As of early Sunday, the EVwire tracker shows Waymo back in front, 1,321 to 1,306. Remember that registered means allowed to operate, not driving at any moment.
+
+On the FSD software that runs in your truck: FSD Supervised version 14.3.13 is rolling out in software build 2026.38.5.13, dated November 13. The release notes cite an upgraded reinforcement learning stage, a new vision encoder, and an AI compiler rewritten with MLIR for 20 percent faster reaction time, plus better handling of emergency vehicles, school buses and small animals, and a new intervention-free streak counter. Pothole avoidance is listed as upcoming. Not a Tesla App also reported, citing a source, that Musk personally decided to remove basic Autopilot from new cars to push FSD subscriptions, which Tesla said reached a record 1.74 million in the third quarter.
+
+In Europe, Finland's regulator approved the system on November 10, making it usable immediately there. It is now called Tesla Assisted Driving, and the allowed speed offset was cut from 50 percent to a maximum of 10 percent, resetting after each drive. A final EU-wide vote is expected this winter.
+
+Part two. Tesla versus the competition.
+
+In robotaxis, Waymo is still the benchmark. It has public riders in 14 US cities and a fleet of more than 4,000 vehicles as of September. Tesla now has eight cities and a fast-growing Texas fleet, but much smaller service in some new markets. Zoox runs public rides in Las Vegas, an early rider program in San Francisco, and testing in Austin, Miami and now Atlanta, with its CEO citing roughly 150 robotaxis nationally. In China, Baidu's Apollo Go reports 28 cities and more than 240 million fully driverless kilometers, and Pony.ai is targeting more than 3,500 robotaxis by the end of 2026.
+
+In consumer driver assistance, Tesla FSD remains the only widely available point-to-point system in the US. Rivian says it will roll out point-to-point driving over the coming weeks and months, first to employees, then customers, with broader release in 2027. Mercedes plans its point-to-point Drive Assist Pro early next year, but it requires a hand on the wheel on city streets. GM is bringing hands-free Super Cruise to Europe in mid-December, with eyes-off driving targeted for 2028. BMW plans navigation-guided city assistance in Germany from 2027.
+
+Part three. Robotaxis and Level 4.
+
+Waymo had a tough week on safety. NHTSA opened a recall query into nearly 3,000 Waymo vehicles to find out why its robotaxis kept passing stopped school buses after a software fix that Waymo said was completed in November 2025. Waymo said it has received no citations since March. Separately, ABC7 reported video of a driverless Waymo trying twice to get around a Highway Patrol traffic break on Interstate 280 before officers blocked it. On the growth side, Waymo's Bay Area service area is now 350 square miles after a South Bay expansion.
+
+Zoox began rides in Atlanta for employees, family and friends on November 13, with a public early rider program planned for 2027. In Las Vegas it expanded into Downtown and the Arts District and extended hours to 6 a.m. to 3 a.m.
+
+Pony.ai, with Uber and Verne, has started mapping Manchester in the UK with safety drivers and no passengers.
+
+Part four. Chips and compute.
+
+NVIDIA published Alpamayo 2 Edge, a 2 billion parameter reasoning model for driving that runs on DRIVE AGX Thor with 160 to 190 milliseconds from camera pixels to trajectory. It only generates its reasoning when needed, to save compute. Kakao Mobility signed a memorandum with NVIDIA to build a Level 4 system using two DRIVE Thor computers, starting on Kia purpose-built vehicles. And Wayve will train its AI Driver on CoreWeave's cloud using NVIDIA Blackwell GPUs under a multi-year deal. The pattern: NVIDIA is supplying both the in-car computer and the training cloud for much of the non-Tesla field.
+
+Part five. China.
+
+Huawei closed its second Qiankun driving open contest with more than 190,000 owners signed up, showing off ADS 5 features like a roaming cruise mode that works without a destination. BYD said more than 4.19 million of its cars now have driver assistance, generating over 260 million kilometers of data a day, and showed its Seal 07 sedan performing emergency steering at 130 kilometers per hour. Li Auto is rolling out OTA 9.2 with its Mach VLA 2.5 driving model. Meanwhile Electrek reports Tesla's domestic China retail sales fell 66 percent in October.
+
+Part six. Regulation and safety.
+
+Beyond the Waymo query, NHTSA extended comments to December 10 on a proposal to update lighting rules for vehicles without manual controls, including optional cyan marker lamps for automated vehicles. That is directly relevant to Cybercab-style vehicles. In Texas, a lawyer told KSAT that when a fully autonomous vehicle drives with no human intervention, the company generally stands in the shoes of the operator.
+
+Part seven. Software and over-the-air updates.
+
+Besides Tesla's FSD build, Tesla pushed the European renaming update. GM detailed its OnStar AI Assistant, premiering on the 2027 Cadillac Lyriq. And Rivian's CEO told CNBC that 2027 will be an inflection year driven by the R2 and autonomy, with a technology event on December 9.
+
+Part eight. Deals.
+
+The week's deals were mostly compute and partnerships: Wayve with CoreWeave, and Kakao with NVIDIA. Lemonade expanded its FSD insurance discount, 50 percent off FSD miles, to Ohio.
+
+Our take. Tesla is clearly moving from selling cars to selling autonomy, and the Cybercab pre-order plus the Cybertruck wind-down make that explicit. Its robotaxi footprint is now growing faster than anyone's on paper, but service areas are outrunning vehicles in new cities, and Waymo still leads on paid rides and cities. Waymo's school-bus problem is also a warning for everyone, including Tesla, that regulators will judge software fixes by real-world results.
+
+That's the deep dive. All sources are linked on the page.
