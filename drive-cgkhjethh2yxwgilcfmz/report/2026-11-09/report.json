@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-09",
+  "window": "Nov 3 – Nov 9, 2026",
+  "title": "Automotive UX Weekly Brief",
+  "source": "chatgpt",
+  "source_label": "ChatGPT · Automotive UX Weekly Brief",
+  "lead": "The next competitive advantage is how quickly vehicle intelligence can learn—safely. Baidu introduced an AI simulation system for training robotaxis; NHTSA opened a new recall query into about 2,895 Waymo vehicles over school-bus passing; Tesla expanded Robotaxi into San Antonio; and Lyft said it will substantially expand its Waymo fleet in Nashville before year-end.",
+  "src": {
+    "reuters_baidu": [
+      "Reuters, Nov 3",
+      "https://www.reuters.com/technology/chinas-baidu-launches-ai-model-simulating-road-environment-robotaxis-2026-11-03/"
+    ],
+    "reuters_waymo": [
+      "Reuters, Nov 9",
+      "https://www.reuters.com/legal/litigation/us-opens-probe-into-2895-waymo-vehicles-over-school-bus-safety-violations-2026-11-09/"
+    ],
+    "ev_tesla": [
+      "eletric-vehicles.com, Nov 9",
+      "https://eletric-vehicles.com/tesla/tesla-launches-robotaxi-in-san-antonio-its-largest-service-area-at-launch/"
+    ],
+    "reuters_lyft": [
+      "Reuters, Nov 5",
+      "https://www.reuters.com/business/autos-transportation/lyft-expand-waymo-robotaxi-fleet-nashville-by-year-end-2026-11-05/"
+    ]
+  },
+  "audio": {
+    "summary": {
+      "file": "summary.mp3",
+      "duration_s": 201.36,
+      "label": "3:21",
+      "title": "3-min summary"
+    },
+    "deep": {
+      "file": "deep-dive.mp3",
+      "duration_s": 703.392,
+      "label": "11:43",
+      "title": "10-min deep dive"
+    }
+  }
+}

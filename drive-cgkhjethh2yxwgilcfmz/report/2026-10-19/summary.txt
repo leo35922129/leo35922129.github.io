@@ -1,0 +1,19 @@
+Automotive UX Weekly Brief, for the week of October 19, 2026. This is the three-minute summary.
+
+The executive take this week is that automotive intelligence is becoming a scalable platform.
+
+First, Volvo Cars announced an expanded partnership with NVIDIA on October 15. Volvo plans to combine NVIDIA's Hyperion architecture, Halos safety-oriented software, and Alpamayo driving software with its own safety expertise to develop automated driving from highways through urban streets and parking environments. More advanced eyes-off capabilities would be introduced progressively. The announcement does not establish that a fully driverless, door-to-door consumer product is available today.
+
+Second, Toyota said it expects its Arene software platform to be deployed in approximately 10 million new vehicles annually across 50 models by 2030. Arene was introduced with the redesigned RAV4 in 2025. Toyota also intends to expand the platform further by 2035, potentially including vehicles from alliance partners.
+
+Third, Subaru announced plans to introduce its own software-defined vehicle architecture in the latter half of the 2020s, and to cut vehicle development time by about 40 percent. Subaru currently intends to develop its own platform rather than adopt Toyota's Arene. The plan includes an integrated ECU architecture using technology jointly developed with AMD, over-the-air updates, and standardized electronic platforms across gasoline, hybrid, and electric vehicles.
+
+Fourth, Hyundai unveiled the India-spec BAYON, a mainstream gasoline SUV, ahead of a planned October 26 market launch. Announced capabilities include a Perplexity and SoundHound AI assistant, dual 12.3-inch curved displays, NVIDIA-accelerated computing, over-the-air updates for up to 19 controllers, more than 70 Bluelink features, and more than 500 offline voice commands, including support for multiple Indian languages.
+
+Fifth, Waymo announced plans to bring autonomous ride-hailing to Toronto in 2028, its first Canadian market. It plans to start with manually driven mapping vehicles, then validation with trained specialists, and is partnering with Element Fleet Management.
+
+Sixth, Uber has begun autonomous vehicle testing in Manchester with technology partners. The first phase is mapping public roads with safety drivers and no passengers. This follows limited supervised autonomous passenger services in London.
+
+Finally, US regulators are adapting safety-equipment rules for driverless vehicles. The Federal Motor Carrier Safety Administration granted a limited exemption to Aurora Operations, effective October 7 through October 7, 2031, allowing qualifying Level 4 autonomous trucks to use vehicle-mounted warning beacons instead of certain traditional roadside warning devices.
+
+That is the week's core news. The deep dive covers the design implications, two research studies, and the brief's idea of experience continuity across these platforms.

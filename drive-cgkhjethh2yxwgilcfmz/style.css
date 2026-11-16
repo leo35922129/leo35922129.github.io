@@ -666,16 +666,29 @@ footer a{color:var(--acc)}
 #app.mode-report .autohead{display:none}
 #app.mode-report .reporthead{display:flex}
 #app.mode-report main{padding-bottom:calc(var(--tabbar-h) + 24px)}
-#app.mode-report.rpt-arch .toprow{display:none}
+#app.mode-report.rpt-arch .toprow,
+#app.mode-report.rpt-arch .rpt-srcrow{display:none}
 
 .reporthead{
-  display:none;align-items:center;gap:8px;min-height:48px;
+  display:none;align-items:flex-start;gap:8px;min-height:48px;
   padding:2px 0 0;
 }
+.rpt-hblock{flex:1;min-width:0}
 .rpt-htitle{
-  flex:1;font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1.15;
+  font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1.15;
   min-width:0;
 }
+.rpt-origin{
+  margin-top:4px;color:var(--mut);font-size:12px;font-weight:500;
+  letter-spacing:-.01em;line-height:1.35;
+}
+.rpt-archive{margin-top:6px}
+.rpt-srcrow{
+  display:flex;justify-content:center;padding:0 0 10px;
+}
+.rpt-srcrow[hidden],.rpt-srcrow.hidden{display:none}
+#app.mode-report .toprow{padding-bottom:8px}
+.rpt-srcseg{flex:none}
 .rpt-archive{
   display:inline-flex;align-items:center;gap:6px;
   grid-column:auto;justify-self:auto;
@@ -843,3 +856,16 @@ a.rp-src{
 .rp-wk b{display:block;font-size:16px;font-weight:600;letter-spacing:-.02em}
 .rp-wk span{color:var(--mut);font-size:13px}
 .rp-empty{color:var(--mut);padding:24px 8px;text-align:center}
+
+/* ChatGPT / CIO source label, chip, and disabled audio */
+.rp-player-off .rp-play{opacity:.4;cursor:not-allowed}
+.rp-player-off .rp-bar,.rp-player-off .rp-speed{opacity:.35;pointer-events:none}
+.rp-wk{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+}
+.rp-wk > div{min-width:0;flex:1;text-align:left}
+.rp-wk .rp-seg{flex:none;padding:2px}
+.rp-wk .rp-seg button{padding:5px 10px;font-size:12px}
+
+.rp-wk .rp-tag{margin:0;flex:none}
+.rp-wk{cursor:pointer}

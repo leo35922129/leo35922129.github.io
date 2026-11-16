@@ -1,0 +1,243 @@
+{
+  "headlines": [
+    {
+      "h": "Baidu Apollo World: AI simulation becomes a competitive advantage",
+      "t": "On November 3, Baidu introduced Apollo World, an AI simulation system designed to train autonomous vehicles by generating realistic driving environments. According to Reuters, Baidu says the platform can generate up to 100,000 kilometers of simulated driving per day. The system can produce simulated camera and lidar information so autonomous-driving software can encounter virtual traffic conditions and practice perception and navigation. Baidu says Apollo World is already being used to train its Apollo Go robotaxi fleet.",
+      "why": "The potential advantage is exposing a driving model to many variations of a difficult scenario without waiting for those situations to occur naturally. Simulated kilometers are not equivalent to real-world validated kilometers, so simulation should accelerate development, not replace independent real-world safety validation.",
+      "s": [
+        "reuters_baidu"
+      ],
+      "tags": [
+        "Baidu"
+      ]
+    },
+    {
+      "h": "Waymo’s new NHTSA investigation: OTA safety validation is becoming a major issue",
+      "t": "On November 9, the US National Highway Traffic Safety Administration opened a new recall query covering approximately 2,895 Waymo vehicles. The investigation concerns reports that Waymo vehicles illegally passed stopped school buses displaying flashing red lights. Waymo had already introduced a software remedy through a December 2025 recall; NHTSA is now examining whether that remedy adequately addressed the underlying safety issue. According to Reuters, Austin school officials documented 19 violations, while Atlanta schools recorded another six. Waymo says it has significantly improved vehicle behavior and has not received citations since March, and says it will cooperate with the investigation.",
+      "why": "A software update may improve the system in one set of conditions but leave related scenarios unresolved. Over-the-air success should be measured by validated behavioral improvement, not simply deployment completion. A successful software installation does not automatically prove that the safety problem has been solved.",
+      "s": [
+        "reuters_waymo"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "h": "Tesla expands Robotaxi into San Antonio",
+      "t": "Tesla announced that its Robotaxi service is expanding into San Antonio, Texas. The company also expanded its Austin service area. According to reporting published November 9, San Antonio’s initial operating zone covers approximately 275 square miles, based on third-party estimates of Tesla’s published service map, and Austin’s expanded zone is estimated at approximately 443 square miles. These figures are estimates based on geographic boundaries, not independently verified measures of service availability or autonomous performance.",
+      "why": "Robotaxi competition is increasingly measured through geographic coverage, but area alone is an incomplete measure of service quality. A large operating area is a technical achievement; a dependable end-to-end journey is the customer product. Services should clearly communicate where pickup and drop-off are supported, whether service is available under current conditions, and what happens when a destination is outside the supported area.",
+      "s": [
+        "ev_tesla"
+      ],
+      "tags": [
+        "Tesla"
+      ]
+    },
+    {
+      "h": "Lyft + Waymo: The operational layer becomes a business opportunity",
+      "t": "On November 5, Lyft announced plans to substantially expand its Waymo robotaxi fleet in Nashville before the end of 2026. In the partnership, Waymo develops the autonomous-driving technology, and Lyft supports customer access, fleet management, charging, cleaning, and vehicle maintenance. Lyft’s Flexdrive division has been servicing the fleet since June. Lyft earns revenue from customer rides and from services provided to the autonomous fleet.",
+      "why": "Autonomous mobility can be divided among different organizations: driving intelligence, the vehicle platform, fleet operations, the mobility marketplace, and the customer experience. Technology-provider complexity should remain invisible to the customer unless it materially affects safety or responsibility.",
+      "s": [
+        "reuters_lyft"
+      ],
+      "tags": [
+        "Lyft",
+        "Waymo"
+      ]
+    },
+    {
+      "h": "Standards watch: Safety cases must remain valid after software changes",
+      "t": "The new Waymo investigation reinforces the importance of lifecycle safety governance. Three existing frameworks remain particularly relevant and should not be treated as interchangeable: ISO 26262 for functional safety, ISO/SAE 21434 for cybersecurity engineering, and ISO/PAS 8800 for safety and artificial intelligence in road vehicles, including challenges associated with machine-learning systems.",
+      "why": "An AI-driven vehicle feature may be technically functional, cybersecure, and regulatorily permitted, and still confusing to customers. After an ADAS over-the-air update, a useful metric is behavioral comprehension: whether customers correctly understand what changed, what the system can do, what remains their responsibility, and when the system may request intervention.",
+      "s": [
+        "reuters_waymo"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    }
+  ],
+  "watch": [
+    {
+      "t": "NHTSA recall query covering approximately 2,895 Waymo vehicles over reports of illegally passing stopped school buses with flashing red lights; Waymo says it will cooperate.",
+      "s": [
+        "reuters_waymo"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "t": "Lyft plans to substantially expand its Waymo robotaxi fleet in Nashville before the end of 2026.",
+      "s": [
+        "reuters_lyft"
+      ],
+      "tags": [
+        "Lyft",
+        "Waymo"
+      ]
+    },
+    {
+      "t": "Standards to keep in view as software changes accumulate: ISO 26262, ISO/SAE 21434, and ISO/PAS 8800.",
+      "s": [
+        "reuters_waymo"
+      ],
+      "tags": []
+    }
+  ],
+  "robotaxi_table": {
+    "columns": [
+      "Operator",
+      "This week",
+      "Notes"
+    ],
+    "rows": [
+      [
+        {
+          "t": "Tesla",
+          "operator_id": "tesla"
+        },
+        {
+          "t": "Robotaxi expanding into San Antonio; Austin service area also expanded.",
+          "s": [
+            "ev_tesla"
+          ]
+        },
+        {
+          "t": "San Antonio’s initial zone is about 275 square miles, and Austin’s expanded zone about 443 square miles, based on third-party estimates of Tesla’s published service map. These are geographic-boundary estimates, not independently verified measures of availability or performance."
+        }
+      ],
+      [
+        {
+          "t": "Waymo",
+          "operator_id": "waymo"
+        },
+        {
+          "t": "NHTSA opened a new recall query covering approximately 2,895 vehicles over school-bus passing reports.",
+          "s": [
+            "reuters_waymo"
+          ]
+        },
+        {
+          "t": "Waymo had already issued a December 2025 software remedy; NHTSA is examining whether that remedy adequately addressed the issue. Austin school officials documented 19 violations and Atlanta schools six, according to Reuters. Waymo says behavior has improved, it has not received citations since March, and it will cooperate."
+        }
+      ],
+      [
+        {
+          "t": "Lyft + Waymo",
+          "operator_id": "waymo"
+        },
+        {
+          "t": "Lyft plans to substantially expand its Waymo robotaxi fleet in Nashville before the end of 2026.",
+          "s": [
+            "reuters_lyft"
+          ]
+        },
+        {
+          "t": "Waymo develops the driving technology; Lyft supports customer access, fleet management, charging, cleaning, and maintenance. Flexdrive has serviced the fleet since June."
+        }
+      ],
+      [
+        {
+          "t": "Baidu Apollo Go",
+          "operator_id": "baidu"
+        },
+        {
+          "t": "Baidu says its new Apollo World simulation system is already being used to train its Apollo Go robotaxi fleet.",
+          "s": [
+            "reuters_baidu"
+          ]
+        },
+        {
+          "t": "Baidu says the platform can generate up to 100,000 kilometers of simulated driving per day, including simulated camera and lidar information. Simulated kilometers are not equivalent to real-world validated kilometers."
+        }
+      ]
+    ]
+  },
+  "adas_table": {
+    "columns": [],
+    "rows": []
+  },
+  "deep": [
+    {
+      "h": "Real-world data versus generated worlds",
+      "tags": [
+        "Baidu",
+        "Tesla",
+        "Waymo"
+      ],
+      "items": [
+        {
+          "t": "The brief compares development strategies: Tesla emphasizes large-scale real-world video and neural-network training; Waymo combines extensive real-world operation, simulation, and structured safety validation; Baidu is now emphasizing AI-generated virtual driving environments. These approaches are not mutually exclusive. The likely long-term direction is a combination of real-world driving data, synthetic scenario generation, closed-loop simulation, hardware-in-the-loop testing, and real-world fleet validation.",
+          "s": [
+            "reuters_baidu"
+          ]
+        },
+        {
+          "t": "Vehicle capability architecture determines what improvements are physically possible. Software development architecture determines how efficiently those improvements can be created and validated."
+        }
+      ]
+    },
+    {
+      "h": "AI assistant UX: reliable action, not just conversation",
+      "tags": [],
+      "items": [
+        {
+          "t": "The brief notes there was not a comparably significant new OEM assistant launch in the verified November 3–9 coverage, but argues the industry is still moving from assistants that answer questions toward agents that understand intent and perform authorized vehicle actions. The most important element in that architecture is the authority check: understanding a request does not mean the assistant should automatically unlock doors, activate high-power accessories, or change safety-related settings."
+        },
+        {
+          "t": "A practical principle in the brief is to separate informational actions, low-risk reversible actions that may execute under established permissions, and safety-sensitive or consequential actions that require explicit confirmation or a separately validated control pathway. Intelligence should be measured by successful, appropriate actions, not merely conversational fluency."
+        }
+      ]
+    },
+    {
+      "h": "Design concept in the brief: the SDV Learning Loop",
+      "tags": [
+        "Baidu",
+        "Waymo",
+        "Tesla"
+      ],
+      "items": [
+        {
+          "t": "The brief proposes a six-step loop connecting hardware capability, software capability, learning capability, validation capability, deployment capability, and customer value, then feeding experience back into the next improvement. A traditional software-defined-vehicle roadmap often focuses on hardware and software; Baidu’s Apollo World and Waymo’s regulatory investigation show why the middle layers, learning and validation, are equally important."
+        }
+      ]
+    },
+    {
+      "h": "Research questions the brief flags",
+      "tags": [],
+      "items": [
+        {
+          "t": "The brief does not cite a new published study this week. It instead flags three questions worth investigating: whether simulation can identify HMI confusion before deployment; how customers should understand an evolving autonomous system after software changes; and what makes a robotaxi service trustworthy beyond geographic coverage."
+        }
+      ]
+    }
+  ],
+  "before": [
+    {
+      "t": "Waymo had already introduced a software remedy through a December 2025 recall, which is now part of NHTSA’s new recall query.",
+      "s": [
+        "reuters_waymo"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "t": "Lyft’s Flexdrive division has been servicing the Nashville Waymo fleet since June.",
+      "s": [
+        "reuters_lyft"
+      ],
+      "tags": [
+        "Lyft",
+        "Waymo"
+      ]
+    }
+  ],
+  "analysis": [
+    "Baidu is investing in AI-generated driving environments to accelerate autonomous-driving development, but simulated kilometers are not the same as real-world validated kilometers.",
+    "Waymo’s regulatory investigation demonstrates why improving software is not enough; the effectiveness of safety-related changes must also be demonstrated after deployment.",
+    "Tesla’s geographic expansion shows the continuing push to scale autonomous mobility into more cities, while the brief argues that coverage area alone is an incomplete measure of the customer product.",
+    "Lyft’s Nashville expansion demonstrates the importance of operational infrastructure and service integration as robotaxi fleets grow. The brief’s bottom line is that software-defined-vehicle maturity is becoming a learning-and-validation competition."
+  ]
+}

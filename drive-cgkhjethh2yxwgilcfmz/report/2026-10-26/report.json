@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-26",
+  "window": "Oct 20 – Oct 26, 2026",
+  "title": "Automotive UX Weekly Brief",
+  "source": "chatgpt",
+  "source_label": "ChatGPT · Automotive UX Weekly Brief",
+  "lead": "The intelligence-defined vehicle is becoming real. GM unveiled a next-generation software-defined architecture promising much more compute, a transformed OnStar AI assistant, and a unified mobile app, while Google said Gemini can use permissioned personal information for context-aware assistance in vehicles.",
+  "src": {
+    "gm_forward": [
+      "GM News, Oct 21, Forward 2026",
+      "https://news.gm.com/home.detail.html/Pages/news/us/en/2026/oct/1021-gm-forward-2026.html"
+    ],
+    "gm_onstar": [
+      "GM News, Oct 21, OnStar AI",
+      "https://news.gm.com/home.detail.html/Pages/news/us/en/2026/oct/1021-onstar-ai.html"
+    ],
+    "google_pi": [
+      "Google, Personal Intelligence",
+      "https://blog.google/products-and-platforms/platforms/android/android-auto-cars-with-google-built-in-gemini-personal-intelligence/"
+    ],
+    "verge_carplay": [
+      "The Verge",
+      "https://www.theverge.com/transportation/1015281/gemini-ai-apple-carplay-voice-google-maps"
+    ],
+    "waymo_madrid": [
+      "Waymo, Madrid announcement",
+      "https://waymo.com/blog/2026/10/waymo-in-madrid-region/"
+    ],
+    "reuters_waymo_fleet": [
+      "Reuters, Oct 19",
+      "https://www.reuters.com/business/autos-transportation/waymo-plans-quintuple-fleet-20000-semafor-reports-2026-10-19/"
+    ],
+    "reuters_cybercab": [
+      "Reuters, Oct 22",
+      "https://www.reuters.com/business/autos-transportation/tesla-aims-sell-cybercab-robotaxis-by-end-year-despite-federal-probe-2026-10-22/"
+    ],
+    "houston": [
+      "Houston Chronicle, Oct 26",
+      "https://www.houstonchronicle.com/news/houston-texas/transportation/article/houston-tesla-robotaxi-expansion-22494979.php"
+    ],
+    "nhtsa": [
+      "NHTSA, FMVSS 108 proposal",
+      "https://www.nhtsa.gov/press-releases/vehicle-lighting-updates-automated-vehicles"
+    ],
+    "pubmed_a": [
+      "PubMed, Accident Analysis & Prevention",
+      "https://pubmed.ncbi.nlm.nih.gov/42419132/"
+    ],
+    "pubmed_b": [
+      "PubMed, Traffic Injury Prevention",
+      "https://pubmed.ncbi.nlm.nih.gov/42831793/"
+    ]
+  },
+  "audio": {
+    "summary": {
+      "file": "summary.mp3",
+      "duration_s": 212.112,
+      "label": "3:32",
+      "title": "3-min summary"
+    },
+    "deep": {
+      "file": "deep-dive.mp3",
+      "duration_s": 667.08,
+      "label": "11:07",
+      "title": "10-min deep dive"
+    }
+  }
+}

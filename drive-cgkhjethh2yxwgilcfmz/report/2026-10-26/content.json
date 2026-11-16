@@ -1,0 +1,236 @@
+{
+  "headlines": [
+    {
+      "h": "GM Forward 2026: A major SDV architecture announcement",
+      "t": "On October 21, General Motors revealed more details about its next-generation centralized computing and electrical architecture. Announced targets include 40 times greater computing performance, a 30% reduction in vehicle wiring length and mass, cellular connectivity up to 50% faster, and a goal to reduce the vehicle development timeline by approximately 50%. The architecture is slated for introduction in 2028, with the first vehicle the Cadillac Escalade IQ. These are manufacturer-announced targets and comparisons, not independently verified production results.",
+      "why": "The significance is not simply more computing power. A centralized architecture with suitable APIs could let previously isolated functions operate together, so one customer intention, such as a camping mode, could adjust climate, lighting, exterior power, security monitoring, and energy management at once.",
+      "s": [
+        "gm_forward"
+      ],
+      "tags": [
+        "GM"
+      ]
+    },
+    {
+      "h": "GM introduces OnStar AI Assistant and a unified vehicle app",
+      "t": "GM also announced a transformation of OnStar, repositioning it from primarily a connected safety and assistance service into a broader vehicle-intelligence platform. The new OnStar AI Assistant is scheduled to debut through an over-the-air update in the 2027 Cadillac LYRIQ, with additional vehicles following. Customers will be able to use natural-language requests to interact with vehicle functions. GM also announced a unified mobile application for the vehicle.",
+      "why": "This draws a distinction between general-purpose AI, which can answer questions about the world, and vehicle-native AI, which knows the vehicle’s current state, can access permitted functions, and can interpret diagnostics. A general assistant can explain regenerative braking; a deeply integrated assistant could explain why regenerative braking is limited in this vehicle right now.",
+      "s": [
+        "gm_onstar"
+      ],
+      "tags": [
+        "GM"
+      ]
+    },
+    {
+      "h": "Google Gemini introduces Personal Intelligence for vehicles",
+      "t": "On October 20, Google announced Personal Intelligence with Gemini, which allows the assistant to use information from connected Google services with the user’s permission. Supported sources include Gmail, Google Calendar, Google Photos, Google Maps, YouTube, and Search.",
+      "why": "This is a shift from command-based interaction toward context-based interaction, in which the driver does not need to provide every piece of information explicitly. The strategic challenge for automakers is how personal context and vehicle context should interact without creating privacy confusion.",
+      "s": [
+        "google_pi"
+      ],
+      "tags": [
+        "Google"
+      ]
+    },
+    {
+      "h": "Google brings conversational Gemini navigation to Apple CarPlay",
+      "t": "Gemini-powered conversational navigation is now reaching Apple CarPlay users. Drivers can ask multistep questions while navigating, for example asking to find a scenic place to stop along the route.",
+      "why": "AI interaction is becoming less dependent on the vehicle’s native operating system. A customer may get advanced conversational navigation through smartphone projection even when the automaker’s own assistant is limited, which puts pressure on native assistants to offer something a phone cannot easily replicate, such as real-time vehicle understanding and deeper control integration.",
+      "s": [
+        "verge_carplay"
+      ],
+      "tags": [
+        "Google"
+      ]
+    },
+    {
+      "h": "Waymo announces Madrid robotaxi plans for 2027",
+      "t": "On October 20, Waymo announced plans to launch autonomous ride-hailing in the Madrid region in 2027. It will initially deploy electric Jaguar I-PACE vehicles for mapping and testing. The rollout begins with manual driving before progressing to supervised autonomous validation. Public driverless rides are a future target, not a service already operating in Madrid. A Reuters report citing Semafor also says Waymo is considering increasing its fleet to approximately 20,000 vehicles by the end of 2027, from roughly 4,000. That is a reported plan rather than a completed expansion.",
+      "why": "As autonomous-driving technology scales, operational reliability and passenger experience become major sources of differentiation. The customer experience has to work across cities and unexpected situations, not only in a single launch market.",
+      "s": [
+        "waymo_madrid",
+        "reuters_waymo_fleet"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "h": "Tesla Cybercab: Commercialization meets regulation",
+      "t": "Following Tesla’s third-quarter earnings announcement, the company reiterated plans to begin selling its purpose-built Cybercab before the end of 2026. The vehicle is designed without conventional steering controls, pedals, or mirrors. Tesla has already begun limited commercial Cybercab operations in Austin. NHTSA continues examining the vehicle’s compliance with existing federal safety standards, and Tesla faces an October 30 response deadline in the ongoing investigation. On October 26, local reporting indicated that Tesla expanded its Houston robotaxi service area into additional neighborhoods, including Montrose, Midtown, and downtown Houston.",
+      "why": "Purpose-built autonomy creates an opportunity to rethink the cabin around the passenger rather than the driver, but passengers still need meaningful authority over the journey, including changing destination, requesting a safe stop, adjusting comfort, contacting assistance, and managing emergencies.",
+      "s": [
+        "reuters_cybercab",
+        "houston"
+      ],
+      "tags": [
+        "Tesla"
+      ]
+    },
+    {
+      "h": "NHTSA proposes standardized cyan lighting for autonomous vehicles",
+      "t": "On October 23, NHTSA proposed changes to Federal Motor Vehicle Safety Standard Number 108. One element is the potential standardization of cyan-colored marker lamps to identify vehicles operating under automated driving systems.",
+      "why": "Exterior lighting is becoming a communication interface. Beyond braking, turning, hazards, and presence, future autonomous vehicles may also need to communicate automated-driving status, which could be especially important for law enforcement and other road users. The design question is which signals should be standardized and which can remain brand-specific.",
+      "s": [
+        "nhtsa"
+      ],
+      "tags": []
+    }
+  ],
+  "watch": [
+    {
+      "t": "GM next-generation architecture targeted for introduction in 2028, with the Cadillac Escalade IQ as the first vehicle.",
+      "s": [
+        "gm_forward"
+      ],
+      "tags": [
+        "GM"
+      ]
+    },
+    {
+      "t": "OnStar AI Assistant scheduled to debut through an over-the-air update in the 2027 Cadillac LYRIQ, with additional vehicles following.",
+      "s": [
+        "gm_onstar"
+      ],
+      "tags": [
+        "GM"
+      ]
+    },
+    {
+      "t": "Waymo: autonomous ride-hailing planned for the Madrid region in 2027; public driverless rides there remain a future target.",
+      "s": [
+        "waymo_madrid"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "t": "Reported plan, not a completed expansion: Waymo considering a fleet of about 20,000 vehicles by the end of 2027, from roughly 4,000.",
+      "s": [
+        "reuters_waymo_fleet"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "t": "Tesla reiterated plans to begin selling the purpose-built Cybercab before the end of 2026, with an October 30 NHTSA response deadline in the ongoing investigation.",
+      "s": [
+        "reuters_cybercab"
+      ],
+      "tags": [
+        "Tesla"
+      ]
+    }
+  ],
+  "robotaxi_table": {
+    "columns": [
+      "Operator",
+      "This week",
+      "Notes"
+    ],
+    "rows": [
+      [
+        {
+          "t": "Waymo",
+          "operator_id": "waymo"
+        },
+        {
+          "t": "Announced plans to launch autonomous ride-hailing in the Madrid region in 2027.",
+          "s": [
+            "waymo_madrid"
+          ]
+        },
+        {
+          "t": "Initial electric Jaguar I-PACE vehicles for mapping and testing; manual driving first, then supervised validation. Public driverless rides are a future target. Reuters, citing Semafor, reports a possible fleet of about 20,000 vehicles by the end of 2027, from roughly 4,000 — a reported plan, not a completed expansion.",
+          "s": [
+            "reuters_waymo_fleet"
+          ]
+        }
+      ],
+      [
+        {
+          "t": "Tesla",
+          "operator_id": "tesla"
+        },
+        {
+          "t": "Reiterated plans to begin selling the purpose-built Cybercab before the end of 2026. Houston robotaxi service expanded on October 26 into neighborhoods including Montrose, Midtown, and downtown.",
+          "s": [
+            "reuters_cybercab",
+            "houston"
+          ]
+        },
+        {
+          "t": "Cybercab is designed without conventional steering, pedals, or mirrors. Limited commercial operations have begun in Austin. NHTSA continues examining compliance; October 30 response deadline."
+        }
+      ]
+    ]
+  },
+  "adas_table": {
+    "columns": [],
+    "rows": []
+  },
+  "deep": [
+    {
+      "h": "Research: warning drivers about hazards they have not noticed",
+      "tags": [],
+      "items": [
+        {
+          "t": "A study in the October 2026 issue of Accident Analysis and Prevention investigated an augmented-reality takeover interface that analyzes the driver’s visual scanning, identifies hazards the driver may not have looked at, and selectively highlights those risks through an AR head-up display. In simulation, the adaptive interface reduced gaze latency and improved takeover success compared with conditions without the display. Researchers reported a descriptive takeover success rate of 71.46% in the adaptive condition, although not all comparisons were statistically significant.",
+          "s": [
+            "pubmed_a"
+          ]
+        },
+        {
+          "t": "The brief’s implication is a shift from warning that a hazard exists to highlighting the hazard the driver may not have noticed. Gaze alone cannot establish whether a driver has cognitively understood a hazard, so such systems would require additional validation."
+        }
+      ]
+    },
+    {
+      "h": "Research: takeover performance varies across individuals",
+      "tags": [],
+      "items": [
+        {
+          "t": "An October 5 study in Traffic Injury Prevention examined Level 3 takeover performance among 50 drivers, looking at age, stress, scenario urgency, and secondary activities. Age was a significant factor influencing performance and physiological responses. Stress was associated with greater variability in performance, even when its direct relationship with the overall takeover score was not statistically significant.",
+          "s": [
+            "pubmed_b"
+          ]
+        },
+        {
+          "t": "A single fixed takeover strategy may not work equally well for every driver. The brief says future systems could potentially adapt communication based on readiness, attention, current activity, response history, and urgency, but safety-critical timing cannot be relaxed casually through personalization."
+        }
+      ]
+    },
+    {
+      "h": "Design concept in the brief: the AI Experience Ownership Map",
+      "tags": [
+        "GM",
+        "Google"
+      ],
+      "items": [
+        {
+          "t": "The brief proposes an AI Experience Ownership Map that defines which intelligence capabilities should be owned by the automaker, which can be supplied by partners, and which require shared orchestration. Examples in the brief include general knowledge from a cloud AI partner, permissioned personal calendar and preferences, automaker-owned vehicle diagnostics and climate control, navigation recommendations, ADAS state and limitations, and safety-critical intervention from validated vehicle safety systems. The important part is not simply assigning ownership, but defining how the systems cooperate."
+        }
+      ]
+    }
+  ],
+  "before": [
+    {
+      "t": "A Reuters report citing Semafor, dated October 19, just before this coverage window, said Waymo is considering increasing its fleet to approximately 20,000 vehicles by the end of 2027, from roughly 4,000.",
+      "s": [
+        "reuters_waymo_fleet"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    }
+  ],
+  "analysis": [
+    "GM’s architecture announcement matters less for raw compute than for the chance to coordinate previously isolated vehicle functions around a single customer intention.",
+    "The week also draws a sharp line between general-purpose assistants and vehicle-native intelligence, as Google brings personal context and conversational navigation into the car, including through Apple CarPlay, while GM repositions OnStar as a vehicle-intelligence platform.",
+    "On the autonomy side, Waymo’s Madrid plans and a reported fleet-scale ambition, Tesla’s Cybercab commercialization path under an ongoing federal review, and NHTSA’s proposed cyan marker lamps all point to the same design problem: how vehicles and services communicate status, authority, and passenger control as automation scales.",
+    "The brief’s research takeaway is that future automated-driving HMI should increasingly understand what the human knows and needs, not merely what the vehicle detects."
+  ]
+}

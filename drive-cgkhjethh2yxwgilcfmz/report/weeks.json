@@ -1,9 +1,54 @@
 {
   "weeks": [
     {
+      "date": "2026-10-19",
+      "window": "Week of Oct 19, 2026",
+      "title": "Automotive UX Weekly Brief",
+      "source": "chatgpt",
+      "source_label": "ChatGPT · Automotive UX Weekly Brief",
+      "folder": "2026-10-19",
+      "group": "2026-10-19",
+      "group_window": "Week of Oct 19, 2026"
+    },
+    {
+      "date": "2026-10-26",
+      "window": "Oct 20 – Oct 26, 2026",
+      "title": "Automotive UX Weekly Brief",
+      "source": "chatgpt",
+      "source_label": "ChatGPT · Automotive UX Weekly Brief",
+      "folder": "2026-10-26",
+      "group": "2026-10-26",
+      "group_window": "Oct 20 – Oct 26, 2026"
+    },
+    {
+      "date": "2026-11-02",
+      "window": "Oct 27 – Nov 2, 2026",
+      "title": "Automotive UX Weekly Brief",
+      "source": "chatgpt",
+      "source_label": "ChatGPT · Automotive UX Weekly Brief",
+      "folder": "2026-11-02",
+      "group": "2026-11-02",
+      "group_window": "Oct 27 – Nov 2, 2026"
+    },
+    {
+      "date": "2026-11-09",
+      "window": "Nov 3 – Nov 9, 2026",
+      "title": "Automotive UX Weekly Brief",
+      "source": "chatgpt",
+      "source_label": "ChatGPT · Automotive UX Weekly Brief",
+      "folder": "2026-11-09",
+      "group": "2026-11-15",
+      "group_window": "Nov 3 – Nov 15, 2026"
+    },
+    {
       "date": "2026-11-15",
       "window": "Nov 8 – Nov 15, 2026",
-      "title": "Autonomy Weekly: AV, automotive AI & SDV"
+      "title": "Autonomy Weekly: AV, automotive AI & SDV",
+      "source": "cio",
+      "source_label": "CIO · Autonomy Weekly",
+      "folder": "2026-11-15",
+      "group": "2026-11-15",
+      "group_window": "Nov 3 – Nov 15, 2026"
     }
   ]
 }

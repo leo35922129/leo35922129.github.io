@@ -1,0 +1,226 @@
+{
+  "headlines": [
+    {
+      "h": "Toyota + Waymo: Autonomous driving becomes a production-vehicle architecture",
+      "t": "On October 30, Toyota and Waymo announced the next phase of their autonomous-driving collaboration. The companies will begin testing and validating autonomous Toyota bZ4X vehicles in Japan in 2027, with potential deployment in the United Kingdom and other Waymo markets in subsequent years. Toyota will produce the vehicles at its Takaoka plant in Japan, integrating Waymo’s autonomous-driving hardware during manufacturing, rather than installing the system after a completed production vehicle leaves the line. Toyota and Waymo specifically highlight automatic doors, a powered liftgate, generous rear legroom, and ambient lighting as part of the planned passenger experience.",
+      "why": "Autonomous-driving technology is becoming part of the original vehicle architecture, with implications for sensor integration, electrical architecture, manufacturing efficiency, and interior design. The passenger experience can be considered alongside the hardware, instead of being retrofit later.",
+      "s": [
+        "toyota",
+        "waymo_bz4x",
+        "reuters_toyota"
+      ],
+      "tags": [
+        "Toyota",
+        "Waymo"
+      ]
+    },
+    {
+      "h": "Rivian + Volkswagen: AI assistant technology becomes a licensable OEM asset",
+      "t": "Rivian disclosed that Volkswagen will license elements of its AI voice assistant technology as part of their broader joint venture. The partnership, valued at up to $5.8 billion, originally focused on Rivian’s electrical architecture and software and is now expanding into AI interaction.",
+      "why": "This is a clear example of an automaker commercializing not only vehicle hardware or a software platform, but customer-facing intelligence. It creates a model in which AI assistant technology can be a licensable OEM asset, while the customer still expects one coherent vehicle experience.",
+      "s": [
+        "techcrunch_rivian",
+        "rivian"
+      ],
+      "tags": [
+        "Rivian",
+        "Volkswagen"
+      ]
+    },
+    {
+      "h": "Rivian’s autonomous-driving strategy is becoming a business milestone",
+      "t": "During its third-quarter earnings announcement, Rivian said it remains confident it will achieve an autonomy milestone by the end of 2026. CEO RJ Scaringe said that milestone would unlock an additional $250 million investment from Uber. Uber’s total potential investment in Rivian is approximately $1.25 billion through 2031, subject to milestones.",
+      "why": "Autonomous-driving capability is becoming directly connected to business valuation and investment, not only to product roadmaps.",
+      "s": [
+        "reuters_rivian"
+      ],
+      "tags": [
+        "Rivian",
+        "Uber"
+      ]
+    },
+    {
+      "h": "Hyundai Pleos Connect: A production example of continuous HMI evolution",
+      "t": "On October 30, Hyundai began rolling out a new over-the-air update for Pleos Connect on the Grandeur in South Korea. The update introduces a one-touch door-lock control, a more prominent gear-selection display, engine RPM information on the slim instrument display, different instrument graphics for different driving modes, and additional Gleo AI assistant capabilities. Those include route-based destination search, distance-based result sorting, on-device message reading, and seat-aware restrictions for certain voice commands. Gleo AI can identify which seating position a voice request originates from and restrict certain phone and messaging functions from rear-seat passengers.",
+      "why": "This is not a dramatic technology demonstration. It improves everyday usability after delivery. A software-defined vehicle should become easier to use throughout ownership, not merely accumulate additional functions. Seat-aware AI also shows that an intelligent assistant should understand not only what someone requests, but who is requesting it and what authority they have.",
+      "s": [
+        "hyundai_pleos",
+        "kcb"
+      ],
+      "tags": [
+        "Hyundai"
+      ]
+    },
+    {
+      "h": "Germany: Autonomous driving becomes a subscription service for taxi operators",
+      "t": "Tensor Auto and Munich taxi operator Münchner Taxi Zentrum announced a letter of intent to introduce up to 500 autonomous taxis in Germany. Tensor would provide autonomous-driving technology through a recurring subscription service. The taxi operator would retain responsibility for fleet operations, customer relationships, booking services, brand identity, and operational data. The agreement remains subject to definitive contracts and Level 4 regulatory approval. No commercial launch date has been confirmed.",
+      "why": "Autonomous-driving technology is becoming separable from mobility-service ownership. Instead of the autonomy provider controlling the entire customer experience, an existing operator can license driving capability and still need a consistent passenger experience for identification, booking, boarding, passenger controls, emergency assistance, support, and accessibility.",
+      "s": [
+        "tensor",
+        "yahoo_tensor",
+        "reuters_tensor"
+      ],
+      "tags": [
+        "Tensor"
+      ]
+    },
+    {
+      "h": "SDV development reality: Engineers still spend enormous time below the experience layer",
+      "t": "A QNX survey of 1,100 automotive software developers globally, published October 21, found that average development effort spent on foundational software integration was 35%; 75% said reusable software foundations are lacking; 76% favored more application-layer innovation; 44% identified debugging and testing as their biggest challenge; 48% were concerned about security threats; and 83% expected software-defined vehicles to become major cyberattack targets within three years. These are survey responses, not independently measured engineering productivity or attack forecasts. QNX also identifies cybersecurity standards as a particularly difficult compliance area, including ISO/SAE 21434 and UNECE WP.29 cybersecurity requirements.",
+      "why": "If every vehicle program must rebuild or heavily customize its software foundation, less engineering capacity remains for customer-facing innovation. A good SDV strategy needs both reusable technical foundations and differentiated experience layers.",
+      "s": [
+        "qnx"
+      ],
+      "tags": [
+        "QNX"
+      ]
+    }
+  ],
+  "watch": [
+    {
+      "t": "Toyota and Waymo: testing and validation of autonomous bZ4X vehicles in Japan in 2027, with potential deployment in the United Kingdom and other Waymo markets in later years.",
+      "s": [
+        "toyota",
+        "waymo_bz4x",
+        "reuters_toyota"
+      ],
+      "tags": [
+        "Toyota",
+        "Waymo"
+      ]
+    },
+    {
+      "t": "Rivian: an autonomy milestone targeted by the end of 2026 that would unlock an additional $250 million from Uber, part of approximately $1.25 billion in potential Uber investment through 2031, subject to milestones.",
+      "s": [
+        "reuters_rivian"
+      ],
+      "tags": [
+        "Rivian",
+        "Uber"
+      ]
+    },
+    {
+      "t": "Tensor Auto and Münchner Taxi Zentrum: letter of intent for up to 500 autonomous taxis in Germany, subject to definitive contracts and Level 4 approval; no commercial launch date confirmed.",
+      "s": [
+        "tensor",
+        "yahoo_tensor",
+        "reuters_tensor"
+      ],
+      "tags": [
+        "Tensor"
+      ]
+    }
+  ],
+  "robotaxi_table": {
+    "columns": [
+      "Operator",
+      "This week",
+      "Notes"
+    ],
+    "rows": [
+      [
+        {
+          "t": "Toyota + Waymo",
+          "operator_id": "waymo"
+        },
+        {
+          "t": "Next phase of their collaboration: testing and validating autonomous Toyota bZ4X vehicles in Japan in 2027, with potential later deployment in the United Kingdom and other Waymo markets.",
+          "s": [
+            "toyota",
+            "waymo_bz4x",
+            "reuters_toyota"
+          ]
+        },
+        {
+          "t": "Toyota will manufacture the vehicles at its Takaoka plant, integrating Waymo hardware during production rather than retrofitting a finished vehicle."
+        }
+      ],
+      [
+        {
+          "t": "Tensor Auto + Münchner Taxi Zentrum",
+          "operator_id": "tensor"
+        },
+        {
+          "t": "Letter of intent to introduce up to 500 autonomous taxis in Germany, with Tensor providing driving technology as a subscription.",
+          "s": [
+            "tensor",
+            "yahoo_tensor",
+            "reuters_tensor"
+          ]
+        },
+        {
+          "t": "The taxi operator would keep fleet operations, customers, booking, brand, and operational data. Subject to definitive contracts and Level 4 approval; no commercial launch date confirmed."
+        }
+      ]
+    ]
+  },
+  "adas_table": {
+    "columns": [],
+    "rows": []
+  },
+  "deep": [
+    {
+      "h": "Research: trust during real-world ADAS malfunctions",
+      "tags": [],
+      "items": [
+        {
+          "t": "A study published October 20, from researchers at the University of Michigan–Dearborn, the University of Michigan Transportation Research Institute, and State Farm, examined how drivers respond to ADAS malfunctions. It included 30 drivers and 56 eligible malfunction cases, and looked at personality, trust, perceived transparency, and manual intervention. Higher emotional trust showed a tendency toward reduced manual braking intervention, although that relationship was not statistically significant. Perceived predictability was associated with proactive manual braking.",
+          "s": [
+            "pubmed_a"
+          ]
+        },
+        {
+          "t": "The brief’s implication is calibrated trust, not maximum trust. A driver who feels extremely comfortable with automation may not necessarily respond better when the system fails."
+        }
+      ]
+    },
+    {
+      "h": "Research: sharing vehicle intention can reduce unnecessary disengagement",
+      "tags": [
+        "GM"
+      ],
+      "items": [
+        {
+          "t": "A 2026 Human Factors study involving researchers from the University of Wisconsin–Madison and GM examined how sharing vehicle situation awareness affects takeover behavior. They tested augmented-reality HUD information including object perception, confidence assessment, and predicted vehicle trajectories. Presenting useful projection information reduced driver-initiated disengagements without delaying takeover responses in their simulated scenarios. Perception information alone did not produce the same significant benefit.",
+          "s": [
+            "pubmed_b"
+          ]
+        },
+        {
+          "t": "The brief distinguishes perception visualization, what the vehicle sees, from intention visualization, what the vehicle plans to do. The second may be more useful, for example communicating that the vehicle is waiting for a larger gap before merging."
+        }
+      ]
+    },
+    {
+      "h": "Design concept in the brief: the Intelligence Platform Ownership Map",
+      "tags": [
+        "Toyota",
+        "Waymo",
+        "Rivian",
+        "Volkswagen"
+      ],
+      "items": [
+        {
+          "t": "The brief proposes an Intelligence Platform Ownership Map to identify which parts of vehicle intelligence should be developed internally, which can be licensed, and which should remain under the automaker’s experience governance. Layers in the brief include sensors and compute, electrical architecture, vehicle OS and middleware, driving intelligence, the AI assistant foundation, authority and policy, brand behavior, customer experience, and over-the-air evolution. The customer still expects one coherent vehicle experience even when third-party models, shared compute, and externally developed driving intelligence are in the mix."
+        }
+      ]
+    }
+  ],
+  "before": [
+    {
+      "t": "The QNX 2026 SDV Developer Report, based on a survey of 1,100 automotive software developers, was published October 21, just before this coverage window.",
+      "s": [
+        "qnx"
+      ],
+      "tags": [
+        "QNX"
+      ]
+    }
+  ],
+  "analysis": [
+    "Toyota and Waymo are integrating autonomous-driving technology more deeply into production-vehicle manufacturing, while Rivian and Volkswagen are expanding platform sharing into customer-facing AI assistant technology.",
+    "Rivian and Uber are linking autonomous-driving milestones to major investment, and Tensor is exploring autonomous driving as a subscription service for mobility operators, separating driving technology from service ownership.",
+    "Hyundai’s Pleos Connect update shows how over-the-air software can continuously improve everyday interaction, and the QNX survey shows why reusable software foundations matter: engineering complexity can consume resources that might otherwise support differentiated customer experiences.",
+    "The brief’s central question is: if autonomous driving, AI assistants, and software platforms can increasingly be purchased from technology partners, what must an automaker own to create a distinctive, valuable, and trustworthy vehicle experience? Its answer is clear ownership of the customer experience, behavior specification, authority boundaries, and long-term product vision. The underlying intelligence may be shared; the experience should still be unmistakably the brand’s own."
+  ]
+}

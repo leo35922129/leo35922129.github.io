@@ -9,7 +9,10 @@ const RATES = [1, 1.5, 2];
 
 const REPORT = {
   weeks: [],
+  groups: [],
   idx: 0,
+  gidx: 0,
+  week: null,
   archive: false,
   ready: false,
   error: null,
@@ -74,6 +77,18 @@ function buildAudio(kind, folder, report, scriptText, cueList) {
     ? { file: 'summary.mp3', title: '3-min summary' }
     : { file: 'deep-dive.mp3', title: '10-min deep dive' };
   const a = (report.audio && report.audio[kind]) || {};
+  if (a.unavailable) {
+    const lines = splitScript(scriptText);
+    return {
+      unavailable: true,
+      file: '',
+      duration_s: 0,
+      label: 'Audio coming',
+      title: a.title || defaults.title,
+      timing: 'none',
+      script: estimateCues(lines, 0)
+    };
+  }
   const file = 'report/' + folder + '/' + (a.file || defaults.file);
   const lines = splitScript(scriptText);
   let official = Array.isArray(cueList) && cueList.length > 0;
@@ -127,6 +142,10 @@ async function loadWeekEntry(entry) {
     date: report.date || entry.date,
     window: report.window || entry.window || '',
     title: report.title || entry.title || '',
+    source: report.source || entry.source || 'cio',
+    source_label: report.source_label || entry.source_label || '',
+    group: entry.group || report.group || report.date || entry.date,
+    group_window: entry.group_window || report.group_window || report.window || entry.window || '',
     folder,
     lead: report.lead || '',
     src: report.src || {},
@@ -202,6 +221,10 @@ function rpTable(table, src) {
   return `<div class="rp-tw"><table><thead>${thead}</thead><tbody>${body}</tbody></table></div><p class="rp-hint">Swipe to see more columns</p>`;
 }
 
+function hasTable(table) {
+  return !!(table && (table.columns || []).length && (table.rows || []).length);
+}
+
 function rpCompare(id, title, table, src) {
   return `<div class="rp-sechead">
     <div class="rp-sec"><b>${esc(title)}</b></div>
@@ -218,9 +241,29 @@ function rpCompare(id, title, table, src) {
 
 function rpPlayer(kind, audio) {
   const lines = (audio.script || []).map((c, i) =>
-    `<div class="rp-line" data-i="${i}" data-start="${c.start}">${esc(c.t)}</div>`
+    `<div class="rp-line" data-i="${i}" data-start="${c.start || 0}">${esc(c.t)}</div>`
   ).join('');
   const open = REPORT.open[kind] ? ' open' : '';
+  if (audio && audio.unavailable) {
+    return `<article class="rp-player rp-player-off${open}" data-audio="${esc(kind)}">
+    <div class="rp-row">
+      <button type="button" class="rp-play" disabled aria-label="Audio coming">${PLAY_ICO}</button>
+      <div class="rp-mid">
+        <div class="rp-name">${esc(audio.title)}</div>
+        <div class="rp-bar" aria-hidden="true">
+          <div class="rp-track"><div class="rp-fill"></div></div>
+        </div>
+        <div class="rp-times">
+          <span class="rp-elapsed">0:00</span>
+          <button type="button" class="rp-speed" disabled>1x</button>
+          <span class="rp-total">Audio coming</span>
+        </div>
+      </div>
+      <button type="button" class="rp-chev" aria-label="Show script" aria-expanded="${REPORT.open[kind] ? 'true' : 'false'}">${CHEV_ICO}</button>
+    </div>
+    <div class="rp-script">${lines}</div>
+  </article>`;
+  }
   return `<article class="rp-player${open}" data-audio="${esc(kind)}">
     <audio preload="metadata" src="${esc(audio.file)}"></audio>
     <div class="rp-row">
@@ -242,19 +285,84 @@ function rpPlayer(kind, audio) {
   </article>`;
 }
 
-function weekOf() {
-  return REPORT.weeks[REPORT.idx] || REPORT.weeks[0];
+function defaultWeek(g) {
+  if (!g || !g.weeks || !g.weeks.length) return null;
+  return g.weeks.find(w => w.source === 'cio') || g.weeks[0];
 }
+
+function selectGroup(i, source) {
+  if (i < 0 || i >= (REPORT.groups || []).length) return;
+  REPORT.gidx = i;
+  const g = REPORT.groups[i];
+  REPORT.week = (source && g.weeks.find(w => w.source === source)) || defaultWeek(g);
+  REPORT.idx = Math.max(0, REPORT.weeks.indexOf(REPORT.week));
+}
+
+function weekOf() {
+  if (REPORT.week) return REPORT.week;
+  const g = (REPORT.groups || [])[REPORT.gidx];
+  return defaultWeek(g) || REPORT.weeks[REPORT.idx] || REPORT.weeks[0];
+}
+
+function syncReportChrome() {
+  const origin = document.getElementById('rptorigin');
+  const row = document.getElementById('rptsrcrow');
+  const w = weekOf();
+  if (origin) origin.textContent = REPORT.archive ? '' : ((w && w.source_label) || '');
+  const g = (REPORT.groups || [])[REPORT.gidx];
+  const multi = !!(g && g.weeks && g.weeks.length > 1 && !REPORT.archive);
+  if (row) {
+    row.hidden = !multi;
+    row.classList.toggle('hidden', !multi);
+    if (multi) {
+      row.querySelectorAll('button[data-source]').forEach(b => {
+        const present = g.weeks.some(x => x.source === b.dataset.source);
+        b.hidden = !present;
+        b.classList.toggle('on', !!(w && w.source === b.dataset.source));
+      });
+    }
+  }
+}
+
+function switchReportSource(source) {
+  const g = (REPORT.groups || [])[REPORT.gidx];
+  if (!g || !g.weeks.some(w => w.source === source)) return;
+  if (REPORT.week && REPORT.week.source === source) return;
+  stopReportAudio();
+  REPORT.open = { summary: false, deep: false };
+  selectGroup(REPORT.gidx, source);
+  renderReport();
+}
+window.switchReportSource = switchReportSource;
+window.syncReportChrome = syncReportChrome;
+window.weekOf = weekOf;
 
 function renderReportArchive() {
   setModeClass();
   setTitle();
   const main = $('#main');
-  const items = REPORT.weeks.map((w, i) =>
-    `<button type="button" class="rp-wk" data-week="${i}">
-      <div><b>${esc(w.window)}</b><span>Week ending ${esc(w.date)}${i === REPORT.weeks.length - 1 ? ' · latest' : ''}</span></div>
-    </button>`
-  ).join('');
+  const items = (REPORT.groups || []).map((g, i) => {
+    const latest = i === REPORT.groups.length - 1;
+    const window = g.group_window || (g.weeks[0] && (g.weeks[0].group_window || g.weeks[0].window)) || '';
+    const bySrc = (s) => g.weeks.find(w => w.source === s);
+    const ordered = [bySrc('cio'), bySrc('chatgpt')].filter(Boolean);
+    const rest = g.weeks.filter(w => !ordered.includes(w));
+    const sources = ordered.concat(rest);
+    const sub = sources.length > 1
+      ? ('Two sources' + (latest ? ' · latest' : ''))
+      : ((sources[0] && (sources[0].source_label || sources[0].source)) || '') + (latest ? ' · latest' : '');
+    const chips = sources.length > 1
+      ? `<div class="rp-seg" data-archive-src="${i}" role="group" aria-label="Choose source">
+          ${sources.map(w =>
+            `<button type="button" data-source="${esc(w.source)}">${w.source === 'cio' ? 'CIO' : (w.source === 'chatgpt' ? 'ChatGPT' : esc(w.source))}</button>`
+          ).join('')}
+        </div>`
+      : `<span class="rp-tag">${sources[0] && sources[0].source === 'chatgpt' ? 'ChatGPT' : 'CIO'}</span>`;
+    return `<div class="rp-wk" role="button" tabindex="0" data-group="${i}">
+      <div><b>${esc(window)}</b><span>${esc(sub)}</span></div>
+      ${chips}
+    </div>`;
+  }).join('');
   main.innerHTML = `<div class="rp-sec"><b>Archive</b></div>${items || '<div class="rp-empty">No reports yet.</div>'}`;
 }
 
@@ -311,16 +419,12 @@ function renderReportBody(w) {
     <article class="rp-lead">${esc(w.lead)}</article>
     <div class="rp-sec"><b>Top stories</b></div>
     ${heads}
-    ${rpCompare('rp-robotaxi', 'Robotaxi comparison', w.robotaxi_table, src)}
-    ${rpCompare('rp-adas', 'Consumer ADAS', w.adas_table, src)}
-    <div class="rp-sec"><b>What to watch</b></div>
-    ${watch}
-    <div class="rp-sec"><b>Deep dive</b></div>
-    ${deep}
-    <div class="rp-sec"><b>Just before this week</b></div>
-    ${before}
-    <div class="rp-sec"><b>Analysis</b></div>
-    ${analysis}
+    ${hasTable(w.robotaxi_table) ? rpCompare('rp-robotaxi', 'Robotaxi comparison', w.robotaxi_table, src) : ''}
+    ${hasTable(w.adas_table) ? rpCompare('rp-adas', 'Consumer ADAS', w.adas_table, src) : ''}
+    ${watch ? '<div class="rp-sec"><b>What to watch</b></div>' + watch : ''}
+    ${deep ? '<div class="rp-sec"><b>Deep dive</b></div>' + deep : ''}
+    ${before ? '<div class="rp-sec"><b>Just before this week</b></div>' + before : ''}
+    ${analysis ? '<div class="rp-sec"><b>Analysis</b></div>' + analysis : ''}
     <div class="rp-sec"><b>Sources</b></div>
     <div class="rp-srclist">${sources}</div>
   `;
@@ -349,9 +453,10 @@ function bindPlayer(root, audio) {
   let lastCue = -1;
 
   const prev = REPORT.players[kind];
-  const savedTime = prev && prev.el ? prev.el.currentTime : 0;
-  const savedRate = prev && prev.el ? prev.el.playbackRate : 1;
-  const wasPlaying = prev && prev.el && !prev.el.paused && !prev.el.ended;
+  const same = prev && prev.audio && prev.audio.file === audio.file;
+  const savedTime = same && prev.el ? prev.el.currentTime : 0;
+  const savedRate = same && prev.el ? prev.el.playbackRate : 1;
+  const wasPlaying = same && prev.el && !prev.el.paused && !prev.el.ended;
 
   function setIcon(playing) {
     playBtn.innerHTML = playing ? PAUSE_ICO : PLAY_ICO;
@@ -482,12 +587,33 @@ function bindReportClicks(main) {
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   });
-  main.querySelectorAll('.rp-wk').forEach(b => b.addEventListener('click', () => {
-    REPORT.idx = +b.dataset.week;
-    REPORT.archive = false;
-    stopReportAudio();
-    renderReport();
-  }));
+  main.querySelectorAll('.rp-wk').forEach(b => {
+    const open = ev => {
+      if (ev.target.closest('[data-archive-src]')) return;
+      const i = +b.dataset.group;
+      REPORT.archive = false;
+      stopReportAudio();
+      REPORT.open = { summary: false, deep: false };
+      selectGroup(i);
+      renderReport();
+    };
+    b.addEventListener('click', open);
+    b.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(ev); }
+    });
+  });
+  main.querySelectorAll('[data-archive-src] button[data-source]').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const i = +btn.closest('[data-archive-src]').dataset.archiveSrc;
+      REPORT.archive = false;
+      stopReportAudio();
+      REPORT.open = { summary: false, deep: false };
+      selectGroup(i, btn.dataset.source);
+      renderReport();
+    });
+  });
 }
 
 function stopReportAudio() {
@@ -499,11 +625,11 @@ function stopReportAudio() {
 
 function moveReport(dir) {
   if (REPORT.archive) return;
-  const n = REPORT.idx + dir;
-  if (n < 0 || n >= REPORT.weeks.length) return;
-  REPORT.idx = n;
+  const n = REPORT.gidx + dir;
+  if (n < 0 || n >= (REPORT.groups || []).length) return;
   stopReportAudio();
   REPORT.open = { summary: false, deep: false };
+  selectGroup(n);
   renderReport();
 }
 
@@ -520,6 +646,7 @@ function renderReport() {
   if (REPORT.archive) {
     renderReportArchive();
     bindReportClicks(main);
+    syncReportChrome();
     return;
   }
   const w = weekOf();
@@ -528,9 +655,10 @@ function renderReport() {
     return;
   }
   main.innerHTML = renderReportBody(w);
-  bindPlayer(main.querySelector('.rp-player[data-audio="summary"]'), w.audio.summary);
-  bindPlayer(main.querySelector('.rp-player[data-audio="deep"]'), w.audio.deep);
+  bindMaybePlayer(main.querySelector('.rp-player[data-audio="summary"]'), w.audio && w.audio.summary);
+  bindMaybePlayer(main.querySelector('.rp-player[data-audio="deep"]'), w.audio && w.audio.deep);
   bindReportClicks(main);
+  syncReportChrome();
 }
 
 window.renderReport = renderReport;
@@ -563,9 +691,40 @@ async function loadReportData() {
   const data = await r.json();
   const entries = data.weeks || [];
   REPORT.weeks = await Promise.all(entries.map(loadWeekEntry));
-  REPORT.idx = Math.max(0, REPORT.weeks.length - 1);
+  const order = [];
+  const map = {};
+  for (const w of REPORT.weeks) {
+    const id = w.group || w.date;
+    if (!map[id]) { map[id] = []; order.push(id); }
+    map[id].push(w);
+  }
+  REPORT.groups = order.map(id => ({
+    id,
+    weeks: map[id],
+    group_window: (map[id][0] && map[id][0].group_window) || (map[id][0] && map[id][0].window) || ''
+  }));
+  REPORT.gidx = Math.max(0, REPORT.groups.length - 1);
+  selectGroup(REPORT.gidx);
   REPORT.ready = true;
   REPORT.error = null;
+}
+
+function bindMaybePlayer(root, audio) {
+  if (!root || !audio) return;
+  if (audio.unavailable) {
+    const chev = root.querySelector('.rp-chev');
+    if (chev && !root.dataset.chevBound) {
+      root.dataset.chevBound = '1';
+      chev.addEventListener('click', () => {
+        const open = !root.classList.contains('open');
+        root.classList.toggle('open', open);
+        chev.setAttribute('aria-expanded', open ? 'true' : 'false');
+        REPORT.open[root.dataset.audio] = open;
+      });
+    }
+    return;
+  }
+  bindPlayer(root, audio);
 }
 
 function wireReport() {
@@ -577,6 +736,15 @@ function wireReport() {
       REPORT.archive = !REPORT.archive;
       if (REPORT.archive) stopReportAudio();
       renderReport();
+    });
+  }
+  const row = document.getElementById('rptsrcrow');
+  if (row && !row.dataset.bound) {
+    row.dataset.bound = '1';
+    row.addEventListener('click', ev => {
+      const b = ev.target.closest('button[data-source]');
+      if (!b) return;
+      switchReportSource(b.dataset.source);
     });
   }
 }

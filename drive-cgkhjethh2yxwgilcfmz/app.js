@@ -583,11 +583,12 @@ function parkedCard(it) {
 function setTitle() {
   const prev = $('#prev'), next = $('#next');
   if (S.mode === 'report') {
-    const weeks = (window.REPORT && REPORT.weeks) || [];
-    const w = weeks[REPORT.idx] || weeks[0];
+    const groups = (window.REPORT && REPORT.groups) || [];
+    const w = (typeof weekOf === 'function' && weekOf()) || (groups[REPORT.gidx] && defaultWeek && defaultWeek(groups[REPORT.gidx])) || null;
     $('#title').textContent = (w && w.window) || '';
-    if (prev) prev.disabled = !weeks.length || REPORT.archive || REPORT.idx <= 0;
-    if (next) next.disabled = !weeks.length || REPORT.archive || REPORT.idx >= weeks.length - 1;
+    if (prev) prev.disabled = !groups.length || REPORT.archive || REPORT.gidx <= 0;
+    if (next) next.disabled = !groups.length || REPORT.archive || REPORT.gidx >= groups.length - 1;
+    if (typeof syncReportChrome === 'function') syncReportChrome();
     setModeClass();
     return;
   }

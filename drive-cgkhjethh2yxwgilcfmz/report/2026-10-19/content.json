@@ -1,0 +1,262 @@
+{
+  "headlines": [
+    {
+      "h": "Volvo + NVIDIA: From highway assistance toward door-to-door automation",
+      "t": "On October 15, Volvo Cars announced an expanded partnership with NVIDIA. The architecture combines Hyperion, the vehicle sensor and computing platform; Halos, a safety-oriented automotive software and development environment; and Alpamayo, AI driving software for perception, reasoning, and driving decisions. Volvo intends to integrate these with its own safety systems. The stated ambition is automated driving across highways, urban streets, and parking, with more advanced eyes-off capabilities introduced progressively. The announcement does not establish that a fully driverless, door-to-door consumer product is available today.",
+      "why": "This is part of a broader shift from separate ADAS functions toward more unified driving intelligence, where the same underlying system may eventually support multiple driving scenarios.",
+      "s": [
+        "volvo",
+        "reuters_volvo",
+        "nvidia"
+      ],
+      "tags": [
+        "Volvo",
+        "NVIDIA"
+      ]
+    },
+    {
+      "h": "Toyota's Arene platform: SDV is becoming a mass-production strategy",
+      "t": "Toyota said it expects its Arene software platform to be deployed in approximately 10 million new vehicles annually across 50 models by 2030. It also intends to expand the platform further by 2035, potentially including vehicles from alliance partners. Arene was introduced with the redesigned RAV4 in 2025 and supports Toyota's longer-term move toward software-defined vehicles.",
+      "why": "Toyota is trying to establish a software foundation for a substantial share of its global portfolio, so a feature can be developed once and then adapted and validated across compatible vehicles, rather than rebuilt program by program.",
+      "s": [
+        "reuters_toyota"
+      ],
+      "tags": [
+        "Toyota"
+      ]
+    },
+    {
+      "h": "Subaru: A different SDV strategy, and a 40% development-time ambition",
+      "t": "Subaru announced plans to introduce software-defined vehicles in the latter half of the 2020s and is targeting approximately 40% shorter vehicle development times through increased simulation, parallel development, and a new electronic architecture. The plan includes an integrated ECU architecture using technology jointly developed with AMD; over-the-air updates for driver assistance, automated driving, and vehicle performance; and standardized electronic platforms across gasoline, hybrid, and electric vehicles. Subaru currently intends to develop its own platform rather than adopt Toyota's Arene.",
+      "why": "Toyota is emphasizing software-platform scale, while Subaru is emphasizing development efficiency and an architecture it can control. Neither strategy automatically guarantees a superior customer experience, but the contrast is useful.",
+      "s": [
+        "reuters_subaru"
+      ],
+      "tags": [
+        "Subaru",
+        "Toyota"
+      ]
+    },
+    {
+      "h": "Hyundai brings generative AI and extensive OTA into a mainstream gasoline SUV",
+      "t": "Hyundai unveiled the India-spec BAYON ahead of a planned October 26 market launch. Announced capabilities include a Perplexity intelligence and SoundHound voice AI assistant; dual 12.3-inch curved displays; NVIDIA-accelerated ccNC computing; over-the-air updates for up to 19 vehicle controllers; more than 70 Bluelink connected features; more than 500 embedded offline voice commands; and support for multiple Indian languages, including Hinglish.",
+      "why": "This is a mainstream gasoline SUV, not an expensive flagship EV, which shows AI-driven vehicle experiences, connected services, and controller-level OTA are no longer being treated as exclusive to premium electric platforms.",
+      "s": [
+        "hyundai_bayon"
+      ],
+      "tags": [
+        "Hyundai",
+        "NVIDIA"
+      ]
+    },
+    {
+      "h": "Waymo expands toward Toronto: Robotaxi localization becomes a service-design problem",
+      "t": "Waymo announced plans to bring autonomous ride-hailing to Toronto in 2028, which would be its first Canadian market. The company plans to begin with manually driven mapping vehicles, followed by validation with trained autonomous specialists, and is partnering with Element Fleet Management to support fleet operations.",
+      "why": "Robotaxi UX is increasingly a complete service ecosystem, not just an in-vehicle interface. New markets bring localization questions around pickup, road interaction, language, payment, and support.",
+      "s": [
+        "waymo_tor",
+        "reuters_waymo"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "h": "Uber begins autonomous vehicle testing in Manchester",
+      "t": "Uber has begun autonomous vehicle testing in Manchester with technology partners. The initial phase involves mapping public roads using vehicles with safety drivers, and there are currently no passengers in these test vehicles. The development follows the introduction of limited supervised autonomous passenger services in London.",
+      "why": "Uber is pursuing a platform model, integrating vehicles and intelligence from different providers while owning the customer journey. Customers should not have to learn a completely different booking experience for each autonomy provider, but differences that matter, such as whether a safety driver is present, still need to be clear.",
+      "s": [
+        "guardian_uber"
+      ],
+      "tags": [
+        "Uber"
+      ]
+    },
+    {
+      "h": "Standards watch: Autonomous vehicles are forcing regulators to rethink safety equipment",
+      "t": "The Federal Motor Carrier Safety Administration granted a limited exemption allowing qualifying Level 4 autonomous trucks to use vehicle-mounted warning beacons instead of certain traditional roadside warning devices. The exemption, granted to Aurora Operations, became effective October 7 and extends through October 7, 2031, subject to its conditions. A recently adopted UNECE framework for fully autonomous driving also emphasizes safety management, validation, and continuous monitoring during operation.",
+      "why": "Traditional truck safety procedures assume a human driver can exit the vehicle and place warning triangles. A driverless truck cannot do that in the conventional way, so the question becomes how the vehicle can achieve an equivalent safety outcome. The same shift from driver-assumed procedures to designed systems appears in passenger robotaxis.",
+      "s": [
+        "fmcsa",
+        "unece"
+      ],
+      "tags": [
+        "Aurora"
+      ]
+    }
+  ],
+  "watch": [
+    {
+      "t": "Toyota: Arene targeted at about 10 million new vehicles a year across 50 models by 2030, with a further expansion envisioned by 2035.",
+      "s": [
+        "reuters_toyota"
+      ],
+      "tags": [
+        "Toyota"
+      ]
+    },
+    {
+      "t": "Subaru: software-defined vehicles planned for the latter half of the 2020s, with a target of about 40% shorter development times.",
+      "s": [
+        "reuters_subaru"
+      ],
+      "tags": [
+        "Subaru"
+      ]
+    },
+    {
+      "t": "Waymo: first Canadian robotaxi market planned for Toronto in 2028, starting with mapping vehicles and specialist validation.",
+      "s": [
+        "waymo_tor",
+        "reuters_waymo"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "t": "Hyundai BAYON India-spec market launch planned for October 26.",
+      "s": [
+        "hyundai_bayon"
+      ],
+      "tags": [
+        "Hyundai"
+      ]
+    },
+    {
+      "t": "FMCSA Aurora exemption for vehicle-mounted warning beacons runs through October 7, 2031, subject to its conditions.",
+      "s": [
+        "fmcsa"
+      ],
+      "tags": [
+        "Aurora"
+      ]
+    }
+  ],
+  "robotaxi_table": {
+    "columns": [
+      "Operator",
+      "This week",
+      "Notes"
+    ],
+    "rows": [
+      [
+        {
+          "t": "Waymo",
+          "operator_id": "waymo"
+        },
+        {
+          "t": "Announced plans for autonomous ride-hailing in Toronto in 2028, its first Canadian market.",
+          "s": [
+            "waymo_tor",
+            "reuters_waymo"
+          ]
+        },
+        {
+          "t": "Starts with manually driven mapping vehicles, then validation with trained specialists. Partner: Element Fleet Management."
+        }
+      ],
+      [
+        {
+          "t": "Uber",
+          "operator_id": "uber"
+        },
+        {
+          "t": "Began autonomous vehicle testing in Manchester with technology partners.",
+          "s": [
+            "guardian_uber"
+          ]
+        },
+        {
+          "t": "Initial phase is mapping with safety drivers and no passengers. Follows limited supervised autonomous passenger services in London."
+        }
+      ]
+    ]
+  },
+  "adas_table": {
+    "columns": [],
+    "rows": []
+  },
+  "deep": [
+    {
+      "h": "Research: explanations should adapt to what the passenger is doing",
+      "tags": [],
+      "items": [
+        {
+          "t": "A study published September 23 in Ergonomics evaluated spoken explanations, alert tones, and visual text in fully autonomous vehicles, across passenger activities including listening to radio, reading, and watching video. The most effective explanation format depended on what the passenger was doing. Visual text was more useful during video engagement, while text-free approaches performed more favorably during radio-based activities.",
+          "s": [
+            "ergonomics"
+          ]
+        },
+        {
+          "t": "The brief’s design implication is that nonurgent explanations should generally be suppressed if a passenger is sleeping, while urgent safety messages must not disappear simply because someone is watching a movie."
+        }
+      ]
+    },
+    {
+      "h": "Research: a haptic steering wheel as shared control",
+      "tags": [
+        "Toyota"
+      ],
+      "items": [
+        {
+          "t": "Research from the University of Michigan and Toyota Research Institute examined a steering-wheel interface that communicates intended automated maneuvers through haptic feedback, so the human and automation can coordinate future actions rather than having automation silently adjust steering. The researchers reported improvements in driving performance and trust during simulated experiments.",
+          "s": [
+            "techx"
+          ]
+        },
+        {
+          "t": "The brief argues ADAS should communicate intention before intervention whenever feasible and safe, including in steering assistance, lane centering, automated lane changes, parking assistance, and driver takeover transitions."
+        }
+      ]
+    },
+    {
+      "h": "Design concept in the brief: the Intelligence Continuity Framework",
+      "tags": [
+        "Volvo",
+        "Toyota",
+        "Subaru",
+        "Hyundai",
+        "Waymo"
+      ],
+      "items": [
+        {
+          "t": "The brief’s design concept is that as vehicle intelligence becomes more complex, the customer experience must remain continuous across technology boundaries. It defines four forms of continuity: the vehicle should clearly communicate which capabilities are available as conditions and automation states change; common functions should behave consistently across models, software versions, and related applications; customers should not have to guess whether the vehicle is supervising, assisting, or independently handling the driving task; and the experience should remain coherent as the underlying technology changes."
+        }
+      ]
+    }
+  ],
+  "before": [
+    {
+      "t": "Arene was introduced with the redesigned RAV4 in 2025, before this briefing, and is the foundation Toyota now says it will scale.",
+      "s": [
+        "reuters_toyota"
+      ],
+      "tags": [
+        "Toyota"
+      ]
+    },
+    {
+      "t": "The Ergonomics study on multimodal explanations in fully autonomous vehicles was published September 23.",
+      "s": [
+        "ergonomics"
+      ],
+      "tags": []
+    },
+    {
+      "t": "The FMCSA exemption for qualifying Level 4 autonomous trucks became effective October 7.",
+      "s": [
+        "fmcsa"
+      ],
+      "tags": [
+        "Aurora"
+      ]
+    }
+  ],
+  "analysis": [
+    "This week’s developments show three distinct strategies. Volvo’s NVIDIA partnership illustrates the industry’s movement toward AI-based automated-driving platforms, while Toyota and Subaru are investing in software-development scale and efficiency in different ways.",
+    "Hyundai’s BAYON announcement reinforces the idea that intelligent experiences will increasingly be expected across vehicle segments and powertrains, not only in premium electric flagships.",
+    "Waymo and Uber show that autonomous mobility is evolving into a broader service ecosystem that has to coordinate technology providers, fleet operators, customers, and cities.",
+    "The brief’s bottom line is that the next competition is about intelligent experience at scale: a common software foundation, a coherent automation journey, and a customer experience that stays continuous as the underlying technology changes."
+  ]
+}

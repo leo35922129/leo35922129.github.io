@@ -1,0 +1,17 @@
+Automotive UX Weekly Brief, for the week of October 27 through November 2, 2026. This is the three-minute summary.
+
+The executive take this week is that the automotive intelligence platform is becoming a commercial product.
+
+On October 30, Toyota and Waymo announced the next phase of their autonomous-driving collaboration. They will begin testing and validating autonomous Toyota bZ4X vehicles in Japan in 2027, with potential deployment in the United Kingdom and other Waymo markets in subsequent years. Toyota will produce the vehicles at its Takaoka plant in Japan, integrating Waymo's autonomous-driving hardware during manufacturing, rather than installing the system after a completed production vehicle leaves the line. The companies highlight automatic doors, a powered liftgate, generous rear legroom, and ambient lighting as part of the planned passenger experience.
+
+Rivian disclosed that Volkswagen will license elements of its AI voice assistant technology as part of their broader joint venture. The partnership, valued at up to 5.8 billion dollars, originally focused on Rivian's electrical architecture and software and is now expanding into AI interaction.
+
+During its third-quarter earnings announcement, Rivian said it remains confident it will achieve an autonomy milestone by the end of 2026. CEO RJ Scaringe said that milestone would unlock an additional 250 million dollars from Uber. Uber's total potential investment in Rivian is approximately 1.25 billion dollars through 2031, subject to milestones.
+
+On October 30, Hyundai began rolling out a new over-the-air update for Pleos Connect on the Grandeur in South Korea. The update includes a one-touch door-lock control, a more prominent gear-selection display, engine RPM on the slim instrument display, different instrument graphics for different driving modes, and additional Gleo AI capabilities, including route-based destination search, on-device message reading, and seat-aware restrictions for certain voice commands.
+
+Tensor Auto and Munich taxi operator Münchner Taxi Zentrum announced a letter of intent to introduce up to 500 autonomous taxis in Germany. Tensor would provide autonomous-driving technology as a recurring subscription, while the taxi operator would retain fleet operations, customer relationships, booking, brand identity, and operational data. The agreement remains subject to definitive contracts and Level 4 regulatory approval. No commercial launch date has been confirmed.
+
+Finally, a QNX survey of 1,100 automotive software developers, published October 21, found that average development effort spent on foundational software integration was 35 percent, and 75 percent said reusable software foundations are lacking. These are survey responses, not independently measured productivity figures.
+
+That is the week's core news. The deep dive covers production-line autonomy, licensed AI assistants, over-the-air HMI refinement, and two studies on trust and vehicle intention.

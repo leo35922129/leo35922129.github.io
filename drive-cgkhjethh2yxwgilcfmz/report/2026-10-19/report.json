@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-19",
+  "window": "Week of Oct 19, 2026",
+  "title": "Automotive UX Weekly Brief",
+  "source": "chatgpt",
+  "source_label": "ChatGPT · Automotive UX Weekly Brief",
+  "lead": "Automotive intelligence is becoming a scalable platform. Volvo expanded its NVIDIA partnership toward automated driving from highways through cities and parking; Toyota said Arene could reach 10 million new vehicles a year across 50 models by 2030; and Subaru said it will build its own software-defined architecture rather than adopt Arene.",
+  "src": {
+    "nvidia": [
+      "NVIDIA",
+      "https://www.nvidia.com/"
+    ],
+    "volvo": [
+      "Volvo Cars, Oct 15",
+      "https://www.volvocars.com/us/media/press-releases/9FC694757A4F7641/"
+    ],
+    "reuters_volvo": [
+      "Reuters, Oct 15",
+      "https://www.reuters.com/business/autos-transportation/volvo-cars-expands-automated-driving-partnership-with-nvidia-2026-10-15/"
+    ],
+    "reuters_toyota": [
+      "Reuters, Oct 16",
+      "https://www.reuters.com/technology/toyota-aims-make-all-its-cars-software-defined-by-2030-nikkei-reports-2026-10-16/"
+    ],
+    "reuters_subaru": [
+      "Reuters, Oct 19",
+      "https://www.reuters.com/business/subaru-targets-software-defined-vehicle-launch-late-2020s-plans-cut-development-2026-10-19/"
+    ],
+    "hyundai_bayon": [
+      "Hyundai, BAYON announcement",
+      "https://org3.hyundai.com/in/en/hyundai-story/media-center/press-release/hmil-unveils-india-spec-hyundai-bayon-redefining-intelligent-mobility-through-intelligence-that-moves"
+    ],
+    "waymo_tor": [
+      "Waymo, Toronto announcement",
+      "https://www.waymo.com/blog/2026/10/waymo-in-toronto/"
+    ],
+    "reuters_waymo": [
+      "Reuters, Oct 16",
+      "https://www.reuters.com/business/googles-waymo-plans-first-canada-robotaxi-service-toronto-2028-2026-10-16/"
+    ],
+    "guardian_uber": [
+      "The Guardian, Oct 14",
+      "https://www.theguardian.com/technology/2026/oct/14/uber-self-driving-robotaxi-trial-manchester"
+    ],
+    "fmcsa": [
+      "FMCSA, Aurora exemption",
+      "https://www.fmcsa.dot.gov/safety/carrier-safety/grant-application-exemption-aurora-operations-inc"
+    ],
+    "unece": [
+      "UNECE",
+      "https://unece.org/sustainable-development/press/unece-adopts-first-ever-global-rules-allowing-fully-autonomous"
+    ],
+    "ergonomics": [
+      "Ergonomics, Sept 23",
+      "https://www.tandfonline.com/doi/full/10.1080/00140139.2026.2734921"
+    ],
+    "techx": [
+      "Tech Xplore",
+      "https://techxplore.com/news/2026-10-wheel-communicates-semiautonomous.html"
+    ]
+  },
+  "audio": {
+    "summary": {
+      "file": "summary.mp3",
+      "duration_s": 191.16,
+      "label": "3:11",
+      "title": "3-min summary"
+    },
+    "deep": {
+      "file": "deep-dive.mp3",
+      "duration_s": 705.888,
+      "label": "11:45",
+      "title": "10-min deep dive"
+    }
+  }
+}

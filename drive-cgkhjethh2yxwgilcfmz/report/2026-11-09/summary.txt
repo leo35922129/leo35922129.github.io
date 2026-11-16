@@ -1,0 +1,15 @@
+Automotive UX Weekly Brief, for the week of November 3 through November 9, 2026. This is the three-minute summary.
+
+The executive take this week is that the next competitive advantage is how quickly vehicle intelligence can learn, safely.
+
+On November 3, Baidu introduced Apollo World, an AI simulation system designed to train autonomous vehicles by generating realistic driving environments. According to Reuters, Baidu says the platform can generate up to 100,000 kilometers of simulated driving per day, including simulated camera and lidar information. Baidu says Apollo World is already being used to train its Apollo Go robotaxi fleet. The important limitation is that simulated kilometers are not equivalent to real-world validated kilometers. Simulation should accelerate development, not replace independent real-world safety validation.
+
+On November 9, the US National Highway Traffic Safety Administration opened a new recall query covering approximately 2,895 Waymo vehicles. The investigation concerns reports that Waymo vehicles illegally passed stopped school buses displaying flashing red lights. Waymo had already introduced a software remedy through a December 2025 recall. NHTSA is now examining whether that remedy adequately addressed the underlying safety issue. According to Reuters, Austin school officials documented 19 violations, and Atlanta schools recorded another six. Waymo says it has significantly improved vehicle behavior, has not received citations since March, and will cooperate with the investigation. The larger point is that over-the-air success should be measured by validated behavioral improvement, not simply deployment completion.
+
+Tesla announced that its Robotaxi service is expanding into San Antonio, Texas, and also expanded its Austin service area. According to reporting published November 9, San Antonio's initial operating zone covers approximately 275 square miles, based on third-party estimates of Tesla's published service map, and Austin's expanded zone is estimated at approximately 443 square miles. These figures are estimates based on geographic boundaries, not independently verified measures of service availability or autonomous performance. A large autonomous operating area is a technical achievement. A dependable end-to-end journey is the customer product.
+
+On November 5, Lyft announced plans to substantially expand its Waymo robotaxi fleet in Nashville before the end of 2026. Waymo develops the autonomous-driving technology. Lyft supports customer access, fleet management, charging, cleaning, and vehicle maintenance. Lyft's Flexdrive division has been servicing the fleet since June.
+
+The week also underscores that safety cases must remain valid after software changes, including under ISO 26262, ISO/SAE 21434, and ISO/PAS 8800.
+
+That is the week's core news. The deep dive covers simulation versus real-world validation, post-deployment effectiveness, robotaxi operating boundaries, and the brief's software-defined-vehicle learning loop.

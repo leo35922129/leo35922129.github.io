@@ -1,0 +1,551 @@
+{
+ "summary": [
+  {
+   "t": "Automotive UX Weekly Brief, for the week of October 19, 2026.",
+   "start": 0.0,
+   "end": 6.146
+  },
+  {
+   "t": "This is the three-minute summary.",
+   "start": 6.146,
+   "end": 8.906
+  },
+  {
+   "t": "The executive take this week is that automotive intelligence is becoming a scalable platform.",
+   "start": 8.906,
+   "end": 14.727
+  },
+  {
+   "t": "First, Volvo Cars announced an expanded partnership with NVIDIA on October 15.",
+   "start": 14.727,
+   "end": 20.716
+  },
+  {
+   "t": "Volvo plans to combine NVIDIA's Hyperion architecture, Halos safety-oriented software, and Alpamayo driving software with its own safety expertise to develop automated driving from highways through urban streets and parking environments.",
+   "start": 20.716,
+   "end": 34.362
+  },
+  {
+   "t": "More advanced eyes-off capabilities would be introduced progressively.",
+   "start": 34.362,
+   "end": 39.05
+  },
+  {
+   "t": "The announcement does not establish that a fully driverless, door-to-door consumer product is available today.",
+   "start": 39.05,
+   "end": 45.664
+  },
+  {
+   "t": "Second, Toyota said it expects its Arene software platform to be deployed in approximately 10 million new vehicles annually across 50 models by 2030.",
+   "start": 45.664,
+   "end": 55.599
+  },
+  {
+   "t": "Arene was introduced with the redesigned RAV4 in 2025.",
+   "start": 55.599,
+   "end": 60.625
+  },
+  {
+   "t": "Toyota also intends to expand the platform further by 2035, potentially including vehicles from alliance partners.",
+   "start": 60.625,
+   "end": 68.607
+  },
+  {
+   "t": "Third, Subaru announced plans to introduce its own software-defined vehicle architecture in the latter half of the 2020s, and to cut vehicle development time by about 40 percent.",
+   "start": 68.607,
+   "end": 79.401
+  },
+  {
+   "t": "Subaru currently intends to develop its own platform rather than adopt Toyota's Arene.",
+   "start": 79.401,
+   "end": 85.169
+  },
+  {
+   "t": "The plan includes an integrated ECU architecture using technology jointly developed with AMD, over-the-air updates, and standardized electronic platforms across gasoline, hybrid, and electric vehicles.",
+   "start": 85.169,
+   "end": 97.76
+  },
+  {
+   "t": "Fourth, Hyundai unveiled the India-spec BAYON, a mainstream gasoline SUV, ahead of a planned October 26 market launch.",
+   "start": 97.76,
+   "end": 106.12
+  },
+  {
+   "t": "Announced capabilities include a Perplexity and SoundHound AI assistant, dual 12.3-inch curved displays, NVIDIA-accelerated computing, over-the-air updates for up to 19 controllers, more than 70 Bluelink features, and more than 500 offline voice commands, including support for multiple Indian languages.",
+   "start": 106.12,
+   "end": 124.844
+  },
+  {
+   "t": "Fifth, Waymo announced plans to bring autonomous ride-hailing to Toronto in 2028, its first Canadian market.",
+   "start": 124.844,
+   "end": 132.305
+  },
+  {
+   "t": "It plans to start with manually driven mapping vehicles, then validation with trained specialists, and is partnering with Element Fleet Management.",
+   "start": 132.305,
+   "end": 140.794
+  },
+  {
+   "t": "Sixth, Uber has begun autonomous vehicle testing in Manchester with technology partners.",
+   "start": 140.794,
+   "end": 146.888
+  },
+  {
+   "t": "The first phase is mapping public roads with safety drivers and no passengers.",
+   "start": 146.888,
+   "end": 151.992
+  },
+  {
+   "t": "This follows limited supervised autonomous passenger services in London.",
+   "start": 151.992,
+   "end": 157.057
+  },
+  {
+   "t": "Finally, US regulators are adapting safety-equipment rules for driverless vehicles.",
+   "start": 157.057,
+   "end": 163.021
+  },
+  {
+   "t": "The Federal Motor Carrier Safety Administration granted a limited exemption to Aurora Operations, effective October 7 through October 7, 2031, allowing qualifying Level 4 autonomous trucks to use vehicle-mounted warning beacons instead of certain traditional roadside warning devices.",
+   "start": 163.021,
+   "end": 180.195
+  },
+  {
+   "t": "That is the week's core news.",
+   "start": 180.195,
+   "end": 182.773
+  },
+  {
+   "t": "The deep dive covers the design implications, two research studies, and the brief's idea of experience continuity across these platforms.",
+   "start": 182.773,
+   "end": 191.16
+  }
+ ],
+ "deep": [
+  {
+   "t": "Automotive UX Weekly Brief, for the week of October 19, 2026.",
+   "start": 0.0,
+   "end": 6.146
+  },
+  {
+   "t": "This is the deep dive.",
+   "start": 6.146,
+   "end": 8.411
+  },
+  {
+   "t": "The executive take is that automotive intelligence is becoming a scalable platform.",
+   "start": 8.411,
+   "end": 13.906
+  },
+  {
+   "t": "This briefing walks through the seven stories, the research, and the design idea the brief calls the Intelligence Continuity Framework.",
+   "start": 13.906,
+   "end": 21.771
+  },
+  {
+   "t": "Start with Volvo and NVIDIA.",
+   "start": 21.771,
+   "end": 24.701
+  },
+  {
+   "t": "On October 15, Volvo Cars announced an expanded partnership to develop its next generation of automated-driving technology.",
+   "start": 24.701,
+   "end": 33.099
+  },
+  {
+   "t": "The architecture combines three NVIDIA components.",
+   "start": 33.099,
+   "end": 36.966
+  },
+  {
+   "t": "Hyperion is the vehicle sensor and computing architecture.",
+   "start": 36.966,
+   "end": 41.354
+  },
+  {
+   "t": "Halos is the safety-oriented automotive software and development environment.",
+   "start": 41.354,
+   "end": 46.706
+  },
+  {
+   "t": "Alpamayo is AI driving software intended to support increasingly sophisticated perception, reasoning, and driving decisions.",
+   "start": 46.706,
+   "end": 54.74
+  },
+  {
+   "t": "Volvo intends to integrate these technologies with its own safety systems and engineering expertise.",
+   "start": 54.74,
+   "end": 61.237
+  },
+  {
+   "t": "The company's stated ambition is to support automated driving across highways, urban streets, and parking environments, with more advanced eyes-off capabilities introduced progressively.",
+   "start": 61.237,
+   "end": 71.953
+  },
+  {
+   "t": "The announcement does not establish that a fully driverless, door-to-door consumer product is available today.",
+   "start": 71.953,
+   "end": 78.568
+  },
+  {
+   "t": "Why this matters is the shift from separate ADAS functions, each with its own requirements and interaction logic, toward a more integrated path: sensors, AI driving intelligence, vehicle behavior, and human interaction.",
+   "start": 78.568,
+   "end": 91.406
+  },
+  {
+   "t": "The same underlying intelligence may eventually support multiple driving scenarios.",
+   "start": 91.406,
+   "end": 96.94
+  },
+  {
+   "t": "The design question the brief poses is whether teams are still designing separate ADAS interfaces, or a coherent automation journey.",
+   "start": 96.94,
+   "end": 104.688
+  },
+  {
+   "t": "Next, Toyota's Arene platform.",
+   "start": 104.688,
+   "end": 107.812
+  },
+  {
+   "t": "Toyota said it expects Arene to be deployed in approximately 10 million new vehicles annually across 50 models by 2030, and to expand further by 2035, potentially including vehicles from alliance partners.",
+   "start": 107.812,
+   "end": 121.094
+  },
+  {
+   "t": "Arene was introduced with the redesigned RAV4 in 2025.",
+   "start": 121.094,
+   "end": 126.12
+  },
+  {
+   "t": "Toyota is not simply introducing another infotainment operating system.",
+   "start": 126.12,
+   "end": 131.237
+  },
+  {
+   "t": "It is trying to establish a software foundation that can support a substantial portion of its global vehicle portfolio.",
+   "start": 131.237,
+   "end": 138.464
+  },
+  {
+   "t": "In a traditional approach, each vehicle program develops and validates significant portions of its software independently, and a feature developed for one model may require extensive additional work before appearing in another.",
+   "start": 138.464,
+   "end": 150.99
+  },
+  {
+   "t": "In a platform approach, the feature is developed once, then adapted and validated for compatible vehicles and regional requirements.",
+   "start": 150.99,
+   "end": 159.271
+  },
+  {
+   "t": "The potential benefit is not merely lower cost.",
+   "start": 159.271,
+   "end": 163.008
+  },
+  {
+   "t": "It is faster propagation of customer improvements.",
+   "start": 163.008,
+   "end": 166.914
+  },
+  {
+   "t": "The design question is which interaction principles should remain consistent across an entire software platform, and which should be unique to each brand.",
+   "start": 166.914,
+   "end": 175.938
+  },
+  {
+   "t": "Subaru is taking a different path.",
+   "start": 175.938,
+   "end": 178.958
+  },
+  {
+   "t": "It plans to introduce software-defined vehicles in the latter half of the 2020s and is targeting approximately 40 percent shorter vehicle development times through increased simulation, parallel development, and new electronic architecture.",
+   "start": 178.958,
+   "end": 192.747
+  },
+  {
+   "t": "The strategy includes an integrated ECU architecture using technology jointly developed with AMD; over-the-air updates for driver assistance, automated driving, and vehicle performance; standardized electronic platforms across gasoline, hybrid, and electric vehicles; and more extensive virtual development and simulation.",
+   "start": 192.747,
+   "end": 211.888
+  },
+  {
+   "t": "Importantly, Subaru currently intends to develop its own platform rather than adopt Toyota's Arene.",
+   "start": 211.888,
+   "end": 218.477
+  },
+  {
+   "t": "Toyota is emphasizing software-platform scale.",
+   "start": 218.477,
+   "end": 222.344
+  },
+  {
+   "t": "Subaru is emphasizing development efficiency and an architecture it can control.",
+   "start": 222.344,
+   "end": 227.865
+  },
+  {
+   "t": "Neither strategy automatically guarantees a superior customer experience, but the contrast is valuable.",
+   "start": 227.865,
+   "end": 235.117
+  },
+  {
+   "t": "The brief asks how quickly validated customer insights can become deployed improvements through over-the-air updates.",
+   "start": 235.117,
+   "end": 242.018
+  },
+  {
+   "t": "Hyundai's India-spec BAYON, unveiled ahead of a planned October 26 market launch, is one of the week's most interesting cockpit developments because it is a mainstream gasoline SUV, not an expensive flagship EV.",
+   "start": 242.018,
+   "end": 254.844
+  },
+  {
+   "t": "Announced capabilities include a Perplexity intelligence and SoundHound voice AI assistant, dual 12.3-inch curved displays, NVIDIA-accelerated ccNC computing, over-the-air updates for up to 19 vehicle controllers, more than 70 Bluelink features, more than 500 embedded offline voice commands, and support for multiple Indian languages, including Hinglish.",
+   "start": 254.844,
+   "end": 278.071
+  },
+  {
+   "t": "The strategic point is that AI-driven vehicle experiences, connected services, and controller-level over-the-air updates can be part of a broader vehicle strategy across powertrains.",
+   "start": 278.071,
+   "end": 288.969
+  },
+  {
+   "t": "The brief asks whether an AI assistant can continue performing essential vehicle functions when connectivity disappears.",
+   "start": 288.969,
+   "end": 296.456
+  },
+  {
+   "t": "Waymo announced plans to bring autonomous ride-hailing to Toronto in 2028, its first Canadian market.",
+   "start": 296.456,
+   "end": 303.462
+  },
+  {
+   "t": "It plans to begin with manually driven mapping vehicles, followed by validation with trained autonomous specialists, and is partnering with Element Fleet Management to support fleet operations.",
+   "start": 303.462,
+   "end": 314.321
+  },
+  {
+   "t": "The brief's takeaway is that robotaxi UX is increasingly a complete service ecosystem, not merely an interface inside a vehicle.",
+   "start": 314.321,
+   "end": 322.68
+  },
+  {
+   "t": "Localization includes pickup conventions, road interaction, traffic expectations, language, payment, and customer support.",
+   "start": 322.68,
+   "end": 330.988
+  },
+  {
+   "t": "The design question is whether autonomous mobility is being designed around the complete passenger journey, including accessibility and unexpected situations.",
+   "start": 330.988,
+   "end": 340.492
+  },
+  {
+   "t": "Uber has begun autonomous vehicle testing in Manchester with technology partners.",
+   "start": 340.492,
+   "end": 345.988
+  },
+  {
+   "t": "The initial phase involves mapping public roads using vehicles with safety drivers, and there are currently no passengers in these test vehicles.",
+   "start": 345.988,
+   "end": 354.451
+  },
+  {
+   "t": "This follows limited supervised autonomous passenger services in London.",
+   "start": 354.451,
+   "end": 359.516
+  },
+  {
+   "t": "Uber is increasingly pursuing a platform model: rather than developing every autonomous-driving system itself, it can integrate vehicles and intelligence from different technology providers.",
+   "start": 359.516,
+   "end": 370.844
+  },
+  {
+   "t": "The strategic model becomes autonomy provider, vehicle platform, fleet operator, and then the Uber customer experience.",
+   "start": 370.844,
+   "end": 378.904
+  },
+  {
+   "t": "Customers should not have to learn a completely different booking experience for each autonomy provider, but the service must clearly communicate differences that matter: whether there is a safety driver, whether the passenger can request a stop, who provides emergency assistance, how the customer identifies the correct vehicle, and how accessibility is handled.",
+   "start": 378.904,
+   "end": 399.034
+  },
+  {
+   "t": "The brief calls this cross-provider experience governance: the mobility platform owns the customer journey even when it does not own the driving intelligence.",
+   "start": 399.034,
+   "end": 407.876
+  },
+  {
+   "t": "On standards, the Federal Motor Carrier Safety Administration granted a limited exemption allowing qualifying Level 4 autonomous trucks to use vehicle-mounted warning beacons instead of certain traditional roadside warning devices.",
+   "start": 407.876,
+   "end": 420.949
+  },
+  {
+   "t": "The exemption, granted to Aurora Operations, became effective October 7 and extends through October 7, 2031, subject to its conditions.",
+   "start": 420.949,
+   "end": 430.688
+  },
+  {
+   "t": "Traditional truck safety procedures assume a human driver can exit the vehicle and place warning triangles.",
+   "start": 430.688,
+   "end": 437.303
+  },
+  {
+   "t": "A driverless truck cannot perform that task in the conventional way, so the regulatory question is how the vehicle can achieve an equivalent safety outcome without relying on a human driver.",
+   "start": 437.303,
+   "end": 447.928
+  },
+  {
+   "t": "This is a broader transition from equipment-centered requirements toward performance-based approaches where regulators permit them.",
+   "start": 447.928,
+   "end": 455.35
+  },
+  {
+   "t": "The same problem appears in passenger robotaxis, which must replace driver-assumed responsibilities with designed systems: exterior communication, automated hazard signaling, passenger guidance, remote assistance, and emergency responder interfaces.",
+   "start": 455.35,
+   "end": 470.271
+  },
+  {
+   "t": "A recently adopted UNECE framework for fully autonomous driving also emphasizes safety management, validation, and continuous monitoring during vehicle operation.",
+   "start": 470.271,
+   "end": 480.284
+  },
+  {
+   "t": "Two research directions are especially useful for HMI work.",
+   "start": 480.284,
+   "end": 484.725
+  },
+  {
+   "t": "A study published September 23 in Ergonomics investigated multimodal explanations in fully autonomous vehicles, evaluating spoken explanations, alert tones, and visual text across passenger activities including listening to radio, reading, and watching video.",
+   "start": 484.725,
+   "end": 500.896
+  },
+  {
+   "t": "The results suggested that the most effective explanation format depended on what the passenger was doing.",
+   "start": 500.896,
+   "end": 507.303
+  },
+  {
+   "t": "Visual text was more useful during video engagement, while text-free approaches performed more favorably during radio-based activities.",
+   "start": 507.303,
+   "end": 517.227
+  },
+  {
+   "t": "The implication is that future autonomous HMI should not communicate every event using the same format.",
+   "start": 517.227,
+   "end": 523.906
+  },
+  {
+   "t": "A short spoken explanation may be appropriate if a passenger is listening to music.",
+   "start": 523.906,
+   "end": 529.401
+  },
+  {
+   "t": "A concise visual notification may be less disruptive if the passenger is watching a movie.",
+   "start": 529.401,
+   "end": 535.169
+  },
+  {
+   "t": "Nonurgent explanations should generally be suppressed if the passenger is sleeping.",
+   "start": 535.169,
+   "end": 540.443
+  },
+  {
+   "t": "Urgent safety messages must not disappear simply because the passenger is watching a movie.",
+   "start": 540.443,
+   "end": 546.263
+  },
+  {
+   "t": "The design principle in the brief is: explain what matters, through the channel that best fits the person's current activity.",
+   "start": 546.263,
+   "end": 553.594
+  },
+  {
+   "t": "The second study, from the University of Michigan and Toyota Research Institute, examined a steering-wheel interface that communicates intended automated maneuvers through haptic feedback.",
+   "start": 553.594,
+   "end": 564.505
+  },
+  {
+   "t": "Rather than having automation silently adjust steering, the system allows the human and automation to coordinate future actions.",
+   "start": 564.505,
+   "end": 572.357
+  },
+  {
+   "t": "The researchers reported improvements in driving performance and trust during simulated experiments.",
+   "start": 572.357,
+   "end": 578.659
+  },
+  {
+   "t": "Many ADAS systems create an uncomfortable relationship in which the vehicle intervenes, the driver resists, the system warns, and the customer eventually disables the feature.",
+   "start": 578.659,
+   "end": 589.297
+  },
+  {
+   "t": "A shared-control approach treats the interaction more like collaboration: the vehicle intends to move slightly left, the steering wheel communicates that intention, and the driver can understand or influence the maneuver.",
+   "start": 589.297,
+   "end": 601.224
+  },
+  {
+   "t": "The brief's opportunity is that ADAS should communicate intention before intervention whenever feasible and safe, including in steering assistance, lane centering, automated lane changes, parking assistance, and driver takeover transitions.",
+   "start": 601.224,
+   "end": 614.987
+  },
+  {
+   "t": "It also reinforces the importance of physical HMI, even as vehicles become increasingly software-defined.",
+   "start": 614.987,
+   "end": 622.109
+  },
+  {
+   "t": "The brief formalizes these developments as an Intelligence Continuity Framework.",
+   "start": 622.109,
+   "end": 627.474
+  },
+  {
+   "t": "As vehicle intelligence becomes more complex, the customer experience must remain continuous across technology boundaries.",
+   "start": 627.474,
+   "end": 635.56
+  },
+  {
+   "t": "The vehicle should clearly communicate which capabilities are available as driving conditions and automation states change.",
+   "start": 635.56,
+   "end": 642.839
+  },
+  {
+   "t": "A customer should not have to guess whether the vehicle is supervising, assisting, or independently handling the driving task.",
+   "start": 642.839,
+   "end": 650.599
+  },
+  {
+   "t": "Common functions should behave consistently across vehicle models, software versions, and related applications.",
+   "start": 650.599,
+   "end": 657.682
+  },
+  {
+   "t": "The bottom line is that this week reveals three distinct strategies.",
+   "start": 657.682,
+   "end": 662.201
+  },
+  {
+   "t": "Volvo's NVIDIA partnership illustrates the industry's movement toward AI-based automated-driving platforms.",
+   "start": 662.201,
+   "end": 669.05
+  },
+  {
+   "t": "Toyota and Subaru are investing in software-development scale and efficiency; their strategies differ, but both recognize that traditional vehicle development processes must change.",
+   "start": 669.05,
+   "end": 679.662
+  },
+  {
+   "t": "Hyundai's BAYON announcement reinforces the idea that intelligent experiences will increasingly become expected across vehicle segments and powertrains.",
+   "start": 679.662,
+   "end": 688.867
+  },
+  {
+   "t": "Meanwhile, Waymo and Uber demonstrate that autonomous mobility is evolving into a broader service ecosystem requiring careful coordination among technology providers, fleet operators, customers, and cities.",
+   "start": 688.867,
+   "end": 701.393
+  },
+  {
+   "t": "The next competition is about intelligent experience at scale.",
+   "start": 701.393,
+   "end": 705.888
+  }
+ ]
+}

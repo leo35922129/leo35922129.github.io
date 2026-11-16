@@ -1,0 +1,17 @@
+Automotive UX Weekly Brief, for the week of October 20 through October 26, 2026. This is the three-minute summary.
+
+The executive take this week is that the intelligence-defined vehicle is becoming real.
+
+The biggest development came on October 21, when General Motors unveiled more details of its next-generation software-defined vehicle architecture. Announced targets include 40 times greater computing performance, a 30 percent reduction in vehicle wiring length and mass, cellular connectivity up to 50 percent faster, and a goal to cut vehicle development time by about half. The architecture is slated for introduction in 2028, with the first vehicle the Cadillac Escalade IQ. These are manufacturer-announced targets and comparisons, not independently verified production results.
+
+GM also announced a major transformation of OnStar, repositioning it from primarily a connected safety and assistance service into a broader vehicle-intelligence platform. The new OnStar AI Assistant is scheduled to debut through an over-the-air update in the 2027 Cadillac LYRIQ, with additional vehicles following. Customers will be able to use natural-language requests to interact with vehicle functions. GM also announced a unified mobile application for the vehicle.
+
+On October 20, one day before GM Forward, Google announced Personal Intelligence with Gemini. With the user's permission, the assistant can use information from connected Google services, including Gmail, Google Calendar, Google Photos, Google Maps, YouTube, and Search. Google also brought Gemini-powered conversational navigation to Apple CarPlay, so drivers can ask multistep questions while navigating, such as finding a scenic place to stop along the route.
+
+Waymo announced plans to launch autonomous ride-hailing in the Madrid region in 2027. It will initially deploy electric Jaguar I-PACE vehicles for mapping and testing, beginning with manual driving and then supervised autonomous validation. Public driverless rides are a future target, not a service already operating in Madrid. A Reuters report citing Semafor says Waymo is considering increasing its fleet to approximately 20,000 vehicles by the end of 2027, from roughly 4,000. That is a reported plan rather than a completed expansion.
+
+Following its third-quarter earnings announcement, Tesla reiterated plans to begin selling its purpose-built Cybercab before the end of 2026. The vehicle is designed without conventional steering controls, pedals, or mirrors. Tesla has already begun limited commercial Cybercab operations in Austin. NHTSA continues examining compliance with existing federal safety standards, and Tesla faces an October 30 response deadline. On October 26, local reporting said Tesla expanded its Houston robotaxi service area into additional neighborhoods, including Montrose, Midtown, and downtown Houston.
+
+Finally, NHTSA proposed changes to Federal Motor Vehicle Safety Standard Number 108, including the potential standardization of cyan-colored marker lamps to identify vehicles operating under automated driving systems.
+
+That is the week's core news. The deep dive covers vehicle-native versus general-purpose AI, passenger control in a vehicle with no steering wheel, the lighting proposal, and two studies on takeover HMI.

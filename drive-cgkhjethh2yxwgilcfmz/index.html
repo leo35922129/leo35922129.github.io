@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=54">
+<link rel="stylesheet" href="style.css?v=55">
 <title>Happy Truck · Drives</title>
 </head>
 <body>
@@ -33,7 +33,10 @@
       <button data-v="day">Day</button><button data-v="week">Week</button><button data-v="month">Month</button><button data-v="year">Year</button>
     </div>
     <div id="reporthead" class="reporthead hidden">
-      <div class="rpt-htitle">Weekly Report</div>
+      <div class="rpt-hblock">
+        <div class="rpt-htitle">Weekly Report</div>
+        <div id="rptorigin" class="rpt-origin"></div>
+      </div>
       <button type="button" id="rptarchive" class="pill rpt-archive">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4.5h16a1.2 1.2 0 0 1 1.2 1.2V8H2.8V5.7A1.2 1.2 0 0 1 4 4.5zm.8 5.3h14.4v8.5A1.7 1.7 0 0 1 17.5 20h-11A1.7 1.7 0 0 1 4.8 18.3zM9 12.2h6v1.8H9z"/></svg>
         Archive
@@ -46,6 +49,12 @@
         <button id="next" class="nav" aria-label="Next">›</button>
       </div>
       <button id="today" class="pill">Today</button>
+    </div>
+    <div id="rptsrcrow" class="rpt-srcrow hidden" hidden>
+      <div class="rp-seg rpt-srcseg" role="tablist" aria-label="Report source">
+        <button type="button" data-source="cio">CIO</button>
+        <button type="button" data-source="chatgpt">ChatGPT</button>
+      </div>
     </div>
     <div id="autohead" class="autohead hidden">
       <button type="button" id="autoback" class="auto-back hidden" aria-label="Back">
@@ -87,7 +96,7 @@
 </div>
 <div id="sheet" class="sheet hidden"><div class="sheetbody" id="sheetbody"></div></div>
 <script src="maplibre-gl.js"></script>
-<script src="app.js?v=54"></script>
-<script src="report.js?v=54"></script>
+<script src="app.js?v=55"></script>
+<script src="report.js?v=55"></script>
 </body>
 </html>
