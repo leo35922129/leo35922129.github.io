@@ -384,12 +384,12 @@ main{padding:8px 12px 24px}
 .egauge .eunit{position:absolute;left:50%;top:50%;transform:translate(-50%,7px);font-size:5px;color:var(--mut);line-height:1;font-weight:400;letter-spacing:0;z-index:1;pointer-events:none;white-space:nowrap}
 .egrid .cell .eff-chip{position:absolute;left:50%;bottom:0;transform:translateX(-50%);font-size:6.5px;padding:1px 3px;border-radius:4px;margin:0;letter-spacing:0;line-height:1.2;max-width:100%;z-index:1}
 .egrid .cell .m,.sgrid .cell .m{font-size:8px;line-height:1.2;margin-top:1px;flex:none}
-.sbars{display:flex;align-items:flex-end;justify-content:center;gap:5px;height:28px;width:28px;flex:none;border-bottom:1.5px solid #4a515a;padding-bottom:1px;box-sizing:content-box;margin-top:2px}
-.sbar{width:6px;border-radius:4px 4px 0 0;min-height:2px;display:block}
+.sbars{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:21px;width:20px;flex:none;border-bottom:1.5px solid #4a515a;padding-bottom:1px;box-sizing:content-box;margin-top:2px}
+.sbar{width:4px;border-radius:3px 3px 0 0;min-height:1px;display:block}
 .sbar.elec{background:var(--grn)}
 .sbar.gas{background:var(--gas)}
 svg.gasico,.gasico{color:var(--gas)}
-.sgrid .cell .s{font-size:11px;font-weight:500;color:var(--grn);letter-spacing:-.04em;line-height:1.15;margin-top:3px}
+.sgrid .cell .s{font-size:14px;font-weight:400;color:var(--grn);letter-spacing:-.04em;line-height:1.1;margin-top:4px}
 @media(min-width:700px){
   .egrid .cell,.sgrid .cell{min-height:110px;max-height:110px}
   .ering{width:36px;height:36px;
@@ -400,9 +400,9 @@ svg.gasico,.gasico{color:var(--gas)}
   .egauge .eunit{font-size:6px;transform:translate(-50%,11px)}
   .egrid .cell .eff-chip{font-size:7.5px;padding:1px 5px;border-radius:5px;bottom:1px}
   .egrid .cell .m,.sgrid .cell .m{font-size:10px;margin-top:1px}
-  .sbars{height:36px;width:36px;gap:7px}
-  .sbar{width:8px;border-radius:5px 5px 0 0}
-  .sgrid .cell .s{font-size:13px;margin-top:4px}
+  .sbars{height:27px;width:26px;gap:5px}
+  .sbar{width:6px;border-radius:4px 4px 0 0}
+  .sgrid .cell .s{font-size:16px;font-weight:400;margin-top:5px}
 }
 
 

@@ -579,6 +579,14 @@ function viewMonthSaving() {
   const start = weekStart(first), tk = keyOf(todayD());
   const monthKeys = rangeKeys(first, last);
   const tsum = sumDays(monthKeys);
+  // One shared scale for the month: the highest gas $ is full bar height,
+  // so a short-mileage day is visibly shorter than a long one.
+  let barScale = 0;
+  for (const mk of monthKeys) {
+    const xd = S.meta.days[mk] || {};
+    if ((xd.n || 0) > 0) barScale = Math.max(barScale, xd.gas || 0);
+  }
+  barScale = barScale || 0.01;
   let h = `<div class="dow">${DOW.map(d => `<div>${d[0]}</div>`).join('')}</div><div class="grid sgrid">`;
   for (let i = 0; i < 42; i++) {
     const d = addDays(start, i);
@@ -590,9 +598,9 @@ function viewMonthSaving() {
     h += `<div class="cell ${!inMon ? 'out' : ''} ${k === tk && inMon ? 'today' : ''}"${inMon ? ` data-day="${k}"` : ''}>`;
     h += `<div class="n">${d.getDate()}</div>`;
     if (hasDrive) {
-      const elec = x.elec || 0, gas = x.gas || 0, mx = Math.max(elec, gas, 0.01);
-      const eH = Math.max(8, Math.round(100 * elec / mx));
-      const gH = Math.max(8, Math.round(100 * gas / mx));
+      const elec = x.elec || 0, gas = x.gas || 0;
+      const eH = Math.max(0, Math.min(100, Math.round(100 * elec / barScale)));
+      const gH = Math.max(0, Math.min(100, Math.round(100 * gas / barScale)));
       h += `<div class="sbars" aria-hidden="true"><i class="sbar elec" style="height:${eH}%"></i><i class="sbar gas" style="height:${gH}%"></i></div>`;
       h += `<div class="s">${money(x.save || 0)}</div>`;
       if (x.mi) h += `<div class="m">${num(x.mi, 0)} mi</div>`;
