@@ -12,7 +12,7 @@ Headline five. FSD software. Version 14.3.13 continues rolling out in build 2026
 
 Headline six. Waymo is under new federal scrutiny. NHTSA opened a recall query covering nearly 3,000 Waymo vehicles after robotaxis kept passing stopped school buses even after a software fix. Separately, video showed a Waymo trying to get around a Highway Patrol traffic break on Interstate 280.
 
-Headline seven. Zoox began rides for employees and their friends and family in Atlanta, and expanded Las Vegas service downtown with hours from 6 a.m. to 3 a.m.
+Headline seven. Zoox began rides for employees and their friends and family in Atlanta, and expanded Las Vegas service downtown with hours from 6 AM to 3 AM.
 
 Headline eight. Compute. NVIDIA released Alpamayo 2 Edge, a reasoning driving model that runs on DRIVE Thor at 160 to 190 milliseconds. Kakao Mobility signed a Level 4 deal with NVIDIA, and Wayve signed a multi-year training deal with CoreWeave.
 

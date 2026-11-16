@@ -76,7 +76,11 @@ function buildAudio(kind, folder, report, scriptText, cueList) {
   const a = (report.audio && report.audio[kind]) || {};
   const file = 'report/' + folder + '/' + (a.file || defaults.file);
   const lines = splitScript(scriptText);
-  const official = Array.isArray(cueList) && cueList.length > 0;
+  let official = Array.isArray(cueList) && cueList.length > 0;
+  if (official && cueList.length !== lines.length) {
+    console.warn('report cues: ' + kind + ' cue count (' + cueList.length + ') != script lines (' + lines.length + '); falling back to word-count timing');
+    official = false;
+  }
   const duration = (a.duration_s != null && isFinite(+a.duration_s)) ? +a.duration_s : 0;
   const script = official ? applyOfficialCues(lines, cueList, duration) : estimateCues(lines, duration);
   const label = a.label || (duration ? fmtTime(duration) : '–');
@@ -169,6 +173,9 @@ function rpCell(cell, src) {
 
 function isTeslaRow(row) {
   const first = row && row[0];
+  if (first && typeof first === 'object' && first.operator_id != null && String(first.operator_id).trim() !== '') {
+    return String(first.operator_id).toLowerCase() === 'tesla';
+  }
   const text = first && typeof first === 'object' ? first.t : first;
   return String(text || '').toLowerCase().startsWith('tesla');
 }
@@ -298,22 +305,17 @@ function renderReportBody(w) {
     `<a class="rp-src" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`
   ).join('');
 
-  const hasTags = ['headlines', 'watch', 'deep', 'before'].some(k =>
-    (w[k] || []).some(it => it && it.tags && it.tags.length)
-  );
-  const note = (w.tags_proposed || hasTags) ? '<span class="note">company tags proposed</span>' : '';
-
   return `
     ${rpPlayer('summary', w.audio.summary)}
     ${rpPlayer('deep', w.audio.deep)}
     <article class="rp-lead">${esc(w.lead)}</article>
-    <div class="rp-sec"><b>Top stories</b>${note}</div>
+    <div class="rp-sec"><b>Top stories</b></div>
     ${heads}
     ${rpCompare('rp-robotaxi', 'Robotaxi comparison', w.robotaxi_table, src)}
     ${rpCompare('rp-adas', 'Consumer ADAS', w.adas_table, src)}
-    <div class="rp-sec"><b>What to watch</b>${note}</div>
+    <div class="rp-sec"><b>What to watch</b></div>
     ${watch}
-    <div class="rp-sec"><b>Deep dive</b>${note}</div>
+    <div class="rp-sec"><b>Deep dive</b></div>
     ${deep}
     <div class="rp-sec"><b>Just before this week</b></div>
     ${before}

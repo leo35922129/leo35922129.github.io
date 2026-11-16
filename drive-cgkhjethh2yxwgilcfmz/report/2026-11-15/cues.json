@@ -1,0 +1,661 @@
+{
+ "summary": [
+  {
+   "t": "Autonomy Weekly, for the week of November 8 to 15, 2026.",
+   "start": 0.0,
+   "end": 5.417
+  },
+  {
+   "t": "This is the three-minute summary.",
+   "start": 5.417,
+   "end": 8.177
+  },
+  {
+   "t": "Headline one.",
+   "start": 8.177,
+   "end": 10.052
+  },
+  {
+   "t": "Tesla opened Cybercab pre-orders for personal use.",
+   "start": 10.052,
+   "end": 14.284
+  },
+  {
+   "t": "The price is 29,990 dollars, plus a 299 dollar monthly fee, with delivery estimated for December in a handful of Texas cities, and the car only drives inside geofenced areas.",
+   "start": 14.284,
+   "end": 27.435
+  },
+  {
+   "t": "Elon Musk replied that the fee is too high and should be closer to 115 dollars a month.",
+   "start": 27.435,
+   "end": 33.372
+  },
+  {
+   "t": "Why it matters: it is the first time Tesla is selling a car with no steering wheel to consumers.",
+   "start": 33.372,
+   "end": 39.336
+  },
+  {
+   "t": "Headline two.",
+   "start": 39.336,
+   "end": 41.211
+  },
+  {
+   "t": "The Cybertruck is being wound down to make room for Cybercab.",
+   "start": 41.211,
+   "end": 45.495
+  },
+  {
+   "t": "Musk first said production would end around mid-2027, then extended it through the end of summer 2027 to work through the order backlog.",
+   "start": 45.495,
+   "end": 54.219
+  },
+  {
+   "t": "Electrek reports Tesla also raised Cybertruck prices by up to 10 percent and paused base Dual Motor orders.",
+   "start": 54.219,
+   "end": 61.341
+  },
+  {
+   "t": "For a Cybertruck owner, this is the story to follow.",
+   "start": 61.341,
+   "end": 65.234
+  },
+  {
+   "t": "Headline three.",
+   "start": 65.234,
+   "end": 67.214
+  },
+  {
+   "t": "Tesla Robotaxi kept expanding.",
+   "start": 67.214,
+   "end": 70.286
+  },
+  {
+   "t": "It launched in San Antonio on November 9, its eighth city, with a service area of about 273 square miles.",
+   "start": 70.286,
+   "end": 78.099
+  },
+  {
+   "t": "The Austin area grew to about 443 square miles, and Tesla says Robotaxi now runs 24 hours a day in every city it serves.",
+   "start": 78.099,
+   "end": 87.07
+  },
+  {
+   "t": "One caution: Axios noted a tracker showed only one Tesla robotaxi in San Antonio at launch.",
+   "start": 87.07,
+   "end": 93.633
+  },
+  {
+   "t": "Headline four.",
+   "start": 93.633,
+   "end": 95.612
+  },
+  {
+   "t": "Tesla briefly passed Waymo on the Texas automated-vehicle register, 1,302 to 1,297, on November 10.",
+   "start": 95.612,
+   "end": 105.013
+  },
+  {
+   "t": "By Sunday morning, Waymo was back ahead, 1,321 to 1,306.",
+   "start": 105.013,
+   "end": 111.823
+  },
+  {
+   "t": "Registered does not mean in service.",
+   "start": 111.823,
+   "end": 114.87
+  },
+  {
+   "t": "Headline five.",
+   "start": 114.87,
+   "end": 116.862
+  },
+  {
+   "t": "FSD software.",
+   "start": 116.862,
+   "end": 119.245
+  },
+  {
+   "t": "Version 14.3.13 continues rolling out in build 2026.38.5.13.",
+   "start": 119.245,
+   "end": 127.031
+  },
+  {
+   "t": "Finland approved Tesla's system on November 10, renamed Tesla Assisted Driving, with speed offset capped.",
+   "start": 127.031,
+   "end": 134.089
+  },
+  {
+   "t": "An EU-wide vote is expected this winter.",
+   "start": 134.089,
+   "end": 137.617
+  },
+  {
+   "t": "Headline six.",
+   "start": 137.617,
+   "end": 139.609
+  },
+  {
+   "t": "Waymo is under new federal scrutiny.",
+   "start": 139.609,
+   "end": 142.773
+  },
+  {
+   "t": "NHTSA opened a recall query covering nearly 3,000 Waymo vehicles after robotaxis kept passing stopped school buses even after a software fix.",
+   "start": 142.773,
+   "end": 151.927
+  },
+  {
+   "t": "Separately, video showed a Waymo trying to get around a Highway Patrol traffic break on Interstate 280.",
+   "start": 151.927,
+   "end": 158.581
+  },
+  {
+   "t": "Headline seven.",
+   "start": 158.581,
+   "end": 160.56
+  },
+  {
+   "t": "Zoox began rides for employees and their friends and family in Atlanta, and expanded Las Vegas service downtown with hours from 6 AM to 3 AM.",
+   "start": 160.56,
+   "end": 169.414
+  },
+  {
+   "t": "Headline eight.",
+   "start": 169.414,
+   "end": 171.302
+  },
+  {
+   "t": "Compute.",
+   "start": 171.302,
+   "end": 173.021
+  },
+  {
+   "t": "NVIDIA released Alpamayo 2 Edge, a reasoning driving model that runs on DRIVE Thor at 160 to 190 milliseconds.",
+   "start": 173.021,
+   "end": 181.549
+  },
+  {
+   "t": "Kakao Mobility signed a Level 4 deal with NVIDIA, and Wayve signed a multi-year training deal with CoreWeave.",
+   "start": 181.549,
+   "end": 188.19
+  },
+  {
+   "t": "What to watch next week.",
+   "start": 188.19,
+   "end": 190.573
+  },
+  {
+   "t": "Baidu and XPeng report earnings Monday.",
+   "start": 190.573,
+   "end": 193.958
+  },
+  {
+   "t": "NVIDIA reports Tuesday.",
+   "start": 193.958,
+   "end": 196.654
+  },
+  {
+   "t": "Pony.ai reports Wednesday, and WeRide on Friday.",
+   "start": 196.654,
+   "end": 200.781
+  },
+  {
+   "t": "Also watch for Cybercab rides in Dallas, which Tesla said would start this month, Rivian's point-to-point rollout, and Waymo's response to NHTSA.",
+   "start": 200.781,
+   "end": 209.258
+  },
+  {
+   "t": "Every claim in this report links to its source on the page.",
+   "start": 209.258,
+   "end": 213.242
+  },
+  {
+   "t": "That's the summary.",
+   "start": 213.242,
+   "end": 215.328
+  }
+ ],
+ "deep": [
+  {
+   "t": "Autonomy Weekly, deep dive, covering November 8 to 15, 2026.",
+   "start": 0.0,
+   "end": 5.911
+  },
+  {
+   "t": "We start with Tesla, then compare it with the competition, and then go theme by theme: robotaxis, consumer driver assistance, chips and compute, China, regulation and safety, software updates, and deals.",
+   "start": 5.911,
+   "end": 18.581
+  },
+  {
+   "t": "Part one.",
+   "start": 18.581,
+   "end": 20.312
+  },
+  {
+   "t": "Tesla FSD and Robotaxi.",
+   "start": 20.312,
+   "end": 23.424
+  },
+  {
+   "t": "The biggest Tesla story of the week was the Cybercab going on sale to individuals.",
+   "start": 23.424,
+   "end": 28.919
+  },
+  {
+   "t": "On Friday evening, Tesla said select customers can pre-order the Cybercab for personal use.",
+   "start": 28.919,
+   "end": 35.143
+  },
+  {
+   "t": "According to TechCrunch, buyers must accept delivery in one of a handful of Texas cities, the car works only inside geofenced areas, estimated delivery is December 2026, and on top of the 29,990 dollar price there is a 299 dollar monthly fee.",
+   "start": 35.143,
+   "end": 52.357
+  },
+  {
+   "t": "Musk responded that the fee is too high and should match the cost of FSD and connectivity, more like 115 dollars a month.",
+   "start": 52.357,
+   "end": 60.365
+  },
+  {
+   "t": "Tesla's Ashok Elluswamy said the Cybercab will work unsupervised inside the same areas as the Robotaxi service, serving the owner's needs.",
+   "start": 60.365,
+   "end": 69.271
+  },
+  {
+   "t": "The flip side is the Cybertruck.",
+   "start": 69.271,
+   "end": 72.122
+  },
+  {
+   "t": "On November 6, Musk said Tesla would wind down Cybertruck production at Giga Texas around the middle of next year to make room for more Cybercab production.",
+   "start": 72.122,
+   "end": 81.445
+  },
+  {
+   "t": "On November 11 he extended that through the end of summer 2027 to work through the order backlog.",
+   "start": 81.445,
+   "end": 88.125
+  },
+  {
+   "t": "Electrek reports Tesla raised Cybertruck prices by up to 10 percent the same day and paused orders for the base Dual Motor, putting the cheapest Cybertruck at 92,490 dollars.",
+   "start": 88.125,
+   "end": 99.805
+  },
+  {
+   "t": "Electrek estimates the truck was selling at roughly 30,000 units a year before the announcement.",
+   "start": 99.805,
+   "end": 105.977
+  },
+  {
+   "t": "Tesla has not announced a new consumer vehicle to follow it.",
+   "start": 105.977,
+   "end": 110.156
+  },
+  {
+   "t": "For existing owners, the sources reviewed say nothing about changes to service or software support, so that is something to watch.",
+   "start": 110.156,
+   "end": 117.891
+  },
+  {
+   "t": "On Robotaxi, Tesla launched in San Antonio on November 9.",
+   "start": 117.891,
+   "end": 122.747
+  },
+  {
+   "t": "Mashable reports it is Tesla's eighth Robotaxi city, after Austin, Dallas, Houston, Miami, Fort Worth, Orlando and Tampa, with a 273 square mile area compared with Waymo's 59 square miles in San Antonio.",
+   "start": 122.747,
+   "end": 137.044
+  },
+  {
+   "t": "A local TV reporter paid 16 dollars for a ride that would have cost about 23 dollars on Waymo.",
+   "start": 137.044,
+   "end": 143.711
+  },
+  {
+   "t": "But Axios noted that a tracker showed only one Tesla robotaxi in San Antonio at launch, and Tesla cannot yet serve the airport.",
+   "start": 143.711,
+   "end": 151.823
+  },
+  {
+   "t": "In Austin, Not a Tesla App reports the service area grew to about 443 square miles.",
+   "start": 151.823,
+   "end": 158.385
+  },
+  {
+   "t": "On November 11, Tesla said Robotaxi now runs 24 hours a day, seven days a week, in every city it serves.",
+   "start": 158.385,
+   "end": 166.198
+  },
+  {
+   "t": "On fleet size, the Texas DMV register is the best public scorecard.",
+   "start": 166.198,
+   "end": 171.432
+  },
+  {
+   "t": "EVwire reports Tesla Robotaxi passed Waymo on November 10, 1,302 registered vehicles to 1,297, including 573 Cybercabs.",
+   "start": 171.432,
+   "end": 183.633
+  },
+  {
+   "t": "As of early Sunday, the EVwire tracker shows Waymo back in front, 1,321 to 1,306.",
+   "start": 183.633,
+   "end": 191.862
+  },
+  {
+   "t": "Remember that registered means allowed to operate, not driving at any moment.",
+   "start": 191.862,
+   "end": 197.005
+  },
+  {
+   "t": "On the FSD software that runs in your truck: FSD Supervised version 14.3.13 is rolling out in software build 2026.38.5.13, dated November 13.",
+   "start": 197.005,
+   "end": 209.362
+  },
+  {
+   "t": "The release notes cite an upgraded reinforcement learning stage, a new vision encoder, and an AI compiler rewritten with MLIR for 20 percent faster reaction time, plus better handling of emergency vehicles, school buses and small animals, and a new intervention-free streak counter.",
+   "start": 209.362,
+   "end": 225.482
+  },
+  {
+   "t": "Pothole avoidance is listed as upcoming.",
+   "start": 225.482,
+   "end": 228.776
+  },
+  {
+   "t": "Not a Tesla App also reported, citing a source, that Musk personally decided to remove basic Autopilot from new cars to push FSD subscriptions, which Tesla said reached a record 1.74 million in the third quarter.",
+   "start": 228.776,
+   "end": 242.083
+  },
+  {
+   "t": "In Europe, Finland's regulator approved the system on November 10, making it usable immediately there.",
+   "start": 242.083,
+   "end": 248.932
+  },
+  {
+   "t": "It is now called Tesla Assisted Driving, and the allowed speed offset was cut from 50 percent to a maximum of 10 percent, resetting after each drive.",
+   "start": 248.932,
+   "end": 258.203
+  },
+  {
+   "t": "A final EU-wide vote is expected this winter.",
+   "start": 258.203,
+   "end": 261.875
+  },
+  {
+   "t": "Part two.",
+   "start": 261.875,
+   "end": 263.542
+  },
+  {
+   "t": "Tesla versus the competition.",
+   "start": 263.542,
+   "end": 266.289
+  },
+  {
+   "t": "In robotaxis, Waymo is still the benchmark.",
+   "start": 266.289,
+   "end": 270.039
+  },
+  {
+   "t": "It has public riders in 14 US cities and a fleet of more than 4,000 vehicles as of September.",
+   "start": 270.039,
+   "end": 276.55
+  },
+  {
+   "t": "Tesla now has eight cities and a fast-growing Texas fleet, but much smaller service in some new markets.",
+   "start": 276.55,
+   "end": 283.06
+  },
+  {
+   "t": "Zoox runs public rides in Las Vegas, an early rider program in San Francisco, and testing in Austin, Miami and now Atlanta, with its CEO citing roughly 150 robotaxis nationally.",
+   "start": 283.06,
+   "end": 296.608
+  },
+  {
+   "t": "In China, Baidu's Apollo Go reports 28 cities and more than 240 million fully driverless kilometers, and Pony.ai is targeting more than 3,500 robotaxis by the end of 2026.",
+   "start": 296.608,
+   "end": 309.811
+  },
+  {
+   "t": "In consumer driver assistance, Tesla FSD remains the only widely available point-to-point system in the US.",
+   "start": 309.811,
+   "end": 317.363
+  },
+  {
+   "t": "Rivian says it will roll out point-to-point driving over the coming weeks and months, first to employees, then customers, with broader release in 2027.",
+   "start": 317.363,
+   "end": 326.725
+  },
+  {
+   "t": "Mercedes plans its point-to-point Drive Assist Pro early next year, but it requires a hand on the wheel on city streets.",
+   "start": 326.725,
+   "end": 333.887
+  },
+  {
+   "t": "GM is bringing hands-free Super Cruise to Europe in mid-December, with eyes-off driving targeted for 2028.",
+   "start": 333.887,
+   "end": 341.139
+  },
+  {
+   "t": "BMW plans navigation-guided city assistance in Germany from 2027.",
+   "start": 341.139,
+   "end": 347.168
+  },
+  {
+   "t": "Part three.",
+   "start": 347.168,
+   "end": 348.965
+  },
+  {
+   "t": "Robotaxis and Level 4.",
+   "start": 348.965,
+   "end": 351.868
+  },
+  {
+   "t": "Waymo had a tough week on safety.",
+   "start": 351.868,
+   "end": 354.876
+  },
+  {
+   "t": "NHTSA opened a recall query into nearly 3,000 Waymo vehicles to find out why its robotaxis kept passing stopped school buses after a software fix that Waymo said was completed in November 2025.",
+   "start": 354.876,
+   "end": 367.194
+  },
+  {
+   "t": "Waymo said it has received no citations since March.",
+   "start": 367.194,
+   "end": 371.204
+  },
+  {
+   "t": "Separately, ABC7 reported video of a driverless Waymo trying twice to get around a Highway Patrol traffic break on Interstate 280 before officers blocked it.",
+   "start": 371.204,
+   "end": 381.061
+  },
+  {
+   "t": "On the growth side, Waymo's Bay Area service area is now 350 square miles after a South Bay expansion.",
+   "start": 381.061,
+   "end": 388.483
+  },
+  {
+   "t": "Zoox began rides in Atlanta for employees, family and friends on November 13, with a public early rider program planned for 2027.",
+   "start": 388.483,
+   "end": 397.533
+  },
+  {
+   "t": "In Las Vegas it expanded into Downtown and the Arts District and extended hours to 6 AM to 3 AM.",
+   "start": 397.533,
+   "end": 404.434
+  },
+  {
+   "t": "Pony.ai, with Uber and Verne, has started mapping Manchester in the UK with safety drivers and no passengers.",
+   "start": 404.434,
+   "end": 411.751
+  },
+  {
+   "t": "Part four.",
+   "start": 411.751,
+   "end": 413.587
+  },
+  {
+   "t": "Chips and compute.",
+   "start": 413.587,
+   "end": 415.749
+  },
+  {
+   "t": "NVIDIA published Alpamayo 2 Edge, a 2 billion parameter reasoning model for driving that runs on DRIVE AGX Thor with 160 to 190 milliseconds from camera pixels to trajectory.",
+   "start": 415.749,
+   "end": 427.884
+  },
+  {
+   "t": "It only generates its reasoning when needed, to save compute.",
+   "start": 427.884,
+   "end": 432.298
+  },
+  {
+   "t": "Kakao Mobility signed a memorandum with NVIDIA to build a Level 4 system using two DRIVE Thor computers, starting on Kia purpose-built vehicles.",
+   "start": 432.298,
+   "end": 441.1
+  },
+  {
+   "t": "And Wayve will train its AI Driver on CoreWeave's cloud using NVIDIA Blackwell GPUs under a multi-year deal.",
+   "start": 441.1,
+   "end": 448.001
+  },
+  {
+   "t": "The pattern: NVIDIA is supplying both the in-car computer and the training cloud for much of the non-Tesla field.",
+   "start": 448.001,
+   "end": 454.798
+  },
+  {
+   "t": "Part five.",
+   "start": 454.798,
+   "end": 456.634
+  },
+  {
+   "t": "China.",
+   "start": 456.634,
+   "end": 458.145
+  },
+  {
+   "t": "Huawei closed its second Qiankun driving open contest with more than 190,000 owners signed up, showing off ADS 5 features like a roaming cruise mode that works without a destination.",
+   "start": 458.145,
+   "end": 469.434
+  },
+  {
+   "t": "BYD said more than 4.19 million of its cars now have driver assistance, generating over 260 million kilometers of data a day, and showed its Seal 07 sedan performing emergency steering at 130 kilometers per hour.",
+   "start": 469.434,
+   "end": 484.499
+  },
+  {
+   "t": "Li Auto is rolling out OTA 9.2 with its Mach VLA 2.5 driving model.",
+   "start": 484.499,
+   "end": 490.345
+  },
+  {
+   "t": "Meanwhile Electrek reports Tesla's domestic China retail sales fell 66 percent in October.",
+   "start": 490.345,
+   "end": 496.947
+  },
+  {
+   "t": "Part six.",
+   "start": 496.947,
+   "end": 498.757
+  },
+  {
+   "t": "Regulation and safety.",
+   "start": 498.757,
+   "end": 501.309
+  },
+  {
+   "t": "Beyond the Waymo query, NHTSA extended comments to December 10 on a proposal to update lighting rules for vehicles without manual controls, including optional cyan marker lamps for automated vehicles.",
+   "start": 501.309,
+   "end": 513.314
+  },
+  {
+   "t": "That is directly relevant to Cybercab-style vehicles.",
+   "start": 513.314,
+   "end": 517.402
+  },
+  {
+   "t": "In Texas, a lawyer told KSAT that when a fully autonomous vehicle drives with no human intervention, the company generally stands in the shoes of the operator.",
+   "start": 517.402,
+   "end": 527.012
+  },
+  {
+   "t": "Part seven.",
+   "start": 527.012,
+   "end": 528.783
+  },
+  {
+   "t": "Software and over-the-air updates.",
+   "start": 528.783,
+   "end": 531.738
+  },
+  {
+   "t": "Besides Tesla's FSD build, Tesla pushed the European renaming update.",
+   "start": 531.738,
+   "end": 537.129
+  },
+  {
+   "t": "GM detailed its OnStar AI Assistant, premiering on the 2027 Cadillac Lyriq.",
+   "start": 537.129,
+   "end": 543.652
+  },
+  {
+   "t": "And Rivian's CEO told CNBC that 2027 will be an inflection year driven by the R2 and autonomy, with a technology event on December 9.",
+   "start": 543.652,
+   "end": 553.561
+  },
+  {
+   "t": "Part eight.",
+   "start": 553.561,
+   "end": 555.228
+  },
+  {
+   "t": "Deals.",
+   "start": 555.228,
+   "end": 556.79
+  },
+  {
+   "t": "The week's deals were mostly compute and partnerships: Wayve with CoreWeave, and Kakao with NVIDIA.",
+   "start": 556.79,
+   "end": 562.871
+  },
+  {
+   "t": "Lemonade expanded its FSD insurance discount, 50 percent off FSD miles, to Ohio.",
+   "start": 562.871,
+   "end": 569.551
+  },
+  {
+   "t": "Our take.",
+   "start": 569.551,
+   "end": 571.309
+  },
+  {
+   "t": "Tesla is clearly moving from selling cars to selling autonomy, and the Cybercab pre-order plus the Cybertruck wind-down make that explicit.",
+   "start": 571.309,
+   "end": 579.863
+  },
+  {
+   "t": "Its robotaxi footprint is now growing faster than anyone's on paper, but service areas are outrunning vehicles in new cities, and Waymo still leads on paid rides and cities.",
+   "start": 579.863,
+   "end": 591.618
+  },
+  {
+   "t": "Waymo's school-bus problem is also a warning for everyone, including Tesla, that regulators will judge software fixes by real-world results.",
+   "start": 591.618,
+   "end": 600.186
+  },
+  {
+   "t": "That's the deep dive.",
+   "start": 600.186,
+   "end": 602.36
+  },
+  {
+   "t": "All sources are linked on the page.",
+   "start": 602.36,
+   "end": 605.304
+  }
+ ]
+}

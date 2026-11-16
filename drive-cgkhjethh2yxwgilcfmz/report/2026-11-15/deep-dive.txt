@@ -24,7 +24,7 @@ Part three. Robotaxis and Level 4.
 
 Waymo had a tough week on safety. NHTSA opened a recall query into nearly 3,000 Waymo vehicles to find out why its robotaxis kept passing stopped school buses after a software fix that Waymo said was completed in November 2025. Waymo said it has received no citations since March. Separately, ABC7 reported video of a driverless Waymo trying twice to get around a Highway Patrol traffic break on Interstate 280 before officers blocked it. On the growth side, Waymo's Bay Area service area is now 350 square miles after a South Bay expansion.
 
-Zoox began rides in Atlanta for employees, family and friends on November 13, with a public early rider program planned for 2027. In Las Vegas it expanded into Downtown and the Arts District and extended hours to 6 a.m. to 3 a.m.
+Zoox began rides in Atlanta for employees, family and friends on November 13, with a public early rider program planned for 2027. In Las Vegas it expanded into Downtown and the Arts District and extended hours to 6 AM to 3 AM.
 
 Pony.ai, with Uber and Verne, has started mapping Manchester in the UK with safety drivers and no passengers.
 
