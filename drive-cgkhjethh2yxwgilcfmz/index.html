@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=50">
+<link rel="stylesheet" href="style.css?v=51">
 <title>Happy Truck · Drives</title>
 </head>
 <body>
@@ -33,16 +33,6 @@
       <button data-v="day">Day</button><button data-v="week">Week</button><button data-v="month">Month</button><button data-v="year">Year</button>
     </div>
     <div class="toprow">
-      <div class="mode" id="mode" role="tablist" aria-label="Saving or Energy">
-        <button type="button" class="msave on" data-mode="saving" role="tab" aria-selected="true">
-          <span class="dbadge" aria-hidden="true">$</span>
-          <span class="mlab">Saving</span>
-        </button>
-        <button type="button" class="menergy" data-mode="energy" role="tab" aria-selected="false">
-          <span class="mlab">Energy</span>
-          <span class="bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg></span>
-        </button>
-      </div>
       <div class="daterow">
         <button id="prev" class="nav" aria-label="Previous">‹</button>
         <div id="title" class="title"></div>
@@ -50,13 +40,33 @@
       </div>
       <button id="today" class="pill">Today</button>
     </div>
+    <div id="autohead" class="autohead hidden">
+      <button type="button" id="autoback" class="auto-back hidden" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6 9 12l6 6"/></svg>
+      </button>
+      <div id="autotitle" class="auto-htitle">Automations</div>
+    </div>
   </header>
   <section id="summary" class="summary"></section>
   <main id="main"></main>
   <footer id="foot"></footer>
+  <nav id="tabbar" class="tabbar" role="tablist" aria-label="Saving, Energy, or Automation">
+    <button type="button" data-mode="saving" role="tab" aria-selected="true">
+      <span class="tab-ico tab-save" aria-hidden="true"><span class="tab-coin">$</span></span>
+      <span class="tab-lab">Saving</span>
+    </button>
+    <button type="button" data-mode="energy" role="tab" aria-selected="false">
+      <span class="tab-ico tab-bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg></span>
+      <span class="tab-lab">Energy</span>
+    </button>
+    <button type="button" data-mode="automation" role="tab" aria-selected="false">
+      <span class="tab-ico tab-gear" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15Z"/></svg></span>
+      <span class="tab-lab">Automation</span>
+    </button>
+  </nav>
 </div>
 <div id="sheet" class="sheet hidden"><div class="sheetbody" id="sheetbody"></div></div>
 <script src="maplibre-gl.js"></script>
-<script src="app.js?v=50"></script>
+<script src="app.js?v=51"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@ const TZ = 'America/Detroit';
 const $ = s => document.querySelector(s);
 const S = {
   view: localStorage.getItem('ht_view') || 'month',
-  mode: (localStorage.getItem('ht_mode') === 'energy' ? 'energy' : 'saving'),
+  mode: (['energy','automation'].includes(localStorage.getItem('ht_mode')) ? localStorage.getItem('ht_mode') : 'saving'),
   cur: new Date(), meta: null, months: {}, key: null
 };
 const money = v => (v == null ? '–' : (v < 0 ? '-$' : '$') + Math.abs(v).toFixed(2));
@@ -174,14 +174,24 @@ function exampleSplit(total, specs) {
 }
 
 function setModeClass() {
-  const el = $('#mode');
-  if (!el) return;
-  el.classList.toggle('saving', S.mode === 'saving');
-  el.classList.toggle('energy', S.mode === 'energy');
-  el.querySelector('.msave').classList.toggle('on', S.mode === 'saving');
-  el.querySelector('.menergy').classList.toggle('on', S.mode === 'energy');
-  el.querySelector('.msave').setAttribute('aria-selected', S.mode === 'saving' ? 'true' : 'false');
-  el.querySelector('.menergy').setAttribute('aria-selected', S.mode === 'energy' ? 'true' : 'false');
+  const auto = S.mode === 'automation';
+  const app = $('#app');
+  if (app) app.classList.toggle('mode-auto', auto);
+  const head = $('#autohead');
+  if (head) {
+    head.classList.toggle('hidden', !auto);
+    const editing = auto && AUTO.editing != null;
+    head.classList.toggle('is-edit', !!editing);
+    const back = $('#autoback');
+    if (back) back.classList.toggle('hidden', !editing);
+    const title = $('#autotitle');
+    if (title) title.textContent = editing ? 'Edit automation' : 'Automations';
+  }
+  document.querySelectorAll('#tabbar button').forEach(b => {
+    const on = b.dataset.mode === S.mode;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
 }
 
 function val(n, unit) {
@@ -1174,12 +1184,262 @@ async function viewDay() {
   }).join('');
 }
 
+
+/* ---- Automations (local mock; COO wiring after Lei approves) ---- */
+const AUTO_CATS = ["Comfort","Security","Charging","Trips & Calendar","Insights","System"];
+const AUTO_COLOR = {"Comfort":"#3e8bff","Security":"#ff5a4e","Charging":"#34c759","Trips & Calendar":"#e8a830","Insights":"#9b7dff","System":"#5ac8c8"};
+const AUTO_ICO = {
+  comfort:'<path d="M10 4v11.5a2.5 2.5 0 1 0 4 0V4"/><path d="M10 4h4M10 8h3M10 11h3"/>',
+  snow:'<path d="M12 3v18M4.5 7.5 19.5 16.5M4.5 16.5 19.5 7.5"/><path d="M12 3l2 2M12 3l-2 2M12 21l2-2M12 21l-2-2"/>',
+  lock:'<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  away:'<path d="M12 3 5 7v6c0 4.2 2.8 7.3 7 8.5 4.2-1.2 7-4.3 7-8.5V7l-7-4Z"/><path d="M12 10v2"/><circle cx="12" cy="15" r=".8" fill="currentColor" stroke="none"/>',
+  storm:'<path d="M7.5 16H7a4 4 0 0 1 0-8 5.2 5.2 0 0 1 10-.8A3.5 3.5 0 1 1 17 16h-1.5"/><path d="M9 18l-1 3M12.5 18l-1 3M16 18l-1 3"/>',
+  find:'<path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z"/><circle cx="12" cy="10" r="2.2"/>',
+  valet:'<circle cx="8" cy="12" r="3.2"/><path d="M11 12h9M17 12v3M20 12v2"/>',
+  cheap:'<circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/>',
+  range:'<path d="M4.6 17.4a8.6 8.6 0 1 1 14.8 0"/><path d="M12 17.4 16.1 9.7"/><circle cx="12" cy="17.4" r="1.55" fill="currentColor" stroke="none"/>',
+  trip:'<path d="M4 7h11l5 5v7H4V7Z"/><path d="M15 7v5h5M8 18v-3h4v3"/>',
+  calendar:'<rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 4v4M16 4v4M4 11h16"/>',
+  brief:'<path d="M5 18c3-6 11-6 14 0"/><circle cx="12" cy="9" r="3"/><path d="M12 3v1.5"/>',
+  health:'<path d="M4 13h3l2-4 3 8 2-4h6"/><path d="M19 7V5M19 5h-2M19 5h2"/>',
+  refresh:'<path d="M20 12a8 8 0 1 1-2.2-5.5"/><path d="M20 5v5h-5"/>',
+  plus:'<path d="M12 6v12M6 12h12"/>',
+  pencil:'<path d="M13.5 5.5 18.5 10.5"/><path d="M4 20l1.2-6.2L14.8 4.2a1.8 1.8 0 0 1 2.5 0l2.5 2.5a1.8 1.8 0 0 1 0 2.5L10.2 18.8 4 20Z"/>',
+  chevron:'<path d="m6 9 6 6 6-6"/>',
+  minus:'<path d="M6 12h12"/>'
+};
+function autoSvg(name, color, size=22){
+  if (name === 'bolt') return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><path fill="${color||'#fff'}" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color||'currentColor'}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${AUTO_ICO[name]||''}</svg>`;
+}
+const AUTO_DEFAULTS = [
+  {id:"smart-comfort",cat:"Comfort",name:"Smart Comfort",icon:"comfort",on:true,action:"Precondition the cabin to 71°F, plus seat and steering wheel heat when it's cold. Skip if the weather is already mild.",triggers:["Daily forecast check","Weekday departure-to-work time","Weekday finish-work time"]},
+  {id:"snow-ice",cat:"Comfort",name:"Snow & Ice Prep",icon:"snow",on:true,action:"Start max defrost and heat earlier than usual, and tell Lei if he should leave earlier.",triggers:["Overnight low below 32°F or snow in the forecast","30 min before weekday departure"]},
+  {id:"nightly-lock",cat:"Security",name:"Nightly Lock Check",icon:"lock",on:true,action:"If the truck is unlocked, a window is open, or the tonneau is open, lock and close them — or ask Lei first.",triggers:["Every night at 10:00 PM"]},
+  {id:"away-watch",cat:"Security",name:"Away Watch",icon:"away",on:false,action:"Turn on Sentry, send a daily status, and alert if battery drain looks unusual while Lei is traveling.",triggers:["Lei marks himself as traveling","Daily check-in at 8:00 AM"]},
+  {id:"storm-guard",cat:"Security",name:"Storm Guard",icon:"storm",on:true,action:"Close the windows and tonneau and turn on Sentry if they're left open in bad weather.",triggers:["Forecast shows rain, snow, or hail","Truck is parked with windows or the tonneau open"]},
+  {id:"parking-alert",cat:"Security",name:"Parking Alert",icon:"find",on:true,action:"Alert if the truck is left unlocked, or if it's parked somewhere new overnight.",triggers:["Truck unlocked for more than 10 min while parked","Overnight location is not home or a usual spot"]},
+  {id:"valet",cat:"Security",name:"Guest & Valet Handoff",icon:"valet",on:false,action:"Turn on valet or guest mode with a speed limit when Lei is lending the truck, then turn them off at the end time.",triggers:["Lei says he's lending the truck","A set end time"]},
+  {id:"charging-nudge",cat:"Charging",name:"Charging Nudge",icon:"bolt",on:true,action:"Remind Lei to plug in if the truck isn't already charging.",triggers:["Weeknights, if not plugged in by 9:00 PM","Friday, if the battery is below 60% before the weekend"]},
+  {id:"cheap-rate",cat:"Charging",name:"Cheap-Rate Charging",icon:"cheap",on:true,action:"Charge in the cheapest DTE hours and set weekday vs weekend charge limits. Peak is Mon–Fri 3–7 PM.",triggers:["Plugged in at home","Outside the DTE D1.11 peak window"]},
+  {id:"range-check",cat:"Trips & Calendar",name:"Range Check",icon:"range",on:true,action:"Answer “Can I make it to X and back without charging?” from live range.",triggers:["On demand in chat"]},
+  {id:"road-trip",cat:"Trips & Calendar",name:"Road Trip Prep",icon:"trip",on:true,action:"Raise the charge limit to 100% the night before a trip, then precondition at departure.",triggers:["A trip event on Lei's calendar, or a “trip tomorrow” message"]},
+  {id:"calendar-depart",cat:"Trips & Calendar",name:"Calendar Departure",icon:"calendar",on:true,action:"Precondition based on the next calendar event's location and time, not a fixed daily schedule.",triggers:["Calendar event with a location","Drive-time estimate"]},
+  {id:"morning-brief",cat:"Insights",name:"Morning Briefing",icon:"brief",on:true,action:"One message with battery, range, cabin temp, lock state, and whether a software update is pending.",triggers:["Weekday mornings before departure"]},
+  {id:"weekly-health",cat:"Insights",name:"Weekly Health Report",icon:"health",on:true,action:"Weekly summary of miles, battery health trend, idle drain, Sentry events, and tire-related warnings.",triggers:["Sunday evening"]},
+  {id:"login-fresh",cat:"System",name:"Keep Tesla login fresh",icon:"refresh",on:true,live:true,action:"Renew the Fleet API token from the box and sync it to the droplet.",triggers:["Every 5 hours (CRON 0 */5 * * * ET)"]}
+];
+const AUTO = { features: [], filter: 'All', open: null, editing: null };
+
+function loadAutos() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem('ht_autos') || 'null'); } catch (e) { saved = null; }
+  if (saved && Array.isArray(saved.features) && saved.features.length) {
+    AUTO.features = saved.features;
+    AUTO.filter = AUTO_CATS.includes(saved.filter) || saved.filter === 'All' ? saved.filter : 'All';
+  } else {
+    AUTO.features = AUTO_DEFAULTS.map(f => ({ ...f, triggers: f.triggers.slice() }));
+    AUTO.filter = 'All';
+  }
+}
+function saveAutos() {
+  localStorage.setItem('ht_autos', JSON.stringify({ features: AUTO.features, filter: AUTO.filter }));
+}
+loadAutos();
+
+function autoCardHTML(f, expanded) {
+  const color = AUTO_COLOR[f.cat] || 'var(--acc)';
+  const action = f.action + (f.live ? ' Last run Nov 15, 7:55 PM ET · OK.' : '');
+  return `<article class="auto-card${f.on ? '' : ' off'}${expanded ? ' open' : ''}" data-id="${esc(f.id)}">
+    <div class="auto-row">
+      <button type="button" class="auto-hit">
+        <div class="auto-badge" style="background:${color}">${autoSvg(f.icon, '#fff', 20)}</div>
+        <div class="auto-name">${esc(f.name)}${f.live ? '<span class="auto-live">Live</span>' : ''}</div>
+      </button>
+      <button type="button" class="auto-sw${f.on ? ' on' : ''}" style="--swc:${color}" aria-label="${f.on ? 'Turn off' : 'Turn on'} ${esc(f.name)}"><span class="track" aria-hidden="true"><span class="blk"></span></span></button>
+      <button type="button" class="auto-chev" aria-label="Expand">${autoSvg('chevron', '#8b94a1')}</button>
+    </div>
+    ${expanded ? `<div class="auto-body">
+      <div class="auto-actrow">
+        <div style="flex:1;min-width:0">
+          <div class="auto-lab">Action:</div>
+          <div class="auto-act">${esc(action)}</div>
+        </div>
+        <button type="button" class="auto-pen" aria-label="Edit">${autoSvg('pencil', '#e9edf2', 18)}</button>
+      </div>
+      <div class="auto-lab">Trigger:</div>
+      <ol>${(f.triggers || []).map(t => `<li>${esc(t)}</li>`).join('')}</ol>
+    </div>` : `<div class="auto-preview">${esc(f.action)}</div>`}
+  </article>`;
+}
+
+function autoListHTML() {
+  const counts = { All: AUTO.features.length };
+  AUTO_CATS.forEach(c => { counts[c] = AUTO.features.filter(f => f.cat === c).length; });
+  const tabs = ['All', ...AUTO_CATS].map(item => {
+    const on = AUTO.filter === item ? ' on' : '';
+    const dot = item === 'All' ? '' : `<span class="auto-dot" style="background:${AUTO_COLOR[item]}"></span>`;
+    return `<button type="button" class="auto-cat${on}" data-cat="${esc(item)}">${dot}${esc(item)} ${counts[item] || 0}</button>`;
+  }).join('');
+  const cats = AUTO.filter === 'All' ? AUTO_CATS : AUTO_CATS.filter(c => c === AUTO.filter);
+  let body = '';
+  cats.forEach(cat => {
+    const items = AUTO.features.filter(f => f.cat === cat);
+    if (!items.length) return;
+    body += `<h2 class="auto-sec" style="color:${AUTO_COLOR[cat]}">${esc(cat)}</h2><div class="auto-list">${items.map(f => autoCardHTML(f, AUTO.open === f.id)).join('')}</div>`;
+  });
+  if (!body) body = '<div class="empty">No automations in this category.</div>';
+  return `<div id="auto-root">
+    <p class="auto-note">Design mockup — toggles and edits stay on this device. On means COO may run it; off means COO won’t. Wiring comes after you approve.</p>
+    <div class="auto-cats">${tabs}</div>
+    <button type="button" class="auto-add"><span class="plus">${autoSvg('plus', '#fff', 16)}</span>Add New Automation</button>
+    ${body}
+  </div>`;
+}
+
+function autoTriggerRow(i, value) {
+  return `<div class="auto-trow"><span class="n">${i + 1}.</span><input data-trig value="${esc(value)}"><button type="button" class="auto-rm" aria-label="Remove trigger">${autoSvg('minus', '#8b94a1')}</button></div>`;
+}
+
+function autoEditHTML(f) {
+  const isNew = !f.id || String(f.id).startsWith('new-');
+  const triggers = (f.triggers && f.triggers.length) ? f.triggers : [''];
+  return `<div class="auto-edit" data-id="${esc(f.id || '')}" data-new="${isNew ? '1' : '0'}">
+    <label><span>Name</span><input id="auto-name" value="${esc(f.name || '')}" placeholder="Name"></label>
+    <label><span>Category</span><select id="auto-cat">${AUTO_CATS.map(c => `<option${c === (f.cat || 'Comfort') ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
+    <label><span>Action</span><textarea id="auto-action" placeholder="What should happen?">${esc(f.action || '')}</textarea></label>
+    <div style="margin-bottom:18px">
+      <span class="auto-lab" style="display:block;margin-bottom:6px">Triggers</span>
+      <div id="auto-trigs">${triggers.map((t, i) => autoTriggerRow(i, t)).join('')}</div>
+      <button type="button" class="auto-addtrig">${autoSvg('plus', '#3e8bff', 18)} Add trigger</button>
+    </div>
+    <div class="auto-rowbtns">
+      <button type="button" class="auto-btn save">Save</button>
+      <button type="button" class="auto-btn cancel">Cancel</button>
+    </div>
+    ${isNew ? '' : '<button type="button" class="auto-del">Delete automation</button>'}
+  </div>`;
+}
+
+function renumberTriggers() {
+  document.querySelectorAll('#auto-trigs .auto-trow .n').forEach((el, i) => { el.textContent = (i + 1) + '.'; });
+}
+
+function renderAutomation() {
+  const note = document.getElementById('effnote');
+  if (note) { note.hidden = true; note.textContent = ''; }
+  const main = $('#main');
+  if (AUTO.editing != null) {
+    const isNew = AUTO.editing === '__new__' || String(AUTO.editing).startsWith('new-');
+    const f = isNew && AUTO.editing === '__new__'
+      ? { id: 'new-' + Date.now(), cat: 'Comfort', name: '', icon: 'plus', on: true, action: '', triggers: [''] }
+      : (AUTO.features.find(x => x.id === AUTO.editing) || { id: AUTO.editing, cat: 'Comfort', name: '', icon: 'plus', on: true, action: '', triggers: [''] });
+    if (AUTO.editing === '__new__') { AUTO.editing = f.id; }
+    main.innerHTML = autoEditHTML(f);
+  } else {
+    main.innerHTML = autoListHTML();
+  }
+  setModeClass();
+}
+
+function readAutoForm() {
+  const name = ($('#auto-name') && $('#auto-name').value || '').trim();
+  const cat = ($('#auto-cat') && $('#auto-cat').value) || 'Comfort';
+  const action = ($('#auto-action') && $('#auto-action').value || '').trim();
+  const triggers = [...document.querySelectorAll('#auto-trigs input[data-trig]')].map(i => i.value.trim()).filter(Boolean);
+  return { name, cat, action, triggers };
+}
+
+function defaultIcon(cat) {
+  return { Comfort: 'comfort', Security: 'lock', Charging: 'bolt', 'Trips & Calendar': 'trip', Insights: 'brief', System: 'refresh' }[cat] || 'plus';
+}
+
+function handleAutoClick(e) {
+  const catBtn = e.target.closest('.auto-cat');
+  if (catBtn) {
+    AUTO.filter = catBtn.dataset.cat || 'All';
+    saveAutos();
+    renderAutomation();
+    return;
+  }
+  if (e.target.closest('.auto-add')) {
+    AUTO.editing = '__new__';
+    AUTO.open = null;
+    renderAutomation();
+    return;
+  }
+  const sw = e.target.closest('.auto-sw');
+  if (sw) {
+    const id = sw.closest('.auto-card').dataset.id;
+    const f = AUTO.features.find(x => x.id === id);
+    if (f) { f.on = !f.on; saveAutos(); renderAutomation(); }
+    return;
+  }
+  const pen = e.target.closest('.auto-pen');
+  if (pen) {
+    AUTO.editing = pen.closest('.auto-card').dataset.id;
+    renderAutomation();
+    return;
+  }
+  const chev = e.target.closest('.auto-chev') || e.target.closest('.auto-hit');
+  if (chev) {
+    const id = chev.closest('.auto-card').dataset.id;
+    AUTO.open = AUTO.open === id ? null : id;
+    renderAutomation();
+    return;
+  }
+  if (e.target.closest('.auto-addtrig')) {
+    const box = $('#auto-trigs');
+    if (box) { box.insertAdjacentHTML('beforeend', autoTriggerRow(box.querySelectorAll('.auto-trow').length, '')); }
+    return;
+  }
+  const rm = e.target.closest('.auto-rm');
+  if (rm) { const row = rm.closest('.auto-trow'); if (row) row.remove(); renumberTriggers(); return; }
+  if (e.target.closest('.auto-btn.save')) {
+    const form = $('.auto-edit');
+    const data = readAutoForm();
+    if (!data.name) { const el = $('#auto-name'); if (el) el.focus(); return; }
+    const id = form.dataset.id;
+    const existing = AUTO.features.find(x => x.id === id);
+    if (existing) {
+      Object.assign(existing, data);
+    } else {
+      AUTO.features.push({ id, icon: defaultIcon(data.cat), on: true, ...data });
+    }
+    AUTO.editing = null;
+    AUTO.open = id;
+    saveAutos();
+    renderAutomation();
+    return;
+  }
+  if (e.target.closest('.auto-btn.cancel')) {
+    AUTO.editing = null;
+    renderAutomation();
+    return;
+  }
+  if (e.target.closest('.auto-del')) {
+    if (!confirm('Delete this automation?')) return;
+    const id = $('.auto-edit').dataset.id;
+    AUTO.features = AUTO.features.filter(x => x.id !== id);
+    AUTO.editing = null;
+    if (AUTO.open === id) AUTO.open = null;
+    saveAutos();
+    renderAutomation();
+  }
+}
+
+
 async function render() {
   stopPlayers();
   for (const k in MAPS) { try { MAPS[k].remove(); } catch (e) {} delete MAPS[k]; }
   localStorage.setItem('ht_view', S.view);
   localStorage.setItem('ht_mode', S.mode);
-  setTitle(); renderSummary();
+  setTitle();
+  if (S.mode === 'automation') {
+    renderAutomation();
+    return;
+  }
+  renderSummary();
   const main = $('#main');
   try {
     main.innerHTML = S.view === 'day' ? await viewDay() : S.view === 'week' ? await viewWeek() : S.view === 'month' ? viewMonth() : await viewYear();
@@ -1198,6 +1458,7 @@ function showInfo() {
   $('#sheet').classList.remove('hidden');
 }
 function move(dir) {
+  if (S.mode === 'automation') return;
   const c = new Date(S.cur);
   if (S.view === 'day') c.setDate(c.getDate() + dir);
   else if (S.view === 'week') c.setDate(c.getDate() + 7 * dir);
@@ -1209,15 +1470,24 @@ function wire() {
   $('#prev').onclick = () => move(-1); $('#next').onclick = () => move(1);
   $('#today').onclick = () => { S.cur = todayD(); OPEN.clear(); render(); };
   document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { S.view = b.dataset.v; OPEN.clear(); render(); });
-  $('#mode').addEventListener('click', ev => {
-    const btn = ev.target.closest('button[data-mode]');
-    if (!btn || btn.dataset.mode === S.mode) return;
-    S.mode = btn.dataset.mode === 'energy' ? 'energy' : 'saving';
-    localStorage.setItem('ht_mode', S.mode);
-    OPEN.clear();
-    render();
+  document.querySelectorAll('#tabbar button').forEach(b => {
+    b.onclick = () => {
+      const mode = b.dataset.mode;
+      if (!mode) return;
+      if (mode === S.mode) {
+        if (mode === 'automation' && AUTO.editing != null) { AUTO.editing = null; render(); }
+        return;
+      }
+      S.mode = mode;
+      localStorage.setItem('ht_mode', S.mode);
+      if (mode !== 'automation') AUTO.editing = null;
+      OPEN.clear();
+      render();
+    };
   });
+  $('#autoback').onclick = () => { AUTO.editing = null; render(); };
   $('#main').addEventListener('click', e => {
+    if (S.mode === 'automation') { handleAutoClick(e); return; }
     const fh = e.target.closest('.fhd');
     if (fh) {
       const box = fh.closest('.fbox'), id = box && box.dataset.id;
