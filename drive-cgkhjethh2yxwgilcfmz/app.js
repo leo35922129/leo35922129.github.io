@@ -130,6 +130,7 @@ const PARK_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect 
 const GAUGE_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#f0b040" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 17.4a8.6 8.6 0 1 1 14.8 0"/><path d="M12 17.4 16.1 9.7"/><circle cx="12" cy="17.4" r="1.55" fill="#f0b040" stroke="none"/></svg>';
 const MAP_ICO = '<svg class="mico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/></g></svg>';
 const FEAT_ICO = '<svg class="feico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M12 20V5M19 20v-6"/></g></svg>';
+const BAT_STAT_ICO = '<svg class="batico" viewBox="0 0 16 24" aria-hidden="true"><rect x="5.1" y="1.1" width="5.8" height="2.4" rx=".8" fill="currentColor"/><rect x="2.2" y="3.4" width="11.6" height="19.3" rx="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const ICO = {
@@ -304,48 +305,105 @@ function renderSummary() {
 }
 
 function featureRows(feats, tone) {
-  return (feats || []).map(f => {
+  return (feats || []).filter(f => f.id !== 'elevation').map(f => {
     const name = FEAT_LABEL[f.id] || f.id;
     const zero = !f.kwh;
     const neg = f.kwh < 0;
     const width = Math.min(100, Math.abs(f.pct));
     const kwh = `${neg ? '−' : ''}${fmtKwh(Math.abs(f.kwh))}<small>kWh</small>`;
-    const pct = `${neg ? '−' : ''}${Math.abs(f.pct)}%`;
+    const share = zero ? '' : `<span class="fdot">·</span><small class="fshare">${neg ? '−' : ''}${Math.abs(f.pct)}% of total</small>`;
+    const tag = (!zero && f.src === 'estimated') ? '<small class="ftag">est</small>' : (!zero && f.src === 'measured') ? '<small class="ftag meas">meas</small>' : '';
     return `<div class="feat ${tone}${zero ? ' zero' : ''}${neg ? ' neg' : ''}">
       <span class="fico">${ico(f.id)}</span>
-      <div class="fn">${esc(name)}</div>
-      <div class="fk">${kwh}</div>
+      <div class="fn">${esc(name)}${tag}</div>
+      <div class="fk">${kwh}${share}</div>
       <div class="fbar" aria-hidden="true"><i class="${neg ? 'neg' : ''}" style="width:${width}%"></i></div>
-      <div class="fp">${pct}</div>
     </div>`;
   }).join('');
 }
+function featStartsLabel() {
+  const d = S.meta && S.meta.feature_from;
+  if (!d) return 'Feature data is not available yet';
+  const [y, m, da] = d.split('-').map(Number);
+  const pretty = new Date(y, m - 1, da).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return 'Feature data starts ' + pretty;
+}
+function featureNotes(real, feats) {
+  if (!real) return `<div class="exnote">${esc(featStartsLabel())}</div>`;
+  const hasEst = (feats || []).some(f => f.src === 'estimated');
+  return `<div class="exsub">Share of this period's feature energy${hasEst ? ' · est = estimated from feature status and pack power' : ''}</div>`;
+}
 function featureBox(id, feats, tone) {
-  if (!feats || !feats.length) return '';
+  const real = !!(feats && feats.length);
   const open = OPEN.has(id);
   return `<div class="fbox${open ? ' open' : ''}" data-id="${esc(id)}">
     <button type="button" class="fhd" aria-expanded="${open ? 'true' : 'false'}">
       ${FEAT_ICO}<span class="fl">Feature energy usage</span>${CHEV}
     </button>
     <div class="fbody">
-      <div class="exnote">Example numbers, not from the truck</div>
-      ${featureRows(feats, tone)}
+      ${featureNotes(real, feats)}
+      ${real ? featureRows(feats, tone) : ''}
     </div>
   </div>`;
 }
-function periodFeatureBox(id, driving, parked, parkedNote) {
+function sumFeats(items) {
+  const acc = {};
+  for (const it of items || []) {
+    for (const f of (it.feats || []).filter(x => x.id !== 'elevation')) {
+      const a = acc[f.id] || { id: f.id, kwh: 0, n: 0, measured: 0 };
+      a.kwh += f.kwh || 0;
+      a.n += 1;
+      if (f.src === 'measured') a.measured += 1;
+      acc[f.id] = a;
+    }
+  }
+  const list = Object.values(acc);
+  const tot = list.reduce((s, f) => s + Math.max(0, f.kwh), 0);
+  const out = list.filter(f => Math.abs(f.kwh) >= 0.005).map(f => ({
+    id: f.id,
+    kwh: Math.round(f.kwh * 1000) / 1000,
+    pct: tot ? Math.round(100 * Math.abs(f.kwh) / tot) : 0,
+    src: f.measured === f.n ? 'measured' : 'estimated',
+  }));
+  const s = out.filter(f => f.id !== 'elevation').reduce((n, f) => n + f.pct, 0);
+  if (out.length && s !== 100) {
+    let i = 0;
+    for (let j = 1; j < out.length; j++) if (out[j].id !== 'elevation' && Math.abs(out[j].kwh) > Math.abs(out[i].kwh)) i = j;
+    if (out[i] && out[i].id !== 'elevation') out[i].pct += (100 - s);
+  }
+  return out;
+}
+function itemsInKeys(keys) {
+  const set = new Set(keys);
+  const trips = [], parked = [];
+  const yms = new Set(keys.map(k => k.slice(0, 7)));
+  for (const ym of yms) {
+    const m = S.months[ym]; if (!m) continue;
+    for (const t of (m.trips || [])) if (set.has(dayKeyTs(t.s))) trips.push(t);
+    for (const p of (m.parked || [])) {
+      if (set.has(dayKeyTs(p.s)) || set.has(dayKeyTs((p.e || p.s) - 1))) parked.push(p);
+    }
+  }
+  return { trips, parked };
+}
+function periodFeatureBox(id, keys, parkedNote) {
+  const { trips, parked } = itemsInKeys(keys || []);
+  const dFeats = sumFeats(trips);
+  const pFeats = sumFeats(parked);
+  const real = dFeats.length + pFeats.length > 0;
   const open = OPEN.has(id);
+  const body = real
+    ? `${featureNotes(true, dFeats.concat(pFeats))}
+      <div class="exsec">While driving</div>
+      ${dFeats.length ? featureRows(dFeats, 'trip') : '<div class="exsub">No driving in this period</div>'}
+      <div class="exsec">While parked${parkedNote ? ` · ${esc(parkedNote)}` : ''}</div>
+      ${pFeats.length ? featureRows(pFeats, 'parked') : '<div class="exsub">No parked use in this period</div>'}`
+    : featureNotes(false);
   return `<div class="fbox${open ? ' open' : ''}" data-id="${esc(id)}">
     <button type="button" class="fhd" aria-expanded="${open ? 'true' : 'false'}">
       ${FEAT_ICO}<span class="fl">Feature energy usage</span>${CHEV}
     </button>
-    <div class="fbody">
-      <div class="exnote">Example numbers, not from the truck</div>
-      <div class="exsec">While driving</div>
-      ${featureRows(exampleSplit(driving, PERIOD_TRIP_FEATS), 'trip')}
-      <div class="exsec">While parked${parkedNote ? ` · ${esc(parkedNote)}` : ''}</div>
-      ${featureRows(exampleSplit(parked || 0, PARK_FEATS), 'parked')}
-    </div>
+    <div class="fbody">${body}</div>
   </div>`;
 }
 
@@ -369,13 +427,13 @@ function costRow(t) {
   </div>`;
 }
 function statBoxes(cells) {
-  return `<div class="tg">${cells.map(c => `<div><b>${c.v}</b><span>${esc(c.k)}</span></div>`).join('')}</div>`;
+  return `<div class="tg">${cells.map(c => `<div${c.cls ? ` class="${c.cls}"` : ''}><b>${c.v}</b><span>${esc(c.k)}</span></div>`).join('')}</div>`;
 }
 function batLabel(a, b) {
   const ok = v => v != null && v !== '' && !isNaN(+v);
-  if (!ok(a) && !ok(b)) return '–';
   const ri = v => ok(v) ? String(Math.round(+v)) : '–';
-  return `${ri(a)}% → ${ri(b)}%`;
+  const txt = (!ok(a) && !ok(b)) ? '–' : `${ri(a)}% → ${ri(b)}%`;
+  return `${BAT_STAT_ICO}<span class="batn">${txt}</span>`;
 }
 
 function tripCard(t, idx, total) {
@@ -396,13 +454,13 @@ function tripCard(t, idx, total) {
     <div class="rt"><div>${esc(t.from)}</div><div>${esc(t.to)}</div></div>
     ${statBoxes([
       { v: num(t.mi, 2), k: 'mi' },
-      { v: batLabel(t.soc0, t.soc1), k: 'battery' },
+      { v: batLabel(t.soc0, t.soc1), k: 'battery', cls: 'batcell' },
       { v: num(t.kwh, 2), k: 'kWh' },
       { v: t.whmi ?? '–', k: 'Wh/mi' },
     ])}
     ${energyMode() ? '' : costRow(t)}
     ${energyMode() ? '' : fsdRow(t)}
-    ${energyMode() ? featureBox(featId, exampleSplit(t.kwh || 0, TRIP_FEATS), 'trip') : ''}
+    ${energyMode() ? featureBox(featId, t.feats, 'trip') : ''}
     ${energyMode() ? '' : routeBox(t)}
   </div>`;
 }
@@ -436,7 +494,7 @@ function chargeCard(it) {
     <div class="where">${esc(label)}${info ? `<span class="chinfo"> · ${esc(info)}</span>` : ''}</div>
     ${statBoxes([
       { v: added != null ? '+' + num(added, added >= 10 ? 1 : 2) : '–', k: 'kWh' },
-      { v: batLabel(it.soc0, it.soc1), k: 'battery' },
+      { v: batLabel(it.soc0, it.soc1), k: 'battery', cls: 'batcell' },
       { v: kw, k: 'kW' },
       { v: esc(dur), k: 'duration' },
     ])}
@@ -455,11 +513,11 @@ function parkedCard(it) {
     </div>
     ${statBoxes([
       { v: num(it.kwh, 2), k: 'kWh' },
-      { v: batLabel(it.soc0, it.soc1), k: 'battery' },
+      { v: batLabel(it.soc0, it.soc1), k: 'battery', cls: 'batcell' },
       { v: it.w != null ? fmtW(it.w) : '–', k: 'W' },
       { v: it.kwh_day != null ? num(it.kwh_day, 1) : '–', k: 'kWh/day' },
     ])}
-    ${energyMode() ? featureBox(featId, exampleSplit(it.kwh || 0, PARK_FEATS), 'parked') : ''}
+    ${energyMode() ? featureBox(featId, it.feats, 'parked') : ''}
   </div>`;
 }
 
@@ -734,7 +792,7 @@ async function viewWeekEnergy() {
   return `<div class="pcard">
     ${note ? `<div class="cap enote">${esc(note)}</div>` : ''}
     <div class="elist period">${rows}</div>
-    ${periodFeatureBox('week-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}
+    ${periodFeatureBox('week-feat', keys, from ? 'from ' + from + ' only' : '')}
   </div>`;
 }
 
@@ -787,7 +845,7 @@ function viewMonthEnergy() {
   return `${h}
     ${avgs.length ? `<div class="avgs">${avgs.join('')}</div>` : ''}
     <p class="empty" style="padding:10px 0;font-size:12px">${esc(cap)}</p>
-    ${periodFeatureBox('month-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}`;
+    ${periodFeatureBox('month-feat', monthKeys, from ? 'from ' + from + ' only' : '')}`;
 }
 
 async function viewYearEnergy() {
@@ -827,7 +885,7 @@ async function viewYearEnergy() {
   return `<div class="pcard">
     ${note ? `<div class="cap enote">${esc(note)}</div>` : ''}
     <div class="elist period">${rows}</div>
-    ${periodFeatureBox('year-feat', en.driving, en.parked, from ? 'from ' + from + ' only' : '')}
+    ${periodFeatureBox('year-feat', yearKeys, from ? 'from ' + from + ' only' : '')}
   </div>`;
 }
 
