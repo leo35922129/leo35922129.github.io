@@ -309,7 +309,12 @@ function syncReportChrome() {
   const row = document.getElementById('rptsrcrow');
   const w = weekOf();
   const onNews = typeof S !== 'undefined' && S.mode === 'report';
-  if (origin) origin.textContent = (onNews && !REPORT.archive) ? ((w && w.source_label) || '') : '';
+  if (origin) {
+    const showLabel = !!(onNews && !REPORT.archive && w && w.source && w.source !== 'cio' && w.source_label);
+    origin.textContent = showLabel ? w.source_label : '';
+    origin.hidden = !showLabel;
+    origin.classList.toggle('hidden', !showLabel);
+  }
   const g = (REPORT.groups || [])[REPORT.gidx];
   const multi = !!(onNews && g && g.weeks && g.weeks.length > 1 && !REPORT.archive);
   if (row) {

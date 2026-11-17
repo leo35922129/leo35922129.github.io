@@ -660,7 +660,7 @@ footer a{color:var(--acc)}
 .auto-btn.cancel{border:1px solid var(--line);background:var(--card);color:var(--tx)}
 .auto-del{width:100%;min-height:48px;border:1px solid rgba(255,90,78,.4);border-radius:12px;background:transparent;color:var(--gas);font-size:16px;font-weight:600}
 
-/* ---- Weekly Report tab (mock) ---- */
+/* ---- News tab (Automotive Tech Weekly Report) ---- */
 :root{--rpt-orange:#ec682e;--rpt-card:#24272d}
 .tabbar.tabs-4 button{padding:4px 1px 2px;min-width:0}
 .tabbar.tabs-4 .tab-lab{text-align:center;line-height:1.15;max-width:100%}
@@ -686,14 +686,16 @@ footer a{color:var(--acc)}
 }
 .rpt-hblock{flex:1;min-width:0}
 .rpt-htitle{
-  font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1.15;
-  min-width:0;
+  /* Match .auto-htitle typography; wrap so it doesn't overlap Archive. */
+  font-size:22px;font-weight:600;letter-spacing:-.02em;
+  min-width:0;overflow-wrap:break-word;
 }
 .rpt-origin{
   margin-top:4px;color:var(--mut);font-size:12px;font-weight:500;
   letter-spacing:-.01em;line-height:1.35;
 }
-.rpt-archive{margin-top:6px}
+.rpt-origin:empty{display:none}
+.rpt-archive{margin-top:2px;flex:none;align-self:flex-start}
 .rpt-srcrow{
   display:flex;justify-content:center;padding:0 0 10px;
 }
