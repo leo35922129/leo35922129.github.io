@@ -184,6 +184,11 @@ function setModeClass() {
   }
   const rhead = $('#reporthead');
   if (rhead) rhead.classList.toggle('hidden', !report);
+  const srcrow = $('#rptsrcrow');
+  if (srcrow && !report) {
+    srcrow.hidden = true;
+    srcrow.classList.add('hidden');
+  }
   const head = $('#autohead');
   if (head) {
     head.classList.toggle('hidden', !auto);

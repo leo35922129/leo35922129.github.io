@@ -308,9 +308,10 @@ function syncReportChrome() {
   const origin = document.getElementById('rptorigin');
   const row = document.getElementById('rptsrcrow');
   const w = weekOf();
-  if (origin) origin.textContent = REPORT.archive ? '' : ((w && w.source_label) || '');
+  const onNews = typeof S !== 'undefined' && S.mode === 'report';
+  if (origin) origin.textContent = (onNews && !REPORT.archive) ? ((w && w.source_label) || '') : '';
   const g = (REPORT.groups || [])[REPORT.gidx];
-  const multi = !!(g && g.weeks && g.weeks.length > 1 && !REPORT.archive);
+  const multi = !!(onNews && g && g.weeks && g.weeks.length > 1 && !REPORT.archive);
   if (row) {
     row.hidden = !multi;
     row.classList.toggle('hidden', !multi);
@@ -744,6 +745,7 @@ function wireReport() {
     row.addEventListener('click', ev => {
       const b = ev.target.closest('button[data-source]');
       if (!b) return;
+      if (typeof S !== 'undefined' && S.mode !== 'report') return;
       switchReportSource(b.dataset.source);
     });
   }

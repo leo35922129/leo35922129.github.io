@@ -571,6 +571,7 @@ footer a{color:var(--acc)}
 /* hide period chrome on the Automation tab */
 #app.mode-auto .seg,
 #app.mode-auto .toprow,
+#app.mode-auto .rpt-srcrow,
 #app.mode-auto #summary,
 #app.mode-auto #effnote,
 #app.mode-auto .effnote,
@@ -696,6 +697,7 @@ footer a{color:var(--acc)}
 .rpt-srcrow{
   display:flex;justify-content:center;padding:0 0 10px;
 }
+#app:not(.mode-report) .rpt-srcrow,
 .rpt-srcrow[hidden],.rpt-srcrow.hidden{display:none}
 #app.mode-report .toprow{padding-bottom:8px}
 .rpt-srcseg{flex:none}
