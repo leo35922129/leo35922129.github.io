@@ -1,80 +1,80 @@
 {
-  "date": "2026-11-02",
-  "window": "Oct 27 – Nov 2, 2026",
-  "title": "Automotive UX Weekly Brief",
-  "source": "chatgpt",
-  "source_label": "ChatGPT · Automotive UX Weekly Brief",
-  "lead": "The automotive intelligence platform is becoming a commercial product. Toyota will manufacture autonomous bZ4X vehicles with Waymo hardware integrated on the production line; Rivian is licensing AI assistant technology to Volkswagen and tying an autonomy milestone to further Uber funding; and Hyundai is using over-the-air updates to refine everyday HMI on a production car.",
-  "src": {
-    "toyota": [
-      "Toyota, official announcement",
-      "https://global.toyota/en/newsroom/corporate/44960881.html"
-    ],
-    "waymo_bz4x": [
-      "Waymo, Toyota bZ4X partnership",
-      "https://waymo.com/blog/2026/10/toyota-bz4x-partnership/"
-    ],
-    "reuters_toyota": [
-      "Reuters, Oct 30",
-      "https://www.reuters.com/world/asia-pacific/toyota-waymo-test-autonomous-bz4xs-japan-2027-eye-overseas-expansion-2026-10-30/"
-    ],
-    "techcrunch_rivian": [
-      "TechCrunch, Oct 29",
-      "https://techcrunch.com/2026/10/29/rivian-expands-joint-venture-with-vw-to-include-ai-assistant/"
-    ],
-    "rivian": [
-      "Rivian",
-      "https://rivian.com/"
-    ],
-    "reuters_rivian": [
-      "Reuters, Oct 29",
-      "https://www.reuters.com/business/rivian-says-its-track-250-million-uber-funding-by-year-end-r2-demand-strong-2026-10-29/"
-    ],
-    "hyundai_pleos": [
-      "Hyundai, Pleos Connect",
-      "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001168"
-    ],
-    "kcb": [
-      "Korean Car Blog",
-      "https://thekoreancarblog.com/hyundai-grandeur-pleos-connect-ota-update-gear-display-door-lock-gleo-ai/"
-    ],
-    "tensor": [
-      "Tensor Auto",
-      "https://www.tensor.auto/press/mtz2026"
-    ],
-    "yahoo_tensor": [
-      "Yahoo Finance UK",
-      "https://uk.finance.yahoo.com/news/german-taxi-operator-mtz-deploy-221434129.html"
-    ],
-    "reuters_tensor": [
-      "Reuters, Oct 27",
-      "https://www.reuters.com/business/german-taxi-operator-mtz-deploy-up-500-autonomous-taxis-under-tensor-deal-2026-10-27/"
-    ],
-    "qnx": [
-      "QNX, 2026 SDV Developer Report",
-      "https://qnx.software/en/press-release/2026/qnx-research-finds-automotive-developers-spend-more-than-a-third-of-their-time-on-software-plumbing"
-    ],
-    "pubmed_a": [
-      "PubMed, Oct 20 ADAS malfunctions study",
-      "https://pubmed.ncbi.nlm.nih.gov/42902557/"
-    ],
-    "pubmed_b": [
-      "PubMed, Human Factors intention study",
-      "https://pubmed.ncbi.nlm.nih.gov/41653075/"
-    ]
+ "date": "2026-11-02",
+ "window": "Oct 27 – Nov 2, 2026",
+ "title": "Automotive UX Weekly Brief",
+ "source": "chatgpt",
+ "source_label": "ChatGPT · Automotive UX Weekly Brief",
+ "lead": "The automotive intelligence platform is becoming a commercial product. Toyota will manufacture autonomous bZ4X vehicles with Waymo hardware integrated on the production line; Rivian is licensing AI assistant technology to Volkswagen and tying an autonomy milestone to further Uber funding; and Hyundai is using over-the-air updates to refine everyday HMI on a production car.",
+ "src": {
+  "toyota": [
+   "Toyota, official announcement",
+   "https://global.toyota/en/newsroom/corporate/44960881.html"
+  ],
+  "waymo_bz4x": [
+   "Waymo, Toyota bZ4X partnership",
+   "https://waymo.com/blog/2026/10/toyota-bz4x-partnership/"
+  ],
+  "reuters_toyota": [
+   "Reuters, Oct 30",
+   "https://www.reuters.com/world/asia-pacific/toyota-waymo-test-autonomous-bz4xs-japan-2027-eye-overseas-expansion-2026-10-30/"
+  ],
+  "techcrunch_rivian": [
+   "TechCrunch, Oct 29",
+   "https://techcrunch.com/2026/10/29/rivian-expands-joint-venture-with-vw-to-include-ai-assistant/"
+  ],
+  "rivian": [
+   "Rivian",
+   "https://rivian.com/"
+  ],
+  "reuters_rivian": [
+   "Reuters, Oct 29",
+   "https://www.reuters.com/business/rivian-says-its-track-250-million-uber-funding-by-year-end-r2-demand-strong-2026-10-29/"
+  ],
+  "hyundai_pleos": [
+   "Hyundai, Pleos Connect",
+   "https://www.hyundai.com/worldwide/en/newsroom/detail/0000001168"
+  ],
+  "kcb": [
+   "Korean Car Blog",
+   "https://thekoreancarblog.com/hyundai-grandeur-pleos-connect-ota-update-gear-display-door-lock-gleo-ai/"
+  ],
+  "tensor": [
+   "Tensor Auto",
+   "https://www.tensor.auto/press/mtz2026"
+  ],
+  "yahoo_tensor": [
+   "Yahoo Finance UK",
+   "https://uk.finance.yahoo.com/news/german-taxi-operator-mtz-deploy-221434129.html"
+  ],
+  "reuters_tensor": [
+   "Reuters, Oct 27",
+   "https://www.reuters.com/business/german-taxi-operator-mtz-deploy-up-500-autonomous-taxis-under-tensor-deal-2026-10-27/"
+  ],
+  "qnx": [
+   "QNX, 2026 SDV Developer Report",
+   "https://qnx.software/en/press-release/2026/qnx-research-finds-automotive-developers-spend-more-than-a-third-of-their-time-on-software-plumbing"
+  ],
+  "pubmed_a": [
+   "PubMed, Oct 20 ADAS malfunctions study",
+   "https://pubmed.ncbi.nlm.nih.gov/42902557/"
+  ],
+  "pubmed_b": [
+   "PubMed, Human Factors intention study",
+   "https://pubmed.ncbi.nlm.nih.gov/41653075/"
+  ]
+ },
+ "audio": {
+  "summary": {
+   "file": "summary.mp3",
+   "duration_s": 192.84,
+   "label": "3:13",
+   "title": "3-min summary"
   },
-  "audio": {
-    "summary": {
-      "file": "summary.mp3",
-      "duration_s": 188.88,
-      "label": "3:08",
-      "title": "3-min summary"
-    },
-    "deep": {
-      "file": "deep-dive.mp3",
-      "duration_s": 681.936,
-      "label": "11:21",
-      "title": "10-min deep dive"
-    }
+  "deep": {
+   "file": "deep-dive.mp3",
+   "duration_s": 687.24,
+   "label": "11:27",
+   "title": "10-min deep dive"
   }
+ }
 }

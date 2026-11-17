@@ -3,524 +3,524 @@
   {
    "t": "Automotive UX Weekly Brief, for the week of October 27 through November 2, 2026.",
    "start": 0.0,
-   "end": 7.396
+   "end": 7.312
   },
   {
    "t": "This is the three-minute summary.",
-   "start": 7.396,
-   "end": 10.156
+   "start": 7.312,
+   "end": 9.838
   },
   {
    "t": "The executive take this week is that the automotive intelligence platform is becoming a commercial product.",
-   "start": 10.156,
-   "end": 16.628
+   "start": 9.838,
+   "end": 15.938
   },
   {
    "t": "On October 30, Toyota and Waymo announced the next phase of their autonomous-driving collaboration.",
-   "start": 16.628,
-   "end": 23.06
+   "start": 15.938,
+   "end": 22.762
   },
   {
    "t": "They will begin testing and validating autonomous Toyota bZ4X vehicles in Japan in 2027, with potential deployment in the United Kingdom and other Waymo markets in subsequent years.",
-   "start": 23.06,
-   "end": 34.779
+   "start": 22.762,
+   "end": 34.775
   },
   {
    "t": "Toyota will produce the vehicles at its Takaoka plant in Japan, integrating Waymo's autonomous-driving hardware during manufacturing, rather than installing the system after a completed production vehicle leaves the line.",
-   "start": 34.779,
-   "end": 47.422
+   "start": 34.775,
+   "end": 47.4
   },
   {
    "t": "The companies highlight automatic doors, a powered liftgate, generous rear legroom, and ambient lighting as part of the planned passenger experience.",
-   "start": 47.422,
-   "end": 56.172
+   "start": 47.4,
+   "end": 56.5
   },
   {
    "t": "Rivian disclosed that Volkswagen will license elements of its AI voice assistant technology as part of their broader joint venture.",
-   "start": 56.172,
-   "end": 63.893
+   "start": 56.5,
+   "end": 64.225
   },
   {
    "t": "The partnership, valued at up to 5.8 billion dollars, originally focused on Rivian's electrical architecture and software and is now expanding into AI interaction.",
-   "start": 63.893,
-   "end": 74.375
+   "start": 64.225,
+   "end": 74.85
   },
   {
    "t": "During its third-quarter earnings announcement, Rivian said it remains confident it will achieve an autonomy milestone by the end of 2026.",
-   "start": 74.375,
-   "end": 82.904
+   "start": 74.85,
+   "end": 83.138
   },
   {
    "t": "CEO RJ Scaringe said that milestone would unlock an additional 250 million dollars from Uber.",
-   "start": 82.904,
-   "end": 89.7
+   "start": 83.138,
+   "end": 90.237
   },
   {
    "t": "Uber's total potential investment in Rivian is approximately 1.25 billion dollars through 2031, subject to milestones.",
-   "start": 89.7,
-   "end": 98.19
+   "start": 90.237,
+   "end": 99.15
   },
   {
    "t": "On October 30, Hyundai began rolling out a new over-the-air update for Pleos Connect on the Grandeur in South Korea.",
-   "start": 98.19,
-   "end": 105.482
+   "start": 99.15,
+   "end": 106.55
   },
   {
    "t": "The update includes a one-touch door-lock control, a more prominent gear-selection display, engine RPM on the slim instrument display, different instrument graphics for different driving modes, and additional Gleo AI capabilities, including route-based destination search, on-device message reading, and seat-aware restrictions for certain voice commands.",
-   "start": 105.482,
-   "end": 124.648
+   "start": 106.55,
+   "end": 127.45
   },
   {
    "t": "Tensor Auto and Munich taxi operator Münchner Taxi Zentrum announced a letter of intent to introduce up to 500 autonomous taxis in Germany.",
-   "start": 124.648,
-   "end": 133.62
+   "start": 127.45,
+   "end": 136.25
   },
   {
    "t": "Tensor would provide autonomous-driving technology as a recurring subscription, while the taxi operator would retain fleet operations, customer relationships, booking, brand identity, and operational data.",
-   "start": 133.62,
-   "end": 145.885
+   "start": 136.25,
+   "end": 148.9
   },
   {
    "t": "The agreement remains subject to definitive contracts and Level 4 regulatory approval.",
-   "start": 145.885,
-   "end": 151.602
+   "start": 148.9,
+   "end": 154.6
   },
   {
    "t": "No commercial launch date has been confirmed.",
-   "start": 151.602,
-   "end": 154.961
+   "start": 154.6,
+   "end": 157.925
   },
   {
    "t": "Finally, a QNX survey of 1,100 automotive software developers, published October 21, found that average development effort spent on foundational software integration was 35 percent, and 75 percent said reusable software foundations are lacking.",
-   "start": 154.961,
-   "end": 171.667
+   "start": 157.925,
+   "end": 175.188
   },
   {
    "t": "These are survey responses, not independently measured productivity figures.",
-   "start": 171.667,
-   "end": 177.083
+   "start": 175.188,
+   "end": 180.488
   },
   {
    "t": "That is the week's core news.",
-   "start": 177.083,
-   "end": 179.661
+   "start": 180.488,
+   "end": 183.012
   },
   {
    "t": "The deep dive covers production-line autonomy, licensed AI assistants, over-the-air HMI refinement, and two studies on trust and vehicle intention.",
-   "start": 179.661,
-   "end": 188.88
+   "start": 183.012,
+   "end": 191.975
   }
  ],
  "deep": [
   {
    "t": "Automotive UX Weekly Brief, for the week of October 27 through November 2, 2026.",
    "start": 0.0,
-   "end": 7.396
+   "end": 7.312
   },
   {
    "t": "This is the deep dive.",
-   "start": 7.396,
-   "end": 9.661
+   "start": 7.312,
+   "end": 9.525
   },
   {
    "t": "The executive take is that the automotive intelligence platform is becoming a commercial product.",
-   "start": 9.661,
-   "end": 15.755
+   "start": 9.525,
+   "end": 15.188
   },
   {
    "t": "This briefing covers Toyota and Waymo, Rivian and Volkswagen, Rivian's autonomy milestone, Hyundai's Pleos Connect update, a German autonomous-taxi subscription plan, the QNX developer survey, and two research studies.",
-   "start": 15.755,
-   "end": 29.349
+   "start": 15.188,
+   "end": 30.125
   },
   {
    "t": "On October 30, Toyota and Waymo announced the next phase of their autonomous-driving collaboration.",
-   "start": 29.349,
-   "end": 35.781
+   "start": 30.125,
+   "end": 36.95
   },
   {
    "t": "The companies will begin testing and validating autonomous Toyota bZ4X vehicles in Japan in 2027, with potential deployment in the United Kingdom and other Waymo markets in subsequent years.",
-   "start": 35.781,
-   "end": 48.008
+   "start": 36.95,
+   "end": 49.275
   },
   {
    "t": "The most interesting detail is the manufacturing strategy.",
-   "start": 48.008,
-   "end": 52.188
+   "start": 49.275,
+   "end": 53.375
   },
   {
    "t": "Toyota will produce the vehicles at its Takaoka plant in Japan, integrating Waymo's autonomous-driving hardware during vehicle manufacturing.",
-   "start": 52.188,
-   "end": 60.872
+   "start": 53.375,
+   "end": 62.1
   },
   {
    "t": "That differs from taking a completed production vehicle and subsequently installing an autonomous-driving system.",
-   "start": 60.872,
-   "end": 67.669
+   "start": 62.1,
+   "end": 68.725
   },
   {
    "t": "Autonomous-driving technology is becoming part of the original vehicle architecture.",
-   "start": 67.669,
-   "end": 73.346
+   "start": 68.725,
+   "end": 74.0
   },
   {
    "t": "That has implications for sensor integration, because cameras, radar, lidar, and associated systems can be designed into the vehicle rather than added afterward; for electrical architecture, because compute, power distribution, networking, and thermal requirements can be addressed earlier; for manufacturing efficiency; and for interior design.",
-   "start": 73.346,
-   "end": 93.385
+   "start": 74.0,
+   "end": 95.275
   },
   {
    "t": "Toyota and Waymo specifically highlight automatic doors, a powered liftgate, generous rear legroom, and ambient lighting as part of the planned passenger experience.",
-   "start": 93.385,
-   "end": 103.034
+   "start": 95.275,
+   "end": 105.45
   },
   {
    "t": "Rivian disclosed that Volkswagen will license elements of its AI voice assistant technology as part of their broader joint venture.",
-   "start": 103.034,
-   "end": 110.755
+   "start": 105.45,
+   "end": 113.175
   },
   {
    "t": "The partnership, valued at up to 5.8 billion dollars, originally focused on Rivian's electrical architecture and software and is now expanding into AI interaction.",
-   "start": 110.755,
-   "end": 121.237
+   "start": 113.175,
+   "end": 123.8
   },
   {
    "t": "This is one of the clearest examples of an automaker commercializing not just vehicle hardware or a software platform, but customer-facing intelligence.",
-   "start": 121.237,
-   "end": 130.534
+   "start": 123.8,
+   "end": 133.0
   },
   {
    "t": "It creates a new model in which AI assistant technology can be a licensable OEM asset.",
-   "start": 130.534,
-   "end": 136.497
+   "start": 133.0,
+   "end": 139.137
   },
   {
    "t": "The customer still expects one coherent vehicle experience, even if the underlying assistant foundation is shared.",
-   "start": 136.497,
-   "end": 143.789
+   "start": 139.137,
+   "end": 146.213
   },
   {
    "t": "Rivian also provided an update on its autonomous-driving strategy during its third-quarter earnings announcement.",
-   "start": 143.789,
-   "end": 150.69
+   "start": 146.213,
+   "end": 152.7
   },
   {
    "t": "CEO RJ Scaringe said the company remains confident it will achieve an autonomy milestone by the end of 2026.",
-   "start": 150.69,
-   "end": 158.451
+   "start": 152.7,
+   "end": 160.738
   },
   {
    "t": "That milestone would unlock an additional 250 million dollars from Uber.",
-   "start": 158.451,
-   "end": 163.684
+   "start": 160.738,
+   "end": 165.838
   },
   {
    "t": "Uber's total potential investment in Rivian is approximately 1.25 billion dollars through 2031, subject to milestones.",
-   "start": 163.684,
-   "end": 172.174
+   "start": 165.838,
+   "end": 174.75
   },
   {
    "t": "Autonomous-driving capability is becoming directly connected to business valuation and investment.",
-   "start": 172.174,
-   "end": 178.62
+   "start": 174.75,
+   "end": 180.938
   },
   {
    "t": "The brief's related design point is that autonomy maturity should be communicated through capability and responsibility, not marketing labels alone, especially as automakers introduce new functions through over-the-air updates.",
-   "start": 178.62,
-   "end": 191.549
+   "start": 180.938,
+   "end": 193.787
   },
   {
    "t": "Hyundai began rolling out a new over-the-air update for Pleos Connect on the Grandeur in South Korea on October 30.",
-   "start": 191.549,
-   "end": 198.685
+   "start": 193.787,
+   "end": 200.963
   },
   {
    "t": "The update introduces a one-touch door-lock control, a more prominent gear-selection display, engine RPM information on the slim instrument display, different instrument graphics for different driving modes, and additional Gleo AI assistant capabilities, including route-based destination search, distance-based result sorting, on-device message reading, and seat-aware restrictions for certain voice commands.",
-   "start": 198.685,
-   "end": 220.625
+   "start": 200.963,
+   "end": 224.963
   },
   {
    "t": "Gleo AI can identify which seating position a voice request originates from and restrict certain phone and messaging functions from rear-seat passengers.",
-   "start": 220.625,
-   "end": 229.466
+   "start": 224.963,
+   "end": 234.075
   },
   {
    "t": "That illustrates an important principle: an intelligent assistant should understand not only what someone requests, but also who is requesting it and what authority they have.",
-   "start": 229.466,
-   "end": 239.271
+   "start": 234.075,
+   "end": 243.975
   },
   {
    "t": "This is not a dramatic technology demonstration, and that is what makes it interesting.",
-   "start": 239.271,
-   "end": 244.974
+   "start": 243.975,
+   "end": 249.312
   },
   {
    "t": "It improves everyday vehicle usability after delivery.",
-   "start": 244.974,
-   "end": 249.271
+   "start": 249.312,
+   "end": 253.387
   },
   {
    "t": "Automotive over-the-air updates are often presented as a mechanism for adding features, but another important use is improving existing experiences: reducing unnecessary steps, improving information hierarchy, clarifying warnings, simplifying navigation, and refining AI interaction.",
-   "start": 249.271,
-   "end": 268.051
+   "start": 253.387,
+   "end": 272.548
   },
   {
    "t": "The brief suggests measuring customer interaction improvement per over-the-air release, for example whether an update reduced task completion time, unnecessary driver glances, repeated voice commands, or user corrections.",
-   "start": 268.051,
-   "end": 280.889
+   "start": 272.548,
+   "end": 285.824
   },
   {
    "t": "A software-defined vehicle should become easier to use throughout ownership, not merely accumulate additional functions.",
-   "start": 280.889,
-   "end": 288.103
+   "start": 285.824,
+   "end": 292.974
   },
   {
    "t": "Tensor Auto and Munich taxi operator Münchner Taxi Zentrum announced a letter of intent to introduce up to 500 autonomous taxis in Germany.",
-   "start": 288.103,
-   "end": 297.074
+   "start": 292.974,
+   "end": 301.774
   },
   {
    "t": "Tensor would provide autonomous-driving technology through a recurring subscription service.",
-   "start": 297.074,
-   "end": 302.79
+   "start": 301.774,
+   "end": 307.248
   },
   {
    "t": "The taxi operator would retain responsibility for fleet operations, customer relationships, booking services, brand identity, and operational data.",
-   "start": 302.79,
-   "end": 312.556
+   "start": 307.248,
+   "end": 317.236
   },
   {
    "t": "The agreement remains subject to definitive contracts and Level 4 regulatory approval.",
-   "start": 312.556,
-   "end": 318.272
+   "start": 317.236,
+   "end": 322.936
   },
   {
    "t": "No commercial launch date has been confirmed.",
-   "start": 318.272,
-   "end": 321.631
+   "start": 322.936,
+   "end": 326.261
   },
   {
    "t": "This creates another potential business model: instead of the autonomy provider controlling the entire customer experience, the existing mobility operator can license driving capability.",
-   "start": 321.631,
-   "end": 332.881
+   "start": 326.261,
+   "end": 337.311
   },
   {
    "t": "The operator may still need to define a consistent passenger experience, including vehicle identification, booking, boarding, passenger controls, emergency assistance, customer support, and accessibility.",
-   "start": 332.881,
-   "end": 345.473
+   "start": 337.311,
+   "end": 350.548
   },
   {
    "t": "Autonomous-driving technology is becoming separable from mobility-service ownership.",
-   "start": 345.473,
-   "end": 351.189
+   "start": 350.548,
+   "end": 355.961
   },
   {
    "t": "A recent study from QNX provides useful context.",
-   "start": 351.189,
-   "end": 355.538
+   "start": 355.961,
+   "end": 360.298
   },
   {
    "t": "The company surveyed 1,100 automotive software developers globally.",
-   "start": 355.538,
-   "end": 361.267
+   "start": 360.298,
+   "end": 365.623
   },
   {
    "t": "Average development effort spent on foundational software integration was 35 percent.",
-   "start": 361.267,
-   "end": 367.269
+   "start": 365.623,
+   "end": 371.449
   },
   {
    "t": "75 percent said reusable software foundations are lacking.",
-   "start": 367.269,
-   "end": 372.022
+   "start": 371.449,
+   "end": 376.149
   },
   {
    "t": "76 percent favored more application-layer innovation.",
-   "start": 372.022,
-   "end": 376.514
+   "start": 376.149,
+   "end": 380.548
   },
   {
    "t": "44 percent identified debugging and testing as their biggest challenge.",
-   "start": 376.514,
-   "end": 381.54
+   "start": 380.548,
+   "end": 385.611
   },
   {
    "t": "48 percent were concerned about security threats.",
-   "start": 381.54,
-   "end": 385.603
+   "start": 385.611,
+   "end": 389.498
   },
   {
    "t": "83 percent expected software-defined vehicles to become major cyberattack targets within three years.",
-   "start": 385.603,
-   "end": 392.426
+   "start": 389.498,
+   "end": 396.486
   },
   {
    "t": "These are survey responses, not independently measured engineering productivity or attack forecasts.",
-   "start": 392.426,
-   "end": 399.118
+   "start": 396.486,
+   "end": 403.236
   },
   {
    "t": "If every vehicle program must rebuild or heavily customize its software foundation, less engineering capacity remains for customer-facing innovation.",
-   "start": 399.118,
-   "end": 408.546
+   "start": 403.236,
+   "end": 412.324
   },
   {
    "t": "A good software-defined-vehicle strategy needs both reusable technical foundations and differentiated experience layers.",
-   "start": 408.546,
-   "end": 416.267
+   "start": 412.324,
+   "end": 419.961
   },
   {
    "t": "QNX also identifies cybersecurity standards as a particularly difficult compliance area, including ISO/SAE 21434 and UNECE WP.29 cybersecurity requirements.",
-   "start": 416.267,
-   "end": 429.014
+   "start": 419.961,
+   "end": 433.998
   },
   {
    "t": "Two studies are particularly relevant to next-generation ADAS HMI.",
-   "start": 429.014,
-   "end": 434.053
+   "start": 433.998,
+   "end": 438.923
   },
   {
    "t": "A study published October 20, from researchers at the University of Michigan–Dearborn, the University of Michigan Transportation Research Institute, and State Farm, examined how drivers respond to ADAS malfunctions.",
-   "start": 434.053,
-   "end": 447.269
+   "start": 438.923,
+   "end": 452.199
   },
   {
    "t": "It included 30 drivers and 56 eligible malfunction cases, and investigated relationships among personality characteristics, trust, perceived transparency, and manual intervention.",
-   "start": 447.269,
-   "end": 459.21
+   "start": 452.199,
+   "end": 464.548
   },
   {
    "t": "One finding was that higher emotional trust showed a tendency toward reduced manual braking intervention, although that relationship was not statistically significant.",
-   "start": 459.21,
-   "end": 468.819
+   "start": 464.548,
+   "end": 473.986
   },
   {
    "t": "The researchers also found that perceived predictability was associated with proactive manual braking.",
-   "start": 468.819,
-   "end": 475.368
+   "start": 473.986,
+   "end": 480.186
   },
   {
    "t": "A driver who feels extremely comfortable with automation may not necessarily respond better when the system fails.",
-   "start": 475.368,
-   "end": 482.452
+   "start": 480.186,
+   "end": 487.224
   },
   {
    "t": "The goal should be calibrated trust, not maximum trust.",
-   "start": 482.452,
-   "end": 486.762
+   "start": 487.224,
+   "end": 491.536
   },
   {
    "t": "The study also reinforces the potential value of helping customers understand automation limitations through realistic scenarios and targeted education.",
-   "start": 486.762,
-   "end": 496.124
+   "start": 491.536,
+   "end": 500.724
   },
   {
    "t": "A 2026 Human Factors study involving researchers from the University of Wisconsin–Madison and GM examined how sharing vehicle situation awareness affects takeover behavior.",
-   "start": 496.124,
-   "end": 507.517
+   "start": 500.724,
+   "end": 511.986
   },
   {
    "t": "The researchers tested augmented-reality HUD information including object perception, confidence assessment, and predicted vehicle trajectories.",
-   "start": 507.517,
-   "end": 516.345
+   "start": 511.986,
+   "end": 520.811
   },
   {
    "t": "They found that presenting useful projection information reduced driver-initiated disengagements without delaying takeover responses in their simulated scenarios.",
-   "start": 516.345,
-   "end": 527.571
+   "start": 520.811,
+   "end": 531.319
   },
   {
    "t": "Perception information alone did not produce the same significant benefit.",
-   "start": 527.571,
-   "end": 532.715
+   "start": 531.319,
+   "end": 536.082
   },
   {
    "t": "This supports a distinction between perception visualization, what the vehicle sees, and intention visualization, what the vehicle plans to do.",
-   "start": 532.715,
-   "end": 541.673
+   "start": 536.082,
+   "end": 545.282
   },
   {
    "t": "The second may be more useful for understanding automated behavior.",
-   "start": 541.673,
-   "end": 546.439
+   "start": 545.282,
+   "end": 549.744
   },
   {
    "t": "For example, instead of displaying every nearby vehicle, the system might communicate that it is waiting for a larger gap before merging.",
-   "start": 546.439,
-   "end": 554.368
+   "start": 549.744,
+   "end": 558.069
   },
   {
    "t": "The research takeaway is that the next generation of ADAS HMI should communicate vehicle intention and meaningful uncertainty, not simply display more perception data.",
-   "start": 554.368,
-   "end": 563.887
+   "start": 558.069,
+   "end": 567.919
   },
   {
    "t": "The Toyota–Waymo and Rivian–Volkswagen announcements also suggest a strategic tool the brief calls the Intelligence Platform Ownership Map: identifying which parts of vehicle intelligence should be developed internally, which can be licensed, and which should remain under the automaker's experience governance.",
-   "start": 563.887,
-   "end": 580.801
+   "start": 567.919,
+   "end": 585.157
   },
   {
    "t": "Layers in the brief include sensors and compute, electrical architecture, vehicle OS and middleware, driving intelligence, the AI assistant foundation, authority and policy, brand behavior, customer experience, and over-the-air evolution.",
-   "start": 580.801,
-   "end": 595.384
+   "start": 585.157,
+   "end": 600.769
   },
   {
    "t": "The customer still expects one coherent vehicle experience even when third-party models, a shared computing platform, and externally developed portions of automated-driving intelligence are in the mix.",
-   "start": 595.384,
-   "end": 606.972
+   "start": 600.769,
+   "end": 612.207
   },
   {
    "t": "The bottom line is that intelligence is becoming the next automotive platform business.",
-   "start": 606.972,
-   "end": 612.402
+   "start": 612.207,
+   "end": 617.494
   },
   {
    "t": "Toyota and Waymo are integrating autonomous-driving technology more deeply into production vehicle manufacturing.",
-   "start": 612.402,
-   "end": 619.59
+   "start": 617.494,
+   "end": 624.557
   },
   {
    "t": "Rivian and Volkswagen are expanding platform sharing into customer-facing AI assistant technology.",
-   "start": 619.59,
-   "end": 626.152
+   "start": 624.557,
+   "end": 631.144
   },
   {
    "t": "Rivian and Uber are linking autonomous-driving milestones to major investment.",
-   "start": 626.152,
-   "end": 631.334
+   "start": 631.144,
+   "end": 636.356
   },
   {
    "t": "Hyundai is demonstrating how over-the-air software can continuously improve everyday vehicle interaction.",
-   "start": 631.334,
-   "end": 637.832
+   "start": 636.356,
+   "end": 642.819
   },
   {
    "t": "Tensor is exploring autonomous driving as a subscription service for mobility operators.",
-   "start": 637.832,
-   "end": 643.756
+   "start": 642.819,
+   "end": 648.669
   },
   {
    "t": "And the QNX research shows why reusable software foundations are becoming increasingly important.",
-   "start": 643.756,
-   "end": 650.293
+   "start": 648.669,
+   "end": 655.256
   },
   {
    "t": "The brief's question is: if autonomous driving, AI assistants, and software platforms can increasingly be purchased from technology partners, what must an automaker own to create a distinctive, valuable, and trustworthy vehicle experience?",
-   "start": 650.293,
-   "end": 664.59
+   "start": 655.256,
+   "end": 669.869
   },
   {
    "t": "Its answer is that the automaker must retain clear ownership of the customer experience, behavior specification, authority boundaries, and long-term product vision.",
-   "start": 664.59,
-   "end": 674.394
+   "start": 669.869,
+   "end": 680.019
   },
   {
    "t": "The underlying intelligence may be shared.",
-   "start": 674.394,
-   "end": 677.702
+   "start": 680.019,
+   "end": 683.157
   },
   {
    "t": "The experience should still be unmistakably the brand's own.",
-   "start": 677.702,
-   "end": 681.936
+   "start": 683.157,
+   "end": 686.356
   }
  ]
 }
