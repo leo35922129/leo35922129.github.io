@@ -1562,6 +1562,28 @@ async function start() {
   show();
 }
 function show() { $('#app').classList.remove('hidden'); wire(); render(); }
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
+  let reloading = false;
+  const reloadOnce = v => {
+    if (reloading) return;
+    const key = 'ht-sw-reloaded:' + (v || '1');
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, '1');
+    } catch (err) {}
+    reloading = true;
+    location.reload();
+  };
+  navigator.serviceWorker.addEventListener('message', ev => {
+    const d = ev.data || {};
+    if (d && d.type === 'ht-sw-updated') reloadOnce(d.v);
+  });
+  // A new worker took over a page that was already controlled — reload once.
+  // Skip if this load had no controller yet, so the first install doesn't loop.
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => reloadOnce('controller'));
+  }
+}
 window.htStart = start;
 start();
