@@ -285,6 +285,19 @@ function rpPlayer(kind, audio) {
   </article>`;
 }
 
+function sourceDisplayName(source) {
+  if (source === 'cio') return 'Grok';
+  if (source === 'chatgpt') return 'ChatGPT';
+  return source || '';
+}
+
+function visibleSourceLabel(w) {
+  if (!w) return '';
+  const raw = w.source_label || '';
+  if (w.source === 'cio') return raw ? raw.replace(/\bCIO\b/g, 'Grok') : 'Grok';
+  return raw || sourceDisplayName(w.source);
+}
+
 function defaultWeek(g) {
   if (!g || !g.weeks || !g.weeks.length) return null;
   return g.weeks.find(w => w.source === 'cio') || g.weeks[0];
@@ -356,14 +369,14 @@ function renderReportArchive() {
     const sources = ordered.concat(rest);
     const sub = sources.length > 1
       ? ('Two sources' + (latest ? ' · latest' : ''))
-      : ((sources[0] && (sources[0].source_label || sources[0].source)) || '') + (latest ? ' · latest' : '');
+      : (visibleSourceLabel(sources[0]) || '') + (latest ? ' · latest' : '');
     const chips = sources.length > 1
       ? `<div class="rp-seg" data-archive-src="${i}" role="group" aria-label="Choose source">
           ${sources.map(w =>
-            `<button type="button" data-source="${esc(w.source)}">${w.source === 'cio' ? 'CIO' : (w.source === 'chatgpt' ? 'ChatGPT' : esc(w.source))}</button>`
+            `<button type="button" data-source="${esc(w.source)}">${esc(sourceDisplayName(w.source))}</button>`
           ).join('')}
         </div>`
-      : `<span class="rp-tag">${sources[0] && sources[0].source === 'chatgpt' ? 'ChatGPT' : 'CIO'}</span>`;
+      : `<span class="rp-tag">${esc(sourceDisplayName(sources[0] && sources[0].source))}</span>`;
     return `<div class="rp-wk" role="button" tabindex="0" data-group="${i}">
       <div><b>${esc(window)}</b><span>${esc(sub)}</span></div>
       ${chips}
