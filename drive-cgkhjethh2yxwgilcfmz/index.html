@@ -14,7 +14,8 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=61">
+<link rel="stylesheet" href="style.css?v=62">
+<link rel="stylesheet" href="control.css?v=62">
 <title>Happy Truck · Drives</title>
 </head>
 <body>
@@ -62,11 +63,17 @@
       </button>
       <div id="autotitle" class="auto-htitle">Automations</div>
     </div>
+    <div id="ctlhead" class="ctlhead hidden">
+      <button type="button" id="ctlback" class="auto-back hidden" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6 9 12l6 6"/></svg>
+      </button>
+      <div id="ctltitle" class="auto-htitle">Control</div>
+    </div>
   </header>
   <section id="summary" class="summary"></section>
   <main id="main"></main>
   <footer id="foot"></footer>
-  <nav id="tabbar" class="tabbar tabs-4" role="tablist" aria-label="Saving, Energy, Automation, or News">
+  <nav id="tabbar" class="tabbar tabs-5" role="tablist" aria-label="Saving, Energy, Control, Automation, or News">
     <button type="button" data-mode="saving" role="tab" aria-selected="true">
       <span class="tab-ico tab-save" aria-hidden="true"><span class="tab-coin">$</span></span>
       <span class="tab-lab">Saving</span>
@@ -74,6 +81,14 @@
     <button type="button" data-mode="energy" role="tab" aria-selected="false">
       <span class="tab-ico tab-bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg></span>
       <span class="tab-lab">Energy</span>
+    </button>
+    <button type="button" data-mode="control" role="tab" aria-selected="false" aria-label="Control">
+      <span class="tab-ico tab-ctl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4.2 14.2h15.6l-.8 3.6H5z"/>
+        <path d="M5.2 14.2 6.6 9.4h7.2L17.6 14"/>
+        <path d="M8.2 9.4 9 7.2h4.4l1.2 2.2"/>
+      </svg></span>
+      <span class="tab-lab">Control</span>
     </button>
     <button type="button" data-mode="automation" role="tab" aria-selected="false">
       <span class="tab-ico tab-auto" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -96,7 +111,8 @@
 </div>
 <div id="sheet" class="sheet hidden"><div class="sheetbody" id="sheetbody"></div></div>
 <script src="maplibre-gl.js"></script>
-<script src="app.js?v=61"></script>
-<script src="report.js?v=61"></script>
+<script src="app.js?v=62"></script>
+<script src="report.js?v=62"></script>
+<script src="control.js?v=62"></script>
 </body>
 </html>

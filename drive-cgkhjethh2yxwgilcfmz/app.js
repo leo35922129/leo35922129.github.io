@@ -3,7 +3,7 @@ const TZ = 'America/Detroit';
 const $ = s => document.querySelector(s);
 const S = {
   view: localStorage.getItem('ht_view') || 'month',
-  mode: (['energy','automation','report'].includes(localStorage.getItem('ht_mode')) ? localStorage.getItem('ht_mode') : 'saving'),
+  mode: (['energy','automation','report','control'].includes(localStorage.getItem('ht_mode')) ? localStorage.getItem('ht_mode') : 'saving'),
   cur: new Date(), meta: null, months: {}, key: null
 };
 const money = v => (v == null ? '–' : (v < 0 ? '-$' : '$') + Math.abs(v).toFixed(2));
@@ -176,10 +176,12 @@ function exampleSplit(total, specs) {
 function setModeClass() {
   const auto = S.mode === 'automation';
   const report = S.mode === 'report';
+  const control = S.mode === 'control';
   const app = $('#app');
   if (app) {
     app.classList.toggle('mode-auto', auto);
     app.classList.toggle('mode-report', report);
+    app.classList.toggle('mode-control', control);
     app.classList.toggle('rpt-arch', !!(report && window.REPORT && REPORT.archive));
   }
   const rhead = $('#reporthead');
@@ -199,6 +201,7 @@ function setModeClass() {
     const title = $('#autotitle');
     if (title) title.textContent = editing ? 'Edit automation' : 'Automations';
   }
+  if (typeof setControlChrome === 'function') setControlChrome();
   document.querySelectorAll('#tabbar button').forEach(b => {
     const on = b.dataset.mode === S.mode;
     b.classList.toggle('on', on);
@@ -1468,6 +1471,10 @@ async function render() {
     if (window.renderReport) renderReport();
     return;
   }
+  if (S.mode === 'control') {
+    if (window.renderControl) renderControl();
+    return;
+  }
   renderSummary();
   const main = $('#main');
   try {
@@ -1487,7 +1494,7 @@ function showInfo() {
   $('#sheet').classList.remove('hidden');
 }
 function move(dir) {
-  if (S.mode === 'automation') return;
+  if (S.mode === 'automation' || S.mode === 'control') return;
   if (S.mode === 'report') { if (window.moveReport) moveReport(dir); return; }
   const c = new Date(S.cur);
   if (S.view === 'day') c.setDate(c.getDate() + dir);
@@ -1506,6 +1513,7 @@ function wire() {
       if (!mode) return;
       if (mode === S.mode) {
         if (mode === 'automation' && AUTO.editing != null) { AUTO.editing = null; render(); }
+        if (mode === 'control' && window.CONTROL && CONTROL.view !== 'home') { CONTROL.view = 'home'; CONTROL.detail = null; render(); }
         return;
       }
       S.mode = mode;
@@ -1519,6 +1527,7 @@ function wire() {
   $('#autoback').onclick = () => { AUTO.editing = null; render(); };
   $('#main').addEventListener('click', e => {
     if (S.mode === 'automation') { handleAutoClick(e); return; }
+    if (S.mode === 'control') { if (window.handleControlClick) { handleControlClick(e); } return; }
     const fh = e.target.closest('.fhd');
     if (fh) {
       const box = fh.closest('.fbox'), id = box && box.dataset.id;
