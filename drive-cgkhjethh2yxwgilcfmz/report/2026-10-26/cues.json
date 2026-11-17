@@ -3,549 +3,549 @@
   {
    "t": "Automotive UX Weekly Brief, for the week of October 20 through October 26, 2026.",
    "start": 0.0,
-   "end": 7.362
+   "end": 7.338
   },
   {
    "t": "This is the three-minute summary.",
-   "start": 7.362,
-   "end": 9.887
+   "start": 7.338,
+   "end": 9.412
   },
   {
    "t": "The executive take this week is that the intelligence-defined vehicle is becoming real.",
-   "start": 9.887,
-   "end": 15.1
+   "start": 9.412,
+   "end": 14.75
   },
   {
    "t": "The biggest development came on October 21, when General Motors unveiled more details of its next-generation software-defined vehicle architecture.",
-   "start": 15.1,
-   "end": 24.325
+   "start": 14.75,
+   "end": 24.175
   },
   {
    "t": "Announced targets include 40 times greater computing performance, a 30 percent reduction in vehicle wiring length and mass, cellular connectivity up to 50 percent faster, and a goal to cut vehicle development time by about half.",
-   "start": 24.325,
-   "end": 38.362
+   "start": 24.175,
+   "end": 38.812
   },
   {
    "t": "The architecture is slated for introduction in 2028, with the first vehicle the Cadillac Escalade IQ.",
-   "start": 38.362,
-   "end": 45.375
+   "start": 38.812,
+   "end": 45.85
   },
   {
    "t": "These are manufacturer-announced targets and comparisons, not independently verified production results.",
-   "start": 45.375,
-   "end": 52.087
+   "start": 45.85,
+   "end": 52.35
   },
   {
    "t": "GM also announced a major transformation of OnStar, repositioning it from primarily a connected safety and assistance service into a broader vehicle-intelligence platform.",
-   "start": 52.087,
-   "end": 62.438
+   "start": 52.35,
+   "end": 62.725
   },
   {
    "t": "The new OnStar AI Assistant is scheduled to debut through an over-the-air update in the 2027 Cadillac LYRIQ, with additional vehicles following.",
-   "start": 62.438,
-   "end": 71.45
+   "start": 62.725,
+   "end": 71.838
   },
   {
    "t": "Customers will be able to use natural-language requests to interact with vehicle functions.",
-   "start": 71.45,
-   "end": 76.938
+   "start": 71.838,
+   "end": 77.325
   },
   {
    "t": "GM also announced a unified mobile application for the vehicle.",
-   "start": 76.938,
-   "end": 81.65
+   "start": 77.325,
+   "end": 81.6
   },
   {
    "t": "On October 20, one day before GM Forward, Google announced Personal Intelligence with Gemini.",
-   "start": 81.65,
-   "end": 88.625
+   "start": 81.6,
+   "end": 88.112
   },
   {
    "t": "With the user's permission, the assistant can use information from connected Google services, including Gmail, Google Calendar, Google Photos, Google Maps, YouTube, and Search.",
-   "start": 88.625,
-   "end": 100.55
+   "start": 88.112,
+   "end": 99.3
   },
   {
    "t": "Google also brought Gemini-powered conversational navigation to Apple CarPlay, so drivers can ask multistep questions while navigating, such as finding a scenic place to stop along the route.",
-   "start": 100.55,
-   "end": 111.975
+   "start": 99.3,
+   "end": 110.787
   },
   {
    "t": "Waymo announced plans to launch autonomous ride-hailing in the Madrid region in 2027.",
-   "start": 111.975,
-   "end": 117.95
+   "start": 110.787,
+   "end": 116.575
   },
   {
    "t": "It will initially deploy electric Jaguar I-PACE vehicles for mapping and testing, beginning with manual driving and then supervised autonomous validation.",
-   "start": 117.95,
-   "end": 127.325
+   "start": 116.575,
+   "end": 126.15
   },
   {
    "t": "Public driverless rides are a future target, not a service already operating in Madrid.",
-   "start": 127.325,
-   "end": 133.062
+   "start": 126.15,
+   "end": 131.675
   },
   {
    "t": "A Reuters report citing Semafor says Waymo is considering increasing its fleet to approximately 20,000 vehicles by the end of 2027, from roughly 4,000.",
-   "start": 133.062,
-   "end": 143.6
+   "start": 131.675,
+   "end": 142.25
   },
   {
    "t": "That is a reported plan rather than a completed expansion.",
-   "start": 143.6,
-   "end": 147.525
+   "start": 142.25,
+   "end": 145.925
   },
   {
    "t": "Following its third-quarter earnings announcement, Tesla reiterated plans to begin selling its purpose-built Cybercab before the end of 2026.",
-   "start": 147.525,
-   "end": 156.375
+   "start": 145.925,
+   "end": 155.0
   },
   {
    "t": "The vehicle is designed without conventional steering controls, pedals, or mirrors.",
-   "start": 156.375,
-   "end": 162.213
+   "start": 155.0,
+   "end": 160.025
   },
   {
    "t": "Tesla has already begun limited commercial Cybercab operations in Austin.",
-   "start": 162.213,
-   "end": 167.4
+   "start": 160.025,
+   "end": 164.863
   },
   {
    "t": "NHTSA continues examining compliance with existing federal safety standards, and Tesla faces an October 30 response deadline.",
-   "start": 167.4,
-   "end": 176.0
+   "start": 164.863,
+   "end": 173.238
   },
   {
    "t": "On October 26, local reporting said Tesla expanded its Houston robotaxi service area into additional neighborhoods, including Montrose, Midtown, and downtown Houston.",
-   "start": 176.0,
-   "end": 187.488
+   "start": 173.238,
+   "end": 184.45
   },
   {
    "t": "Finally, NHTSA proposed changes to Federal Motor Vehicle Safety Standard Number 108, including the potential standardization of cyan-colored marker lamps to identify vehicles operating under automated driving systems.",
-   "start": 187.488,
-   "end": 200.812
+   "start": 184.45,
+   "end": 197.963
   },
   {
    "t": "That is the week's core news.",
-   "start": 200.812,
-   "end": 203.338
+   "start": 197.963,
+   "end": 199.838
   },
   {
    "t": "The deep dive covers vehicle-native versus general-purpose AI, passenger control in a vehicle with no steering wheel, the lighting proposal, and two studies on takeover HMI.",
-   "start": 203.338,
-   "end": 213.537
+   "start": 199.838,
+   "end": 210.363
   }
  ],
  "deep": [
   {
    "t": "Automotive UX Weekly Brief, for the week of October 20 through October 26, 2026.",
    "start": 0.0,
-   "end": 7.362
+   "end": 7.338
   },
   {
    "t": "This is the deep dive.",
-   "start": 7.362,
-   "end": 9.575
+   "start": 7.338,
+   "end": 9.012
   },
   {
    "t": "The executive take is that the intelligence-defined vehicle is becoming real.",
-   "start": 9.575,
-   "end": 14.363
+   "start": 9.012,
+   "end": 13.838
   },
   {
    "t": "This briefing covers GM's architecture and OnStar announcements, Google's vehicle AI, Waymo and Tesla on robotaxis, NHTSA's lighting proposal, and two studies on takeover interfaces.",
-   "start": 14.363,
-   "end": 26.75
+   "start": 13.838,
+   "end": 25.887
   },
   {
    "t": "GM's October 21 announcement is the week's most important development for automotive technology strategy.",
-   "start": 26.75,
-   "end": 33.688
+   "start": 25.887,
+   "end": 32.975
   },
   {
    "t": "The company revealed more details about its next-generation centralized computing and electrical architecture.",
-   "start": 33.688,
-   "end": 40.288
+   "start": 32.975,
+   "end": 39.913
   },
   {
    "t": "Announced improvements include 40 times greater computing performance, a 30 percent reduction in vehicle wiring length and mass, cellular connectivity up to 50 percent faster, a goal to reduce the vehicle development timeline by approximately 50 percent, architecture introduction in 2028, and the Cadillac Escalade IQ as the first vehicle.",
-   "start": 40.288,
-   "end": 61.175
+   "start": 39.913,
+   "end": 62.175
   },
   {
    "t": "These are manufacturer-announced targets and comparisons, not independently verified production results.",
-   "start": 61.175,
-   "end": 67.888
+   "start": 62.175,
+   "end": 68.787
   },
   {
    "t": "The significance is not simply more computing power.",
-   "start": 67.888,
-   "end": 71.513
+   "start": 68.787,
+   "end": 72.175
   },
   {
    "t": "It is the opportunity to coordinate previously isolated vehicle functions.",
-   "start": 71.513,
-   "end": 76.612
+   "start": 72.175,
+   "end": 77.0
   },
   {
    "t": "Today, a camping experience might require the customer to operate climate, interior lighting, exterior lighting, power outlets, security cameras, battery management, and entertainment separately.",
-   "start": 76.612,
+   "start": 77.0,
    "end": 89.287
   },
   {
    "t": "A centralized architecture with suitable APIs could allow these systems to operate together.",
    "start": 89.287,
-   "end": 95.075
+   "end": 95.05
   },
   {
    "t": "One customer intention, Activate Camping Mode, could adjust climate, make exterior power available, change lighting, activate security monitoring, and adapt energy management.",
-   "start": 95.075,
-   "end": 106.725
+   "start": 95.05,
+   "end": 106.638
   },
   {
    "t": "The design-review question is which future customer experiences require cross-domain access to vehicle systems, and whether the necessary APIs are being defined before hardware freeze.",
-   "start": 106.725,
-   "end": 117.787
+   "start": 106.638,
+   "end": 117.675
   },
   {
    "t": "GM also announced a major transformation of OnStar, repositioning it from primarily a connected safety and assistance service into a broader vehicle-intelligence platform.",
-   "start": 117.787,
-   "end": 128.137
+   "start": 117.675,
+   "end": 128.275
   },
   {
    "t": "The new OnStar AI Assistant is scheduled to debut through an over-the-air update in the 2027 Cadillac LYRIQ, with additional vehicles following.",
-   "start": 128.137,
-   "end": 137.15
+   "start": 128.275,
+   "end": 137.463
   },
   {
    "t": "Customers will be able to use natural-language requests to interact with vehicle functions.",
-   "start": 137.15,
-   "end": 142.637
+   "start": 137.463,
+   "end": 142.975
   },
   {
    "t": "The company also announced a unified mobile application.",
-   "start": 142.637,
-   "end": 146.725
+   "start": 142.975,
+   "end": 146.738
   },
   {
    "t": "The brief distinguishes general-purpose AI, which knows about the world and can answer questions, from vehicle-native AI, which knows the vehicle, understands its current state, can access permitted functions, and can interpret diagnostics.",
-   "start": 146.725,
-   "end": 161.45
+   "start": 146.738,
+   "end": 161.35
   },
   {
    "t": "A general assistant can answer, What is regenerative braking?",
-   "start": 161.45,
-   "end": 165.6
+   "start": 161.35,
+   "end": 165.562
   },
   {
    "t": "A deeply integrated vehicle assistant could answer, Why is regenerative braking limited in my vehicle right now?",
-   "start": 165.6,
-   "end": 172.425
+   "start": 165.562,
+   "end": 172.762
   },
   {
    "t": "That requires access to real-time vehicle state and authoritative technical information.",
-   "start": 172.425,
-   "end": 178.137
+   "start": 172.762,
+   "end": 178.2
   },
   {
    "t": "The brief also flags privacy as an area worth scrutinizing as these assistants gain access to more vehicle and personal context.",
-   "start": 178.137,
-   "end": 186.55
+   "start": 178.2,
+   "end": 186.238
   },
   {
    "t": "On October 20, Google announced Personal Intelligence with Gemini, allowing the assistant to use information from connected Google services with the user's permission.",
-   "start": 186.55,
-   "end": 196.375
+   "start": 186.238,
+   "end": 196.562
   },
   {
    "t": "Supported sources include Gmail, Google Calendar, Google Photos, Google Maps, YouTube, and Search.",
-   "start": 196.375,
-   "end": 204.338
+   "start": 196.562,
+   "end": 203.312
   },
   {
    "t": "This is a shift from command-based interaction toward context-based interaction: the driver no longer needs to provide every piece of information explicitly.",
-   "start": 204.338,
-   "end": 213.7
+   "start": 203.312,
+   "end": 212.738
   },
   {
    "t": "The strategic challenge for automakers is how personal context and vehicle context should interact without creating privacy confusion.",
-   "start": 213.7,
-   "end": 221.85
+   "start": 212.738,
+   "end": 221.012
   },
   {
    "t": "Google also brought Gemini-powered conversational navigation to Apple CarPlay.",
-   "start": 221.85,
-   "end": 227.125
+   "start": 221.012,
+   "end": 226.012
   },
   {
    "t": "Drivers can ask multistep questions while navigating, for example, Find a scenic place to stop along my route.",
-   "start": 227.125,
-   "end": 234.6
+   "start": 226.012,
+   "end": 233.012
   },
   {
    "t": "AI interaction is becoming less dependent on the vehicle's native operating system.",
-   "start": 234.6,
-   "end": 239.988
+   "start": 233.012,
+   "end": 238.213
   },
   {
    "t": "A customer may receive advanced conversational navigation through smartphone projection even when the automaker's own assistant is relatively limited.",
-   "start": 239.988,
-   "end": 248.463
+   "start": 238.213,
+   "end": 247.238
   },
   {
    "t": "A native automotive assistant cannot compete simply by answering general questions.",
-   "start": 248.463,
-   "end": 253.85
+   "start": 247.238,
+   "end": 252.363
   },
   {
    "t": "It needs to provide something smartphone-based AI cannot easily replicate, such as real-time vehicle understanding, deeper control integration, ADAS context, vehicle-specific personalization, and cross-domain physical experiences.",
-   "start": 253.85,
-   "end": 269.557
+   "start": 252.363,
+   "end": 267.358
   },
   {
    "t": "Waymo announced plans to launch autonomous ride-hailing in the Madrid region in 2027.",
-   "start": 269.557,
-   "end": 275.531
+   "start": 267.358,
+   "end": 272.97
   },
   {
    "t": "It will initially deploy electric Jaguar I-PACE vehicles for mapping and testing.",
-   "start": 275.531,
-   "end": 280.994
+   "start": 272.97,
+   "end": 278.058
   },
   {
    "t": "The rollout begins with manual driving before progressing to supervised autonomous validation.",
-   "start": 280.994,
-   "end": 286.944
+   "start": 278.058,
+   "end": 283.908
   },
   {
    "t": "Public driverless rides are a future target, not a service already operating in Madrid.",
-   "start": 286.944,
-   "end": 292.682
+   "start": 283.908,
+   "end": 289.545
   },
   {
    "t": "A Reuters report citing Semafor says Waymo is considering increasing its fleet to approximately 20,000 vehicles by the end of 2027, from roughly 4,000.",
-   "start": 292.682,
-   "end": 303.219
+   "start": 289.545,
+   "end": 300.257
   },
   {
    "t": "That is a reported plan rather than a completed expansion.",
-   "start": 303.219,
-   "end": 307.144
+   "start": 300.257,
+   "end": 303.933
   },
   {
    "t": "At that scale, the customer experience must work across thousands of vehicles, multiple cities, and a wide range of unexpected situations.",
-   "start": 307.144,
-   "end": 316.507
+   "start": 303.933,
+   "end": 312.808
   },
   {
    "t": "As autonomous-driving technology scales, operational reliability and passenger experience become major sources of differentiation.",
-   "start": 316.507,
-   "end": 325.307
+   "start": 312.808,
+   "end": 321.332
   },
   {
    "t": "Following Tesla's third-quarter earnings announcement, the company reiterated plans to begin selling its purpose-built Cybercab before the end of 2026.",
-   "start": 325.307,
-   "end": 334.656
+   "start": 321.332,
+   "end": 330.845
   },
   {
    "t": "The vehicle is designed without conventional steering controls, pedals, or mirrors.",
-   "start": 334.656,
-   "end": 340.494
+   "start": 330.845,
+   "end": 335.845
   },
   {
    "t": "Tesla has already begun limited commercial Cybercab operations in Austin.",
-   "start": 340.494,
-   "end": 345.682
+   "start": 335.845,
+   "end": 340.67
   },
   {
    "t": "However, NHTSA continues examining the vehicle's compliance with existing federal safety standards, and Tesla faces an October 30 response deadline in the ongoing investigation.",
-   "start": 345.682,
-   "end": 356.869
+   "start": 340.67,
+   "end": 351.908
   },
   {
    "t": "On October 26, local reporting indicated that Tesla expanded its Houston robotaxi service area into additional neighborhoods, including Montrose, Midtown, and downtown Houston, another sign that geographic service expansion is becoming a central competitive metric.",
-   "start": 356.869,
-   "end": 373.344
+   "start": 351.908,
+   "end": 369.245
   },
   {
    "t": "Cybercab challenges the traditional architecture of the passenger vehicle.",
-   "start": 373.344,
-   "end": 378.057
+   "start": 369.245,
+   "end": 373.92
   },
   {
    "t": "For more than a century, interiors have been organized around the driver: steering wheel, pedals, instrument cluster, and forward-facing seating.",
-   "start": 378.057,
-   "end": 387.406
+   "start": 373.92,
+   "end": 382.933
   },
   {
    "t": "Once those elements are no longer required, the cabin can be designed around a different experience.",
-   "start": 387.406,
-   "end": 393.507
+   "start": 382.933,
+   "end": 389.02
   },
   {
    "t": "The critical UX question is what the passenger controls.",
-   "start": 393.507,
-   "end": 397.444
+   "start": 389.02,
+   "end": 392.983
   },
   {
    "t": "The answer is not simply, Nothing, the car drives itself.",
-   "start": 397.444,
-   "end": 402.031
+   "start": 392.983,
+   "end": 396.72
   },
   {
    "t": "Passengers still need meaningful authority over their journey: changing destination, requesting a safe stop, adjusting cabin comfort, contacting assistance, and managing emergency situations.",
-   "start": 402.031,
-   "end": 414.444
+   "start": 396.72,
+   "end": 409.47
   },
   {
    "t": "The interface must distinguish passenger requests from direct vehicle-control authority.",
-   "start": 414.444,
-   "end": 419.882
+   "start": 409.47,
+   "end": 414.808
   },
   {
    "t": "Purpose-built autonomy creates opportunities to rethink the cabin, but it also requires an entirely new passenger-control and safety-interaction model.",
-   "start": 419.882,
-   "end": 428.869
+   "start": 414.808,
+   "end": 424.108
   },
   {
    "t": "On October 23, NHTSA proposed changes to Federal Motor Vehicle Safety Standard Number 108.",
-   "start": 428.869,
-   "end": 435.694
+   "start": 424.108,
+   "end": 430.72
   },
   {
    "t": "One particularly interesting element is the potential standardization of cyan-colored marker lamps to identify vehicles operating under automated driving systems.",
-   "start": 435.694,
-   "end": 445.182
+   "start": 430.72,
+   "end": 440.533
   },
   {
    "t": "Exterior vehicle lighting is becoming a communication interface.",
-   "start": 445.182,
-   "end": 449.669
+   "start": 440.533,
+   "end": 444.82
   },
   {
    "t": "Traditionally, lighting communicates braking, turning, hazards, and vehicle presence.",
-   "start": 449.669,
-   "end": 455.957
+   "start": 444.82,
+   "end": 450.32
   },
   {
    "t": "Future autonomous vehicles may also communicate automated-driving status, which could become especially important for law enforcement and other road users.",
-   "start": 455.957,
-   "end": 465.219
+   "start": 450.32,
+   "end": 459.783
   },
   {
    "t": "The design question is which autonomous vehicle signals should be standardized, and which can remain brand-specific.",
-   "start": 465.219,
-   "end": 472.281
+   "start": 459.783,
+   "end": 466.62
   },
   {
    "t": "Two studies are especially relevant to eyes-off driving.",
-   "start": 472.281,
-   "end": 476.207
+   "start": 466.62,
+   "end": 470.082
   },
   {
    "t": "A study published in the October 2026 issue of Accident Analysis and Prevention investigated an augmented-reality takeover interface.",
-   "start": 476.207,
-   "end": 484.994
+   "start": 470.082,
+   "end": 479.195
   },
   {
    "t": "Rather than simply highlighting hazards, the proposed system analyzes the driver's visual scanning behavior, identifies hazards the driver may not have looked at, and selectively highlights those risks through an AR head-up display.",
-   "start": 484.994,
-   "end": 498.231
+   "start": 479.195,
+   "end": 492.345
   },
   {
    "t": "In simulation, the adaptive interface reduced gaze latency and improved takeover success compared with conditions without the display.",
-   "start": 498.231,
-   "end": 506.432
+   "start": 492.345,
+   "end": 500.495
   },
   {
    "t": "The researchers reported a descriptive takeover success rate of 71.46 percent in the adaptive condition, although not all comparisons were statistically significant.",
-   "start": 506.432,
-   "end": 516.932
+   "start": 500.495,
+   "end": 511.757
   },
   {
    "t": "The implication is a shift from telling the driver that a hazard exists to highlighting the hazard the driver may not have noticed.",
-   "start": 516.932,
-   "end": 525.301
+   "start": 511.757,
+   "end": 519.712
   },
   {
    "t": "That combines exterior perception, driver gaze, risk prediction, and HMI prioritization, and could be particularly valuable during Level 3 transitions.",
-   "start": 525.301,
-   "end": 535.676
+   "start": 519.712,
+   "end": 530.263
   },
   {
    "t": "However, gaze alone cannot establish whether a driver has cognitively understood a hazard, so such systems would require additional validation.",
-   "start": 535.676,
-   "end": 544.576
+   "start": 530.263,
+   "end": 539.138
   },
   {
    "t": "An October 5 study in Traffic Injury Prevention examined Level 3 takeover performance among 50 drivers.",
-   "start": 544.576,
-   "end": 551.788
+   "start": 539.138,
+   "end": 546.325
   },
   {
    "t": "The researchers investigated age, stress, scenario urgency, and secondary activities.",
-   "start": 551.788,
-   "end": 558.676
+   "start": 546.325,
+   "end": 552.45
   },
   {
    "t": "They found that age was a significant factor influencing performance and physiological responses.",
-   "start": 558.676,
-   "end": 564.888
+   "start": 552.45,
+   "end": 558.625
   },
   {
    "t": "Stress was associated with greater variability in performance, even when its direct relationship with the overall takeover score was not statistically significant.",
-   "start": 564.888,
-   "end": 574.313
+   "start": 558.625,
+   "end": 568.325
   },
   {
    "t": "A single fixed takeover strategy may not work equally well for every driver.",
-   "start": 574.313,
-   "end": 579.513
+   "start": 568.325,
+   "end": 573.225
   },
   {
    "t": "Future systems could potentially adapt communication based on driver readiness, attention, current activity, response history, and scenario urgency.",
-   "start": 579.513,
-   "end": 589.4
+   "start": 573.225,
+   "end": 582.875
   },
   {
    "t": "But safety-critical timing cannot be relaxed casually through personalization.",
-   "start": 589.4,
-   "end": 594.563
+   "start": 582.875,
+   "end": 587.712
   },
   {
    "t": "The goal should be to improve human readiness while preserving validated minimum safety requirements.",
-   "start": 594.563,
-   "end": 600.551
+   "start": 587.712,
+   "end": 593.538
   },
   {
    "t": "The brief's research takeaway is that future automated-driving HMI should increasingly understand what the human knows and needs, not merely what the vehicle detects.",
-   "start": 600.551,
-   "end": 610.313
+   "start": 593.538,
+   "end": 603.188
   },
   {
    "t": "The GM and Google announcements also prompt a design concept the brief calls the AI Experience Ownership Map: defining which intelligence capabilities should be owned by the automaker, which can be supplied by partners, and which require shared orchestration.",
-   "start": 610.313,
-   "end": 625.4
+   "start": 603.188,
+   "end": 618.2
   },
   {
    "t": "In the brief's examples, general knowledge may come from a cloud AI partner, personal calendar and preferences from a permissioned personal ecosystem, vehicle diagnostics and climate control from automaker vehicle intelligence and services, navigation recommendations from navigation and AI services, ADAS state and limitations from the automaker's ADAS system, and safety-critical intervention from validated vehicle safety systems.",
-   "start": 625.4,
-   "end": 651.201
+   "start": 618.2,
+   "end": 644.888
   },
   {
    "t": "The important part is not simply assigning ownership.",
-   "start": 651.201,
-   "end": 654.851
+   "start": 644.888,
+   "end": 648.25
   },
   {
    "t": "It is defining how the systems cooperate.",
-   "start": 654.851,
-   "end": 658.113
+   "start": 648.25,
+   "end": 651.1
   },
   {
    "t": "The bottom line is a move from software-defined vehicles toward intelligence-defined experiences: centralized vehicle architecture, vehicle-native assistants, permissioned personal context, and clearer communication of automation status and passenger authority.",
-   "start": 658.113,
-   "end": 672.525
+   "start": 651.1,
+   "end": 666.3
   }
  ]
 }

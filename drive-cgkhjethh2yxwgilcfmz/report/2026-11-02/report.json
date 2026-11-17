@@ -66,14 +66,14 @@
  "audio": {
   "summary": {
    "file": "summary.mp3",
-   "duration_s": 192.84,
-   "label": "3:13",
+   "duration_s": 191.208,
+   "label": "3:11",
    "title": "3-min summary"
   },
   "deep": {
    "file": "deep-dive.mp3",
-   "duration_s": 687.24,
-   "label": "11:27",
+   "duration_s": 687.576,
+   "label": "11:28",
    "title": "10-min deep dive"
   }
  }

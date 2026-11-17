@@ -3,594 +3,594 @@
   {
    "t": "Automotive UX Weekly Brief, for the week of November 3 through November 9, 2026.",
    "start": 0.0,
-   "end": 6.987
+   "end": 6.55
   },
   {
    "t": "This is the three-minute summary.",
-   "start": 6.987,
-   "end": 9.512
+   "start": 6.55,
+   "end": 8.65
   },
   {
    "t": "The executive take this week is that the next competitive advantage is how quickly vehicle intelligence can learn, safely.",
-   "start": 9.512,
-   "end": 16.725
+   "start": 8.65,
+   "end": 15.875
   },
   {
    "t": "On November 3, Baidu introduced Apollo World, an AI simulation system designed to train autonomous vehicles by generating realistic driving environments.",
-   "start": 16.725,
-   "end": 27.212
+   "start": 15.875,
+   "end": 26.275
   },
   {
    "t": "According to Reuters, Baidu says the platform can generate up to 100,000 kilometers of simulated driving per day, including simulated camera and lidar information.",
-   "start": 27.212,
-   "end": 37.9
+   "start": 26.275,
+   "end": 37.25
   },
   {
    "t": "Baidu says Apollo World is already being used to train its Apollo Go robotaxi fleet.",
-   "start": 37.9,
-   "end": 43.763
+   "start": 37.25,
+   "end": 42.65
   },
   {
    "t": "The important limitation is that simulated kilometers are not equivalent to real-world validated kilometers.",
-   "start": 43.763,
-   "end": 50.462
+   "start": 42.65,
+   "end": 49.35
   },
   {
    "t": "Simulation should accelerate development, not replace independent real-world safety validation.",
-   "start": 50.462,
-   "end": 56.575
+   "start": 49.35,
+   "end": 55.575
   },
   {
    "t": "On November 9, the US National Highway Traffic Safety Administration opened a new recall query covering approximately 2,895 Waymo vehicles.",
-   "start": 56.575,
-   "end": 67.1
+   "start": 55.575,
+   "end": 66.225
   },
   {
    "t": "The investigation concerns reports that Waymo vehicles illegally passed stopped school buses displaying flashing red lights.",
-   "start": 67.1,
-   "end": 74.725
+   "start": 66.225,
+   "end": 73.975
   },
   {
    "t": "Waymo had already introduced a software remedy through a December 2025 recall.",
-   "start": 74.725,
-   "end": 80.325
+   "start": 73.975,
+   "end": 79.362
   },
   {
    "t": "NHTSA is now examining whether that remedy adequately addressed the underlying safety issue.",
-   "start": 80.325,
-   "end": 86.088
+   "start": 79.362,
+   "end": 84.862
   },
   {
    "t": "According to Reuters, Austin school officials documented 19 violations, and Atlanta schools recorded another six.",
-   "start": 86.088,
-   "end": 93.963
+   "start": 84.862,
+   "end": 92.787
   },
   {
    "t": "Waymo says it has significantly improved vehicle behavior, has not received citations since March, and will cooperate with the investigation.",
-   "start": 93.963,
-   "end": 102.65
+   "start": 92.787,
+   "end": 101.775
   },
   {
    "t": "The larger point is that over-the-air success should be measured by validated behavioral improvement, not simply deployment completion.",
-   "start": 102.65,
-   "end": 110.463
+   "start": 101.775,
+   "end": 109.562
   },
   {
    "t": "Tesla announced that its Robotaxi service is expanding into San Antonio, Texas, and also expanded its Austin service area.",
-   "start": 110.463,
-   "end": 118.838
+   "start": 109.562,
+   "end": 117.963
   },
   {
    "t": "According to reporting published November 9, San Antonio's initial operating zone covers approximately 275 square miles, based on third-party estimates of Tesla's published service map, and Austin's expanded zone is estimated at approximately 443 square miles.",
-   "start": 118.838,
-   "end": 136.512
+   "start": 117.963,
+   "end": 135.975
   },
   {
    "t": "These figures are estimates based on geographic boundaries, not independently verified measures of service availability or autonomous performance.",
-   "start": 136.512,
-   "end": 145.55
+   "start": 135.975,
+   "end": 144.925
   },
   {
    "t": "A large autonomous operating area is a technical achievement.",
-   "start": 145.55,
-   "end": 149.912
+   "start": 144.925,
+   "end": 148.95
   },
   {
    "t": "A dependable end-to-end journey is the customer product.",
-   "start": 149.912,
-   "end": 153.65
+   "start": 148.95,
+   "end": 152.475
   },
   {
    "t": "On November 5, Lyft announced plans to substantially expand its Waymo robotaxi fleet in Nashville before the end of 2026.",
-   "start": 153.65,
-   "end": 162.162
+   "start": 152.475,
+   "end": 160.738
   },
   {
    "t": "Waymo develops the autonomous-driving technology.",
-   "start": 162.162,
-   "end": 165.863
+   "start": 160.738,
+   "end": 164.075
   },
   {
    "t": "Lyft supports customer access, fleet management, charging, cleaning, and vehicle maintenance.",
-   "start": 165.863,
-   "end": 172.863
+   "start": 164.075,
+   "end": 169.988
   },
   {
    "t": "Lyft's Flexdrive division has been servicing the fleet since June.",
-   "start": 172.863,
-   "end": 177.312
+   "start": 169.988,
+   "end": 173.912
   },
   {
    "t": "The week also underscores that safety cases must remain valid after software changes, including under ISO 26262, ISO/SAE 21434, and ISO/PAS 8800.",
-   "start": 177.312,
-   "end": 192.65
+   "start": 173.912,
+   "end": 187.688
   },
   {
    "t": "That is the week's core news.",
-   "start": 192.65,
-   "end": 195.175
+   "start": 187.688,
+   "end": 189.55
   },
   {
    "t": "The deep dive covers simulation versus real-world validation, post-deployment effectiveness, robotaxi operating boundaries, and the brief's software-defined-vehicle learning loop.",
-   "start": 195.175,
-   "end": 205.425
+   "start": 189.55,
+   "end": 200.113
   }
  ],
  "deep": [
   {
    "t": "Automotive UX Weekly Brief, for the week of November 3 through November 9, 2026.",
    "start": 0.0,
-   "end": 6.987
+   "end": 6.612
   },
   {
    "t": "This is the deep dive.",
-   "start": 6.987,
-   "end": 9.2
+   "start": 6.612,
+   "end": 8.3
   },
   {
    "t": "The executive take is that the next competitive advantage is how quickly vehicle intelligence can learn, safely.",
-   "start": 9.2,
-   "end": 15.938
+   "start": 8.3,
+   "end": 15.125
   },
   {
    "t": "This briefing covers Baidu's Apollo World, Waymo's new NHTSA investigation, Tesla's San Antonio expansion, Lyft and Waymo in Nashville, the standards implications, and the brief's software-defined-vehicle learning loop.",
-   "start": 15.938,
-   "end": 29.837
+   "start": 15.125,
+   "end": 28.75
   },
   {
    "t": "On November 3, Baidu introduced Apollo World, an AI simulation system designed to train autonomous vehicles by generating realistic driving environments.",
-   "start": 29.837,
-   "end": 40.325
+   "start": 28.75,
+   "end": 39.288
   },
   {
    "t": "According to Reuters, Baidu says the platform can generate up to 100,000 kilometers of simulated driving per day.",
-   "start": 40.325,
-   "end": 47.987
+   "start": 39.288,
+   "end": 46.95
   },
   {
    "t": "The system can produce simulated camera and lidar information, allowing autonomous-driving software to encounter virtual traffic conditions and practice perception and navigation.",
-   "start": 47.987,
-   "end": 58.538
+   "start": 46.95,
+   "end": 58.212
   },
   {
    "t": "Baidu says Apollo World is already being used to train its Apollo Go robotaxi fleet.",
-   "start": 58.538,
-   "end": 64.4
+   "start": 58.212,
+   "end": 63.6
   },
   {
    "t": "Historically, autonomous-driving development has depended heavily on real-world driving: vehicles collect data, engineers identify difficult scenarios, software is improved, and the new version is tested.",
-   "start": 64.4,
-   "end": 77.088
+   "start": 63.6,
+   "end": 76.9
   },
   {
    "t": "That process is expensive and time-consuming.",
-   "start": 77.088,
-   "end": 80.475
+   "start": 76.9,
+   "end": 79.975
   },
   {
    "t": "AI-generated environments offer another path: real-world data, generated driving environments, scenario variation, model training, simulation validation, and then real-world verification.",
-   "start": 80.475,
-   "end": 93.375
+   "start": 79.975,
+   "end": 92.925
   },
   {
    "t": "The potential advantage is exposing a driving model to many variations of a difficult scenario without waiting for those situations to occur naturally.",
-   "start": 93.375,
-   "end": 102.3
+   "start": 92.925,
+   "end": 101.787
   },
   {
    "t": "Imagine an autonomous vehicle approaching an intersection where a cyclist is partially hidden behind a parked delivery truck.",
-   "start": 102.3,
-   "end": 109.45
+   "start": 101.787,
+   "end": 108.912
   },
   {
    "t": "In real-world testing, that exact scenario may occur relatively infrequently.",
-   "start": 109.45,
-   "end": 114.912
+   "start": 108.912,
+   "end": 114.025
   },
   {
    "t": "In simulation, engineers could vary cyclist speed and direction, truck size and position, weather and lighting, road geometry, pedestrian activity, and vehicle approach speed.",
-   "start": 114.912,
-   "end": 126.638
+   "start": 114.025,
+   "end": 125.388
   },
   {
    "t": "Instead of evaluating one recorded incident, the system could encounter thousands of variations.",
-   "start": 126.638,
-   "end": 132.95
+   "start": 125.388,
+   "end": 131.6
   },
   {
    "t": "The important limitation is that simulated kilometers are not equivalent to real-world validated kilometers.",
-   "start": 132.95,
-   "end": 139.65
+   "start": 131.6,
+   "end": 138.375
   },
   {
    "t": "A simulation can generate enormous amounts of data, but its usefulness depends on whether the virtual environment accurately represents real-world conditions.",
-   "start": 139.65,
-   "end": 148.713
+   "start": 138.375,
+   "end": 147.825
   },
   {
    "t": "AI-generated training data can also reproduce biases or miss unexpected behaviors.",
-   "start": 148.713,
-   "end": 154.838
+   "start": 147.825,
+   "end": 153.912
   },
   {
    "t": "Therefore, simulation should accelerate development, not replace independent real-world safety validation.",
-   "start": 154.838,
-   "end": 161.7
+   "start": 153.912,
+   "end": 160.7
   },
   {
    "t": "The brief also notes an HMI opportunity: evaluating vehicle behavior, driver awareness, interface communication, and human response across many simulated scenarios, which could help identify cases where the vehicle behaves correctly but communicates poorly.",
-   "start": 161.7,
-   "end": 177.887
+   "start": 160.7,
+   "end": 177.213
   },
   {
    "t": "The strategic takeaway is that the future advantage may not be who collects the most driving miles, but who converts real-world and simulated experience into validated improvements most effectively.",
-   "start": 177.887,
-   "end": 188.975
+   "start": 177.213,
+   "end": 188.625
   },
   {
    "t": "On November 9, the US National Highway Traffic Safety Administration opened a new recall query covering approximately 2,895 Waymo vehicles.",
-   "start": 188.975,
-   "end": 199.5
+   "start": 188.625,
+   "end": 199.6
   },
   {
    "t": "The investigation concerns reports that Waymo vehicles illegally passed stopped school buses displaying flashing red lights.",
-   "start": 199.5,
-   "end": 207.125
+   "start": 199.6,
+   "end": 207.037
   },
   {
    "t": "Waymo had already introduced a software remedy through a December 2025 recall.",
-   "start": 207.125,
-   "end": 212.725
+   "start": 207.037,
+   "end": 212.312
   },
   {
    "t": "NHTSA is now examining whether that remedy adequately addressed the underlying safety issue.",
-   "start": 212.725,
-   "end": 218.488
+   "start": 212.312,
+   "end": 217.812
   },
   {
    "t": "According to Reuters, Austin school officials documented 19 violations, while Atlanta schools recorded another six.",
-   "start": 218.488,
-   "end": 226.387
+   "start": 217.812,
+   "end": 225.9
   },
   {
    "t": "Waymo says it has significantly improved vehicle behavior and has not received citations since March.",
-   "start": 226.387,
-   "end": 232.725
+   "start": 225.9,
+   "end": 232.463
   },
   {
    "t": "The company says it will cooperate with the investigation.",
-   "start": 232.725,
-   "end": 236.5
+   "start": 232.463,
+   "end": 236.025
   },
   {
    "t": "This case exposes a fundamental challenge for software-defined vehicles.",
-   "start": 236.5,
-   "end": 241.438
+   "start": 236.025,
+   "end": 240.675
   },
   {
    "t": "Traditional vehicle safety issues often involve physical components that can be replaced and verified through inspection and testing.",
-   "start": 241.438,
-   "end": 248.912
+   "start": 240.675,
+   "end": 248.325
   },
   {
    "t": "AI driving behavior is different.",
-   "start": 248.912,
-   "end": 251.875
+   "start": 248.325,
+   "end": 250.825
   },
   {
    "t": "A software update may improve the system in one set of conditions but leave related scenarios unresolved.",
-   "start": 251.875,
-   "end": 258.725
+   "start": 250.825,
+   "end": 257.663
   },
   {
    "t": "School-bus behavior is not simply an object-detection problem.",
-   "start": 258.725,
-   "end": 262.962
+   "start": 257.663,
+   "end": 261.725
   },
   {
    "t": "An autonomous vehicle needs to recognize a school bus, its flashing lights, its stop arm, the applicable traffic rules, the road configuration, its own direction of travel, whether a physical median changes the legal requirement, and the correct stopping behavior.",
-   "start": 262.962,
-   "end": 280.165
+   "start": 261.725,
+   "end": 278.051
   },
   {
    "t": "That involves perception, contextual interpretation, legal policy, and vehicle control.",
-   "start": 280.165,
-   "end": 286.615
+   "start": 278.051,
+   "end": 284.389
   },
   {
    "t": "The implication is that over-the-air deployment is not the end of validation.",
-   "start": 286.615,
-   "end": 291.24
+   "start": 284.389,
+   "end": 289.039
   },
   {
    "t": "The required process is to identify unsafe behavior, develop a software remedy, validate related scenarios, deploy the update, monitor fleet behavior, confirm effectiveness, and revalidate if necessary.",
-   "start": 291.24,
-   "end": 304.728
+   "start": 289.039,
+   "end": 302.714
   },
   {
    "t": "The important addition is post-deployment effectiveness monitoring.",
-   "start": 304.728,
-   "end": 308.902
+   "start": 302.714,
+   "end": 306.702
   },
   {
    "t": "A successful software installation does not automatically prove that the safety problem has been solved.",
-   "start": 308.902,
-   "end": 315.115
+   "start": 306.702,
+   "end": 312.839
   },
   {
    "t": "For design teams, safety-related software changes may need more specific customer communication than a generic note about driving performance improvements, for example explaining improved recognition and stopping behavior around school buses with active warning signals.",
-   "start": 315.115,
-   "end": 330.49
+   "start": 312.839,
+   "end": 329.314
   },
   {
    "t": "The wording must be supported by validated engineering evidence.",
-   "start": 330.49,
-   "end": 334.777
+   "start": 329.314,
+   "end": 333.339
   },
   {
    "t": "Over-the-air success should be measured by validated behavioral improvement, not simply deployment completion.",
-   "start": 334.777,
-   "end": 341.415
+   "start": 333.339,
+   "end": 340.002
   },
   {
    "t": "Tesla announced that its Robotaxi service is expanding into San Antonio, Texas.",
-   "start": 341.415,
-   "end": 347.178
+   "start": 340.002,
+   "end": 345.401
   },
   {
    "t": "The company also expanded its Austin service area.",
-   "start": 347.178,
-   "end": 350.99
+   "start": 345.401,
+   "end": 348.914
   },
   {
    "t": "According to reporting published November 9, San Antonio's initial operating zone covers approximately 275 square miles, based on third-party estimates of Tesla's published service map.",
-   "start": 350.99,
-   "end": 363.24
+   "start": 348.914,
+   "end": 361.301
   },
   {
    "t": "Austin's expanded zone is estimated at approximately 443 square miles.",
-   "start": 363.24,
-   "end": 369.365
+   "start": 361.301,
+   "end": 366.976
   },
   {
    "t": "These figures are estimates based on geographic boundaries, not independently verified measures of service availability or autonomous performance.",
-   "start": 369.365,
-   "end": 378.402
+   "start": 366.976,
+   "end": 375.901
   },
   {
    "t": "Robotaxi competition is increasingly being measured through geographic coverage, but geographic area alone is an incomplete measure of service quality.",
-   "start": 378.402,
-   "end": 387.678
+   "start": 375.901,
+   "end": 385.101
   },
   {
    "t": "A large operating area with limited availability, long pickup times, and frequent restrictions may serve customers worse than a smaller area with reliable pickup and consistent service.",
-   "start": 387.678,
-   "end": 398.928
+   "start": 385.101,
+   "end": 396.439
   },
   {
    "t": "The brief would evaluate robotaxi services across geographic coverage, availability, reliability, service quality, and safety within the operating domain.",
-   "start": 398.928,
-   "end": 409.34
+   "start": 396.439,
+   "end": 406.889
   },
   {
    "t": "An autonomous mobility service should clearly communicate where pickup is supported, where drop-off is supported, whether service is available under current conditions, what happens when the destination is outside the supported area, and what alternative transportation options exist.",
-   "start": 409.34,
-   "end": 425.065
+   "start": 406.889,
+   "end": 423.164
   },
   {
    "t": "A large autonomous operating area is a technical achievement.",
-   "start": 425.065,
-   "end": 429.428
+   "start": 423.164,
+   "end": 427.252
   },
   {
    "t": "A dependable end-to-end journey is the customer product.",
-   "start": 429.428,
-   "end": 433.165
+   "start": 427.252,
+   "end": 430.839
   },
   {
    "t": "On November 5, Lyft announced plans to substantially expand its Waymo robotaxi fleet in Nashville before the end of 2026.",
-   "start": 433.165,
-   "end": 441.678
+   "start": 430.839,
+   "end": 439.252
   },
   {
    "t": "The partnership shows how autonomous mobility can be divided among different organizations.",
-   "start": 441.678,
-   "end": 447.465
+   "start": 439.252,
+   "end": 444.851
   },
   {
    "t": "Waymo develops the autonomous-driving technology.",
-   "start": 447.465,
-   "end": 451.165
+   "start": 444.851,
+   "end": 448.214
   },
   {
    "t": "Lyft supports customer access, fleet management, charging, cleaning, and vehicle maintenance.",
-   "start": 451.165,
-   "end": 458.165
+   "start": 448.214,
+   "end": 453.889
   },
   {
    "t": "Lyft's Flexdrive division has been servicing the fleet since June.",
-   "start": 458.165,
-   "end": 462.615
+   "start": 453.889,
+   "end": 457.901
   },
   {
    "t": "Lyft earns revenue from customer rides and from services provided to the autonomous fleet.",
-   "start": 462.615,
-   "end": 468.428
+   "start": 457.901,
+   "end": 463.464
   },
   {
    "t": "The brief's design principle is that technology-provider complexity should remain invisible to the customer unless it materially affects safety or responsibility.",
-   "start": 468.428,
-   "end": 477.64
+   "start": 463.464,
+   "end": 473.214
   },
   {
    "t": "The Baidu announcement is especially interesting when compared with other development strategies.",
-   "start": 477.64,
-   "end": 483.265
+   "start": 473.214,
+   "end": 478.726
   },
   {
    "t": "Tesla emphasizes large-scale real-world video and neural-network training.",
-   "start": 483.265,
-   "end": 488.303
+   "start": 478.726,
+   "end": 483.327
   },
   {
    "t": "Waymo combines extensive real-world operation, simulation, and structured safety validation.",
-   "start": 488.303,
-   "end": 495.14
+   "start": 483.327,
+   "end": 489.851
   },
   {
    "t": "Baidu is now emphasizing AI-generated virtual driving environments.",
-   "start": 495.14,
-   "end": 500.365
+   "start": 489.851,
+   "end": 494.726
   },
   {
    "t": "These approaches are not mutually exclusive.",
-   "start": 500.365,
-   "end": 503.678
+   "start": 494.726,
+   "end": 497.689
   },
   {
    "t": "The likely long-term direction is a combination of real-world driving data, synthetic scenario generation, closed-loop simulation, hardware-in-the-loop testing, and real-world fleet validation.",
-   "start": 503.678,
-   "end": 515.59
+   "start": 497.689,
+   "end": 509.577
   },
   {
    "t": "Vehicle capability architecture determines what improvements are physically possible.",
-   "start": 515.59,
-   "end": 520.778
+   "start": 509.577,
+   "end": 514.839
   },
   {
    "t": "Software development architecture determines how efficiently those improvements can be created and validated.",
-   "start": 520.778,
-   "end": 528.428
+   "start": 514.839,
+   "end": 522.134
   },
   {
    "t": "There was not a comparably significant new OEM assistant launch in the verified November 3 through 9 coverage.",
-   "start": 528.428,
-   "end": 535.352
+   "start": 522.134,
+   "end": 528.659
   },
   {
    "t": "The brief still tracks a longer shift, from assistants that answer questions toward agents that understand intent and perform authorized vehicle actions.",
-   "start": 535.352,
-   "end": 544.378
+   "start": 528.659,
+   "end": 537.609
   },
   {
    "t": "The most important element is the authority check.",
-   "start": 544.378,
-   "end": 547.727
+   "start": 537.609,
+   "end": 540.759
   },
   {
    "t": "An assistant may understand that a customer wants to prepare the vehicle.",
-   "start": 547.727,
-   "end": 552.077
+   "start": 540.759,
+   "end": 545.009
   },
   {
    "t": "That does not mean it should automatically unlock doors, activate high-power accessories, or change safety-related settings.",
-   "start": 552.077,
-   "end": 560.14
+   "start": 545.009,
+   "end": 552.659
   },
   {
    "t": "A practical principle is to separate informational actions, low-risk reversible actions that may execute under established permissions, and safety-sensitive or consequential actions that require explicit confirmation or a separately validated control pathway.",
-   "start": 560.14,
-   "end": 575.253
+   "start": 552.659,
+   "end": 568.859
   },
   {
    "t": "The intelligence of an automotive assistant should be measured by successful, appropriate actions, not merely conversational fluency.",
-   "start": 575.253,
-   "end": 583.315
+   "start": 568.859,
+   "end": 577.159
   },
   {
    "t": "The new Waymo investigation also reinforces lifecycle safety governance.",
-   "start": 583.315,
-   "end": 588.653
+   "start": 577.159,
+   "end": 582.297
   },
   {
    "t": "Three existing frameworks remain particularly relevant and should not be treated as interchangeable.",
-   "start": 588.653,
-   "end": 594.615
+   "start": 582.297,
+   "end": 588.572
   },
   {
    "t": "ISO 26262 addresses hazards associated with malfunctioning electrical and electronic systems.",
-   "start": 594.615,
-   "end": 602.915
+   "start": 588.572,
+   "end": 596.721
   },
   {
    "t": "ISO/SAE 21434 addresses cybersecurity risks throughout vehicle development and operation.",
-   "start": 602.915,
-   "end": 611.54
+   "start": 596.721,
+   "end": 605.172
   },
   {
    "t": "ISO/PAS 8800 addresses AI-related safety considerations in road vehicles, including challenges associated with machine-learning systems.",
-   "start": 611.54,
-   "end": 621.99
+   "start": 605.172,
+   "end": 615.396
   },
   {
    "t": "An AI-driven vehicle feature may be technically functional, cybersecure, and regulatorily permitted, and still confusing to customers.",
-   "start": 621.99,
-   "end": 630.778
+   "start": 615.396,
+   "end": 623.996
   },
   {
    "t": "After an ADAS over-the-air update, a useful metric is behavioral comprehension: whether customers correctly understand what changed, what the system can do, what remains their responsibility, and when the system may request intervention.",
-   "start": 630.778,
-   "end": 644.727
+   "start": 623.996,
+   "end": 639.021
   },
   {
    "t": "The brief's design concept is the software-defined-vehicle learning loop: hardware capability, software capability, learning capability, validation capability, deployment capability, and customer value, feeding back into the next improvement.",
-   "start": 644.727,
-   "end": 659.84
+   "start": 639.021,
+   "end": 654.471
   },
   {
    "t": "A traditional roadmap often focuses on the first two layers.",
-   "start": 659.84,
-   "end": 664.227
+   "start": 654.471,
+   "end": 658.584
   },
   {
    "t": "Baidu's Apollo World and Waymo's regulatory investigation show why the middle layers, learning and validation, are equally important.",
-   "start": 664.227,
-   "end": 672.852
+   "start": 658.584,
+   "end": 666.871
   },
   {
    "t": "The bottom line is that software-defined-vehicle maturity is becoming a learning-and-validation competition.",
-   "start": 672.852,
-   "end": 679.202
+   "start": 666.871,
+   "end": 673.221
   },
   {
    "t": "Baidu is investing in AI-generated driving environments to accelerate development.",
-   "start": 679.202,
-   "end": 684.815
+   "start": 673.221,
+   "end": 678.759
   },
   {
    "t": "Waymo's regulatory investigation demonstrates why improving software is not enough; the effectiveness of safety-related changes must also be demonstrated.",
-   "start": 684.815,
-   "end": 694.352
+   "start": 678.759,
+   "end": 688.521
   },
   {
    "t": "Tesla's geographic expansion shows the continuing push to scale autonomous mobility into more cities.",
-   "start": 694.352,
-   "end": 701.202
+   "start": 688.521,
+   "end": 694.996
   },
   {
    "t": "Lyft's Nashville expansion demonstrates the importance of operational infrastructure and service integration as robotaxi fleets grow.",
-   "start": 701.202,
-   "end": 708.403
+   "start": 694.996,
+   "end": 703.259
   }
  ]
 }
