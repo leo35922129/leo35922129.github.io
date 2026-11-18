@@ -233,3 +233,8 @@
   .ctl-grid .ctl-step .v{min-width:66px}
   .ctl-grid .ctl-mini{padding:10px 14px}
 }
+@media (max-width:374px){
+  .ctl-grid .ctl-btn{padding:16px 12px}
+  .ctl-grid .ctl-btn .nm{font-size:19px;letter-spacing:-.02em}
+  .ctl-status .ctl-refresh .ctl-refresh-btn,.ctl-status .ctl-refresh .ctl-wake-refresh{font-size:14px;padding:8px 9px}
+}
