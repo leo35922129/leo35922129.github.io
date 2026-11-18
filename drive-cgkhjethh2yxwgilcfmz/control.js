@@ -77,9 +77,14 @@ function setControlChrome(){
   if (title) title.textContent = CONTROL.view === 'home' ? 'Control' : 'Software';
 }
 
+function seedControlState(){
+  if (CONTROL.st) return;
+  const {status} = controlMeta();
+  CONTROL.st = Object.assign({}, status);
+  CONTROL.stSource = CONTROL.stSource || 'published';
+}
 function renderControl(){
-  CONTROL.st = null;
-  initControlState();
+  seedControlState();
   setControlChrome();
   const main = document.getElementById('main');
   if (!main) return;
@@ -93,15 +98,15 @@ function renderControl(){
 
 function paintControlHome(main){
   const st = CONTROL.st || {};
-  const driving = st.gear && st.gear !== 'P' && st.gear !== 'N';
-  const parked = st.gear === 'P';
-  const driveLabel = driving ? `Driving · ${dash(st.speed_mph)} mph` : (parked ? 'Parked' : (st.gear ? ctlEsc(st.gear) : '—'));
-  const clim = st.climate_on == null ? '—' : (st.climate_on ? `On · ${dash(st.set_temp_f)}°` : 'Off');
+  const fresh = ctlIsFresh(st);
+  const driving = fresh && st.gear && st.gear !== 'P' && st.gear !== 'N';
+  const driveLabel = driving ? `Driving · ${dash(st.speed_mph)} mph` : 'Parked';
+  const clim = ctlClimateLabel(st, fresh);
   const charge = st.plugged_in == null && !st.charging_state ? '—' : (st.plugged_in ? dash(st.charging_state || 'Plugged in') : 'Unplugged');
-  const live = st.last_seen_et ? `Live ${ctlEsc(st.last_seen_et)}` : 'Live —';
+  const live = ctlLiveLabel(st, fresh);
   const srcParts = [];
-  if (st.last_seen_et) srcParts.push('Live ' + st.last_seen_et);
-  if (st.tessie_et) srcParts.push('Tessie ' + st.tessie_et);
+  if (st.last_seen_et) srcParts.push((fresh ? 'Live ' : 'Last seen ') + st.last_seen_et);
+  if (st.tessie_et && st.tessie_et !== st.last_seen_et) srcParts.push('Tessie ' + st.tessie_et);
   const srcLine = srcParts.length ? srcParts.join(' · ') : 'Status unavailable';
   const cabin = (st.cabin_f == null && st.outside_f == null) ? '—' : `${dash(st.cabin_f)}° / ${dash(st.outside_f)}°`;
   const doors = st.locked == null ? '—' : (st.locked ? 'Locked' : 'Unlocked');
@@ -111,7 +116,7 @@ function paintControlHome(main){
     <section class="ctl-status">
       <div class="ctl-status-top">
         <span class="ctl-pill${driving ? ' drive' : ''}">${driveLabel}</span>
-        <span class="ctl-live"><i></i>${live}</span>
+        <span class="ctl-live${fresh ? '' : ' stale'}"><i></i>${live}</span>
       </div>
       <div class="ctl-hero">
         <div><div class="n">${st.battery_pct == null ? '—' : st.battery_pct}${st.battery_pct == null ? '' : '<small>%</small>'}</div><div class="k">Battery</div></div>
@@ -123,7 +128,7 @@ function paintControlHome(main){
           <span class="k">Doors</span>
           <span class="v">${doors}</span>
         </div>
-        <div class="ctl-chip${st.climate_on ? ' on' : ''}">
+        <div class="ctl-chip${fresh && st.climate_on ? ' on' : ''}">
           <span class="ic">${ICONS.climate}</span>
           <span class="k">Climate</span>
           <span class="v">${clim}</span>
@@ -150,6 +155,7 @@ function paintControlHome(main){
         </button>
       </div>
       <p class="ctl-src">${ctlEsc(srcLine)}</p>
+      ${ctlRefreshRow()}
     </section>
 
     <div class="ctl-sec">Quick controls</div>
@@ -190,6 +196,10 @@ function paintControlHome(main){
   paintEmbeddedAutos();
   if (CONTROL.waking) paintWake();
   if (CONTROL.confirm) paintConfirm();
+  if (typeof S !== 'undefined' && S.mode === 'control' && ctlReady() && !CONTROL._statusOnce && !CONTROL.busy && !CONTROL.refreshing) {
+    CONTROL._statusOnce = true;
+    void refreshStatus({wake: false, fromUser: false});
+  }
   if (!ctlReady() && CONTROL.enablePrompt) {
     const pinp = document.getElementById('ctlenablepass');
     if (pinp) {
@@ -212,8 +222,9 @@ function rbtn(id, name, st, icon){
   return `<button type="button" class="ctl-rbtn" data-act="${id}"${ctlDis()}><span class="ic">${icon}</span><span><div class="nm">${name}</div><div class="st">${ctlEsc(st)}</div></span></button>`;
 }
 function wideClimate(st){
-  const onoff = st.climate_on == null ? '—' : (st.climate_on ? 'On' : 'Off');
-  return `<div class="ctl-btn wide ${st.climate_on?'on':''}">
+  const fresh = ctlIsFresh(st);
+  const onoff = st.climate_on == null ? '—' : ((fresh ? '' : 'Last known · ') + (st.climate_on ? 'On' : 'Off'));
+  return `<div class="ctl-btn wide ${fresh && st.climate_on?'on':''}">
     <span class="ic">${ICONS.climate}</span>
     <div class="grow"><div class="nm">Climate</div><div class="st">${onoff} · cabin ${st.cabin_f == null ? '—' : st.cabin_f + '°F'}</div></div>
     <div class="ctl-actions">
@@ -430,6 +441,14 @@ function handleControlClick(e){
     void submitEnable();
     return false;
   }
+  if (act === 'refresh-status') {
+    void refreshStatus({wake: false, fromUser: true});
+    return false;
+  }
+  if (act === 'wake-refresh') {
+    void refreshStatus({wake: true, fromUser: true});
+    return false;
+  }
   if (act === 'open-software') { CONTROL.view = 'software'; CONTROL.detail = null; renderControl(); return false; }
   if (act === 'open-version') { CONTROL.view = 'software-detail'; CONTROL.detail = actEl.dataset.ver; renderControl(); return false; }
   if (act === 'goto-auto') {
@@ -499,6 +518,8 @@ async function submitEnable(){
       CONTROL.enablePrompt = false;
       CONTROL.enableError = '';
       setCtlResult(true, 'Remote controls enabled on this device.');
+      CONTROL._statusOnce = true;
+      void refreshStatus({wake: false, fromUser: false});
     } else {
       CONTROL._pass = '';
       CONTROL.enableError = 'That passcode didn’t work. Try again.';
@@ -534,25 +555,183 @@ async function mintControlSession(){
   return false;
 }
 
-function applyCommandState(snap){
-  if (!snap || !snap.present) return;
+const CTL_FRESH_MS = 3 * 60 * 1000;
+function ctlTs(st){
+  if (!st) return null;
+  const t = st.last_seen_ts;
+  if (t == null || t === '') return null;
+  const n = Number(t);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return n > 1e12 ? Math.round(n / 1000) : Math.round(n);
+}
+function ctlIsFresh(st){
+  const t = ctlTs(st);
+  if (!t) return false;
+  const age = Date.now() - t * 1000;
+  return age >= 0 && age <= CTL_FRESH_MS;
+}
+function ctlClock(st){
+  const et = st && st.last_seen_et;
+  if (et) return String(et).replace(/\s*ET\s*$/i, '').trim();
+  const t = ctlTs(st);
+  if (!t) return '—';
+  return new Date(t * 1000).toLocaleTimeString('en-US', {timeZone:'America/Detroit', hour:'numeric', minute:'2-digit'});
+}
+function ctlSleepWord(st){
+  const v = String((st && st.vehicle_state) || '').toLowerCase();
+  if (v === 'asleep' || v === 'offline' || v === 'low_power' || v === 'standby') return 'asleep';
+  return '';
+}
+function ctlLiveLabel(st, fresh){
+  const clock = ctlClock(st);
+  if (fresh) return 'Live ' + clock + ' ET';
+  const sleep = ctlSleepWord(st);
+  return sleep ? ('Last seen ' + clock + ' · ' + sleep) : ('Last seen ' + clock);
+}
+function ctlClimateLabel(st, fresh){
+  if (st.climate_on == null) return '—';
+  const val = st.climate_on ? ('On · ' + dash(st.set_temp_f) + '°') : 'Off';
+  return fresh ? val : ('Last known · ' + val);
+}
+function ctlRefreshRow(){
+  const busy = CONTROL.busy || CONTROL.refreshing;
+  const updating = CONTROL.refreshing && !CONTROL.waking;
+  return `<div class="ctl-refresh">
+    <button type="button" class="ctl-refresh-btn" data-act="refresh-status"${busy?' disabled':''}>${updating ? 'Updating…' : 'Refresh'}</button>
+    <button type="button" class="ctl-wake-refresh" data-act="wake-refresh"${busy?' disabled':''}>Wake &amp; refresh</button>
+  </div>`;
+}
+function applyLiveState(snap, source){
+  if (!snap) return false;
+  const body = (snap.state && typeof snap.state === 'object' && (snap.state.battery != null || snap.state.battery_pct != null || snap.state.climate_on != null || snap.state.present || snap.state.last_seen_ts)) ? snap.state : snap;
+  if (body.present === false && body.battery_pct == null && body.battery == null && body.climate_on == null && body.last_seen_ts == null) return false;
   const st = CONTROL.st || (CONTROL.st = {});
-  if (snap.battery != null) st.battery_pct = snap.battery;
-  if (snap.range != null) st.rated_range_mi = Math.round(Number(snap.range));
-  if (snap.locked != null) st.locked = snap.locked;
-  if (snap.climate_on != null) st.climate_on = snap.climate_on;
-  if (snap.set_temp_f != null) st.set_temp_f = snap.set_temp_f;
-  if (snap.inside_f != null) st.cabin_f = snap.inside_f;
-  if (snap.outside_f != null) st.outside_f = snap.outside_f;
-  if (snap.charging != null) {
-    st.charging_state = snap.charging;
-    const ch = String(snap.charging).toLowerCase();
-    st.plugged_in = ch !== 'disconnected' && ch !== 'unplugged' && ch !== '';
+  const pick = (a, b) => (a != null ? a : b);
+  if (pick(body.battery_pct, body.battery) != null) st.battery_pct = Math.round(Number(pick(body.battery_pct, body.battery)));
+  if (pick(body.rated_range_mi, body.range) != null) st.rated_range_mi = Math.round(Number(pick(body.rated_range_mi, body.range)));
+  if (body.locked != null) st.locked = body.locked;
+  if (body.climate_on != null) st.climate_on = body.climate_on;
+  if (body.set_temp_f != null) st.set_temp_f = body.set_temp_f;
+  if (pick(body.cabin_f, body.inside_f) != null) st.cabin_f = pick(body.cabin_f, body.inside_f);
+  if (body.outside_f != null) st.outside_f = body.outside_f;
+  const charging = pick(body.charging_state, body.charging);
+  if (charging != null) {
+    st.charging_state = charging;
+    const ch = String(charging).toLowerCase();
+    st.plugged_in = body.plugged_in != null ? body.plugged_in : (ch !== 'disconnected' && ch !== 'unplugged' && ch !== '');
   }
-  if (snap.charge_limit != null) st.charge_limit_pct = snap.charge_limit;
-  if (snap.sentry != null) st.sentry = snap.sentry;
-  if (snap.state != null) st.vehicle_state = snap.state;
-  st.last_seen_et = new Date().toLocaleTimeString('en-US', {timeZone:'America/Detroit', hour:'numeric', minute:'2-digit'}) + ' ET';
+  if (body.plugged_in != null) st.plugged_in = body.plugged_in;
+  if (pick(body.charge_limit_pct, body.charge_limit) != null) st.charge_limit_pct = pick(body.charge_limit_pct, body.charge_limit);
+  if (body.sentry != null) st.sentry = body.sentry;
+  if (pick(body.vehicle_state, body.state) != null && typeof pick(body.vehicle_state, body.state) !== 'object') st.vehicle_state = pick(body.vehicle_state, body.state);
+  if (body.gear != null) st.gear = body.gear;
+  if (body.speed_mph != null) st.speed_mph = body.speed_mph;
+  if (body.seat_heater_left != null) st.seat_heater_left = body.seat_heater_left;
+  if (body.seat_heater_right != null) st.seat_heater_right = body.seat_heater_right;
+  if (body.steering_heat != null) st.steering_heat = body.steering_heat;
+  if (body.charge_port_open != null) st.charge_port_open = body.charge_port_open;
+  const ts = pick(body.last_seen_ts, snap.last_seen_ts);
+  if (ts != null) st.last_seen_ts = ctlTs({last_seen_ts: ts}) || st.last_seen_ts;
+  const et = pick(body.last_seen_et, snap.last_seen_et);
+  if (et) st.last_seen_et = et;
+  else if (st.last_seen_ts) st.last_seen_et = ctlClock(st) + ' ET';
+  if (snap.tessie_et) st.tessie_et = snap.tessie_et;
+  if (body.tessie_et) st.tessie_et = body.tessie_et;
+  if (snap.tessie_ts) st.tessie_ts = snap.tessie_ts;
+  if (source) CONTROL.stSource = source;
+  else if (body.source) CONTROL.stSource = body.source;
+  else if (snap.source) CONTROL.stSource = snap.source;
+  return true;
+}
+function applyCommandState(snap){ return applyLiveState(snap, (snap && snap.source) || 'vehicle_data'); }
+function newerThanCurrent(snap){
+  const incoming = ctlTs(snap && snap.state && typeof snap.state === 'object' ? Object.assign({}, snap, snap.state) : snap);
+  const cur = ctlTs(CONTROL.st);
+  if (!incoming) return false;
+  if (!cur) return true;
+  return incoming >= cur;
+}
+function commandDisagrees(payload, st){
+  if (!payload || !st) return '';
+  const cmd = payload.cmd;
+  if (cmd === 'climate-on' && st.climate_on === false) return 'Sent, but the truck reports climate is still off.';
+  if (cmd === 'climate-off' && st.climate_on === true) return 'Sent, but the truck reports climate is still on.';
+  if (cmd === 'climate-set-temp' && payload.temp_f != null && st.set_temp_f != null && Number(st.set_temp_f) !== Number(payload.temp_f)) {
+    return 'Sent, but the truck reports ' + st.set_temp_f + '°, not ' + payload.temp_f + '°.';
+  }
+  if (cmd === 'lock' && st.locked === false) return 'Sent, but the truck reports the doors are still unlocked.';
+  if ((cmd === 'unlock' || cmd === 'door-unlock') && st.locked === true) return 'Sent, but the truck reports the doors are still locked.';
+  if (cmd === 'sentry-on' && st.sentry === false) return 'Sent, but the truck reports Sentry is still off.';
+  if (cmd === 'sentry-off' && st.sentry === true) return 'Sent, but the truck reports Sentry is still on.';
+  return '';
+}
+async function ctlApiGet(path, token){
+  const headers = {};
+  if (token) headers.Authorization = 'Bearer ' + token;
+  const r = await fetch(CTL_API + path, {method: 'GET', headers, cache: 'no-store'});
+  const data = await r.json().catch(() => ({}));
+  return {status: r.status, data};
+}
+async function refreshStatus(opts){
+  const wake = !!(opts && opts.wake);
+  const fromUser = !!(opts && opts.fromUser);
+  if (wake) {
+    if (CONTROL.busy) return;
+    if (!ctlReady()) { CONTROL.enablePrompt = true; renderControl(); return; }
+    CONTROL.busy = true;
+    CONTROL.result = {ok: true, text: 'Sent — confirming…'};
+    showWakeThen('Waking truck…');
+    try {
+      const res = await sendCommand({cmd: 'wake'});
+      const st = CONTROL.st || {};
+      if (res.ok && res.applied) setCtlResult(true, 'Confirmed');
+      else if (res.ok) setCtlResult(true, 'Sent, but the current state could not be confirmed.');
+      else setCtlResult(false, res.error || 'Wake failed');
+    } catch (e) {
+      setCtlResult(false, 'Could not reach the command service.');
+    } finally {
+      CONTROL.busy = false;
+      CONTROL.waking = false;
+      clearWake();
+      renderControl();
+    }
+    return;
+  }
+  if (CONTROL.busy || CONTROL.refreshing) return;
+  if (!ctlReady()) { if (fromUser) { CONTROL.enablePrompt = true; renderControl(); } return; }
+  CONTROL.refreshing = true;
+  if (fromUser) { CONTROL.result = null; }
+  renderControl();
+  try {
+    let token = ctlToken();
+    let res = await ctlApiGet('/status', token);
+    if (res.status === 401 && CONTROL._pass) {
+      await mintControlSession();
+      token = ctlToken();
+      if (token) res = await ctlApiGet('/status', token);
+    }
+    if (res.status === 401) {
+      clearCtlToken();
+      CONTROL._pass = '';
+      CONTROL.enablePrompt = true;
+      setCtlResult(false, 'Session expired. Enable remote controls to continue.');
+      return;
+    }
+    const d = res.data || {};
+    if (d && (d.state || d.present || d.last_seen_ts)) {
+      if (newerThanCurrent(d) || !ctlTs(CONTROL.st) || fromUser) {
+        applyLiveState(d, d.source || 'cache');
+      }
+      if (fromUser) setCtlResult(true, 'Updated from current cache, without waking the truck.');
+    } else if (fromUser) {
+      setCtlResult(false, 'Could not read current status.');
+    }
+  } catch (e) {
+    if (fromUser) setCtlResult(false, 'Could not reach the command service.');
+  } finally {
+    CONTROL.refreshing = false;
+    renderControl();
+  }
 }
 
 function setCtlResult(ok, text){
@@ -638,9 +817,11 @@ async function sendCommand(payload){
   if (res.status === 429) return {ok: false, error: 'Too many requests. Try again in a minute.'};
   if (res.status === 503) return {ok: false, error: 'Remote control is temporarily disabled.'};
   if (res.status === 403) return {ok: false, error: d.error === 'confirm required' || d.error === 'confirm mismatch' ? 'Confirm word did not match.' : (d.error === 'pin required' || d.error === 'auth failed' ? 'PIN was not accepted.' : (d.error === 'risky disabled' ? 'Risky commands are locked. Ask me to reset them.' : (d.error || 'Command not allowed')))};
-  if (d.state) applyCommandState(d.state);
-  if (d.ok) return {ok: true, detail: d.detail, data: d};
-  return {ok: false, error: d.error || d.detail || 'Command failed'};
+  let applied = false;
+  if (d.state) applied = !!applyCommandState(d.state);
+  const disagree = applied ? commandDisagrees(payload, CONTROL.st) : '';
+  if (d.ok) return {ok: true, detail: d.detail, data: d, applied, disagree};
+  return {ok: false, error: d.error || d.detail || 'Command failed', applied, disagree};
 }
 
 async function runSafeCommand(act){
@@ -648,11 +829,15 @@ async function runSafeCommand(act){
   const payload = buildSafePayload(act);
   if (payload.error) { setCtlResult(false, payload.error); renderControl(); return; }
   CONTROL.busy = true;
-  CONTROL.result = null;
+  CONTROL.result = {ok: true, text: 'Sent — confirming…'};
   showWakeThen('Waking truck…');
+  renderControl();
   try {
     const res = await sendCommand(payload);
-    setCtlResult(res.ok, res.ok ? 'Done' : (res.error || 'Command failed'));
+    if (!res.ok) setCtlResult(false, res.error || 'Command failed');
+    else if (res.disagree) setCtlResult(false, res.disagree);
+    else if (res.applied) setCtlResult(true, 'Confirmed');
+    else setCtlResult(true, 'Sent, but the current state could not be confirmed.');
   } catch (e) {
     setCtlResult(false, 'Could not reach the command service.');
   } finally {
@@ -675,11 +860,15 @@ async function submitRiskyCommand(){
   if (pinEl) pinEl.value = '';
   closeConfirm();
   CONTROL.busy = true;
-  CONTROL.result = null;
+  CONTROL.result = {ok: true, text: 'Sent — confirming…'};
   showWakeThen('Waking truck…');
+  renderControl();
   try {
     const res = await sendCommand(payload);
-    setCtlResult(res.ok, res.ok ? 'Done' : (res.error || 'Command failed'));
+    if (!res.ok) setCtlResult(false, res.error || 'Command failed');
+    else if (res.disagree) setCtlResult(false, res.disagree);
+    else if (res.applied) setCtlResult(true, 'Confirmed');
+    else setCtlResult(true, 'Sent, but the current state could not be confirmed.');
   } catch (e) {
     setCtlResult(false, 'Could not reach the command service.');
   } finally {
@@ -709,6 +898,12 @@ function hookControl(){
   document.addEventListener('click', e => {
     if (!(typeof S !== 'undefined' && S.mode === 'control')) return;
     if (e.target.closest('[data-act], .ctl-overlay, .ctl-sheet')) handleControlClick(e);
+  }, true);
+  document.addEventListener('click', e => {
+    const tab = e.target.closest && e.target.closest('#tabbar button[data-mode]');
+    if (!tab) return;
+    const mode = tab.getAttribute('data-mode');
+    if (mode !== 'control') CONTROL._statusOnce = false;
   }, true);
   // wrap setModeClass / render if present
   const _set = window.setModeClass;

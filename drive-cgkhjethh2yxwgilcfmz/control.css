@@ -178,3 +178,10 @@
 .ctl-enable .go:disabled,.ctl-enable .cancel:disabled{opacity:.38}
 .ctl-enable-btn{width:100%;min-height:48px;border:0;border-radius:12px;background:#e8eaed;color:#111;font-weight:700;font-size:17px}
 .ctl-enable-err{margin:0 0 12px;color:var(--risk);font-size:15px;line-height:1.4}
+
+.ctl-live.stale{color:var(--amb);font-weight:600}
+.ctl-live.stale i{background:var(--amb);box-shadow:0 0 0 3px rgba(240,176,64,.18)}
+.ctl-refresh{display:flex;align-items:center;gap:8px;margin:8px 2px 0;flex-wrap:wrap}
+.ctl-refresh-btn{border:0;background:#e8eaed;color:#111;border-radius:12px;padding:8px 12px;font-weight:700;font-size:15px;min-height:40px}
+.ctl-refresh-btn:disabled,.ctl-wake-refresh:disabled{opacity:.38}
+.ctl-wake-refresh{border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:12px;padding:8px 12px;font-weight:600;font-size:15px;min-height:40px}
