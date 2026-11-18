@@ -30,9 +30,11 @@
   border-radius:999px;padding:4px 11px;font-size:15px;font-weight:600}
 /* v76: state badge at the right end, bigger; timestamp takes the left and truncates instead of colliding */
 /* v76: state badge on the battery/range row, right end, centered on the 44px numbers */
-.ctl-status .ctl-hero{grid-template-columns:auto auto 1fr;column-gap:0}
-.ctl-status .ctl-hero > div:first-child{margin-right:32px}
-.ctl-status .ctl-hero-state{padding-left:8px}
+/* v76: battery | flexible gap (48px, shrinks to fit, min 20px) | range | Parked at the right end */
+.ctl-status .ctl-hero{display:flex;align-items:flex-start;gap:0}
+.ctl-status .ctl-hero > div{flex:none}
+.ctl-status .ctl-hero > .ctl-hero-gap{flex:0 1 48px;min-width:20px}
+.ctl-status .ctl-hero-state{margin-left:auto;padding-left:8px}
 .ctl-status .ctl-hero-state{justify-self:end;align-self:start;height:44px;display:flex;align-items:center}
 .ctl-status .ctl-hero-state .ctl-pill{font-size:18px;padding:7px 16px;line-height:1.2;white-space:nowrap}
 /* v76: Live / Last seen sits at the right end of the Refresh row, one line */
@@ -207,7 +209,6 @@
 
 /* v76: narrow phones - keep battery/range spacing, badge and the longest "Seen 12:48 PM" on one line */
 @media (max-width:374px){
-  .ctl-status .ctl-hero > div:first-child{margin-right:28px}
   .ctl-status .ctl-hero-state .ctl-pill{padding:7px 12px}
   .ctl-status .ctl-refresh .ctl-live{font-size:13px}
 }
