@@ -151,7 +151,7 @@ function paintControlHome(main){
         <button type="button" class="ctl-chip ctl-chip-link" data-act="open-software" aria-label="Open software ${ctlEsc(String(swVer))}">
           <span class="ic">${ICONS.software}</span>
           <span class="k">Software</span>
-          <span class="v">${ctlEsc(String(swVer)).replace('.', '.<wbr>')}</span>
+          <span class="v" title="${ctlEsc(String(swVer))}">${ctlEsc(String(swVer).split('.').slice(0, 3).join('.'))}</span>
           <span class="ctl-chev" aria-hidden="true">${ICONS.chev}</span>
         </button>
       </div>
