@@ -1,5 +1,5 @@
-const C = 'ht-shell-v68';
-const SHELL = ['./', 'index.html', 'style.css?v=68', 'app.js?v=68', 'report.js?v=68', 'control.css?v=68', 'control.js?v=68', 'maplibre-gl.js', 'maplibre-gl.css', 'manifest.webmanifest', 'icon-192.png'];
+const C = 'ht-shell-v69';
+const SHELL = ['./', 'index.html', 'style.css?v=69', 'app.js?v=69', 'report.js?v=69', 'control.css?v=69', 'control.js?v=69', 'maplibre-gl.js', 'maplibre-gl.css', 'manifest.webmanifest', 'icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(C).then(c => c.addAll(SHELL)));
   self.skipWaiting();
@@ -27,4 +27,31 @@ self.addEventListener('fetch', e => {
       return r;
     }).catch(() => caches.match(e.request))
   );
+});
+
+// ---- Web Push: alerts and ask-first Approve / Skip prompts from the droplet automation engine ----
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (err) { d = { title: 'Happy Truck', body: e.data ? e.data.text() : '' }; }
+  const opts = {
+    body: d.body || '', tag: d.tag || 'ht', icon: 'icon-192.png', badge: 'icon-192.png',
+    data: { approval: d.approval || null, url: d.url || null }, renotify: true,
+    requireInteraction: !!d.approval
+  };
+  if (d.approval) opts.actions = [{ action: 'approve', title: 'Approve' }, { action: 'skip', title: 'Skip' }];
+  e.waitUntil(self.registration.showNotification(d.title || 'Happy Truck', opts));
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const d = e.notification.data || {};
+  // Both actions only open the approval sheet; approving still needs the device token and the confirm word (+ PIN when live).
+  const hash = d.approval ? ('#approve=' + encodeURIComponent(d.approval) + (e.action === 'skip' ? '&act=skip' : '')) : '#alerts';
+  const url = self.registration.scope + hash;
+  e.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const w of wins) {
+      if (w.url.startsWith(self.registration.scope)) { await w.focus(); w.postMessage({ type: 'ht-open', hash }); return; }
+    }
+    await self.clients.openWindow(url);
+  })());
 });

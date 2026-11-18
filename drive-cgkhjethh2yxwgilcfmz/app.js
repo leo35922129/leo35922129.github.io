@@ -197,12 +197,12 @@ function setModeClass() {
   const head = $('#autohead');
   if (head) {
     head.classList.toggle('hidden', !auto);
-    const editing = auto && AUTO.editing != null;
+    const editing = auto && (AUTO.editing != null || AUTO.view !== 'list');
     head.classList.toggle('is-edit', !!editing);
     const back = $('#autoback');
     if (back) back.classList.toggle('hidden', !editing);
     const title = $('#autotitle');
-    if (title) title.textContent = editing ? 'Edit automation' : 'Automations';
+    if (title) title.textContent = auto ? autoTitle() : 'Automations';
   }
   if (typeof setControlChrome === 'function') setControlChrome();
   document.querySelectorAll('#tabbar button').forEach(b => {
@@ -1216,7 +1216,7 @@ async function viewDay() {
 }
 
 
-/* ---- Automations (local mock; COO wiring after Lei approves) ---- */
+/* ---- Automations: state and runs live on the droplet (/control/auto), behind the device token ---- */
 const AUTO_CATS = ["Comfort","Security","Charging","Trips & Calendar","Insights","System"];
 const AUTO_COLOR = {"Comfort":"#3e8bff","Security":"#ff5a4e","Charging":"#34c759","Trips & Calendar":"#e8a830","Insights":"#9b7dff","System":"#5ac8c8"};
 const AUTO_ICO = {
@@ -1258,52 +1258,182 @@ const AUTO_DEFAULTS = [
   {id:"calendar-depart",cat:"Trips & Calendar",name:"Calendar Departure",icon:"calendar",on:true,action:"Precondition based on the next calendar event's location and time, not a fixed daily schedule.",triggers:["Calendar event with a location","Drive-time estimate"]},
   {id:"morning-brief",cat:"Insights",name:"Morning Briefing",icon:"brief",on:true,action:"One message with battery, range, cabin temp, lock state, and whether a software update is pending.",triggers:["Weekday mornings before departure"]},
   {id:"weekly-health",cat:"Insights",name:"Weekly Health Report",icon:"health",on:true,action:"Weekly summary of miles, battery health trend, idle drain, Sentry events, and tire-related warnings.",triggers:["Sunday evening"]},
-  {id:"login-fresh",cat:"System",name:"Keep Tesla login fresh",icon:"refresh",on:true,live:true,action:"Renew the Fleet API token from the box and sync it to the droplet.",triggers:["Every 5 hours (CRON 0 */5 * * * ET)"]}
+  {id:"login-fresh",cat:"System",name:"Keep Tesla login fresh",icon:"refresh",on:true,action:"Renew the Fleet API token from the box and sync it to the droplet.",triggers:["Every 5 hours (CRON 0 */5 * * * ET)"]}
 ];
-const AUTO = { features: [], filter: 'All', open: null, editing: null };
-
-function loadAutos() {
-  let saved = null;
-  try { saved = JSON.parse(localStorage.getItem('ht_autos') || 'null'); } catch (e) { saved = null; }
-  if (saved && Array.isArray(saved.features) && saved.features.length) {
-    AUTO.features = saved.features;
-    AUTO.filter = AUTO_CATS.includes(saved.filter) || saved.filter === 'All' ? saved.filter : 'All';
-  } else {
-    AUTO.features = AUTO_DEFAULTS.map(f => ({ ...f, triggers: f.triggers.slice() }));
-    AUTO.filter = 'All';
-  }
+const AUTO_API = 'https://146-190-255-1.sslip.io/control/auto';
+const AUTO = { features: [], filter: 'All', open: null, editing: null, view: 'list', srv: null, loading: false, err: '', log: null, synced: 0, busy: false };
+const AUTO_MODE_CHIP = {
+  'dry-run': ['Dry run', 'dry'], live: ['Live', 'live'], notify: ['Notify', 'notify'], none: ['Manual', 'manual'], box: ['On the box', 'manual']
+};
+const AUTO_STATUS = {
+  'dry-run': 'Dry run', ok: 'Done', failed: 'Failed', blocked: 'Blocked', skipped: 'Skipped', 'no-action': 'Nothing needed',
+  notified: 'Notified', asked: 'Asked you', approved: 'Approved', 'skipped-by-lei': 'You skipped', running: 'Running', duplicate: 'Duplicate'
+};
+function autoToken() { try { return typeof ctlToken === 'function' ? ctlToken() : ''; } catch (e) { return ''; } }
+function autoWhen(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  const t = d.toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
+  if (dayKeyTs(ts) === fmtParts.format(new Date())) return t;
+  return d.toLocaleDateString('en-US', { timeZone: TZ, weekday: 'short' }) + ' ' + t;
 }
-function saveAutos() {
-  localStorage.setItem('ht_autos', JSON.stringify({ features: AUTO.features, filter: AUTO.filter }));
+async function autoFetch(path, body) {
+  const tok = autoToken();
+  if (!tok) throw new Error('no-token');
+  const opt = { method: body ? 'POST' : 'GET', headers: { Authorization: 'Bearer ' + tok }, cache: 'no-store' };
+  if (body) { opt.headers['Content-Type'] = 'application/json'; opt.body = JSON.stringify(body); }
+  const r = await fetch(AUTO_API + path, opt);
+  const data = await r.json().catch(() => ({}));
+  if (r.status === 401 && !body) { if (typeof clearCtlToken === 'function') clearCtlToken(); throw new Error('auth'); }
+  if (!r.ok) { const e = new Error(data.error || ('HTTP ' + r.status)); e.status = r.status; e.data = data; throw e; }
+  return data;
+}
+function loadAutos() {
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem('ht_auto_srv') || 'null'); } catch (e) { cached = null; }
+  if (cached && Array.isArray(cached.cards)) { AUTO.srv = cached; AUTO.features = cached.cards; }
+  else AUTO.features = AUTO_DEFAULTS.map(f => ({ ...f, triggers: f.triggers.slice() }));
+  const f = localStorage.getItem('ht_auto_filter');
+  AUTO.filter = AUTO_CATS.includes(f) ? f : 'All';
+}
+function saveAutos() { try { localStorage.setItem('ht_auto_filter', AUTO.filter); } catch (e) {} }
+function applyAutoState(st) {
+  if (!st || !Array.isArray(st.cards)) return;
+  AUTO.srv = st; AUTO.features = st.cards; AUTO.err = '';
+  try { localStorage.setItem('ht_auto_srv', JSON.stringify(st)); } catch (e) {}
+}
+async function syncAutos(force) {
+  if (!autoToken() || AUTO.loading) return;
+  if (!force && Date.now() - AUTO.synced < 15000) return;
+  AUTO.loading = true;
+  try {
+    let st = await autoFetch('/state');
+    // one-time migration of edits made on this device in the old local mock
+    let local = null;
+    try { local = JSON.parse(localStorage.getItem('ht_autos') || 'null'); } catch (e) { local = null; }
+    if (local && Array.isArray(local.features) && !localStorage.getItem('ht_autos_migrated')) {
+      if (!st.migrated) { const m = await autoFetch('/migrate', { features: local.features }); if (m.state) st = m.state; }
+      localStorage.setItem('ht_autos_migrated', '1');
+    }
+    applyAutoState(st);
+    AUTO.synced = Date.now();
+  } catch (e) {
+    AUTO.err = e.message === 'auth' || e.message === 'no-token' ? '' : 'Couldn’t reach the automation server. Showing the last copy.';
+  } finally {
+    AUTO.loading = false;
+    if (S.mode === 'automation') renderAutomation();
+  }
 }
 loadAutos();
 
+function autoChips(f) {
+  const out = [];
+  if (f.klass === 'ask') out.push('<span class="auto-chip ask">Ask first</span>');
+  const m = AUTO_MODE_CHIP[f.mode || (f.klass === 'notify' ? 'notify' : f.klass === 'box' ? 'box' : (f.rule ? 'dry-run' : 'none'))];
+  if (m && !(f.klass === 'ask' && f.mode === 'live')) out.push(`<span class="auto-chip ${m[1]}">${m[0]}</span>`);
+  return out.join('');
+}
+function autoMetaLine(f) {
+  if (!f.rule) return f.note ? `<div class="auto-meta">${esc(f.note)}</div>` : '';
+  const last = f.last_run ? `Last ${esc(autoWhen(f.last_run.ts))} · ${esc(AUTO_STATUS[f.last_run.status] || f.last_run.status)}` : 'Last —';
+  const next = f.on && f.next_run ? `Next ${esc(autoWhen(f.next_run.ts))}` : (f.on ? 'Next —' : 'Off');
+  return `<div class="auto-meta"><span>${last}</span><span class="dot">•</span><span>${next}</span></div>`;
+}
+function autoParamText(f) {
+  const sch = f.params_schema || {};
+  const ks = Object.keys(sch);
+  if (!ks.length) return '';
+  return `<div class="auto-lab">Settings:</div><ul class="auto-kv">${ks.map(k => {
+    let v = (f.params || {})[k];
+    if (sch[k].type === 'time' && v) { const [h, m] = v.split(':').map(Number); v = new Date(2000, 0, 1, h, m).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+    return `<li><span>${esc(sch[k].label)}</span><b>${esc(v)}</b></li>`;
+  }).join('')}</ul>${f.params_source ? `<p class="auto-small">${esc(f.params_source)}</p>` : ''}`;
+}
+function autoRunsBlock(f) {
+  if (!f.rule) return f.note ? `<p class="auto-small">${esc(f.note)}</p>` : '';
+  const modeTxt = f.klass === 'notify' ? 'Notify only. Sends you an alert and never touches the truck.'
+    : f.klass === 'ask' ? ('Asks you first. Nothing runs until you tap Approve and enter the confirm word' + (f.mode === 'live' ? ' and your PIN.' : '. Dry run now: approving won’t touch the truck.'))
+    : (f.mode === 'live' ? 'Runs on its own (climate, seat and wheel heat only).' : 'Dry run: decides and alerts you, but sends nothing to the truck until Lead Operator signs off.');
+  const cmds = (f.command_labels || []).length ? `<div class="auto-lab">Can send:</div><p class="auto-act">${esc(f.command_labels.join(', '))}${f.klass === 'ask' ? ' (each needs your approval)' : ''}</p>` : '';
+  const lr = f.last_run;
+  return `<div class="auto-runs">
+    <div class="auto-lab">Mode:</div><p class="auto-act">${esc(modeTxt)}</p>
+    ${cmds}
+    <div class="auto-two">
+      <div><div class="auto-lab">Last run</div><p class="auto-act">${lr ? `${esc(autoWhen(lr.ts))} · ${esc(AUTO_STATUS[lr.status] || lr.status)}<br><span class="auto-small">${esc(lr.reason || '')}</span>` : 'Not yet'}</p></div>
+      <div><div class="auto-lab">Next run</div><p class="auto-act">${f.on && f.next_run ? `${esc(autoWhen(f.next_run.ts))}<br><span class="auto-small">${esc(f.next_run.label || '')}</span>` : (f.on ? '—' : 'Off')}</p></div>
+    </div>
+    ${autoParamText(f)}
+  </div>`;
+}
 function autoCardHTML(f, expanded) {
   const color = AUTO_COLOR[f.cat] || 'var(--acc)';
-  const action = f.action + (f.live ? ' Last run Nov 15, 7:55 PM ET · OK.' : '');
   return `<article class="auto-card${f.on ? '' : ' off'}${expanded ? ' open' : ''}" data-id="${esc(f.id)}">
     <div class="auto-row">
       <button type="button" class="auto-hit">
         <div class="auto-badge" style="background:${color}">${autoSvg(f.icon, '#fff', 20)}</div>
-        <div class="auto-name">${esc(f.name)}${f.live ? '<span class="auto-live">Live</span>' : ''}</div>
+        <div class="auto-name">${esc(f.name)} ${autoChips(f)}</div>
       </button>
-      <button type="button" class="auto-sw${f.on ? ' on' : ''}" style="--swc:${color}" aria-label="${f.on ? 'Turn off' : 'Turn on'} ${esc(f.name)}"><span class="track" aria-hidden="true"><span class="blk"></span></span></button>
+      <button type="button" class="auto-sw${f.on ? ' on' : ''}" style="--swc:${color}" aria-label="${f.on ? 'Turn off' : 'Turn on'} ${esc(f.name)}"${autoToken() ? '' : ' disabled'}><span class="track" aria-hidden="true"><span class="blk"></span></span></button>
       <button type="button" class="auto-chev" aria-label="Expand">${autoSvg('chevron', '#8b94a1')}</button>
     </div>
     ${expanded ? `<div class="auto-body">
       <div class="auto-actrow">
-        <div style="flex:1;min-width:0">
+        <div style="flex:1">
           <div class="auto-lab">Action:</div>
-          <div class="auto-act">${esc(action)}</div>
+          <div class="auto-act">${esc(f.action)}</div>
         </div>
-        <button type="button" class="auto-pen" aria-label="Edit">${autoSvg('pencil', '#e9edf2', 18)}</button>
+        ${autoToken() ? `<button type="button" class="auto-pen" aria-label="Edit">${autoSvg('pencil', '#e9edf2', 18)}</button>` : ''}
       </div>
       <div class="auto-lab">Trigger:</div>
       <ol>${(f.triggers || []).map(t => `<li>${esc(t)}</li>`).join('')}</ol>
-    </div>` : `<div class="auto-preview">${esc(f.action)}</div>`}
+      ${autoRunsBlock(f)}
+    </div>` : `<div class="auto-preview">${esc(f.action)}</div>${autoMetaLine(f)}`}
   </article>`;
 }
 
+
+function autoIsIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+function autoStandalone() { return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; }
+function autoPushOn() { try { return localStorage.getItem('ht_push_on') === '1' && 'Notification' in window && Notification.permission === 'granted'; } catch (e) { return false; } }
+function autoPushPrompt() {
+  if (!autoToken() || autoPushOn()) return '';
+  let body;
+  if (autoIsIOS() && !autoStandalone()) {
+    body = `<p>To get alerts on this iPhone, add Happy Truck to your Home Screen: tap <b>Share</b>, then <b>Add to Home Screen</b>. Open it from the Home Screen and tap <b>Turn on alerts</b> here. Needs iOS 16.4 or later.</p>`;
+  } else if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+    body = `<p>This browser can’t receive push alerts. They’ll still show in Alerts here, and I’ll relay important ones in chat.</p>`;
+  } else if (Notification.permission === 'denied') {
+    body = `<p>Alerts are blocked for this site in your browser settings. Allow notifications for it, then come back.</p>`;
+  } else {
+    body = `<p>Get Approve / Skip prompts and alerts on this phone, even when the tracker is closed.</p>
+      <button type="button" class="auto-pushbtn" data-auto="push-on"${AUTO.busy ? ' disabled' : ''}>Turn on alerts</button>`;
+  }
+  return `<div class="auto-push"><div class="auto-push-h">${autoSvg('brief', '#e8a830', 20)}<b>Alerts on this phone</b></div>${body}${AUTO.pushMsg ? `<p class="auto-small">${esc(AUTO.pushMsg)}</p>` : ''}</div>`;
+}
+function autoMaster() {
+  const st = AUTO.srv || {};
+  if (!autoToken()) {
+    return `<div class="auto-master"><p class="auto-note" style="margin:0 0 10px">Automations run on the droplet. Enable remote controls on this device to see their runs and change them.</p>
+      <button type="button" class="auto-pushbtn" data-auto="enable">Enable on this device</button></div>`;
+  }
+  const paused = !!st.paused;
+  const sub = st.kill_switch ? 'Kill switch is on. Nothing runs.' : st.auth_stopped ? 'Stopped: Tesla login expired.' : paused ? 'Paused. Nothing runs until you turn this back on.'
+    : 'Running. Comfort and ask-first cards are in dry run until Lead Operator signs off.';
+  const b = st.budgets || {};
+  return `<div class="auto-master${paused || st.kill_switch ? ' paused' : ''}">
+    <div class="auto-row">
+      <div class="auto-badge" style="background:${paused || st.kill_switch ? '#5b616b' : '#3e8bff'}">${autoSvg('refresh', '#fff', 20)}</div>
+      <div style="flex:1;min-width:0"><div class="auto-name">All automations</div><div class="auto-meta" style="margin:2px 0 0">${esc(sub)}</div></div>
+      <button type="button" class="auto-sw${paused ? '' : ' on'}" data-auto="pause" style="--swc:#3e8bff" aria-label="${paused ? 'Resume' : 'Pause'} all automations"${st.kill_switch ? ' disabled' : ''}><span class="track" aria-hidden="true"><span class="blk"></span></span></button>
+    </div>
+    <div class="auto-tools">
+      <button type="button" class="auto-tool" data-auto="alerts">Alerts${st.unread ? ` <span class="auto-count">${st.unread}</span>` : ''}</button>
+      <button type="button" class="auto-tool" data-auto="log">Run log</button>
+      <span class="auto-small" style="margin-left:auto">Wakes ${b.wakes_today ?? 0}/${b.wakes_cap ?? 6} · cmds ${b.cmds_today ?? 0}/${b.cmds_cap ?? 20} today</span>
+    </div>
+  </div>`;
+}
 function autoListHTML() {
   const counts = { All: AUTO.features.length };
   AUTO_CATS.forEach(c => { counts[c] = AUTO.features.filter(f => f.cat === c).length; });
@@ -1321,20 +1451,52 @@ function autoListHTML() {
   });
   if (!body) body = '<div class="empty">No automations in this category.</div>';
   return `<div id="auto-root">
-    <p class="auto-note">Design mockup — toggles and edits stay on this device. On means COO may run it; off means COO won’t. Wiring comes after you approve.</p>
+    ${autoMaster()}
+    ${autoPushPrompt()}
+    ${AUTO.err ? `<p class="auto-err">${esc(AUTO.err)}</p>` : ''}
     <div class="auto-cats">${tabs}</div>
-    <button type="button" class="auto-add"><span class="plus">${autoSvg('plus', '#fff', 16)}</span>Add New Automation</button>
+    ${autoToken() ? `<button type="button" class="auto-add"><span class="plus">${autoSvg('plus', '#fff', 16)}</span>Add New Automation</button>` : ''}
     ${body}
   </div>`;
 }
-
+function autoCardName(id) { const f = AUTO.features.find(x => x.id === id); return f ? f.name : (id === 'system' ? 'System' : id); }
+function autoLogHTML() {
+  if (!AUTO.log) return '<div class="empty">Loading the run log…</div>';
+  if (!AUTO.log.length) return '<div class="empty">No runs yet.</div>';
+  return `<div class="auto-loglist">${AUTO.log.map(r => {
+    let acts = [];
+    try { acts = JSON.parse(r.actions || '[]').map(a => a[0]); } catch (e) {}
+    const cls = ['ok', 'approved'].includes(r.status) ? 'live' : ['failed', 'blocked'].includes(r.status) ? 'bad' : r.status === 'dry-run' ? 'dry' : r.status === 'asked' ? 'ask' : 'manual';
+    return `<div class="auto-logrow">
+      <div class="auto-logtop"><b>${esc(autoCardName(r.card))}</b><span class="auto-chip ${cls}">${esc(AUTO_STATUS[r.status] || r.status)}</span><span class="auto-small" style="margin-left:auto">${esc(autoWhen(r.ts))}</span></div>
+      <div class="auto-small">${esc(r.reason || '')}${acts.length ? ` · ${r.dry_run ? 'would send' : 'sent'}: ${esc(acts.join(', '))}` : ''}${r.woke ? ' · woke truck' : ''}${String(r.run_id).startsWith('test:') ? ' · test' : ''}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+function autoAlertsHTML() {
+  const notes = (AUTO.srv && AUTO.srv.notes) || [];
+  if (!notes.length) return '<div class="empty">No alerts yet.</div>';
+  return `<div class="auto-loglist">${notes.map(n => {
+    const pending = n.approval_id && n.approval_status === 'pending';
+    const st = n.approval_id && !pending ? `<span class="auto-chip manual">${esc(n.approval_status === 'skipped' ? 'You skipped' : n.approval_status === 'approved' ? 'Approved' : n.approval_status || '')}</span>` : '';
+    return `<div class="auto-logrow${n.read ? '' : ' unread'}">
+      <div class="auto-logtop"><b>${esc(n.title)}</b>${st}<span class="auto-small" style="margin-left:auto">${esc(autoWhen(n.ts))}</span></div>
+      <div class="auto-act" style="font-size:14px">${esc(n.body)}</div>
+      ${pending ? `<button type="button" class="auto-pushbtn" style="margin-top:8px" data-auto="review" data-aid="${esc(n.approval_id)}">Review</button>` : ''}
+    </div>`;
+  }).join('')}</div>`;
+}
 function autoTriggerRow(i, value) {
   return `<div class="auto-trow"><span class="n">${i + 1}.</span><input data-trig value="${esc(value)}"><button type="button" class="auto-rm" aria-label="Remove trigger">${autoSvg('minus', '#8b94a1')}</button></div>`;
 }
-
 function autoEditHTML(f) {
   const isNew = !f.id || String(f.id).startsWith('new-');
   const triggers = (f.triggers && f.triggers.length) ? f.triggers : [''];
+  const sch = f.params_schema || {};
+  const params = Object.keys(sch).map(k => {
+    const s = sch[k], v = (f.params || {})[k];
+    return `<label><span>${esc(s.label)}</span><input data-param="${esc(k)}" type="${s.type === 'time' ? 'time' : 'number'}"${s.type === 'int' ? ` min="${s.min}" max="${s.max}" inputmode="numeric"` : ''} value="${esc(v)}"></label>`;
+  }).join('');
   return `<div class="auto-edit" data-id="${esc(f.id || '')}" data-new="${isNew ? '1' : '0'}">
     <label><span>Name</span><input id="auto-name" value="${esc(f.name || '')}" placeholder="Name"></label>
     <label><span>Category</span><select id="auto-cat">${AUTO_CATS.map(c => `<option${c === (f.cat || 'Comfort') ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
@@ -1344,18 +1506,24 @@ function autoEditHTML(f) {
       <div id="auto-trigs">${triggers.map((t, i) => autoTriggerRow(i, t)).join('')}</div>
       <button type="button" class="auto-addtrig">${autoSvg('plus', '#3e8bff', 18)} Add trigger</button>
     </div>
+    ${params ? `<div class="auto-lab" style="margin-bottom:8px">Settings</div>${params}` : ''}
+    ${isNew ? '<p class="auto-small" style="margin:0 0 14px">New cards are saved and synced, but they don’t run until the engine has a rule for them. Tell me what it should do.</p>' : ''}
+    ${f.rule ? `<p class="auto-small" style="margin:0 0 14px">What this card is allowed to send is fixed on the server and can’t be changed here.</p>` : ''}
+    ${AUTO.editErr ? `<p class="auto-err">${esc(AUTO.editErr)}</p>` : ''}
     <div class="auto-rowbtns">
-      <button type="button" class="auto-btn save">Save</button>
+      <button type="button" class="auto-btn save"${AUTO.busy ? ' disabled' : ''}>Save</button>
       <button type="button" class="auto-btn cancel">Cancel</button>
     </div>
     ${isNew ? '' : '<button type="button" class="auto-del">Delete automation</button>'}
   </div>`;
 }
-
 function renumberTriggers() {
   document.querySelectorAll('#auto-trigs .auto-trow .n').forEach((el, i) => { el.textContent = (i + 1) + '.'; });
 }
-
+function autoTitle() {
+  if (AUTO.editing != null) return 'Edit automation';
+  return AUTO.view === 'log' ? 'Run log' : AUTO.view === 'alerts' ? 'Alerts' : 'Automations';
+}
 function renderAutomation() {
   const note = document.getElementById('effnote');
   if (note) { note.hidden = true; note.textContent = ''; }
@@ -1367,61 +1535,87 @@ function renderAutomation() {
       : (AUTO.features.find(x => x.id === AUTO.editing) || { id: AUTO.editing, cat: 'Comfort', name: '', icon: 'plus', on: true, action: '', triggers: [''] });
     if (AUTO.editing === '__new__') { AUTO.editing = f.id; }
     main.innerHTML = autoEditHTML(f);
+  } else if (AUTO.view === 'log') {
+    main.innerHTML = autoLogHTML();
+  } else if (AUTO.view === 'alerts') {
+    main.innerHTML = autoAlertsHTML();
   } else {
     main.innerHTML = autoListHTML();
   }
   setModeClass();
+  if (AUTO.view === 'list' && AUTO.editing == null) void syncAutos(false);
 }
+
 
 function readAutoForm() {
   const name = ($('#auto-name') && $('#auto-name').value || '').trim();
   const cat = ($('#auto-cat') && $('#auto-cat').value) || 'Comfort';
   const action = ($('#auto-action') && $('#auto-action').value || '').trim();
   const triggers = [...document.querySelectorAll('#auto-trigs input[data-trig]')].map(i => i.value.trim()).filter(Boolean);
-  return { name, cat, action, triggers };
+  const params = {};
+  document.querySelectorAll('.auto-edit input[data-param]').forEach(i => { params[i.dataset.param] = i.type === 'number' ? Number(i.value) : i.value; });
+  return { name, cat, action, triggers, params };
 }
-
 function defaultIcon(cat) {
   return { Comfort: 'comfort', Security: 'lock', Charging: 'bolt', 'Trips & Calendar': 'trip', Insights: 'brief', System: 'refresh' }[cat] || 'plus';
 }
-
+async function autoPost(path, body, okFn) {
+  if (AUTO.busy) return;
+  AUTO.busy = true;
+  try {
+    const r = await autoFetch(path, body);
+    if (r.state) applyAutoState(r.state);
+    if (okFn) okFn(r);
+    AUTO.editErr = '';
+  } catch (e) {
+    if (AUTO.editing != null) AUTO.editErr = e.message === 'no-token' ? 'Enable remote controls first.' : 'Couldn’t save: ' + e.message;
+    else AUTO.err = 'Couldn’t save: ' + e.message;
+  } finally {
+    AUTO.busy = false;
+    renderAutomation();
+  }
+}
+async function autoOpenView(v) {
+  AUTO.view = v; AUTO.open = null;
+  if (v === 'log') {
+    AUTO.log = null; renderAutomation();
+    try { AUTO.log = (await autoFetch('/log?limit=120')).runs || []; } catch (e) { AUTO.log = []; AUTO.err = 'Couldn’t load the run log.'; }
+  } else if (v === 'alerts') {
+    renderAutomation();
+    try { await autoFetch('/notes/read', {}); applyAutoState(await autoFetch('/state')); } catch (e) {}
+  }
+  if (S.mode === 'automation') renderAutomation();
+}
 function handleAutoClick(e) {
+  const tool = e.target.closest('[data-auto]');
+  if (tool) {
+    const a = tool.dataset.auto;
+    if (a === 'enable') {
+      if (window.CONTROL) { CONTROL.enablePrompt = true; CONTROL.enableError = ''; CONTROL.view = 'home'; }
+      S.mode = 'control'; localStorage.setItem('ht_mode', 'control'); render(); return;
+    }
+    if (a === 'pause') { const p = !(AUTO.srv && AUTO.srv.paused); void autoPost('/pause', { paused: p }); return; }
+    if (a === 'log' || a === 'alerts') { void autoOpenView(a); return; }
+    if (a === 'push-on') { void autoEnablePush(); return; }
+    if (a === 'review') { void openApproval(tool.dataset.aid); return; }
+  }
   const catBtn = e.target.closest('.auto-cat');
-  if (catBtn) {
-    AUTO.filter = catBtn.dataset.cat || 'All';
-    saveAutos();
-    renderAutomation();
-    return;
-  }
-  if (e.target.closest('.auto-add')) {
-    AUTO.editing = '__new__';
-    AUTO.open = null;
-    renderAutomation();
-    return;
-  }
+  if (catBtn) { AUTO.filter = catBtn.dataset.cat || 'All'; saveAutos(); renderAutomation(); return; }
+  if (e.target.closest('.auto-add')) { AUTO.editing = '__new__'; AUTO.open = null; AUTO.editErr = ''; renderAutomation(); return; }
   const sw = e.target.closest('.auto-sw');
   if (sw) {
     const id = sw.closest('.auto-card').dataset.id;
     const f = AUTO.features.find(x => x.id === id);
-    if (f) { f.on = !f.on; saveAutos(); renderAutomation(); }
+    if (f) { f.on = !f.on; renderAutomation(); void autoPost('/card', { id, on: f.on }); }
     return;
   }
   const pen = e.target.closest('.auto-pen');
-  if (pen) {
-    AUTO.editing = pen.closest('.auto-card').dataset.id;
-    renderAutomation();
-    return;
-  }
+  if (pen) { AUTO.editing = pen.closest('.auto-card').dataset.id; AUTO.editErr = ''; renderAutomation(); return; }
   const chev = e.target.closest('.auto-chev') || e.target.closest('.auto-hit');
-  if (chev) {
-    const id = chev.closest('.auto-card').dataset.id;
-    AUTO.open = AUTO.open === id ? null : id;
-    renderAutomation();
-    return;
-  }
+  if (chev) { const id = chev.closest('.auto-card').dataset.id; AUTO.open = AUTO.open === id ? null : id; renderAutomation(); return; }
   if (e.target.closest('.auto-addtrig')) {
     const box = $('#auto-trigs');
-    if (box) { box.insertAdjacentHTML('beforeend', autoTriggerRow(box.querySelectorAll('.auto-trow').length, '')); }
+    if (box) box.insertAdjacentHTML('beforeend', autoTriggerRow(box.querySelectorAll('.auto-trow').length, ''));
     return;
   }
   const rm = e.target.closest('.auto-rm');
@@ -1430,34 +1624,120 @@ function handleAutoClick(e) {
     const form = $('.auto-edit');
     const data = readAutoForm();
     if (!data.name) { const el = $('#auto-name'); if (el) el.focus(); return; }
-    const id = form.dataset.id;
-    const existing = AUTO.features.find(x => x.id === id);
-    if (existing) {
-      Object.assign(existing, data);
-    } else {
-      AUTO.features.push({ id, icon: defaultIcon(data.cat), on: true, ...data });
-    }
-    AUTO.editing = null;
-    AUTO.open = id;
-    saveAutos();
-    renderAutomation();
+    const isNew = form.dataset.new === '1';
+    const body = isNew ? { name: data.name, cat: data.cat, action: data.action, triggers: data.triggers, on: true, icon: defaultIcon(data.cat) }
+      : { id: form.dataset.id, ...data };
+    void autoPost('/card', body, r => { AUTO.editing = null; AUTO.open = r.id; });
     return;
   }
-  if (e.target.closest('.auto-btn.cancel')) {
-    AUTO.editing = null;
-    renderAutomation();
-    return;
-  }
+  if (e.target.closest('.auto-btn.cancel')) { AUTO.editing = null; AUTO.editErr = ''; renderAutomation(); return; }
   if (e.target.closest('.auto-del')) {
     if (!confirm('Delete this automation?')) return;
     const id = $('.auto-edit').dataset.id;
-    AUTO.features = AUTO.features.filter(x => x.id !== id);
-    AUTO.editing = null;
-    if (AUTO.open === id) AUTO.open = null;
-    saveAutos();
-    renderAutomation();
+    void autoPost('/card/delete', { id }, () => { AUTO.editing = null; if (AUTO.open === id) AUTO.open = null; });
   }
 }
+
+/* ---- Approval sheet (ask-first). Single-use, 10-minute, server-side checks. ---- */
+let AUTO_APPR_TIMER = 0;
+function closeApproval() { clearInterval(AUTO_APPR_TIMER); $('#sheet').classList.add('hidden'); $('#sheet').classList.remove('auto-sheet'); }
+async function openApproval(aid, act) {
+  const sheet = $('#sheet'), bodyEl = $('#sheetbody');
+  sheet.classList.add('auto-sheet');
+  bodyEl.innerHTML = '<p class="auto-small">Loading request…</p>';
+  sheet.classList.remove('hidden');
+  if (!autoToken()) {
+    bodyEl.innerHTML = `<h3 class="auto-sheet-h">Approval</h3><p class="auto-act">Enable remote controls on this device first (Control tab → Enable remote controls), then open this alert again.</p>
+      <div class="auto-rowbtns" style="margin:16px 0 0"><button type="button" class="auto-btn cancel" id="appr-close">Close</button></div>`;
+    $('#appr-close').onclick = closeApproval; return;
+  }
+  let a;
+  try { a = await autoFetch('/approval?id=' + encodeURIComponent(aid)); }
+  catch (e) { bodyEl.innerHTML = `<h3 class="auto-sheet-h">Approval</h3><p class="auto-act">That request wasn’t found.</p><div class="auto-rowbtns" style="margin:16px 0 0"><button type="button" class="auto-btn cancel" id="appr-close">Close</button></div>`; $('#appr-close').onclick = closeApproval; return; }
+  const pending = a.status === 'pending';
+  bodyEl.innerHTML = `<div class="auto-sheet-top"><span class="auto-chip ask">Ask first</span>${a.dry_run ? '<span class="auto-chip dry">Dry run</span>' : ''}<span class="auto-small" id="appr-left" style="margin-left:auto"></span></div>
+    <h3 class="auto-sheet-h">${esc(a.label)}?</h3>
+    <p class="auto-small" style="margin:0 0 6px">${esc(a.card_name)}</p>
+    <p class="auto-act">${esc(a.body)}</p>
+    ${a.dry_run ? '<p class="auto-small">Dry run: approving records what would happen and sends nothing to the truck.</p>' : ''}
+    ${pending ? `<label class="auto-field"><span>Type <b>${esc(a.confirm_word)}</b> to approve</span><input id="appr-confirm" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+      ${a.needs_pin ? '<label class="auto-field"><span>Your 8-digit PIN</span><input id="appr-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="8"></label>' : ''}
+      <p class="auto-err" id="appr-err" hidden></p>
+      <div class="auto-rowbtns" style="margin:16px 0 0">
+        <button type="button" class="auto-btn cancel" id="appr-skip">Skip</button>
+        <button type="button" class="auto-btn save" id="appr-go">Approve</button>
+      </div>` : `<p class="auto-act"><b>This request was already ${esc(a.status === 'approved' ? 'approved' : a.status === 'skipped' ? 'skipped' : a.status)}.</b></p>
+      <div class="auto-rowbtns" style="margin:16px 0 0"><button type="button" class="auto-btn cancel" id="appr-close">Close</button></div>`}`;
+  const left = $('#appr-left');
+  const tickLeft = () => {
+    const s = a.expires - Math.floor(Date.now() / 1000);
+    if (left) left.textContent = pending ? (s > 0 ? `Expires in ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : 'Expired') : '';
+  };
+  tickLeft(); clearInterval(AUTO_APPR_TIMER); AUTO_APPR_TIMER = setInterval(tickLeft, 1000);
+  if (!pending) { $('#appr-close').onclick = closeApproval; return; }
+  const err = m => { const el = $('#appr-err'); el.hidden = false; el.textContent = m; };
+  const send = async decision => {
+    const pin = $('#appr-pin') ? $('#appr-pin').value : '';
+    const confirmWord = $('#appr-confirm').value;
+    if ($('#appr-pin')) $('#appr-pin').value = '';
+    try {
+      const r = await autoFetch('/approval', { id: a.id, decision, confirm: confirmWord, pin });
+      bodyEl.innerHTML = `<h3 class="auto-sheet-h">${decision === 'skip' ? 'Skipped' : r.status === 'dry-run' ? 'Approved (dry run)' : r.status === 'ok' ? 'Done' : 'Not done'}</h3>
+        <p class="auto-act">${decision === 'skip' ? 'Nothing was sent to the truck.' : r.status === 'dry-run' ? `Would have sent: ${esc(a.label)}. Nothing was sent to the truck.` : r.status === 'ok' ? `${esc(a.label)} sent${r.result && r.result.confirmed ? ' and confirmed.' : '. Not yet confirmed by the truck.'}` : esc((r.result && r.result.blocked) || 'The command didn’t go through.')}</p>
+        <div class="auto-rowbtns" style="margin:16px 0 0"><button type="button" class="auto-btn cancel" id="appr-close">Close</button></div>`;
+      clearInterval(AUTO_APPR_TIMER);
+      $('#appr-close').onclick = closeApproval;
+      void syncAutos(true);
+    } catch (e) {
+      err(e.message === 'confirm mismatch' ? `Type ${a.confirm_word} exactly.` : e.message === 'auth failed' ? 'That PIN didn’t work.' : e.message === 'expired' ? 'This request expired.' : 'Couldn’t send: ' + e.message);
+    }
+  };
+  $('#appr-go').onclick = () => send('approve');
+  $('#appr-skip').onclick = () => send('skip');
+  if (act === 'skip') setTimeout(() => $('#appr-skip') && $('#appr-skip').focus(), 50);
+  else setTimeout(() => $('#appr-confirm') && $('#appr-confirm').focus(), 50);
+}
+
+/* ---- Web Push setup ---- */
+function autoB64u(s) { const p = '='.repeat((4 - s.length % 4) % 4); const b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(b, c => c.charCodeAt(0)); }
+async function autoEnablePush() {
+  AUTO.busy = true; AUTO.pushMsg = 'Turning on alerts…'; renderAutomation();
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') throw new Error('Notifications weren’t allowed.');
+    const reg = await navigator.serviceWorker.ready;
+    const { key } = await autoFetch('/push/key');
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: autoB64u(key) });
+    await autoFetch('/push/subscribe', { subscription: sub.toJSON() });
+    await autoFetch('/push/test', {});
+    localStorage.setItem('ht_push_on', '1');
+    AUTO.pushMsg = 'Alerts are on. A test alert is on its way.';
+  } catch (e) {
+    AUTO.pushMsg = 'Couldn’t turn on alerts: ' + (e.message || e);
+  } finally {
+    AUTO.busy = false; void syncAutos(true); renderAutomation();
+  }
+}
+function autoHandleHash() {
+  const h = new URLSearchParams(location.hash.slice(1));
+  const aid = h.get('approve');
+  if (aid) {
+    history.replaceState(null, '', location.pathname);
+    S.mode = 'automation'; localStorage.setItem('ht_mode', 'automation'); render();
+    void openApproval(aid, h.get('act'));
+  } else if (location.hash === '#alerts') {
+    history.replaceState(null, '', location.pathname);
+    S.mode = 'automation'; render(); void autoOpenView('alerts');
+  }
+}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', ev => {
+    const d = ev.data || {};
+    if (d.type === 'ht-open' && d.hash) { location.hash = d.hash; autoHandleHash(); }
+  });
+}
+
 
 
 async function render() {
@@ -1515,19 +1795,19 @@ function wire() {
       const mode = b.dataset.mode;
       if (!mode) return;
       if (mode === S.mode) {
-        if (mode === 'automation' && AUTO.editing != null) { AUTO.editing = null; render(); }
+        if (mode === 'automation' && (AUTO.editing != null || AUTO.view !== 'list')) { AUTO.editing = null; AUTO.view = 'list'; render(); }
         if (mode === 'control' && window.CONTROL && CONTROL.view !== 'home') { CONTROL.view = 'home'; CONTROL.detail = null; render(); }
         return;
       }
       S.mode = mode;
       localStorage.setItem('ht_mode', S.mode);
-      if (mode !== 'automation') AUTO.editing = null;
+      if (mode !== 'automation') { AUTO.editing = null; AUTO.view = 'list'; }
       if (mode !== 'report' && window.REPORT) { REPORT.archive = false; if (window.stopReportAudio) stopReportAudio(); }
       OPEN.clear();
       render();
     };
   });
-  $('#autoback').onclick = () => { AUTO.editing = null; render(); };
+  $('#autoback').onclick = () => { if (AUTO.editing != null) AUTO.editing = null; else AUTO.view = 'list'; render(); };
   $('#main').addEventListener('click', e => {
     if (S.mode === 'automation') { handleAutoClick(e); return; }
     if (S.mode === 'control') { if (window.handleControlClick) { handleControlClick(e); } return; }
@@ -1544,7 +1824,7 @@ function wire() {
     if (d) { const [y, mon, da] = d.dataset.day.split('-').map(Number); S.cur = new Date(y, mon - 1, da); S.view = 'day'; OPEN.clear(); render(); }
     else if (mo) { S.cur = new Date(S.cur.getFullYear(), +mo.dataset.month, 1); S.view = 'month'; OPEN.clear(); render(); }
   });
-  $('#sheet').onclick = e => { if (e.target.id === 'sheet') $('#sheet').classList.add('hidden'); };
+  $('#sheet').onclick = e => { if (e.target.id === 'sheet') { if (typeof closeApproval === 'function') closeApproval(); else $('#sheet').classList.add('hidden'); } };
   let x0 = null, y0 = null;
   document.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
   document.addEventListener('touchend', e => {
@@ -1573,7 +1853,7 @@ async function start() {
   }
   show();
 }
-function show() { $('#app').classList.remove('hidden'); wire(); render(); }
+function show() { $('#app').classList.remove('hidden'); wire(); render(); try { autoHandleHash(); } catch (e) {} }
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
   let reloading = false;

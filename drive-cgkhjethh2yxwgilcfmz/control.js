@@ -267,7 +267,7 @@ function paintEmbeddedAutos(){
     return;
   }
   const on = items.filter(x => x.on).slice(0, 3);
-  box.innerHTML = `<p class="auto-note" style="margin:0 0 8px">On means Lead Operator may run it. Off means don’t.</p>` +
+  box.innerHTML = `<p class="auto-note" style="margin:0 0 8px">On means the droplet engine may run it. Off means it won’t.</p>` +
     on.map(a => `<div class="auto-card"><div class="auto-row"><div class="auto-name">${ctlEsc(a.name)}</div></div><div class="auto-preview">${ctlEsc(a.action)}</div></div>`).join('');
 }
 
