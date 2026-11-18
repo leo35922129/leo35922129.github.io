@@ -32,8 +32,13 @@
 .ctl-live{color:var(--grn);font-size:15px;font-weight:600;display:flex;align-items:center;gap:5px}
 .ctl-live i{width:7px;height:7px;border-radius:50%;background:var(--grn);display:block;box-shadow:0 0 0 3px rgba(52,199,89,.18)}
 .ctl-hero{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;align-items:baseline}
-.ctl-hero .n{font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1}
-.ctl-hero .n small{font-size:16px;font-weight:600;letter-spacing:0;color:var(--mut);margin-left:2px}
+.ctl-hero .n{font-size:44px;font-weight:700;letter-spacing:-.03em;line-height:1;white-space:nowrap}
+.ctl-hero .n small{font-size:22px;font-weight:600;letter-spacing:0;color:var(--mut);margin-left:2px}
+/* v76: battery colored by level (green >=50, amber 20-49, red <20); range in the accent blue */
+.ctl-hero .n.bat.lv-ok{color:var(--grn)}
+.ctl-hero .n.bat.lv-mid{color:var(--amb)}
+.ctl-hero .n.bat.lv-low{color:var(--red)}
+.ctl-hero .n.rng{color:var(--acc)}
 .ctl-hero .k{color:var(--mut);font-size:14px;font-weight:500;margin-top:3px}
 .ctl-rows{display:flex;flex-direction:column}
 .ctl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;
