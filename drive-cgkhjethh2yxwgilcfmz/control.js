@@ -115,7 +115,6 @@ function paintControlHome(main){
   main.innerHTML = `
     <section class="ctl-status">
       <div class="ctl-status-top">
-        <span class="ctl-live${fresh ? '' : ' stale'}"><i></i><span class="t">${live}</span></span>
         <span class="ctl-pill${driving ? ' drive' : ''}">${driveLabel}</span>
       </div>
       <div class="ctl-hero">
@@ -155,8 +154,7 @@ function paintControlHome(main){
           <span class="ctl-chev" aria-hidden="true">${ICONS.chev}</span>
         </button>
       </div>
-      <p class="ctl-src">${ctlEsc(srcLine)}</p>
-      ${ctlRefreshRow()}
+      ${ctlRefreshRow(fresh, live + (srcParts.length > 1 ? ' · ' + srcParts.slice(1).join(' · ') : ''))}
     </section>
 
     <div class="ctl-sec">Quick controls</div>
@@ -601,12 +599,15 @@ function ctlSetpointF(st){
   if (!Number.isFinite(n)) return null;
   return Math.round(n);
 }
-function ctlRefreshRow(){
+function ctlRefreshRow(fresh, fullLabel){
+  const st = CONTROL.st || {};
+  const short = st.last_seen_ts || st.last_seen_et ? ((fresh ? 'Live ' : 'Seen ') + ctlClock(st)) : '';
   const busy = CONTROL.busy || CONTROL.refreshing;
   const updating = CONTROL.refreshing && !CONTROL.waking;
   return `<div class="ctl-refresh">
     <button type="button" class="ctl-refresh-btn" data-act="refresh-status"${busy?' disabled':''}>${updating ? 'Updating…' : 'Refresh'}</button>
     <button type="button" class="ctl-wake-refresh" data-act="wake-refresh"${busy?' disabled':''}>Wake &amp; refresh</button>
+    ${short ? `<span class="ctl-live${fresh ? '' : ' stale'}" title="${ctlEsc(fullLabel || '')}" aria-label="${ctlEsc(fullLabel || short)}"><i></i><span class="t">${ctlEsc(short)}</span></span>` : ''}
   </div>`;
 }
 function applyLiveState(snap, source){

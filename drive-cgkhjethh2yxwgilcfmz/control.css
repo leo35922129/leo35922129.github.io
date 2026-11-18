@@ -30,9 +30,13 @@
   border-radius:999px;padding:4px 11px;font-size:15px;font-weight:600}
 /* v76: state badge at the right end, bigger; timestamp takes the left and truncates instead of colliding */
 .ctl-status-top .ctl-pill{flex:none;margin-left:auto;font-size:18px;padding:7px 16px;line-height:1.2}
-.ctl-status-top .ctl-live{flex:1 1 auto;min-width:0;font-size:14px}
-.ctl-status-top .ctl-live i{flex:none}
-.ctl-status-top .ctl-live .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ctl-status-top{justify-content:flex-end}
+/* v76: Live / Last seen sits at the right end of the Refresh row, one line */
+.ctl-refresh{flex-wrap:nowrap}
+.ctl-refresh .ctl-refresh-btn,.ctl-refresh .ctl-wake-refresh{flex:none;white-space:nowrap}
+.ctl-refresh .ctl-live{margin-left:auto;flex:0 1 auto;min-width:0;font-size:14px;white-space:nowrap}
+.ctl-refresh .ctl-live i{flex:none}
+.ctl-refresh .ctl-live .t{overflow:hidden;text-overflow:ellipsis;min-width:0}
 .ctl-pill.drive{background:#2a2210;color:var(--amb)}
 .ctl-live{color:var(--grn);font-size:15px;font-weight:600;display:flex;align-items:center;gap:5px}
 .ctl-live i{width:7px;height:7px;border-radius:50%;background:var(--grn);display:block;box-shadow:0 0 0 3px rgba(52,199,89,.18)}
