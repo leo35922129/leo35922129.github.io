@@ -29,8 +29,10 @@
 .ctl-pill{display:inline-flex;align-items:center;gap:6px;background:#1e2228;color:var(--tx);
   border-radius:999px;padding:4px 11px;font-size:15px;font-weight:600}
 /* v76: state badge at the right end, bigger; timestamp takes the left and truncates instead of colliding */
-.ctl-status-top .ctl-pill{flex:none;margin-left:auto;font-size:18px;padding:7px 16px;line-height:1.2}
-.ctl-status-top{justify-content:flex-end}
+/* v76: state badge on the battery/range row, right end, centered on the 44px numbers */
+.ctl-hero{grid-template-columns:auto auto 1fr;column-gap:14px}
+.ctl-hero-state{justify-self:end;align-self:start;height:44px;display:flex;align-items:center}
+.ctl-hero-state .ctl-pill{font-size:18px;padding:7px 16px;line-height:1.2;white-space:nowrap}
 /* v76: Live / Last seen sits at the right end of the Refresh row, one line */
 .ctl-refresh{flex-wrap:nowrap}
 .ctl-refresh .ctl-refresh-btn,.ctl-refresh .ctl-wake-refresh{flex:none;white-space:nowrap}

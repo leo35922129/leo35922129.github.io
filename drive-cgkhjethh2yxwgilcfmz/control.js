@@ -114,12 +114,10 @@ function paintControlHome(main){
   const swVer = dash(st.software_version);
   main.innerHTML = `
     <section class="ctl-status">
-      <div class="ctl-status-top">
-        <span class="ctl-pill${driving ? ' drive' : ''}">${driveLabel}</span>
-      </div>
       <div class="ctl-hero">
         <div><div class="n bat ${st.battery_pct == null ? '' : (+st.battery_pct >= 50 ? 'lv-ok' : +st.battery_pct >= 20 ? 'lv-mid' : 'lv-low')}">${st.battery_pct == null ? '—' : st.battery_pct}${st.battery_pct == null ? '' : '<small>%</small>'}</div><div class="k">Battery</div></div>
         <div><div class="n rng">${st.rated_range_mi == null ? '—' : st.rated_range_mi}${st.rated_range_mi == null ? '' : '<small> mi</small>'}</div><div class="k">Rated range</div></div>
+        <div class="ctl-hero-state"><span class="ctl-pill${driving ? ' drive' : ''}" title="${ctlEsc(driveLabel)}" aria-label="${ctlEsc(driveLabel)}">${driving ? 'Driving' : 'Parked'}</span></div>
       </div>
       <div class="ctl-chips">
         <div class="ctl-chip${st.locked === false ? ' alert' : ''}">
