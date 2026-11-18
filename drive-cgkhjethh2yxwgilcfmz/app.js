@@ -66,6 +66,9 @@ async function unlock(pass) {
   localStorage.setItem('ht_key', btoa(String.fromCharCode(...raw)));
   localStorage.setItem('ht_salt', blob.salt);
   S.key = raw; S.meta = meta;
+  if (typeof afterTrackerUnlock === 'function') {
+    try { await afterTrackerUnlock(pass); } catch (e) {}
+  }
 }
 async function loadMeta() {
   const blob = await getBlob('d/meta.json');

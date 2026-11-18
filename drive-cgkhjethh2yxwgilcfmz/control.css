@@ -161,3 +161,8 @@
 .sw-notes h3{font-size:18px}
 .sw-time .ctl-row{font-size:15px}
 .sw-blank{font-size:inherit}
+
+.ctl-result{margin:0 2px 10px;font-size:14px;line-height:1.4}
+.ctl-result.ok{color:var(--grn)}
+.ctl-result.err{color:var(--risk)}
+.ctl-confirm #ctlpin{letter-spacing:.18em}

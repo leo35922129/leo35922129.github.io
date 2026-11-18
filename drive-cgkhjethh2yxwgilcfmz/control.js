@@ -1,4 +1,4 @@
-/* Control + Software UI. Commands are disabled until Lei approves the key copy. No tokens. */
+/* Control + Software UI. Commands go to the droplet API. No tokens or PINs in this file. */
 'use strict';
 const CONTROL = {
   view: 'home',          // home | software | software-detail
@@ -6,9 +6,13 @@ const CONTROL = {
   notes: null,
   waking: false,
   wakeLabel: 'Waking truck…',
-  confirm: null,         // {id, title, word, hint}
-  st: null
+  confirm: null,         // {id, title, word, go, body, cmd}
+  st: null,
+  busy: false,
+  result: null           // {ok, text}
 };
+const CTL_API = 'https://146-190-255-1.sslip.io/control';
+const CTL_TOKEN_KEY = 'ht_control_token';
 
 const ctlIco = (d, box='0 0 24 24') =>
   `<svg viewBox="${box}" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
@@ -146,7 +150,7 @@ function paintControlHome(main){
     </section>
 
     <div class="ctl-sec">Quick controls</div>
-    <p class="ctl-soon">Remote controls coming soon</p>
+    ${CONTROL.result ? `<p class="ctl-result${CONTROL.result.ok ? ' ok' : ' err'}">${ctlEsc(CONTROL.result.text)}</p>` : ''}
     <div class="ctl-grid">
       ${wideClimate(st)}
       ${btn('lock', 'Lock', st.locked == null ? '—' : (st.locked ? 'Locked' : 'Unlocked'), ICONS.lock, !!st.locked)}
@@ -166,14 +170,13 @@ function paintControlHome(main){
     </div>
 
     <div class="ctl-sec risk">Needs confirm</div>
-    <p class="ctl-soon">These stay behind a typed confirm when remote controls are enabled. They are disabled for now.</p>
+    <p class="ctl-soon">These require a typed confirm and your PIN each time.</p>
     <div class="ctl-risk">
-      ${rbtn('unlock', 'Unlock', 'Type UNLOCK to confirm', ICONS.unlock)}
-      ${rbtn('tonneau-open', 'Open tonneau', 'Type OPEN to confirm', ICONS.tonneau)}
-      ${rbtn('frunk', 'Open frunk', 'There is no frunk close · type FRUNK', ICONS.frunk)}
-      ${rbtn('trunk', 'Open trunk', 'Type TRUNK to confirm', ICONS.trunk)}
-      ${rbtn('windows-vent', 'Vent windows', 'Type VENT to confirm', ICONS.window)}
-      ${rbtn('remote-start', 'Remote start', 'Type START to confirm', ICONS.start)}
+      ${rbtn('unlock', 'Unlock', 'Type UNLOCK and your PIN', ICONS.unlock)}
+      ${rbtn('tonneau-open', 'Open tonneau', 'Type OPEN and your PIN', ICONS.tonneau)}
+      ${rbtn('frunk', 'Open frunk', 'There is no frunk close · type FRUNK and your PIN', ICONS.frunk)}
+      ${rbtn('trunk', 'Open trunk', 'Type TRUNK and your PIN', ICONS.trunk)}
+      ${rbtn('windows-vent', 'Vent windows', 'Type VENT and your PIN', ICONS.window)}
     </div>
 
     <div class="ctl-sec">Automations</div>
@@ -187,38 +190,38 @@ function paintControlHome(main){
 
 function heatLabel(n){ return n ? ['Off','Low','Med','High'][n] || String(n) : 'Off'; }
 function btn(id, name, st, icon, on){
-  return `<button type="button" class="ctl-btn${on?' on':''}" data-act="${id}" disabled aria-disabled="true"><span class="ic">${icon}</span><span class="nm">${name}</span><span class="st">${ctlEsc(dash(st))}</span></button>`;
+  return `<button type="button" class="ctl-btn${on?' on':''}" data-act="${id}"${CONTROL.busy?' disabled':''}><span class="ic">${icon}</span><span class="nm">${name}</span><span class="st">${ctlEsc(dash(st))}</span></button>`;
 }
 function rbtn(id, name, st, icon){
-  return `<button type="button" class="ctl-rbtn" data-act="${id}" disabled aria-disabled="true"><span class="ic">${icon}</span><span><div class="nm">${name}</div><div class="st">${ctlEsc(st)}</div></span></button>`;
+  return `<button type="button" class="ctl-rbtn" data-act="${id}"${CONTROL.busy?' disabled':''}><span class="ic">${icon}</span><span><div class="nm">${name}</div><div class="st">${ctlEsc(st)}</div></span></button>`;
 }
 function wideClimate(st){
   const onoff = st.climate_on == null ? '—' : (st.climate_on ? 'On' : 'Off');
-  return `<div class="ctl-btn wide ${st.climate_on?'on':''}" aria-disabled="true">
+  return `<div class="ctl-btn wide ${st.climate_on?'on':''}">
     <span class="ic">${ICONS.climate}</span>
     <div class="grow"><div class="nm">Climate</div><div class="st">${onoff} · cabin ${st.cabin_f == null ? '—' : st.cabin_f + '°F'}</div></div>
     <div class="ctl-actions">
       <div class="ctl-step">
-        <button type="button" data-act="temp-down" aria-label="Lower temperature" disabled>−</button>
+        <button type="button" data-act="temp-down" aria-label="Lower temperature"${CONTROL.busy?' disabled':''}>−</button>
         <span class="v">${st.set_temp_f == null ? '—' : st.set_temp_f + '°'}</span>
-        <button type="button" data-act="temp-up" aria-label="Raise temperature" disabled>+</button>
+        <button type="button" data-act="temp-up" aria-label="Raise temperature"${CONTROL.busy?' disabled':''}>+</button>
       </div>
-      <button type="button" class="ctl-mini" data-act="climate" disabled>${st.climate_on?'Turn off':'Turn on'}</button>
+      <button type="button" class="ctl-mini" data-act="climate"${CONTROL.busy?' disabled':''}>${st.climate_on?'Turn off':'Turn on'}</button>
     </div>
   </div>`;
 }
 function wideCharge(st){
   const stline = st.plugged_in == null && !st.charging_state ? '—' : ((st.plugged_in ? ctlEsc(st.charging_state || 'Plugged in') : 'Unplugged') + ' · limit ' + (st.charge_limit_pct == null ? '—' : st.charge_limit_pct + '%'));
-  return `<div class="ctl-btn wide" aria-disabled="true">
+  return `<div class="ctl-btn wide">
     <span class="ic">${ICONS.bolt}</span>
     <div class="grow"><div class="nm">Charging</div><div class="st">${stline}</div></div>
     <div class="ctl-actions">
       <div class="ctl-step">
-        <button type="button" data-act="limit-down" aria-label="Lower charge limit" disabled>−</button>
+        <button type="button" data-act="limit-down" aria-label="Lower charge limit"${CONTROL.busy?' disabled':''}>−</button>
         <span class="v">${st.charge_limit_pct == null ? '—' : st.charge_limit_pct + '%'}</span>
-        <button type="button" data-act="limit-up" aria-label="Raise charge limit" disabled>+</button>
+        <button type="button" data-act="limit-up" aria-label="Raise charge limit"${CONTROL.busy?' disabled':''}>+</button>
       </div>
-      <button type="button" class="ctl-mini" data-act="charge-toggle" disabled>${(st.charging_state||'').toLowerCase()==='charging'?'Stop':'Start'}</button>
+      <button type="button" class="ctl-mini" data-act="charge-toggle"${CONTROL.busy?' disabled':''}>${(st.charging_state||'').toLowerCase()==='charging'?'Stop':'Start'}</button>
     </div>
   </div>`;
 }
@@ -346,9 +349,10 @@ function paintConfirm(){
   body.innerHTML = `<div class="ctl-confirm">
     <h3>${ctlEsc(c.title)}</h3>
     <p>${ctlEsc(c.body)}</p>
-    <label for="ctlconfirm">Type ${c.word} to confirm</label>
-    <input id="ctlconfirm" autocomplete="off" autocapitalize="characters" placeholder="${ctlEsc(c.word)}">
-    <p class="soon">Remote controls coming soon. This confirm step is shown for design only and will not send a command.</p>
+    <label for="ctlconfirm">Type ${ctlEsc(c.word)} to confirm</label>
+    <input id="ctlconfirm" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="${ctlEsc(c.word)}">
+    <label for="ctlpin">8-digit PIN</label>
+    <input id="ctlpin" type="password" inputmode="numeric" maxlength="8" autocomplete="off" pattern="[0-9]*" placeholder="••••••••">
     <div class="row">
       <button type="button" class="cancel" data-act="confirm-cancel">Cancel</button>
       <button type="button" class="go" data-act="confirm-go" disabled>${ctlEsc(c.go)}</button>
@@ -356,6 +360,18 @@ function paintConfirm(){
   </div>`;
   sheet.classList.remove('hidden');
   sheet.classList.add('ctl-sheet');
+  const word = document.getElementById('ctlconfirm');
+  const pin = document.getElementById('ctlpin');
+  const go = body.querySelector('.ctl-confirm .go');
+  const sync = () => {
+    const ok = (word.value || '').trim().toUpperCase() === c.word && /^\d{8}$/.test(pin.value || '');
+    go.disabled = !ok || CONTROL.busy;
+  };
+  word.addEventListener('input', sync);
+  pin.addEventListener('input', sync);
+  word.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); pin.focus(); } });
+  pin.addEventListener('keydown', ev => { if (ev.key === 'Enter' && !go.disabled) { ev.preventDefault(); go.click(); } });
+  setTimeout(() => word.focus(), 50);
 }
 function closeConfirm(){
   CONTROL.confirm = null;
@@ -364,12 +380,11 @@ function closeConfirm(){
 }
 
 const RISK = {
-  unlock: {title:'Unlock Happy Truck?', word:'UNLOCK', go:'Unlock', body:'This is a risky command. In v1 it also needs a typed confirm on top of the passcode that already opened the tracker.'},
-  'tonneau-open': {title:'Open the tonneau?', word:'OPEN', go:'Open tonneau', body:'The tonneau will open. Type OPEN to confirm.'},
-  frunk: {title:'Open the frunk?', word:'FRUNK', go:'Open frunk', body:'There is no remote frunk close. Type FRUNK to confirm.'},
-  trunk: {title:'Open the trunk?', word:'TRUNK', go:'Open trunk', body:'Type TRUNK to confirm.'},
-  'windows-vent': {title:'Vent the windows?', word:'VENT', go:'Vent windows', body:'The windows will vent. Type VENT to confirm.'},
-  'remote-start': {title:'Remote start Happy Truck?', word:'START', go:'Remote start', body:'Type START to confirm remote start.'}
+  unlock: {cmd:'unlock', title:'Unlock Happy Truck?', word:'UNLOCK', go:'Unlock', body:'This will unlock the truck. Type UNLOCK and enter your PIN to confirm.'},
+  'tonneau-open': {cmd:'tonneau-open', title:'Open the tonneau?', word:'OPEN', go:'Open tonneau', body:'The tonneau will open. Type OPEN and enter your PIN to confirm.'},
+  frunk: {cmd:'frunk-open', title:'Open the frunk?', word:'FRUNK', go:'Open frunk', body:'There is no remote frunk close. Type FRUNK and enter your PIN to confirm.'},
+  trunk: {cmd:'trunk', title:'Open the trunk?', word:'TRUNK', go:'Open trunk', body:'Type TRUNK and enter your PIN to confirm.'},
+  'windows-vent': {cmd:'windows-vent', title:'Vent the windows?', word:'VENT', go:'Vent windows', body:'The windows will vent. Type VENT and enter your PIN to confirm.'}
 };
 
 function handleControlClick(e){
@@ -380,7 +395,7 @@ function handleControlClick(e){
   e.stopPropagation();
   if (act === 'confirm-cancel') { closeConfirm(); return false; }
   if (act === 'confirm-go') {
-    // Commands are not enabled. Never pretend the command succeeded.
+    void submitRiskyCommand();
     return false;
   }
   if (act === 'open-software') { CONTROL.view = 'software'; CONTROL.detail = null; renderControl(); return false; }
@@ -391,12 +406,188 @@ function handleControlClick(e){
     return false;
   }
   if (RISK[act]) {
-    CONTROL.confirm = RISK[act];
+    CONTROL.confirm = Object.assign({id: act}, RISK[act]);
     paintConfirm();
     return false;
   }
-  // All vehicle commands are disabled until remote control is approved.
+  void runSafeCommand(act);
   return false;
+}
+
+function ctlToken(){
+  try { return localStorage.getItem(CTL_TOKEN_KEY) || ''; } catch (e) { return ''; }
+}
+
+async function afterTrackerUnlock(pass){
+  // Keep the passcode in memory for this page visit only, never in localStorage or this file.
+  if (pass) CONTROL._pass = pass;
+  try { await mintControlSession(); } catch (e) {}
+}
+
+async function mintControlSession(){
+  const pass = CONTROL._pass;
+  if (!pass) return !!ctlToken();
+  const r = await fetch(CTL_API + '/session', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({passcode: pass})
+  });
+  const data = await r.json().catch(() => ({}));
+  if (data && data.ok && data.token) {
+    try { localStorage.setItem(CTL_TOKEN_KEY, data.token); } catch (e) {}
+    return true;
+  }
+  return false;
+}
+
+function applyCommandState(snap){
+  if (!snap || !snap.present) return;
+  const st = CONTROL.st || (CONTROL.st = {});
+  if (snap.battery != null) st.battery_pct = snap.battery;
+  if (snap.range != null) st.rated_range_mi = Math.round(Number(snap.range));
+  if (snap.locked != null) st.locked = snap.locked;
+  if (snap.climate_on != null) st.climate_on = snap.climate_on;
+  if (snap.set_temp_f != null) st.set_temp_f = snap.set_temp_f;
+  if (snap.inside_f != null) st.cabin_f = snap.inside_f;
+  if (snap.outside_f != null) st.outside_f = snap.outside_f;
+  if (snap.charging != null) {
+    st.charging_state = snap.charging;
+    const ch = String(snap.charging).toLowerCase();
+    st.plugged_in = ch !== 'disconnected' && ch !== 'unplugged' && ch !== '';
+  }
+  if (snap.charge_limit != null) st.charge_limit_pct = snap.charge_limit;
+  if (snap.sentry != null) st.sentry = snap.sentry;
+  if (snap.state != null) st.vehicle_state = snap.state;
+  st.last_seen_et = new Date().toLocaleTimeString('en-US', {timeZone:'America/Detroit', hour:'numeric', minute:'2-digit'}) + ' ET';
+}
+
+function setCtlResult(ok, text){
+  CONTROL.result = {ok: !!ok, text: text || (ok ? 'Done' : 'Command failed')};
+}
+
+function nextHeat(n){
+  const cur = Number(n) || 0;
+  const nxt = cur >= 3 ? 0 : cur + 1;
+  return ['off','low','medium','high'][nxt];
+}
+
+function buildSafePayload(act){
+  const st = CONTROL.st || {};
+  if (act === 'lock') return {cmd: 'lock'};
+  if (act === 'sentry') return {cmd: st.sentry ? 'sentry-off' : 'sentry-on'};
+  if (act === 'climate') return {cmd: st.climate_on ? 'climate-off' : 'climate-on'};
+  if (act === 'temp-down' || act === 'temp-up') {
+    if (st.set_temp_f == null) return {error: 'Set temperature is not available yet.'};
+    const t = Number(st.set_temp_f) + (act === 'temp-up' ? 1 : -1);
+    if (t < 50 || t > 90) return {error: 'Temperature must stay between 50 and 90°F.'};
+    return {cmd: 'climate-set-temp', temp_f: t};
+  }
+  if (act === 'charge-toggle') {
+    const ch = String(st.charging_state || '').toLowerCase();
+    return {cmd: ch === 'charging' ? 'charging-stop' : 'charging-start'};
+  }
+  if (act === 'limit-down' || act === 'limit-up') {
+    if (st.charge_limit_pct == null) return {error: 'Charge limit is not available yet.'};
+    const n = Number(st.charge_limit_pct) + (act === 'limit-up' ? 1 : -1);
+    if (n < 50 || n > 100) return {error: 'Charge limit must stay between 50 and 100%.'};
+    return {cmd: 'charging-set-limit', percent: n};
+  }
+  if (act === 'wheel') return {cmd: 'steering-wheel-heater', state: st.steering_heat ? 'off' : 'on'};
+  if (act === 'seat-l') return {cmd: 'seat-heater', seat: 'front-left', level: nextHeat(st.seat_heater_left)};
+  if (act === 'seat-r') return {cmd: 'seat-heater', seat: 'front-right', level: nextHeat(st.seat_heater_right)};
+  if (act === 'honk') return {cmd: 'honk'};
+  if (act === 'flash') return {cmd: 'flash-lights'};
+  if (act === 'windows-close') return {cmd: 'windows-close'};
+  if (act === 'tonneau-close') return {cmd: 'tonneau-close'};
+  if (act === 'port') return {cmd: st.charge_port_open ? 'charge-port-close' : 'charge-port-open'};
+  if (act === 'media') return {cmd: 'media-toggle-playback'};
+  if (act === 'wake') return {cmd: 'wake'};
+  if (act === 'defrost') return {error: 'Defrost is not available in this version.'};
+  return {error: 'That control is not available in this version.'};
+}
+
+async function ctlApi(path, body, token){
+  const headers = {'Content-Type': 'application/json'};
+  if (token) headers.Authorization = 'Bearer ' + token;
+  const r = await fetch(CTL_API + path, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body || {})
+  });
+  const data = await r.json().catch(() => ({}));
+  return {status: r.status, data};
+}
+
+async function sendCommand(payload){
+  let token = ctlToken();
+  if (!token && CONTROL._pass) {
+    await mintControlSession();
+    token = ctlToken();
+  }
+  if (!token) {
+    return {ok: false, error: 'Unlock the tracker again to enable remote controls.'};
+  }
+  let res = await ctlApi('/command', payload, token);
+  if (res.status === 401 && CONTROL._pass) {
+    await mintControlSession();
+    token = ctlToken();
+    if (token) res = await ctlApi('/command', payload, token);
+  }
+  const d = res.data || {};
+  if (res.status === 401) return {ok: false, error: 'Session expired. Unlock the tracker again to use controls.'};
+  if (res.status === 429) return {ok: false, error: 'Too many requests. Try again in a minute.'};
+  if (res.status === 503) return {ok: false, error: 'Remote control is temporarily disabled.'};
+  if (res.status === 403) return {ok: false, error: d.error === 'confirm required' || d.error === 'confirm mismatch' ? 'Confirm word did not match.' : (d.error === 'pin required' || d.error === 'auth failed' ? 'PIN was not accepted.' : (d.error === 'risky disabled' ? 'Risky commands are locked. Ask me to reset them.' : (d.error || 'Command not allowed')))};
+  if (d.state) applyCommandState(d.state);
+  if (d.ok) return {ok: true, detail: d.detail, data: d};
+  return {ok: false, error: d.error || d.detail || 'Command failed'};
+}
+
+async function runSafeCommand(act){
+  if (CONTROL.busy) return;
+  const payload = buildSafePayload(act);
+  if (payload.error) { setCtlResult(false, payload.error); renderControl(); return; }
+  CONTROL.busy = true;
+  CONTROL.result = null;
+  showWakeThen('Waking truck…');
+  try {
+    const res = await sendCommand(payload);
+    setCtlResult(res.ok, res.ok ? 'Done' : (res.error || 'Command failed'));
+  } catch (e) {
+    setCtlResult(false, 'Could not reach the command service.');
+  } finally {
+    CONTROL.busy = false;
+    CONTROL.waking = false;
+    clearWake();
+    renderControl();
+  }
+}
+
+async function submitRiskyCommand(){
+  const c = CONTROL.confirm;
+  if (!c || CONTROL.busy) return;
+  const wordEl = document.getElementById('ctlconfirm');
+  const pinEl = document.getElementById('ctlpin');
+  const word = (wordEl && wordEl.value || '').trim();
+  const pin = (pinEl && pinEl.value || '');
+  if (word.toUpperCase() !== c.word || !/^\d{8}$/.test(pin)) return;
+  const payload = {cmd: c.cmd, confirm: c.word, pin: pin};
+  if (pinEl) pinEl.value = '';
+  closeConfirm();
+  CONTROL.busy = true;
+  CONTROL.result = null;
+  showWakeThen('Waking truck…');
+  try {
+    const res = await sendCommand(payload);
+    setCtlResult(res.ok, res.ok ? 'Done' : (res.error || 'Command failed'));
+  } catch (e) {
+    setCtlResult(false, 'Could not reach the command service.');
+  } finally {
+    CONTROL.busy = false;
+    CONTROL.waking = false;
+    clearWake();
+    renderControl();
+  }
 }
 
 function showWakeThen(label){
@@ -429,5 +620,6 @@ function hookControl(){
 window.handleControlClick = handleControlClick;
 window.renderControl = renderControl;
 window.ctlBack = ctlBack;
+window.afterTrackerUnlock = afterTrackerUnlock;
 document.addEventListener('DOMContentLoaded', hookControl);
 if (document.readyState !== 'loading') hookControl();
