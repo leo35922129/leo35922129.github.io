@@ -684,8 +684,8 @@ async function refreshStatus(opts){
     try {
       const res = await sendCommand({cmd: 'wake'});
       const st = CONTROL.st || {};
-      if (res.ok && res.applied) setCtlResult(true, 'Confirmed');
-      else if (res.ok) setCtlResult(true, 'Sent, but the current state could not be confirmed.');
+      if (res.ok && res.confirmed) setCtlResult(true, 'Confirmed');
+      else if (res.ok) setCtlResult(true, 'Sent, but not yet confirmed.');
       else setCtlResult(false, res.error || 'Wake failed');
     } catch (e) {
       setCtlResult(false, 'Could not reach the command service.');
@@ -819,9 +819,10 @@ async function sendCommand(payload){
   if (res.status === 403) return {ok: false, error: d.error === 'confirm required' || d.error === 'confirm mismatch' ? 'Confirm word did not match.' : (d.error === 'pin required' || d.error === 'auth failed' ? 'PIN was not accepted.' : (d.error === 'risky disabled' ? 'Risky commands are locked. Ask me to reset them.' : (d.error || 'Command not allowed')))};
   let applied = false;
   if (d.state) applied = !!applyCommandState(d.state);
-  const disagree = applied ? commandDisagrees(payload, CONTROL.st) : '';
-  if (d.ok) return {ok: true, detail: d.detail, data: d, applied, disagree};
-  return {ok: false, error: d.error || d.detail || 'Command failed', applied, disagree};
+  const confirmed = d.confirmed === true;
+  const disagree = confirmed ? commandDisagrees(payload, CONTROL.st) : '';
+  if (d.ok) return {ok: true, detail: d.detail, data: d, applied, confirmed, disagree};
+  return {ok: false, error: d.error || d.detail || 'Command failed', applied, confirmed, disagree};
 }
 
 async function runSafeCommand(act){
@@ -836,8 +837,8 @@ async function runSafeCommand(act){
     const res = await sendCommand(payload);
     if (!res.ok) setCtlResult(false, res.error || 'Command failed');
     else if (res.disagree) setCtlResult(false, res.disagree);
-    else if (res.applied) setCtlResult(true, 'Confirmed');
-    else setCtlResult(true, 'Sent, but the current state could not be confirmed.');
+    else if (res.confirmed) setCtlResult(true, 'Confirmed');
+    else setCtlResult(true, 'Sent, but not yet confirmed.');
   } catch (e) {
     setCtlResult(false, 'Could not reach the command service.');
   } finally {
@@ -867,8 +868,8 @@ async function submitRiskyCommand(){
     const res = await sendCommand(payload);
     if (!res.ok) setCtlResult(false, res.error || 'Command failed');
     else if (res.disagree) setCtlResult(false, res.disagree);
-    else if (res.applied) setCtlResult(true, 'Confirmed');
-    else setCtlResult(true, 'Sent, but the current state could not be confirmed.');
+    else if (res.confirmed) setCtlResult(true, 'Confirmed');
+    else setCtlResult(true, 'Sent, but not yet confirmed.');
   } catch (e) {
     setCtlResult(false, 'Could not reach the command service.');
   } finally {
