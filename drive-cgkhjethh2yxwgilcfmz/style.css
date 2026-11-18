@@ -104,7 +104,7 @@ header{
 
 .daterow{grid-column:2;display:flex;align-items:center;justify-content:center;min-width:0;gap:18px}
 .title{
-  font-size:22px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;
+  white-space:nowrap;
   text-align:center;
 }
 .nav{
@@ -434,7 +434,6 @@ footer{color:var(--mut);font-size:12px;padding:8px 14px calc(var(--tabbar-h) + 1
 @media(min-width:700px){
   header,main,.summary,.effnote,footer{max-width:760px;margin-left:auto;margin-right:auto}
   header{max-width:760px}
-  .title{font-size:24px}
   .stat .v{font-size:31px}.stat .v small{font-size:15px}
   .stat{min-height:152px;padding:18px 10px 16px}
   .tg b{font-size:18px}
@@ -587,7 +586,7 @@ footer a{color:var(--acc)}
   color:var(--tx);display:flex;align-items:center;justify-content:center;padding:0;flex:none;z-index:1;
 }
 .auto-htitle{
-  flex:1;font-size:22px;font-weight:600;letter-spacing:-.02em;text-align:center;
+  flex:1;text-align:center;
   pointer-events:none;
 }
 .autohead:not(.is-edit) .auto-htitle{text-align:left;padding-left:2px}
@@ -686,8 +685,7 @@ footer a{color:var(--acc)}
 }
 .rpt-hblock{flex:1;min-width:0}
 .rpt-htitle{
-  /* Match .auto-htitle typography; wrap so it doesn't overlap Archive. */
-  font-size:22px;font-weight:600;letter-spacing:-.02em;
+  /* Typography comes from the shared page-title rule; wrap so it doesn't overlap Archive. */
   min-width:0;overflow-wrap:break-word;
 }
 .rpt-origin{
@@ -924,3 +922,7 @@ a.rp-src{
 .auto-field span{display:block;color:var(--mut);font-size:13px;font-weight:600;margin-bottom:6px}
 .auto-field input{width:100%;box-sizing:border-box;min-height:46px;border-radius:12px;border:1px solid var(--line);background:#0f1115;color:var(--tx);font-size:17px;padding:0 12px}
 .auto-sw[disabled]{opacity:.45}
+
+/* v72: one shared page-title style for every tab (Saving, Energy, Vehicle Control,
+   Software, Automations, News). Change the size here only. */
+#app .title,#app .auto-htitle,#app .rpt-htitle{font-size:22px;font-weight:600;letter-spacing:-.02em}

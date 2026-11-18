@@ -17,7 +17,6 @@
 #app.mode-control .reporthead{display:none}
 .ctlhead{display:none;align-items:center;gap:8px;min-height:52px;padding:8px 0 11px;border-bottom:1px solid #24282f;position:relative}
 #app.mode-control .ctlhead{display:flex;min-height:56px}
-#app.mode-control .ctlhead .auto-htitle{font-size:26px;font-weight:600;letter-spacing:-.02em}
 #app.mode-control .ctlhead:not(.is-sub) .auto-htitle{text-align:left;padding-left:2px}
 #app.mode-control .ctlhead.is-sub .auto-htitle{text-align:center;padding:0 48px}
 
