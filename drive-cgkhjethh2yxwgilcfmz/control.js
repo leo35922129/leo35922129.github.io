@@ -148,10 +148,11 @@ function paintControlHome(main){
           <span class="k">Sentry</span>
           <span class="v">${sentry}</span>
         </div>
-        <button type="button" class="ctl-chip nav" data-act="open-software" aria-label="Open software ${ctlEsc(String(swVer))}">
+        <button type="button" class="ctl-chip ctl-chip-link" data-act="open-software" aria-label="Open software ${ctlEsc(String(swVer))}">
           <span class="ic">${ICONS.software}</span>
           <span class="k">Software</span>
-          <span class="v">${ctlEsc(String(swVer))}<span class="ctl-chev">${ICONS.chev}</span></span>
+          <span class="v">${ctlEsc(String(swVer)).replace('.', '.<wbr>')}</span>
+          <span class="ctl-chev" aria-hidden="true">${ICONS.chev}</span>
         </button>
       </div>
       <p class="ctl-src">${ctlEsc(srcLine)}</p>

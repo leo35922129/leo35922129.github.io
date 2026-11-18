@@ -51,10 +51,12 @@
 .ctl-chip .ic svg{width:16px;height:16px;display:block}
 .ctl-chip .k{color:var(--mut);font-size:14px;font-weight:500;letter-spacing:.02em;line-height:1.2}
 .ctl-chip .v{font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2;display:block;width:100%;min-width:0;overflow:visible}
-.ctl-chip.nav{cursor:pointer;position:relative}
-.ctl-chip.nav .v{display:block;font-size:17px;letter-spacing:-.04em;flex-wrap:nowrap;overflow:visible}
-.ctl-chip.nav .ctl-chev{position:absolute;top:10px;right:5px;width:14px;height:14px;display:block;overflow:hidden;margin-left:0}
-.ctl-chip.nav .ctl-chev svg{width:14px;height:14px;display:block}
+/* v74: the Software tile is a <button>; reset button defaults so it matches the other tiles exactly.
+   (It used to share the date arrows' .nav class, whose fixed height:32px clipped the tile.) */
+.ctl-chip-link{cursor:pointer;position:relative;height:auto;-webkit-appearance:none;appearance:none;margin:0;justify-content:flex-start;-webkit-tap-highlight-color:transparent}
+.ctl-chip-link .v{padding-right:0}
+.ctl-chip-link .ctl-chev{position:absolute;top:10px;right:6px;width:14px;height:14px;display:block;color:var(--mut)}
+.ctl-chip-link .ctl-chev svg{width:14px;height:14px;display:block}
 .ctl-chip.on .ic{color:var(--ctl)}
 .ctl-chip.alert .ic,.ctl-chip.alert .v{color:var(--risk)}
 .ctl-src{color:var(--mut);font-size:13px;line-height:1.35;margin:8px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
