@@ -1330,7 +1330,7 @@ function autoChips(f) {
   const out = [];
   if (f.klass === 'ask') out.push('<span class="auto-chip ask">Ask first</span>');
   const m = AUTO_MODE_CHIP[f.mode || (f.klass === 'notify' ? 'notify' : f.klass === 'box' ? 'box' : (f.rule ? 'dry-run' : 'none'))];
-  if (m && !(f.klass === 'ask' && f.mode === 'live')) out.push(`<span class="auto-chip ${m[1]}">${m[0]}</span>`);
+  if (m) out.push(`<span class="auto-chip ${m[1]}">${m[0]}</span>`);
   return out.join('');
 }
 function autoMetaLine(f) {
@@ -1353,7 +1353,7 @@ function autoRunsBlock(f) {
   if (!f.rule) return f.note ? `<p class="auto-small">${esc(f.note)}</p>` : '';
   const modeTxt = f.klass === 'notify' ? 'Notify only. Sends you an alert and never touches the truck.'
     : f.klass === 'ask' ? ('Asks you first. Nothing runs until you tap Approve and enter the confirm word' + (f.mode === 'live' ? ' and your PIN.' : '. Dry run now: approving won’t touch the truck.'))
-    : (f.mode === 'live' ? 'Runs on its own (climate, seat and wheel heat only).' : 'Dry run: decides and alerts you, but sends nothing to the truck until Lead Operator signs off.');
+    : (f.mode === 'live' ? 'Runs on its own (climate, seat and wheel heat only).' : 'Dry run: decides and alerts you, but sends nothing to the truck.');
   const cmds = (f.command_labels || []).length ? `<div class="auto-lab">Can send:</div><p class="auto-act">${esc(f.command_labels.join(', '))}${f.klass === 'ask' ? ' (each needs your approval)' : ''}</p>` : '';
   const lr = f.last_run;
   return `<div class="auto-runs">
@@ -1419,7 +1419,11 @@ function autoMaster() {
   }
   const paused = !!st.paused;
   const sub = st.kill_switch ? 'Kill switch is on. Nothing runs.' : st.auth_stopped ? 'Stopped: Tesla login expired.' : paused ? 'Paused. Nothing runs until you turn this back on.'
-    : 'Running. Comfort and ask-first cards are in dry run until Lead Operator signs off.';
+    : (() => {
+      const cs = st.cards || [];
+      const live = cs.filter(c => c.mode === 'live').length, dry = cs.filter(c => c.on && c.mode === 'dry-run').length;
+      return `Running. ${live} live` + (dry ? `, ${dry} in dry run.` : '.') + ' Ask-first cards still wait for your Approve.';
+    })();
   const b = st.budgets || {};
   return `<div class="auto-master${paused || st.kill_switch ? ' paused' : ''}">
     <div class="auto-row">
