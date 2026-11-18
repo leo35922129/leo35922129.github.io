@@ -108,7 +108,7 @@ function paintControlHome(main){
   if (st.last_seen_et) srcParts.push((fresh ? 'Live ' : 'Last seen ') + st.last_seen_et);
   if (st.tessie_et && st.tessie_et !== st.last_seen_et) srcParts.push('Tessie ' + st.tessie_et);
   const srcLine = srcParts.length ? srcParts.join(' · ') : 'Status unavailable';
-  const cabin = (st.cabin_f == null && st.outside_f == null) ? '—' : `${dash(st.cabin_f)}° / ${dash(st.outside_f)}°`;
+  const cabin = (st.cabin_f == null && st.outside_f == null) ? '—' : `${dash(st.cabin_f)}°F / ${dash(st.outside_f)}°F`;
   const doors = st.locked == null ? '—' : (st.locked ? 'Locked' : 'Unlocked');
   const sentry = st.sentry == null ? '—' : (st.sentry ? 'On' : 'Off');
   const swVer = dash(st.software_version);
@@ -230,7 +230,7 @@ function wideClimate(st){
     <div class="ctl-actions">
       <div class="ctl-step">
         <button type="button" data-act="temp-down" aria-label="Lower temperature"${ctlDis()}>−</button>
-        <span class="v">${st.set_temp_f == null ? '—' : st.set_temp_f + '°'}</span>
+        <span class="v">${ctlSetpointF(st) == null ? '—' : ctlSetpointF(st) + '°F'}</span>
         <button type="button" data-act="temp-up" aria-label="Raise temperature"${ctlDis()}>+</button>
       </div>
       <button type="button" class="ctl-mini" data-act="climate"${ctlDis()}>${st.climate_on?'Turn off':'Turn on'}</button>
@@ -590,8 +590,15 @@ function ctlLiveLabel(st, fresh){
 }
 function ctlClimateLabel(st, fresh){
   if (st.climate_on == null) return '—';
-  const val = st.climate_on ? ('On · ' + dash(st.set_temp_f) + '°') : 'Off';
+  const sp = ctlSetpointF(st);
+  const val = st.climate_on ? ('On · ' + (sp == null ? '—' : sp + '°F')) : 'Off';
   return fresh ? val : ('Last known · ' + val);
+}
+function ctlSetpointF(st){
+  if (!st || st.set_temp_f == null || st.set_temp_f === '') return null;
+  const n = Number(st.set_temp_f);
+  if (!Number.isFinite(n)) return null;
+  return Math.round(n);
 }
 function ctlRefreshRow(){
   const busy = CONTROL.busy || CONTROL.refreshing;
@@ -657,7 +664,7 @@ function commandDisagrees(payload, st){
   if (cmd === 'climate-on' && st.climate_on === false) return 'Sent, but the truck reports climate is still off.';
   if (cmd === 'climate-off' && st.climate_on === true) return 'Sent, but the truck reports climate is still on.';
   if (cmd === 'climate-set-temp' && payload.temp_f != null && st.set_temp_f != null && Number(st.set_temp_f) !== Number(payload.temp_f)) {
-    return 'Sent, but the truck reports ' + st.set_temp_f + '°, not ' + payload.temp_f + '°.';
+    return 'Sent, but the truck reports ' + ctlSetpointF(st) + '°F, not ' + payload.temp_f + '°F.';
   }
   if (cmd === 'lock' && st.locked === false) return 'Sent, but the truck reports the doors are still unlocked.';
   if ((cmd === 'unlock' || cmd === 'door-unlock') && st.locked === true) return 'Sent, but the truck reports the doors are still locked.';
@@ -750,9 +757,10 @@ function buildSafePayload(act){
   if (act === 'sentry') return {cmd: st.sentry ? 'sentry-off' : 'sentry-on'};
   if (act === 'climate') return {cmd: st.climate_on ? 'climate-off' : 'climate-on'};
   if (act === 'temp-down' || act === 'temp-up') {
-    if (st.set_temp_f == null) return {error: 'Set temperature is not available yet.'};
-    const t = Number(st.set_temp_f) + (act === 'temp-up' ? 1 : -1);
-    if (t < 50 || t > 90) return {error: 'Temperature must stay between 50 and 90°F.'};
+    const cur = ctlSetpointF(st);
+    if (cur == null) return {error: 'Set temperature is not available yet.'};
+    const t = cur + (act === 'temp-up' ? 1 : -1);
+    if (t < 59 || t > 82) return {error: 'Temperature must stay between 59 and 82°F.'};
     return {cmd: 'climate-set-temp', temp_f: t};
   }
   if (act === 'charge-toggle') {
