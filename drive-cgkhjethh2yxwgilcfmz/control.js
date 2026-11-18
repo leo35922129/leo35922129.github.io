@@ -74,7 +74,7 @@ function setControlChrome(){
   const sub = CONTROL.view !== 'home';
   if (back) back.classList.toggle('hidden', !on || !sub);
   if (head) head.classList.toggle('is-sub', !!sub);
-  if (title) title.textContent = CONTROL.view === 'home' ? 'Control' : 'Software';
+  if (title) title.textContent = CONTROL.view === 'home' ? 'Vehicle Control' : 'Software';
 }
 
 function seedControlState(){
