@@ -9,7 +9,10 @@ const CONTROL = {
   confirm: null,         // {id, title, word, go, body, cmd}
   st: null,
   busy: false,
-  result: null           // {ok, text}
+  result: null,          // {ok, text}
+  enablePrompt: false,
+  enableError: '',
+  enableBusy: false
 };
 const CTL_API = 'https://146-190-255-1.sslip.io/control';
 const CTL_TOKEN_KEY = 'ht_control_token';
@@ -150,6 +153,7 @@ function paintControlHome(main){
     </section>
 
     <div class="ctl-sec">Quick controls</div>
+    ${ctlEnableBlock()}
     ${CONTROL.result ? `<p class="ctl-result${CONTROL.result.ok ? ' ok' : ' err'}">${ctlEsc(CONTROL.result.text)}</p>` : ''}
     <div class="ctl-grid">
       ${wideClimate(st)}
@@ -186,14 +190,26 @@ function paintControlHome(main){
   paintEmbeddedAutos();
   if (CONTROL.waking) paintWake();
   if (CONTROL.confirm) paintConfirm();
+  if (!ctlReady() && CONTROL.enablePrompt) {
+    const pinp = document.getElementById('ctlenablepass');
+    if (pinp) {
+      pinp.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter') { ev.preventDefault(); void submitEnable(); }
+      });
+      if (!CONTROL.enableBusy) setTimeout(() => pinp.focus(), 50);
+    }
+  }
 }
 
 function heatLabel(n){ return n ? ['Off','Low','Med','High'][n] || String(n) : 'Off'; }
+function ctlReady(){ return !!ctlToken(); }
+function ctlCmdDisabled(){ return CONTROL.busy || !ctlReady(); }
+function ctlDis(){ return ctlCmdDisabled() ? ' disabled' : ''; }
 function btn(id, name, st, icon, on){
-  return `<button type="button" class="ctl-btn${on?' on':''}" data-act="${id}"${CONTROL.busy?' disabled':''}><span class="ic">${icon}</span><span class="nm">${name}</span><span class="st">${ctlEsc(dash(st))}</span></button>`;
+  return `<button type="button" class="ctl-btn${on?' on':''}" data-act="${id}"${ctlDis()}><span class="ic">${icon}</span><span class="nm">${name}</span><span class="st">${ctlEsc(dash(st))}</span></button>`;
 }
 function rbtn(id, name, st, icon){
-  return `<button type="button" class="ctl-rbtn" data-act="${id}"${CONTROL.busy?' disabled':''}><span class="ic">${icon}</span><span><div class="nm">${name}</div><div class="st">${ctlEsc(st)}</div></span></button>`;
+  return `<button type="button" class="ctl-rbtn" data-act="${id}"${ctlDis()}><span class="ic">${icon}</span><span><div class="nm">${name}</div><div class="st">${ctlEsc(st)}</div></span></button>`;
 }
 function wideClimate(st){
   const onoff = st.climate_on == null ? '—' : (st.climate_on ? 'On' : 'Off');
@@ -202,11 +218,11 @@ function wideClimate(st){
     <div class="grow"><div class="nm">Climate</div><div class="st">${onoff} · cabin ${st.cabin_f == null ? '—' : st.cabin_f + '°F'}</div></div>
     <div class="ctl-actions">
       <div class="ctl-step">
-        <button type="button" data-act="temp-down" aria-label="Lower temperature"${CONTROL.busy?' disabled':''}>−</button>
+        <button type="button" data-act="temp-down" aria-label="Lower temperature"${ctlDis()}>−</button>
         <span class="v">${st.set_temp_f == null ? '—' : st.set_temp_f + '°'}</span>
-        <button type="button" data-act="temp-up" aria-label="Raise temperature"${CONTROL.busy?' disabled':''}>+</button>
+        <button type="button" data-act="temp-up" aria-label="Raise temperature"${ctlDis()}>+</button>
       </div>
-      <button type="button" class="ctl-mini" data-act="climate"${CONTROL.busy?' disabled':''}>${st.climate_on?'Turn off':'Turn on'}</button>
+      <button type="button" class="ctl-mini" data-act="climate"${ctlDis()}>${st.climate_on?'Turn off':'Turn on'}</button>
     </div>
   </div>`;
 }
@@ -217,11 +233,11 @@ function wideCharge(st){
     <div class="grow"><div class="nm">Charging</div><div class="st">${stline}</div></div>
     <div class="ctl-actions">
       <div class="ctl-step">
-        <button type="button" data-act="limit-down" aria-label="Lower charge limit"${CONTROL.busy?' disabled':''}>−</button>
+        <button type="button" data-act="limit-down" aria-label="Lower charge limit"${ctlDis()}>−</button>
         <span class="v">${st.charge_limit_pct == null ? '—' : st.charge_limit_pct + '%'}</span>
-        <button type="button" data-act="limit-up" aria-label="Raise charge limit"${CONTROL.busy?' disabled':''}>+</button>
+        <button type="button" data-act="limit-up" aria-label="Raise charge limit"${ctlDis()}>+</button>
       </div>
-      <button type="button" class="ctl-mini" data-act="charge-toggle"${CONTROL.busy?' disabled':''}>${(st.charging_state||'').toLowerCase()==='charging'?'Stop':'Start'}</button>
+      <button type="button" class="ctl-mini" data-act="charge-toggle"${ctlDis()}>${(st.charging_state||'').toLowerCase()==='charging'?'Stop':'Start'}</button>
     </div>
   </div>`;
 }
@@ -398,11 +414,33 @@ function handleControlClick(e){
     void submitRiskyCommand();
     return false;
   }
+  if (act === 'enable-controls') {
+    CONTROL.enablePrompt = true;
+    CONTROL.enableError = '';
+    renderControl();
+    return false;
+  }
+  if (act === 'enable-cancel') {
+    CONTROL.enablePrompt = false;
+    CONTROL.enableError = '';
+    renderControl();
+    return false;
+  }
+  if (act === 'enable-submit') {
+    void submitEnable();
+    return false;
+  }
   if (act === 'open-software') { CONTROL.view = 'software'; CONTROL.detail = null; renderControl(); return false; }
   if (act === 'open-version') { CONTROL.view = 'software-detail'; CONTROL.detail = actEl.dataset.ver; renderControl(); return false; }
   if (act === 'goto-auto') {
     if (typeof S !== 'undefined') { S.mode = 'automation'; localStorage.setItem('ht_mode', 'automation'); }
     if (typeof render === 'function') render();
+    return false;
+  }
+  if (!ctlReady()) {
+    CONTROL.enablePrompt = true;
+    CONTROL.enableError = '';
+    renderControl();
     return false;
   }
   if (RISK[act]) {
@@ -416,6 +454,62 @@ function handleControlClick(e){
 
 function ctlToken(){
   try { return localStorage.getItem(CTL_TOKEN_KEY) || ''; } catch (e) { return ''; }
+}
+function clearCtlToken(){
+  try { localStorage.removeItem(CTL_TOKEN_KEY); } catch (e) {}
+}
+function ctlEnableBlock(){
+  if (ctlReady()) return '';
+  const err = CONTROL.enableError ? `<p class="ctl-enable-err">${ctlEsc(CONTROL.enableError)}</p>` : '';
+  if (CONTROL.enablePrompt) {
+    return `<div class="ctl-enable" id="ctl-enable">
+      <p>Enter your tracker passcode to enable remote controls on this device for 30 days.</p>
+      <label for="ctlenablepass">Tracker passcode</label>
+      <input id="ctlenablepass" type="password" autocomplete="off" spellcheck="false"${CONTROL.enableBusy ? ' disabled' : ''}>
+      ${err}
+      <div class="row">
+        <button type="button" class="cancel" data-act="enable-cancel"${CONTROL.enableBusy ? ' disabled' : ''}>Cancel</button>
+        <button type="button" class="go" data-act="enable-submit"${CONTROL.enableBusy ? ' disabled' : ''}>Enable</button>
+      </div>
+    </div>`;
+  }
+  return `<div class="ctl-enable" id="ctl-enable">
+    <p>Remote controls need a one-time passcode on this device. They’re then good for 30 days.</p>
+    ${err}
+    <button type="button" class="ctl-enable-btn" data-act="enable-controls">Enable remote controls</button>
+  </div>`;
+}
+async function submitEnable(){
+  if (CONTROL.enableBusy) return;
+  const el = document.getElementById('ctlenablepass');
+  const pass = (el && el.value || '').trim().toLowerCase();
+  if (el) el.value = '';
+  if (!pass) {
+    CONTROL.enableError = 'Enter your tracker passcode.';
+    renderControl();
+    return;
+  }
+  CONTROL.enableBusy = true;
+  CONTROL.enableError = '';
+  renderControl();
+  try {
+    CONTROL._pass = pass;
+    const ok = await mintControlSession();
+    if (ok && ctlToken()) {
+      CONTROL.enablePrompt = false;
+      CONTROL.enableError = '';
+      setCtlResult(true, 'Remote controls enabled on this device.');
+    } else {
+      CONTROL._pass = '';
+      CONTROL.enableError = 'That passcode didn’t work. Try again.';
+    }
+  } catch (e) {
+    CONTROL._pass = '';
+    CONTROL.enableError = 'Could not reach the command service.';
+  } finally {
+    CONTROL.enableBusy = false;
+    renderControl();
+  }
 }
 
 async function afterTrackerUnlock(pass){
@@ -525,7 +619,8 @@ async function sendCommand(payload){
     token = ctlToken();
   }
   if (!token) {
-    return {ok: false, error: 'Unlock the tracker again to enable remote controls.'};
+    CONTROL.enablePrompt = true;
+    return {ok: false, error: 'Enable remote controls to continue.'};
   }
   let res = await ctlApi('/command', payload, token);
   if (res.status === 401 && CONTROL._pass) {
@@ -534,7 +629,12 @@ async function sendCommand(payload){
     if (token) res = await ctlApi('/command', payload, token);
   }
   const d = res.data || {};
-  if (res.status === 401) return {ok: false, error: 'Session expired. Unlock the tracker again to use controls.'};
+  if (res.status === 401) {
+    clearCtlToken();
+    CONTROL._pass = '';
+    CONTROL.enablePrompt = true;
+    return {ok: false, error: 'Session expired. Enable remote controls to continue.'};
+  }
   if (res.status === 429) return {ok: false, error: 'Too many requests. Try again in a minute.'};
   if (res.status === 503) return {ok: false, error: 'Remote control is temporarily disabled.'};
   if (res.status === 403) return {ok: false, error: d.error === 'confirm required' || d.error === 'confirm mismatch' ? 'Confirm word did not match.' : (d.error === 'pin required' || d.error === 'auth failed' ? 'PIN was not accepted.' : (d.error === 'risky disabled' ? 'Risky commands are locked. Ask me to reset them.' : (d.error || 'Command not allowed')))};
