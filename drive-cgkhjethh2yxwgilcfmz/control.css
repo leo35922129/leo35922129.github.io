@@ -1,8 +1,8 @@
 /* Control + Software. Original tokens only. */
 :root{--ctl:#5ec8c5;--ctl-dim:#1a3333;--risk:#ff6b5e}
 .tabbar.tabs-5 button{padding:4px 0 2px;min-width:0}
-.tabbar.tabs-5 .tab-lab{text-align:center;line-height:1.15;max-width:100%;font-size:10px}
-.tab-ctl svg{width:22px;height:22px;display:block;stroke:#6b7380;fill:none}
+.tabbar.tabs-5 .tab-lab{text-align:center;line-height:1.15;max-width:100%;font-size:13px}
+.tab-ctl svg{width:28px;height:28px;display:block;stroke:#6b7380;fill:none}
 .tabbar button.on[data-mode="control"]{color:var(--ctl)}
 .tabbar button.on[data-mode="control"] .tab-ctl svg{stroke:var(--ctl)}
 

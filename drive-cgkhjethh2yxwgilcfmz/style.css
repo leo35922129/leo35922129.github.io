@@ -20,7 +20,7 @@
   --bolt:#f5d031;
   --fsd:#4a8ce0;
   --panel:#1c2026;
-  --tabbar-h:calc(60px + env(safe-area-inset-bottom, 0px));
+  --tabbar-h:calc(72px + env(safe-area-inset-bottom, 0px));
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;height:100%}
@@ -546,24 +546,25 @@ footer a{color:var(--acc)}
 }
 .tabbar button{
   flex:1;background:none;border:0;color:var(--mut);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  min-height:52px;padding:4px 4px 2px;
-  font-size:10px;font-weight:500;letter-spacing:.02em;line-height:1.1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  min-height:64px;padding:4px 4px 2px;
+  font-size:13px;font-weight:500;letter-spacing:0;line-height:1.1;
 }
 .tabbar button.on{font-weight:600}
 .tabbar button.on[data-mode="saving"]{color:var(--grn)}
 .tabbar button.on[data-mode="energy"]{color:var(--bolt)}
 .tabbar button.on[data-mode="automation"]{color:var(--acc)}
-.tab-ico{width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.tab-ico{width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.tab-lab{white-space:nowrap}
 .tab-coin{
-  width:22px;height:22px;border-radius:50%;
+  width:28px;height:28px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:800;background:#1a1e24;color:#6b7380;line-height:1;
+  font-size:16px;font-weight:800;background:#1a1e24;color:#6b7380;line-height:1;
 }
 .tabbar button.on[data-mode="saving"] .tab-coin{background:var(--grn);color:#111}
-.tab-bolt svg{width:22px;height:22px;fill:#6b7380;display:block}
+.tab-bolt svg{width:28px;height:28px;fill:#6b7380;display:block}
 .tabbar button.on[data-mode="energy"] .tab-bolt svg{fill:var(--bolt)}
-.tab-auto svg{width:22px;height:22px;display:block;color:#6b7380;stroke:currentColor}
+.tab-auto svg{width:28px;height:28px;display:block;color:#6b7380;stroke:currentColor}
 .tab-auto svg .fg{fill:currentColor;stroke:none}
 .tabbar button.on[data-mode="automation"] .tab-auto svg{color:var(--acc);stroke:currentColor}
 
@@ -663,7 +664,7 @@ footer a{color:var(--acc)}
 :root{--rpt-orange:#ec682e;--rpt-card:#24272d}
 .tabbar.tabs-4 button{padding:4px 1px 2px;min-width:0}
 .tabbar.tabs-4 .tab-lab{text-align:center;line-height:1.15;max-width:100%}
-.tab-report svg{width:22px;height:22px;display:block;stroke:#6b7380}
+.tab-report svg{width:28px;height:28px;display:block;stroke:#6b7380}
 .tabbar button.on[data-mode="report"]{color:var(--rpt-orange)}
 .tabbar button.on[data-mode="report"] .tab-report svg{stroke:var(--rpt-orange)}
 
