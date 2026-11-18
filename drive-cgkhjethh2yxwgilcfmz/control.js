@@ -115,8 +115,8 @@ function paintControlHome(main){
   main.innerHTML = `
     <section class="ctl-status">
       <div class="ctl-status-top">
+        <span class="ctl-live${fresh ? '' : ' stale'}"><i></i><span class="t">${live}</span></span>
         <span class="ctl-pill${driving ? ' drive' : ''}">${driveLabel}</span>
-        <span class="ctl-live${fresh ? '' : ' stale'}"><i></i>${live}</span>
       </div>
       <div class="ctl-hero">
         <div><div class="n bat ${st.battery_pct == null ? '' : (+st.battery_pct >= 50 ? 'lv-ok' : +st.battery_pct >= 20 ? 'lv-mid' : 'lv-low')}">${st.battery_pct == null ? '—' : st.battery_pct}${st.battery_pct == null ? '' : '<small>%</small>'}</div><div class="k">Battery</div></div>
