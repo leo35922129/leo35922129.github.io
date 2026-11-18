@@ -30,12 +30,12 @@
   border-radius:999px;padding:4px 11px;font-size:15px;font-weight:600}
 /* v76: state badge at the right end, bigger; timestamp takes the left and truncates instead of colliding */
 /* v76: state badge on the battery/range row, right end, centered on the 44px numbers */
-.ctl-hero{grid-template-columns:auto auto 1fr;column-gap:14px}
-.ctl-hero-state{justify-self:end;align-self:start;height:44px;display:flex;align-items:center}
-.ctl-hero-state .ctl-pill{font-size:18px;padding:7px 16px;line-height:1.2;white-space:nowrap}
+.ctl-status .ctl-hero{grid-template-columns:auto auto 1fr;column-gap:14px}
+.ctl-status .ctl-hero-state{justify-self:end;align-self:start;height:44px;display:flex;align-items:center}
+.ctl-status .ctl-hero-state .ctl-pill{font-size:18px;padding:7px 16px;line-height:1.2;white-space:nowrap}
 /* v76: Live / Last seen sits at the right end of the Refresh row, one line */
-.ctl-refresh{flex-wrap:nowrap}
-.ctl-refresh .ctl-refresh-btn,.ctl-refresh .ctl-wake-refresh{flex:none;white-space:nowrap}
+.ctl-status .ctl-refresh{flex-wrap:nowrap;gap:6px}
+.ctl-status .ctl-refresh .ctl-refresh-btn,.ctl-status .ctl-refresh .ctl-wake-refresh{flex:none;white-space:nowrap;padding:8px 10px}
 .ctl-refresh .ctl-live{margin-left:auto;flex:0 1 auto;min-width:0;font-size:14px;white-space:nowrap}
 .ctl-refresh .ctl-live i{flex:none}
 .ctl-refresh .ctl-live .t{overflow:hidden;text-overflow:ellipsis;min-width:0}
