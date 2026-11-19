@@ -3,7 +3,7 @@ const TZ = 'America/Detroit';
 const $ = s => document.querySelector(s);
 const S = {
   view: localStorage.getItem('ht_view') || 'month',
-  mode: (['energy','automation','report','control'].includes(localStorage.getItem('ht_mode')) ? localStorage.getItem('ht_mode') : 'saving'),
+  mode: (['energy','automation','report','control','daily'].includes(localStorage.getItem('ht_mode')) ? localStorage.getItem('ht_mode') : 'saving'),
   cur: new Date(), meta: null, months: {}, key: null
 };
 const money = v => (v == null ? '–' : (v < 0 ? '-$' : '$') + Math.abs(v).toFixed(2));
@@ -205,6 +205,7 @@ function setModeClass() {
     if (title) title.textContent = auto ? autoTitle() : 'Automations';
   }
   if (typeof setControlChrome === 'function') setControlChrome();
+  if (typeof setDailyChrome === 'function') setDailyChrome();
   document.querySelectorAll('#tabbar button').forEach(b => {
     const on = b.dataset.mode === S.mode;
     b.classList.toggle('on', on);
@@ -1762,6 +1763,10 @@ async function render() {
     if (window.renderControl) renderControl();
     return;
   }
+  if (S.mode === 'daily') {
+    if (window.renderDaily) renderDaily();
+    return;
+  }
   renderSummary();
   const main = $('#main');
   try {
@@ -1781,7 +1786,7 @@ function showInfo() {
   $('#sheet').classList.remove('hidden');
 }
 function move(dir) {
-  if (S.mode === 'automation' || S.mode === 'control') return;
+  if (S.mode === 'automation' || S.mode === 'control' || S.mode === 'daily') return;
   if (S.mode === 'report') { if (window.moveReport) moveReport(dir); return; }
   const c = new Date(S.cur);
   if (S.view === 'day') c.setDate(c.getDate() + dir);
@@ -1815,6 +1820,7 @@ function wire() {
   $('#main').addEventListener('click', e => {
     if (S.mode === 'automation') { handleAutoClick(e); return; }
     if (S.mode === 'control') { if (window.handleControlClick) { handleControlClick(e); } return; }
+    if (S.mode === 'daily') { if (window.handleDailyClick) handleDailyClick(e); return; }
     const fh = e.target.closest('.fhd');
     if (fh) {
       const box = fh.closest('.fbox'), id = box && box.dataset.id;

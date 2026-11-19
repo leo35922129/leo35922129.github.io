@@ -14,8 +14,9 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=76i">
-<link rel="stylesheet" href="control.css?v=76i">
+<link rel="stylesheet" href="style.css?v=77">
+<link rel="stylesheet" href="control.css?v=77">
+<link rel="stylesheet" href="daily.css?v=77">
 <title>Happy Truck · Drives</title>
 </head>
 <body>
@@ -69,11 +70,12 @@
       </button>
       <div id="ctltitle" class="auto-htitle">Vehicle Control</div>
     </div>
+    <div id="dailyhead" class="dailyhead hidden"><div class="auto-htitle">Daily Reports</div></div>
   </header>
   <section id="summary" class="summary"></section>
   <main id="main"></main>
   <footer id="foot"></footer>
-  <nav id="tabbar" class="tabbar tabs-5" role="tablist" aria-label="Saving, Energy, Control, Automation, or News">
+  <nav id="tabbar" class="tabbar tabs-5" role="tablist" aria-label="Saving, Energy, Control, Automation, News, or Daily Reports">
     <button type="button" data-mode="saving" role="tab" aria-selected="true">
       <span class="tab-ico tab-save" aria-hidden="true"><span class="tab-coin">$</span></span>
       <span class="tab-lab">Saving</span>
@@ -107,12 +109,17 @@
       <span class="tab-ico tab-report" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 5.2h8.2A1.8 1.8 0 0 1 16.5 7v12.2H8.2A1.7 1.7 0 0 1 6.5 17.5V5.2Z"/><path d="M6.5 5.2A1.7 1.7 0 0 0 4.8 6.9v10.8A2.3 2.3 0 0 0 7.1 20h9.4"/><path d="M9.2 9.2h5.2M9.2 12.2h5.2M9.2 15.2h3.4"/></svg></span>
       <span class="tab-lab">News</span>
     </button>
+    <button type="button" data-mode="daily" role="tab" aria-selected="false" aria-label="Daily Reports">
+      <span class="tab-ico tab-daily" aria-hidden="true"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.6" width="14" height="16" rx="2.2"/><path d="M9.2 3.4h5.6v2.6H9.2z"/><path d="m8.4 11.2 1.4 1.4 2.4-2.6M8.4 16.2l1.4 1.4 2.4-2.6M14 11.4h2.2M14 16.4h2.2"/></svg></span>
+      <span class="tab-lab">Daily</span>
+    </button>
   </nav>
 </div>
 <div id="sheet" class="sheet hidden"><div class="sheetbody" id="sheetbody"></div></div>
 <script src="maplibre-gl.js"></script>
-<script src="app.js?v=76i"></script>
-<script src="report.js?v=76i"></script>
-<script src="control.js?v=76i"></script>
+<script src="app.js?v=77"></script>
+<script src="report.js?v=77"></script>
+<script src="control.js?v=77"></script>
+<script src="daily.js?v=77"></script>
 </body>
 </html>
