@@ -1,4 +1,4 @@
-/* Daily Reports tab (v78). Data: S.meta.daily_reports (encrypted payload), newest first.
+/* Team Daily Reports tab (v81). Data: S.meta.daily_reports (encrypted payload), newest first.
    Mirrors News: one day at a time, ‹ date › in the top row, Archive pill lists past days by month.
    Audio: r.audio.file = d/a-<date>-<hash>.bin = iv(12) + AES-GCM(mp3) with the payload key (S.key); decrypted to a blob URL. */
 (function () {
