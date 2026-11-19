@@ -594,6 +594,7 @@ function parkedCard(it) {
 
 function setTitle() {
   const prev = $('#prev'), next = $('#next');
+  if (S.mode === 'daily') { if (window.setDailyTitle) setDailyTitle(); setModeClass(); return; }
   if (S.mode === 'report') {
     const groups = (window.REPORT && REPORT.groups) || [];
     const w = (typeof weekOf === 'function' && weekOf()) || (groups[REPORT.gidx] && defaultWeek && defaultWeek(groups[REPORT.gidx])) || null;
@@ -1786,7 +1787,8 @@ function showInfo() {
   $('#sheet').classList.remove('hidden');
 }
 function move(dir) {
-  if (S.mode === 'automation' || S.mode === 'control' || S.mode === 'daily') return;
+  if (S.mode === 'daily') { if (window.moveDaily) moveDaily(dir); return; }
+  if (S.mode === 'automation' || S.mode === 'control') return;
   if (S.mode === 'report') { if (window.moveReport) moveReport(dir); return; }
   const c = new Date(S.cur);
   if (S.view === 'day') c.setDate(c.getDate() + dir);
@@ -1812,6 +1814,7 @@ function wire() {
       localStorage.setItem('ht_mode', S.mode);
       if (mode !== 'automation') { AUTO.editing = null; AUTO.view = 'list'; }
       if (mode !== 'report' && window.REPORT) { REPORT.archive = false; if (window.stopReportAudio) stopReportAudio(); }
+      if (mode !== 'daily' && window.stopDailyAudio) { stopDailyAudio(); if (window.DAILY) DAILY.archive = false; }
       OPEN.clear();
       render();
     };
