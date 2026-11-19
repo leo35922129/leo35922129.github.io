@@ -22,7 +22,7 @@
   };
   // Per-bot glyph + color (original palette families; never teal). Matched by name; unknown bots get the generic robot.
   const BOTS = [
-    { re: /\bcso\b|chief of staff/i, c: '#a98bff', g: '<circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.2 5-5 2.2 2.2-5z"/>' },
+    { re: /\bcso\b|chief\s+(of\s+)?staff/i, c: '#a98bff', g: '<circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.2 5-5 2.2 2.2-5z"/>' },
     { re: /builder|\bcdo\b/i, c: 'var(--acc)', g: '<path d="M14 6 4.5 15.5l4 4L18 10"/><path d="M12.5 4.5 15 2l7 7-2.5 2.5z"/>' },
     { re: /operator|\bcoo\b/i, c: 'var(--grn)', g: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.4 10.6 9.9 12M20.6 10.6 14.1 12M12 14.2V21"/>' },
     { re: /research/i, c: '#f07ab0', g: '<circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 6 6"/>' },
