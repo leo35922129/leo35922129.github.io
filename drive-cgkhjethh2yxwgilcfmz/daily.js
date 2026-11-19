@@ -7,7 +7,7 @@
   const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const hrs = v => (Math.round(v * 10) / 10).toString();
   function reports() {
-    const r = (window.S && S.meta && Array.isArray(S.meta.daily_reports)) ? S.meta.daily_reports : [];
+    const r = (typeof S !== 'undefined' && S.meta && Array.isArray(S.meta.daily_reports)) ? S.meta.daily_reports : [];
     return r.filter(x => x && /^\d{4}-\d{2}-\d{2}$/.test(x.date || '')).slice().sort((a, b) => b.date < a.date ? -1 : b.date > a.date ? 1 : 0);
   }
   function dayHours(r) {
@@ -81,7 +81,7 @@
     if (dh) { const d = dh.closest('.dr-day').dataset.date; DAILY.openDays.has(d) ? DAILY.openDays.delete(d) : DAILY.openDays.add(d); renderDaily(); }
   };
   window.setDailyChrome = function () {
-    const app = document.getElementById('app'), on = !!(window.S && S.mode === 'daily');
+    const app = document.getElementById('app'), on = (typeof S !== 'undefined' && S.mode === 'daily');
     if (app) app.classList.toggle('mode-daily', on);
     const h = document.getElementById('dailyhead');
     if (h) h.classList.toggle('hidden', !on);

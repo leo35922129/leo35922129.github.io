@@ -48,3 +48,6 @@
 .dr-empty{background:var(--card);border-radius:16px;padding:22px 18px;text-align:center;margin-top:6px}
 .dr-empty-t{font-size:18px;font-weight:600}
 .dr-empty p{color:var(--mut);font-size:15px;line-height:1.45;margin:8px 0 0}
+
+/* 6 tabs: each tab is at least as wide as its label, spare width shared equally (all fit at 360px with 13px labels) */
+.tabbar.tabs-6 button{flex:1 0 auto;padding:4px 3px 2px;min-width:0}
