@@ -4,7 +4,8 @@
 .dailyhead{display:none}
 #app.mode-daily .dailyhead{display:flex}
 #app.mode-daily .toprow{padding-bottom:8px}
-#app.mode-daily .title{font-size:20px}
+#app.mode-daily .title{font-size:25px;white-space:nowrap}
+#app.mode-daily .nav{font-size:32px;width:34px;height:40px;line-height:34px}
 #app.mode-daily.dr-arch .toprow{display:none}
 #app.mode-daily main{padding:4px 12px calc(var(--tabbar-h) + 24px)}
 .rpt-archive.on{background:var(--acc);color:#fff}
@@ -25,16 +26,16 @@
 .dr-ico{width:18px;height:18px;flex:none;display:block}
 /* Cards: same filled dark card as Automation / Vehicle Control (no borders, no outlines) */
 .dr-card{background:var(--card);border-radius:16px;padding:14px 12px 12px}
-.dr-chd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.dr-badge{width:40px;height:40px;border-radius:20px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff}
-.dr-badge .dr-ico{width:20px;height:20px}
+.dr-chd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.dr-badge{width:46px;height:46px;border-radius:23px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff}
+.dr-badge .dr-ico{width:23px;height:23px}
 .dr-badge.dark{color:#0b0d10}
 .dr-badge.sm{width:24px;height:24px;border-radius:12px}
 .dr-badge.sm .dr-ico{width:14px;height:14px}
-.dr-ctitle{font-weight:600;font-size:16px;letter-spacing:-.01em;line-height:1.25;color:var(--tx);min-width:0}
-.dr-cright{margin-left:auto;color:var(--mut);font-size:14px;font-weight:600;white-space:nowrap}
+.dr-ctitle{font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.2;color:var(--tx);min-width:0;flex:1}
+.dr-cright{margin-left:auto;flex:none;color:var(--mut);font-size:15px;font-weight:600;white-space:nowrap}
 /* Section label: same small grey uppercase label as Automation / Quick Controls */
-.dr-lab{display:flex;align-items:baseline;gap:8px;font-size:13px;margin:8px 2px -2px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--mut)}
+.dr-lab{display:flex;align-items:baseline;gap:8px;font-size:15px;margin:8px 2px -2px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--mut)}
 .dr-labnote{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:500;font-size:12px}
 .dr-ul,.dr-ol{margin:0;padding-left:20px;font-size:15px;line-height:1.45;color:var(--tx)}
 .dr-ul li,.dr-ol li{margin:3px 0}
@@ -70,3 +71,5 @@
 
 /* 6 tabs: each tab is at least as wide as its label, spare width shared equally (all fit at 360px with 13px labels) */
 .tabbar.tabs-6 button{flex:1 0 auto;padding:4px 3px 2px;min-width:0}
+/* v80: 20px card titles fit on one line at 360px */
+@media (max-width:374px){.dr-chd{gap:10px}.dr-ctitle{letter-spacing:-.025em}}
