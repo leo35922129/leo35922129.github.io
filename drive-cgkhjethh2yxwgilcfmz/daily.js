@@ -100,37 +100,42 @@
     });
   }
 
-  /* ---------- day view ---------- */
+  /* ---------- day view (v79: filled cards, Automation-style icon badges, grey uppercase labels) ---------- */
+  const badge = (ico, color, cls) => `<span class="dr-badge${cls ? ' ' + cls : ''}" style="background:${color}">${svg(ICO[ico] || ico)}</span>`;
+  const cardHd = (ico, color, title, right, cls) => `<div class="dr-chd">${badge(ico, color, cls)}<span class="dr-ctitle">${title}</span>${right ? `<span class="dr-cright">${right}</span>` : ''}</div>`;
+  const lab = (t, note) => `<div class="dr-lab"><span>${t}</span>${note ? `<span class="dr-labnote">${note}</span>` : ''}</div>`;
   function overview(r) {
     const h = dayHours(r), bots = (r.team || []).filter(t => t && t.bot).length, nr = L(r.requested).length;
-    const chips = [h ? `<span class="dr-chip"><b>${h.est ? 'est. ' : ''}${hrs(h.v)} h</b> team time</span>` : '',
-      bots ? `<span class="dr-chip"><b>${bots}</b> bot${bots > 1 ? 's' : ''}</span>` : '',
-      nr ? `<span class="dr-chip"><b>${nr}</b> request${nr > 1 ? 's' : ''}</span>` : ''].join('');
+    const chips = [bots ? `<span class="dr-chip">${bots} bot${bots > 1 ? 's' : ''}</span>` : '',
+      nr ? `<span class="dr-chip">${nr} request${nr > 1 ? 's' : ''}</span>` : '',
+      r.sample ? '<span class="dr-chip">Sample</span>' : ''].join('');
     const b = L(r.blockers), q = L(r.open_questions);
-    return `<section class="dr-sec dr-ov">
-      ${head('overview', 'Overview', r.sample ? '<span class="dr-flag">Sample</span>' : '')}
+    const rows = (arr, ico, color, label) => arr.length ? `<div class="dr-rows"><div class="dr-rowlab" style="color:${color}">${label}</div>${arr.map(x =>
+      `<div class="dr-row">${badge(ico, color, 'sm')}<span>${e(x)}</span></div>`).join('')}</div>` : '';
+    return `<section class="dr-card">
+      ${cardHd('overview', 'var(--acc)', 'Overview', h ? `${h.est ? 'est. ' : ''}${hrs(h.v)} h` : '')}
       <p class="dr-sum">${e(r.summary || 'No activity recorded')}</p>
       ${chips ? `<div class="dr-chips">${chips}</div>` : ''}
-      ${b.length ? `<div class="dr-blk dr-blocker">${head('blocker', b.length > 1 ? `${b.length} Blockers` : 'Blocker')}${items(b)}</div>` : ''}
-      ${q.length ? `<div class="dr-blk dr-ask">${head('question', `Open question${q.length > 1 ? 's' : ''} for you`)}${items(q)}</div>` : ''}
+      ${rows(b, 'blocker', 'var(--red)', b.length > 1 ? `${b.length} blockers` : 'Blocker')}
+      ${rows(q, 'question', 'var(--amb)', `Open question${q.length > 1 ? 's' : ''} for you`)}
     </section>`;
   }
   function suggestions(r) {
     const s = r.suggestions || {}, im = L(s.improvements), id = L(s.ideas);
     if (!im.length && !id.length) return '';
-    return `<section class="dr-sec dr-sg">
-      ${head('bulb', 'Improvements &amp; Suggestions')}
-      ${im.length ? `<div class="dr-sub">${svg(ICO.wrench, 'dr-ico sm')}Improvements</div>${items(im)}` : ''}
-      ${id.length ? `<div class="dr-sub">${svg(ICO.sparkle, 'dr-ico sm')}New ideas</div>${items(id)}` : ''}
+    return `<section class="dr-card">
+      ${cardHd('bulb', 'var(--bolt)', 'Improvements &amp; Suggestions', '', 'dark')}
+      ${im.length ? `<div class="dr-sub">Improvements</div>${items(im)}` : ''}
+      ${id.length ? `<div class="dr-sub">New ideas</div>${items(id)}` : ''}
     </section>`;
   }
   function team(r) {
     const t = (r.team || []).filter(x => x && x.bot);
     if (!t.length) return '';
-    return `<div class="dr-teamhd">${svg(ICO.team, 'dr-ico sm')}Team</div>` + t.map(x => {
+    return lab('Team') + t.map(x => {
       const st = botStyle(x.bot), done = L(x.done);
-      return `<section class="dr-sec dr-bot" style="--bc:${st.c}">
-        <div class="dr-bothd"><span class="dr-glyph">${svg(st.g)}</span><span class="dr-botname">${e(x.bot)}</span>${typeof x.hours === 'number' ? `<span class="dr-h">${hrs(x.hours)} h</span>` : ''}</div>
+      return `<section class="dr-card">
+        ${cardHd(st.g, st.c, e(x.bot), typeof x.hours === 'number' ? `${hrs(x.hours)} h` : '')}
         ${done.length ? items(done, 'dr-done') : ''}
       </section>`;
     }).join('');
@@ -138,8 +143,7 @@
   function requests(r) {
     const q = L(r.requested);
     if (!q.length) return '';
-    return `<section class="dr-sec dr-rq">
-      ${head('request', 'My Requests', '<span class="dr-note">Not in audio</span>')}
+    return lab('My Requests', 'Not in audio') + `<section class="dr-card">
       <ol class="dr-ol">${q.map(x => `<li>${e(x)}</li>`).join('')}</ol>
     </section>`;
   }

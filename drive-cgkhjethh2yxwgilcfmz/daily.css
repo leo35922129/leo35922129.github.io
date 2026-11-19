@@ -7,7 +7,7 @@
 #app.mode-daily .title{font-size:20px}
 #app.mode-daily.dr-arch .toprow{display:none}
 #app.mode-daily main{padding:4px 12px calc(var(--tabbar-h) + 24px)}
-.rpt-archive.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.rpt-archive.on{background:var(--acc);color:#fff}
 
 .tab-daily svg{width:28px;height:28px;display:block;stroke:#6b7380;fill:none}
 .tabbar button.on[data-mode="daily"]{color:var(--tx)}
@@ -21,63 +21,44 @@
 .dr-player .rp-line.on{background:rgba(62,139,255,.2);box-shadow:inset 3px 0 0 var(--acc)}
 .dr-player .dr-loading .rp-play{opacity:.55}
 
-.dr-wrap{display:flex;flex-direction:column;gap:12px}
+.dr-wrap{display:flex;flex-direction:column;gap:10px}
 .dr-ico{width:18px;height:18px;flex:none;display:block}
-.dr-ico.sm{width:15px;height:15px}
-.dr-sec{background:var(--card);border-radius:18px;padding:14px 14px 12px}
-.dr-shd{display:flex;align-items:center;gap:8px;margin:0 0 8px}
-.dr-stitle{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
-.dr-ul,.dr-ol{margin:0;padding-left:19px;font-size:15px;line-height:1.45;color:var(--tx)}
+/* Cards: same filled dark card as Automation / Vehicle Control (no borders, no outlines) */
+.dr-card{background:var(--card);border-radius:16px;padding:14px 12px 12px}
+.dr-chd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.dr-badge{width:40px;height:40px;border-radius:20px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff}
+.dr-badge .dr-ico{width:20px;height:20px}
+.dr-badge.dark{color:#0b0d10}
+.dr-badge.sm{width:24px;height:24px;border-radius:12px}
+.dr-badge.sm .dr-ico{width:14px;height:14px}
+.dr-ctitle{font-weight:600;font-size:16px;letter-spacing:-.01em;line-height:1.25;color:var(--tx);min-width:0}
+.dr-cright{margin-left:auto;color:var(--mut);font-size:14px;font-weight:600;white-space:nowrap}
+/* Section label: same small grey uppercase label as Automation / Quick Controls */
+.dr-lab{display:flex;align-items:baseline;gap:8px;font-size:13px;margin:8px 2px -2px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--mut)}
+.dr-labnote{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:500;font-size:12px}
+.dr-ul,.dr-ol{margin:0;padding-left:20px;font-size:15px;line-height:1.45;color:var(--tx)}
 .dr-ul li,.dr-ol li{margin:3px 0}
-.dr-flag{margin-left:auto;font-size:12px;font-weight:600;border-radius:999px;padding:2px 8px;background:var(--card2);color:var(--mut)}
-.dr-note{margin-left:auto;font-size:12px;font-weight:500;color:var(--mut)}
-
-/* Overview: blue accent, hero summary, stat chips, blocker/question blocks */
-.dr-ov{border-top:3px solid var(--acc2)}
-.dr-ov > .dr-shd{color:var(--acc2)}
-.dr-sum{margin:0;font-size:17px;line-height:1.42;color:var(--tx)}
+.dr-ul li::marker,.dr-ol li::marker{color:var(--mut)}
+.dr-ol li::marker{font-variant-numeric:tabular-nums}
+.dr-sum{margin:0;font-size:16px;line-height:1.45;color:var(--tx);letter-spacing:-.01em}
 .dr-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.dr-chip{font-size:13px;color:var(--mut);background:var(--card2);border-radius:999px;padding:4px 10px}
-.dr-chip b{color:var(--tx);font-weight:600}
-.dr-blk{border-radius:12px;padding:10px 12px 8px;margin-top:10px}
-.dr-blk .dr-shd{margin-bottom:4px}
-.dr-blk .dr-ul{font-size:14px}
-.dr-blocker{background:rgba(255,107,94,.1);box-shadow:inset 3px 0 0 var(--red)}
-.dr-blocker .dr-shd{color:var(--red)}
-.dr-ask{background:rgba(240,176,64,.1);box-shadow:inset 3px 0 0 var(--amb)}
-.dr-ask .dr-shd{color:var(--amb)}
-
-/* Improvements & Suggestions: yellow accent */
-.dr-sg{border-top:3px solid var(--bolt)}
-.dr-sg > .dr-shd{color:var(--bolt)}
-.dr-sub{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#c4cad3;margin:8px 0 3px}
-.dr-sg .dr-shd + .dr-sub{margin-top:0}
-.dr-sg .dr-ul li::marker{color:var(--bolt)}
-
-/* Team: one card per bot, glyph + color in front of the name */
-.dr-teamhd{display:flex;align-items:center;gap:6px;margin:6px 2px -4px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
-.dr-bot{box-shadow:inset 3px 0 0 var(--bc)}
-.dr-bothd{display:flex;align-items:center;gap:10px}
-.dr-glyph{width:32px;height:32px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;color:var(--bc);
-  background:color-mix(in srgb,var(--bc) 16%,transparent)}
-.dr-glyph .dr-ico{width:19px;height:19px}
-.dr-botname{font-size:17px;font-weight:600;letter-spacing:-.01em;color:var(--tx)}
-.dr-h{margin-left:auto;font-size:13px;font-weight:600;color:var(--bc);background:color-mix(in srgb,var(--bc) 13%,transparent);border-radius:999px;padding:3px 9px;white-space:nowrap}
-.dr-done{margin-top:8px;font-size:14px}
-.dr-done li::marker{color:var(--bc)}
-
-/* My Requests: screen only, quiet grey, dashed */
-.dr-rq{background:transparent;border:1.5px dashed #3a3f46}
-.dr-rq > .dr-shd{color:#c4cad3}
-.dr-ol{font-size:14px;color:#c4cad3}
-.dr-ol li::marker{color:var(--mut);font-variant-numeric:tabular-nums}
+.dr-chip{font-size:13px;font-weight:600;color:var(--tx);background:#1e2228;border-radius:999px;padding:5px 11px}
+/* Blockers / open questions: rows with a small filled icon, divided like Vehicle Control rows */
+.dr-rows{margin-top:12px;border-top:1px solid #24282f;padding-top:10px}
+.dr-rowlab{font-size:13px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin:0 0 6px}
+.dr-row{display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:1.45;padding:4px 0}
+.dr-row .dr-badge.sm{margin-top:-1px}
+.dr-sub{font-size:13px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--mut);margin:12px 0 4px}
+.dr-chd + .dr-sub{margin-top:0}
+.dr-done{font-size:15px}
 
 /* Archive */
 .dr-amon{display:flex;align-items:baseline;gap:8px;margin:8px 2px 0;font-size:17px;font-weight:600;letter-spacing:-.01em}
 .dr-amonmeta{margin-left:auto;color:var(--mut);font-size:13px;font-weight:500}
 .dr-wrap .rp-sec{margin:6px 2px 0}
 .dr-arow{margin-bottom:0;font:inherit;color:var(--tx);background:var(--card)}
-.dr-arow.cur{box-shadow:inset 3px 0 0 var(--acc)}
+.dr-arow.cur{background:#1e2228}
+.dr-arow.cur b{color:var(--acc2)}
 .dr-arow span.dr-asum{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px;line-height:1.35}
 .rp-wk.dr-arow > .dr-aright{display:flex;align-items:center;gap:8px;flex:none}
 .dr-hrs{font-size:13px;font-weight:600;color:var(--tx);background:var(--card2);border-radius:999px;padding:3px 9px;white-space:nowrap}
