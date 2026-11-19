@@ -1021,21 +1021,21 @@ function toggleMap(id) {
         seg.push(gps[i]);
       }
       feats.push({ type: 'Feature', properties: { fsd: cur ? 1 : 0 }, geometry: { type: 'LineString', coordinates: seg } });
-    } else feats.push({ type: 'Feature', properties: { fsd: 0 }, geometry: { type: 'LineString', coordinates: line } });
+    } else feats.push({ type: 'Feature', properties: { fsd: 2 }, geometry: { type: 'LineString', coordinates: line } });   // no FSD data: neutral blue
     m.addSource('route', { type: 'geojson', data: { type: 'FeatureCollection', features: feats } });
-    const paint = { 'line-color': ['case', ['==', ['get', 'fsd'], 1], '#2fd5a0', '#3e8bff'], 'line-width': ['case', ['==', ['get', 'fsd'], 1], 6, 5], 'line-opacity': .95 };
+    const paint = { 'line-color': ['match', ['get', 'fsd'], 1, '#4a8ce0', 0, '#34c759', '#3e8bff'], 'line-width': ['case', ['==', ['get', 'fsd'], 1], 6, 5], 'line-opacity': .95 };
     if (est) paint['line-dasharray'] = [1.5, 1.5];
     m.addLayer({ id: 'route', type: 'line', source: 'route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint });
   });
   if (hasFsd) for (let i = 1; i < gps.length; i++) {
-    if (flags[i] === 1 && flags[i - 1] !== 1) new maplibregl.Marker({ element: pinEl('#2fd5a0', '#0b4d3a') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD engaged (≈ within 1 mi)')).addTo(m);
+    if (flags[i] === 1 && flags[i - 1] !== 1) new maplibregl.Marker({ element: pinEl('#4a8ce0', '#173a66') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD engaged (≈ within 1 mi)')).addTo(m);
     if (flags[i] !== 1 && flags[i - 1] === 1) new maplibregl.Marker({ element: pinEl('#ffb340', '#6b4300') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD off / took over (≈ within 1 mi)')).addTo(m);
   }
   const a = gps[0] || line[0], b = gps[gps.length - 1] || line[line.length - 1];
   new maplibregl.Marker({ element: pinEl('#c7ccd3', '#5a616b') }).setLngLat(a).setPopup(new maplibregl.Popup({ closeButton: false }).setText('Start · ' + timeTs(t.s))).addTo(m);
   new maplibregl.Marker({ element: pinEl('#ff4d4d', '#7a1c1c') }).setLngLat(b).setPopup(new maplibregl.Popup({ closeButton: false }).setText('End · ' + timeTs(t.e))).addTo(m);
   const note = document.createElement('div'); note.className = 'mapnote';
-  if (hasFsd) note.innerHTML = '<span style="color:#2fd5a0">━ FSD</span> &nbsp;<span style="color:#3e8bff">━ manual</span> &nbsp;<span style="color:#2fd5a0">●</span> on <span style="color:#ffb340">●</span> off';
+  if (hasFsd) note.innerHTML = '<span style="color:#4a8ce0">━ FSD</span> &nbsp;<span style="color:#34c759">━ manual</span> &nbsp;<span style="color:#4a8ce0">●</span> on <span style="color:#ffb340">●</span> off';
   else note.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${gps.length} GPS fixes${t.rsrc === 'gps' ? '' : t.rsrc === 'tessie' ? ' (Tessie history)' : ', road-matched'}`;
   el.appendChild(note);
   MAPS[id] = m;

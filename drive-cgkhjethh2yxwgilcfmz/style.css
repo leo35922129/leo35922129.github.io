@@ -778,9 +778,9 @@ footer a{color:var(--acc)}
 .rp-hcard .body{font-size:15px;line-height:1.45;font-weight:400;margin:10px 0 0;letter-spacing:-.01em}
 .rp-why{
   margin-top:10px;padding:8px 10px;border-radius:10px;
-  background:var(--eff);color:var(--eff-lab);font-size:13px;line-height:1.4;
+  background:rgba(62,139,255,.13);color:#a9c9ff;font-size:13px;line-height:1.4;
 }
-.rp-why .lab{font-weight:600;color:var(--amb);margin-right:4px}
+.rp-why .lab{font-weight:600;color:var(--acc2);margin-right:4px}
 .rp-srcs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 a.rp-src{
   display:inline-flex;align-items:center;border-radius:9px;padding:3px 8px;
