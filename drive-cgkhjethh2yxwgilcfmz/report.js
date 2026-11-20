@@ -14,6 +14,8 @@ const REPORT = {
   gidx: 0,
   week: null,
   archive: false,
+  side: (['cio', 'chatgpt'].includes(localStorage.getItem('ht_news_src')) ? localStorage.getItem('ht_news_src') : 'cio'),
+  pos: {},
   ready: false,
   error: null,
   players: {},
@@ -311,7 +313,35 @@ function selectGroup(i, source) {
   REPORT.idx = Math.max(0, REPORT.weeks.indexOf(REPORT.week));
 }
 
+/* v85: News has a Grok | ChatGPT switch. Each side keeps its own week list, position, archive and players. */
+function buildSideGroups() {
+  const side = REPORT.side;
+  const list = (REPORT.weeks || []).filter(w => (w.source || 'cio') === side)
+    .slice().sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+  REPORT.groups = list.map(w => ({ id: w.date, weeks: [w], group_window: w.window || '' }));
+  const n = REPORT.groups.length;
+  const want = REPORT.pos[side];
+  REPORT.gidx = (want != null && want >= 0 && want < n) ? want : Math.max(0, n - 1);
+  REPORT.week = null;
+  if (n) selectGroup(REPORT.gidx);
+}
+function setNewsSide(side) {
+  if (!['cio', 'chatgpt'].includes(side)) return;
+  if (side === REPORT.side) { if (REPORT.archive) { REPORT.archive = false; renderReport(); } return; }
+  stopReportAudio();
+  REPORT.pos[REPORT.side] = REPORT.gidx;
+  REPORT.side = side;
+  localStorage.setItem('ht_news_src', side);
+  REPORT.archive = false;
+  REPORT.open = { summary: false, deep: false };
+  buildSideGroups();
+  renderReport();
+  window.scrollTo(0, 0);
+}
+window.setNewsSide = setNewsSide;
+
 function weekOf() {
+  if (!(REPORT.groups || []).length) return null;
   if (REPORT.week) return REPORT.week;
   const g = (REPORT.groups || [])[REPORT.gidx];
   return defaultWeek(g) || REPORT.weeks[REPORT.idx] || REPORT.weeks[0];
@@ -323,13 +353,13 @@ function syncReportChrome() {
   const w = weekOf();
   const onNews = typeof S !== 'undefined' && S.mode === 'report';
   if (origin) {
-    const showLabel = !!(onNews && !REPORT.archive && w && w.source && w.source !== 'cio' && w.source_label);
+    const showLabel = false; // v85: the Grok | ChatGPT switch names the source
     origin.textContent = showLabel ? w.source_label : '';
     origin.hidden = !showLabel;
     origin.classList.toggle('hidden', !showLabel);
   }
   const g = (REPORT.groups || [])[REPORT.gidx];
-  const multi = !!(onNews && g && g.weeks && g.weeks.length > 1 && !REPORT.archive);
+  const multi = false; // v85: replaced by the full-width Grok | ChatGPT switch
   if (row) {
     row.hidden = !multi;
     row.classList.toggle('hidden', !multi);
@@ -367,22 +397,20 @@ function renderReportArchive() {
     const ordered = [bySrc('cio'), bySrc('chatgpt')].filter(Boolean);
     const rest = g.weeks.filter(w => !ordered.includes(w));
     const sources = ordered.concat(rest);
-    const sub = sources.length > 1
-      ? ('Two sources' + (latest ? ' · latest' : ''))
-      : (visibleSourceLabel(sources[0]) || '') + (latest ? ' · latest' : '');
+    const sub = ((sources[0] && sources[0].title) || '') + (latest ? ' · latest' : '');
     const chips = sources.length > 1
       ? `<div class="rp-seg" data-archive-src="${i}" role="group" aria-label="Choose source">
           ${sources.map(w =>
             `<button type="button" data-source="${esc(w.source)}">${esc(sourceDisplayName(w.source))}</button>`
           ).join('')}
         </div>`
-      : `<span class="rp-tag">${esc(sourceDisplayName(sources[0] && sources[0].source))}</span>`;
+      : '';
     return `<div class="rp-wk" role="button" tabindex="0" data-group="${i}">
       <div><b>${esc(window)}</b><span>${esc(sub)}</span></div>
       ${chips}
     </div>`;
   }).join('');
-  main.innerHTML = `<div class="rp-sec"><b>Archive</b></div>${items || '<div class="rp-empty">No reports yet.</div>'}`;
+  main.innerHTML = `<div class="rp-sec"><b>${esc(sourceDisplayName(REPORT.side))} archive</b></div>${items || `<div class="rp-empty">No ${esc(sourceDisplayName(REPORT.side))} reports yet.</div>`}`;
 }
 
 function renderReportBody(w) {
@@ -670,7 +698,8 @@ function renderReport() {
   }
   const w = weekOf();
   if (!w) {
-    main.innerHTML = '<div class="rp-empty">No reports yet.</div>';
+    main.innerHTML = `<div class="rp-empty">No ${esc(sourceDisplayName(REPORT.side))} report for this week yet.</div>`;
+    syncReportChrome();
     return;
   }
   main.innerHTML = renderReportBody(w);
@@ -722,8 +751,7 @@ async function loadReportData() {
     weeks: map[id],
     group_window: (map[id][0] && map[id][0].group_window) || (map[id][0] && map[id][0].window) || ''
   }));
-  REPORT.gidx = Math.max(0, REPORT.groups.length - 1);
-  selectGroup(REPORT.gidx);
+  buildSideGroups();
   REPORT.ready = true;
   REPORT.error = null;
 }

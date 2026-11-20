@@ -176,6 +176,63 @@ function exampleSplit(total, specs) {
   return out;
 }
 
+/* v85: four bottom tabs. Saving = Savings|Energy, Control = Control|Automation, News = Grok|ChatGPT, Report = Summary|Team Daily Reports.
+   Each tab remembers its last view (ht_tab_<tab>); ht_mode still stores the exact view, so old stored states land on the merged page. */
+const TAB_OF = { saving: 'saving', energy: 'saving', control: 'control', automation: 'control', report: 'report', daily: 'daily' };
+const TOPSEG = {
+  saving: [['saving', 'Savings'], ['energy', 'Energy']],
+  control: [['control', 'Control'], ['automation', 'Automation']]
+};
+function tabLastMode(tab) {
+  const m = localStorage.getItem('ht_tab_' + tab);
+  return (m && TAB_OF[m] === tab) ? m : tab;
+}
+function goMode(mode) {
+  if (!mode || mode === S.mode) return;
+  S.mode = mode;
+  localStorage.setItem('ht_mode', S.mode);
+  if (TAB_OF[mode]) localStorage.setItem('ht_tab_' + TAB_OF[mode], mode);
+  if (mode !== 'automation') { AUTO.editing = null; AUTO.view = 'list'; }
+  if (mode !== 'report' && window.REPORT) { REPORT.archive = false; if (window.stopReportAudio) stopReportAudio(); }
+  if (mode !== 'daily' && window.stopDailyAudio) { stopDailyAudio(); if (window.DAILY) DAILY.archive = false; }
+  OPEN.clear();
+  render();
+  window.scrollTo(0, 0);
+}
+function syncTopSeg() {
+  const el = $('#topseg');
+  if (!el) return;
+  const tab = TAB_OF[S.mode];
+  let opts = TOPSEG[tab], cur = S.mode;
+  if (tab === 'report') { opts = [['cio', 'Grok'], ['chatgpt', 'ChatGPT']]; cur = (window.REPORT && REPORT.side) || 'cio'; }
+  const show = !!opts;
+  el.classList.toggle('hidden', !show);
+  if (!show) return;
+  const key = tab + ':' + opts.map(o => o[0]).join(',');
+  if (el.dataset.key !== key) {
+    el.dataset.key = key; el.dataset.tab = tab;
+    el.innerHTML = opts.map(o => `<button type="button" role="tab" data-v="${o[0]}">${esc(o[1])}</button>`).join('');
+  }
+  el.querySelectorAll('button').forEach(b => { const on = b.dataset.v === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+  if (!el.dataset.bound) {
+    el.dataset.bound = '1';
+    el.addEventListener('click', ev => {
+      const b = ev.target.closest('button[data-v]'); if (!b) return;
+      if (el.dataset.tab === 'report') { if (window.setNewsSide) setNewsSide(b.dataset.v); return; }
+      goMode(b.dataset.v);
+    });
+  }
+}
+/* Archive pills sit on the date row (v85): News and Team Daily Reports. */
+function placeArchive() {
+  const row = document.querySelector('header .toprow');
+  const rpt = $('#rptarchive'), dly = $('#dailyarchive');
+  const dailyReports = S.mode === 'daily' && window.DAILY && DAILY.view !== 'summary';
+  if (rpt) { const home = $('#reporthead'); const want = S.mode === 'report' ? row : home; if (want && rpt.parentElement !== want) want.appendChild(rpt); }
+  if (dly) { const home = $('#dailyhead'); const want = dailyReports ? row : home; if (want && dly.parentElement !== want) want.appendChild(dly); }
+  if (row) row.classList.toggle('has-arch', S.mode === 'report' || dailyReports);
+}
+
 function setModeClass() {
   const auto = S.mode === 'automation';
   const report = S.mode === 'report';
@@ -206,8 +263,12 @@ function setModeClass() {
   }
   if (typeof setControlChrome === 'function') setControlChrome();
   if (typeof setDailyChrome === 'function') setDailyChrome();
+  if (TAB_OF[S.mode]) localStorage.setItem('ht_tab_' + TAB_OF[S.mode], S.mode);
+  syncTopSeg();
+  placeArchive();
+  if (app) app.classList.toggle('tab-saving', TAB_OF[S.mode] === 'saving');
   document.querySelectorAll('#tabbar button').forEach(b => {
-    const on = b.dataset.mode === S.mode;
+    const on = b.dataset.mode === TAB_OF[S.mode];
     b.classList.toggle('on', on);
     b.setAttribute('aria-selected', on ? 'true' : 'false');
   });
@@ -598,7 +659,7 @@ function setTitle() {
   if (S.mode === 'report') {
     const groups = (window.REPORT && REPORT.groups) || [];
     const w = (typeof weekOf === 'function' && weekOf()) || (groups[REPORT.gidx] && defaultWeek && defaultWeek(groups[REPORT.gidx])) || null;
-    $('#title').textContent = (w && w.window) || '';
+    $('#title').textContent = ((w && w.window) || '').replace(/^([A-Z][a-z]{2}) (\d+) – \1 (\d+)/, '$1 $2 – $3');
     if (prev) prev.disabled = !groups.length || REPORT.archive || REPORT.gidx <= 0;
     if (next) next.disabled = !groups.length || REPORT.archive || REPORT.gidx >= groups.length - 1;
     if (typeof syncReportChrome === 'function') syncReportChrome();
@@ -1803,20 +1864,15 @@ function wire() {
   document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { S.view = b.dataset.v; OPEN.clear(); render(); });
   document.querySelectorAll('#tabbar button').forEach(b => {
     b.onclick = () => {
-      const mode = b.dataset.mode;
-      if (!mode) return;
+      const tab = b.dataset.mode;
+      if (!tab) return;
+      const mode = TAB_OF[S.mode] === tab ? S.mode : tabLastMode(tab);
       if (mode === S.mode) {
         if (mode === 'automation' && (AUTO.editing != null || AUTO.view !== 'list')) { AUTO.editing = null; AUTO.view = 'list'; render(); }
         if (mode === 'control' && window.CONTROL && CONTROL.view !== 'home') { CONTROL.view = 'home'; CONTROL.detail = null; render(); }
         return;
       }
-      S.mode = mode;
-      localStorage.setItem('ht_mode', S.mode);
-      if (mode !== 'automation') { AUTO.editing = null; AUTO.view = 'list'; }
-      if (mode !== 'report' && window.REPORT) { REPORT.archive = false; if (window.stopReportAudio) stopReportAudio(); }
-      if (mode !== 'daily' && window.stopDailyAudio) { stopDailyAudio(); if (window.DAILY) DAILY.archive = false; }
-      OPEN.clear();
-      render();
+      goMode(mode);
     };
   });
   $('#autoback').onclick = () => { if (AUTO.editing != null) AUTO.editing = null; else AUTO.view = 'list'; render(); };

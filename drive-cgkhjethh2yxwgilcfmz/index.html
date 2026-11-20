@@ -14,9 +14,9 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=84">
-<link rel="stylesheet" href="control.css?v=84">
-<link rel="stylesheet" href="daily.css?v=84">
+<link rel="stylesheet" href="style.css?v=85">
+<link rel="stylesheet" href="control.css?v=85">
+<link rel="stylesheet" href="daily.css?v=85">
 <title>Happy Truck · Drives</title>
 </head>
 <body>
@@ -31,6 +31,7 @@
 </div>
 <div id="app" class="hidden">
   <header>
+    <div id="topseg" class="seg dr-viewseg topseg hidden" role="tablist" aria-label="View"></div>
     <div class="seg" id="seg">
       <button data-v="day">Day</button><button data-v="week">Week</button><button data-v="month">Month</button><button data-v="year">Year</button>
     </div>
@@ -90,35 +91,18 @@
   <section id="summary" class="summary"></section>
   <main id="main"></main>
   <footer id="foot"></footer>
-  <nav id="tabbar" class="tabbar tabs-5 tabs-6" role="tablist" aria-label="Saving, Energy, Control, Automation, News, or Report">
-    <button type="button" data-mode="saving" role="tab" aria-selected="true">
+  <nav id="tabbar" class="tabbar tabs-4" role="tablist" aria-label="Saving, Control, News, or Report">
+    <button type="button" data-mode="saving" role="tab" aria-selected="true" aria-label="Saving and Energy">
       <span class="tab-ico tab-save" aria-hidden="true"><span class="tab-coin">$</span></span>
       <span class="tab-lab">Saving</span>
     </button>
-    <button type="button" data-mode="energy" role="tab" aria-selected="false">
-      <span class="tab-ico tab-bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg></span>
-      <span class="tab-lab">Energy</span>
-    </button>
-    <button type="button" data-mode="control" role="tab" aria-selected="false" aria-label="Control">
+    <button type="button" data-mode="control" role="tab" aria-selected="false" aria-label="Control and Automation">
       <span class="tab-ico tab-ctl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4.2 14.2h15.6l-.8 3.6H5z"/>
         <path d="M5.2 14.2 6.6 9.4h7.2L17.6 14"/>
         <path d="M8.2 9.4 9 7.2h4.4l1.2 2.2"/>
       </svg></span>
       <span class="tab-lab">Control</span>
-    </button>
-    <button type="button" data-mode="automation" role="tab" aria-selected="false">
-      <span class="tab-ico tab-auto" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-  <!-- simple robot head -->
-  <path d="M12 7.4V3.7"/>
-  <circle cx="12" cy="3.2" r="1.05"/>
-  <rect x="4.8" y="7.4" width="14.4" height="12.2" rx="2.6"/>
-  <path d="M4.8 13.6H3.1"/>
-  <path d="M19.2 13.6h1.7"/>
-  <path d="M9 12.5v2.6"/>
-  <path d="M15 12.5v2.6"/>
-</svg></span>
-      <span class="tab-lab">Automation</span>
     </button>
     <button type="button" data-mode="report" role="tab" aria-selected="false" aria-label="News">
       <span class="tab-ico tab-report" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 5.2h8.2A1.8 1.8 0 0 1 16.5 7v12.2H8.2A1.7 1.7 0 0 1 6.5 17.5V5.2Z"/><path d="M6.5 5.2A1.7 1.7 0 0 0 4.8 6.9v10.8A2.3 2.3 0 0 0 7.1 20h9.4"/><path d="M9.2 9.2h5.2M9.2 12.2h5.2M9.2 15.2h3.4"/></svg></span>
@@ -132,10 +116,10 @@
 </div>
 <div id="sheet" class="sheet hidden"><div class="sheetbody" id="sheetbody"></div></div>
 <script src="maplibre-gl.js"></script>
-<script src="app.js?v=84"></script>
-<script src="report.js?v=84"></script>
-<script src="control.js?v=84"></script>
-<script src="daily.js?v=84"></script>
-<script src="summary.js?v=84"></script>
+<script src="app.js?v=85"></script>
+<script src="report.js?v=85"></script>
+<script src="control.js?v=85"></script>
+<script src="daily.js?v=85"></script>
+<script src="summary.js?v=85"></script>
 </body>
 </html>

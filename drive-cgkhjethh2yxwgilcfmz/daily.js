@@ -174,7 +174,7 @@
     const main = document.getElementById('main');
     if (!main) return;
     setDailyChrome(); setDailyTitle();
-    if (isSum()) { stopDailyAudio(); if (window.renderSummary) renderSummary(main); return; }
+    if (isSum()) { stopDailyAudio(); if (window.renderUsageSummary) renderUsageSummary(main); return; }
     const reps = reports();
     if (!reps.length) {
       main.innerHTML = `<div class="dr-empty"><div class="dr-empty-t">No reports yet</div><p>Each evening's team report will appear here: an audio briefing, what each bot did, blockers, open questions, suggestions and your requests.</p></div>`;
@@ -238,10 +238,6 @@
       }
     }
     const sub = document.getElementById('dailysub');
-    if (sub) {
-      const n = reports().length;
-      sub.textContent = sum ? (sd ? 'Your hours and each bot\'s, per day' : 'Grok Bot time and Tesla API cost')
-        : (n ? `Team activity · ${n} day${n > 1 ? 's' : ''}` : '');
-    }
+    if (sub) sub.textContent = ''; // v85: no subtitle under the page titles
   };
 })();

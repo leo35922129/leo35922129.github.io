@@ -153,3 +153,29 @@
 .su-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border-radius:999px;padding:3px 10px 3px 3px;font-size:13px;color:var(--tx)}
 .su-chip b{font-weight:700;font-variant-numeric:tabular-nums}
 @media (max-width:374px){.dr-viewseg button{font-size:14px}.su-tile .v{font-size:21px}.su-tile .k{font-size:12px}.su-big{font-size:42px}}
+
+/* ---- v85: four tabs, full-width view switches, secondary sub-menus, Archive on the date row ---- */
+#topseg:not(.hidden){display:flex!important;margin:0 0 10px}
+#topseg button{white-space:nowrap}
+/* Day/Week/Month/Year and Automation categories share one smaller secondary style */
+#seg.seg{background:none;padding:0;gap:6px;border-radius:0;justify-content:flex-start;margin:0 0 2px}
+#seg.seg button,.auto-cat{flex:none;background:transparent;color:var(--mut);border:0;border-radius:18px;
+  padding:7px 13px;font-size:14px;font-weight:500;white-space:nowrap}
+#seg.seg button.on,.auto-cat.on{background:#1e2228;color:var(--tx);font-weight:600}
+.auto-cats{padding:2px 0 12px}
+/* Archive pill shares the date row (News and Team Daily Reports) */
+.toprow.has-arch{grid-template-columns:minmax(0,1fr) auto;column-gap:10px}
+.toprow.has-arch .daterow{grid-column:1;justify-content:flex-start;gap:10px}
+.toprow.has-arch .rpt-archive{grid-column:2;justify-self:end;align-self:center;margin:0}
+#app.mode-daily.dr-arch .toprow.has-arch,#app.mode-report.rpt-arch .toprow.has-arch{display:grid}
+#app.mode-daily.dr-arch .toprow.has-arch .daterow,#app.mode-report.rpt-arch .toprow.has-arch .daterow{visibility:hidden}
+#app.mode-daily .toprow.has-arch .title{font-size:22px}
+#app.mode-daily .toprow.has-arch .nav,#app.mode-report .toprow.has-arch .nav{font-size:28px;width:28px;height:36px;line-height:30px}
+.reporthead{min-height:0;padding-bottom:4px}
+@media (max-width:374px){
+  #app.mode-daily .toprow.has-arch .title,#app.mode-report .toprow.has-arch .title{font-size:19px}
+  .toprow.has-arch .daterow{gap:6px}
+  .toprow.has-arch .rpt-archive{padding:8px 12px;font-size:14px}
+  #seg.seg button,.auto-cat{padding:7px 11px}
+  .stat .v{font-size:22px}.stat .v small{font-size:12px}
+}

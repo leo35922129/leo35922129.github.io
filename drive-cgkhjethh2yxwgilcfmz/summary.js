@@ -161,7 +161,7 @@
       <p class="su-foot">Hours are estimates from message timestamps, not billed usage. Bots overlap, so a day's bot hours can add up to more than clock time.</p>`;
   }
 
-  window.renderSummary = function (main) {
+  window.renderUsageSummary = function (main) {
     main.innerHTML = `<div class="dr-wrap su-wrap">${SUM.daily ? dailyTime(usage()) : usageCards(usage()) + apiCards(api())}</div>`;
   };
   window.handleSummaryClick = function (ev) {
