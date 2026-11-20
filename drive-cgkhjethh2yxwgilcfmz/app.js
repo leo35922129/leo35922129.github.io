@@ -669,13 +669,32 @@ function setTitle() {
   if (prev) prev.disabled = false;
   if (next) next.disabled = false;
   const c = S.cur; let t;
-  if (S.view === 'day') t = c.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  // v89: the Energy day row also holds the list filter, so the year is dropped there when it is the current year (fits at 360px).
+  if (S.view === 'day') t = c.toLocaleDateString('en-US', (S.mode === 'energy' && c.getFullYear() === new Date().getFullYear()) ? { weekday: 'short', month: 'short', day: 'numeric' } : { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   else if (S.view === 'week') { const s = weekStart(c), e = addDays(s, 6); t = `${s.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${e.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`; }
   else if (S.view === 'month') t = `${MONTHS[c.getMonth()]} ${c.getFullYear()}`;
   else t = String(c.getFullYear());
   $('#title').textContent = t;
   document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.v === S.view));
+  syncEFilter();
   setModeClass();
+}
+/* v89: All / Charger / Trip toggles on the Energy day list (left edge of the date row). Default All, not persisted. */
+function syncEFilter() {
+  const el = $('#efilter'), row = document.querySelector('header .toprow');
+  if (!el) return;
+  const show = S.mode === 'energy' && S.view === 'day';
+  el.classList.toggle('hidden', !show);
+  if (row) row.classList.toggle('has-efilter', show);
+  const cur = S.efilter || 'all';
+  el.querySelectorAll('button[data-ef]').forEach(b => { const on = b.dataset.ef === cur; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  if (!el.dataset.bound) {
+    el.dataset.bound = '1';
+    el.addEventListener('click', ev => {
+      const b = ev.target.closest('button[data-ef]'); if (!b || b.dataset.ef === (S.efilter || 'all')) return;
+      S.efilter = b.dataset.ef; render();
+    });
+  }
 }
 
 function viewMonthSaving() {
@@ -1270,8 +1289,13 @@ async function viewDay() {
     ...parked.map(p => ({ kind: 'parked', s: p.s, p })),
   ].sort((a, b) => a.s - b.s);
   if (!items.length) return '<div class="empty">No energy use this day</div>';
+  /* v89: Energy list filter (All / Charger / Trip). The tiles above always show the whole day. */
+  const ef = S.efilter || 'all';
+  const shown = ef === 'all' ? items : items.filter(it => it.kind === ef);
+  const efNote = ef === 'all' ? '' : `<p class="efnote">${ef === 'charge' ? 'Charging only' : 'Trips only'} · totals above are for the whole day</p>`;
+  if (!shown.length) return efNote + `<div class="empty">${ef === 'charge' ? 'No charging this day' : 'No trips this day'}</div>`;
   let ti = 0;
-  return items.map(it => {
+  return efNote + shown.map(it => {
     if (it.kind === 'trip') return tripCard(it.t, ti++, trips.length);
     if (it.kind === 'charge') return chargeCard(it.c);
     return parkedCard(it.p);

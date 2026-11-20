@@ -377,3 +377,18 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .lockbox h1{font-size:var(--fs-xl);font-weight:var(--fw-semi);margin:12px 0 6px}
 .lockbox p{color:var(--mut);font-size:var(--fs-body);line-height:var(--lh)}
 .err{color:var(--red)}
+
+/* ---- v89: Energy day list filter (All / Charger / Trip) at the left edge of the date row ---- */
+.efilter{display:none}
+.toprow.has-efilter{grid-template-columns:auto minmax(0,1fr) auto;column-gap:var(--sp-2)}
+.toprow.has-efilter .efilter:not(.hidden){grid-column:1;display:flex;gap:2px;padding:2px;background:var(--card);border-radius:var(--r-md);align-self:center}
+.efilter button{width:34px;height:40px;padding:0;border:0;border-radius:var(--r-sm);background:transparent;color:var(--dim);
+  display:flex;align-items:center;justify-content:center}
+.efilter button svg{width:var(--ico-md);height:var(--ico-md);display:block}
+.efilter button.on{background:var(--acc-soft);color:var(--acc)}
+.toprow.has-efilter .daterow{grid-column:2;gap:0;min-width:0}
+.toprow.has-efilter .daterow .nav{width:30px}
+#app .toprow.has-efilter .title{font-size:var(--fs-lg);min-width:0;overflow:hidden;text-overflow:ellipsis}
+.toprow.has-efilter #today{grid-column:3}
+.efnote{margin:0 2px 8px;color:var(--mut);font-size:var(--fs-cap);line-height:var(--lh)}
+@media (max-width:374px){.toprow.has-efilter{column-gap:var(--sp-1)}.toprow.has-efilter .daterow .nav{width:26px}.toprow.has-efilter #today{padding:0 10px}}
