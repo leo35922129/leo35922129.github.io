@@ -157,12 +157,14 @@
 /* ---- v85: four tabs, full-width view switches, secondary sub-menus, Archive on the date row ---- */
 #topseg:not(.hidden){display:flex!important;margin:0 0 10px}
 #topseg button{white-space:nowrap}
-/* Day/Week/Month/Year and Automation categories share one smaller secondary style */
-#seg.seg{background:none;padding:0;gap:6px;border-radius:0;justify-content:flex-start;margin:0 0 2px}
-#seg.seg button,.auto-cat{flex:none;background:transparent;color:var(--mut);border:0;border-radius:18px;
-  padding:7px 13px;font-size:14px;font-weight:500;white-space:nowrap}
-#seg.seg button.on,.auto-cat.on{background:#1e2228;color:var(--tx);font-weight:600}
-.auto-cats{padding:2px 0 12px}
+/* v86: secondary sub-menu = full-width underline tabs (Day/Week/Month/Year, Automation categories). No outlines. */
+#seg.seg{background:none;padding:0;gap:0;border-radius:0;margin:0;border-bottom:1px solid #24282f;width:100%}
+#seg.seg button,.auto-cat{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  height:44px;padding:0 12px;background:transparent;color:var(--mut);border:0;border-radius:0;
+  font-size:15px;font-weight:500;white-space:nowrap;box-shadow:inset 0 -3px 0 transparent}
+#seg.seg button.on,.auto-cat.on{background:transparent;color:#3e8bff;font-weight:600;box-shadow:inset 0 -3px 0 #3e8bff}
+.auto-cats{display:flex;gap:0;overflow-x:auto;padding:0;margin:4px 0 12px;border-bottom:1px solid #24282f;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
 /* Archive pill shares the date row (News and Team Daily Reports) */
 .toprow.has-arch{grid-template-columns:minmax(0,1fr) auto;column-gap:10px}
 .toprow.has-arch .daterow{grid-column:1;justify-content:flex-start;gap:10px}
@@ -176,6 +178,6 @@
   #app.mode-daily .toprow.has-arch .title,#app.mode-report .toprow.has-arch .title{font-size:19px}
   .toprow.has-arch .daterow{gap:6px}
   .toprow.has-arch .rpt-archive{padding:8px 12px;font-size:14px}
-  #seg.seg button,.auto-cat{padding:7px 11px}
+  #seg.seg button,.auto-cat{padding:0 10px}
   .stat .v{font-size:22px}.stat .v small{font-size:12px}
 }
