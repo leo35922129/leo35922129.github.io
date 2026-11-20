@@ -437,3 +437,6 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
   .tl-head{padding:11px 8px 11px 12px}
   .tl-stats{gap:5px 10px}
 }
+/* v91: an opened event uses the full width, so the existing detail card keeps its original layout */
+.tl-ev.open .tl-card{margin-left:-46px;position:relative;z-index:1}
+@media (max-width:374px){.tl-ev.open .tl-card{margin-left:-42px}}
