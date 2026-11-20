@@ -2,7 +2,8 @@
    Mirrors News: one day at a time, ‹ date › in the top row, Archive pill lists past days by month.
    Audio: r.audio.file = d/a-<date>-<hash>.bin = iv(12) + AES-GCM(mp3) with the payload key (S.key); decrypted to a blob URL. */
 (function () {
-  const DAILY = window.DAILY = { date: null, archive: false, blobs: {}, loading: {} };
+  const DAILY = window.DAILY = { date: null, archive: false, blobs: {}, loading: {},
+    view: localStorage.getItem('ht_rview') === 'reports' ? 'reports' : 'summary' };   // v84: Report = Summary | Team Daily Reports
   const e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -148,6 +149,9 @@
     </section>`;
   }
 
+  window.DR = { e, svg, ICO, botStyle, badge, cardHd, lab };   // shared with summary.js
+  const isSum = () => DAILY.view === 'summary';
+
   /* ---------- archive ---------- */
   function archive(reps) {
     const months = [];
@@ -170,6 +174,7 @@
     const main = document.getElementById('main');
     if (!main) return;
     setDailyChrome(); setDailyTitle();
+    if (isSum()) { stopDailyAudio(); if (window.renderSummary) renderSummary(main); return; }
     const reps = reports();
     if (!reps.length) {
       main.innerHTML = `<div class="dr-empty"><div class="dr-empty-t">No reports yet</div><p>Each evening's team report will appear here: an audio briefing, what each bot did, blockers, open questions, suggestions and your requests.</p></div>`;
@@ -183,25 +188,47 @@
   window.setDailyTitle = function () {
     const reps = reports(), i = cur(reps), prev = document.getElementById('prev'), next = document.getElementById('next');
     const t = document.getElementById('title');
+    if (isSum()) { if (t) t.textContent = ''; if (prev) prev.disabled = true; if (next) next.disabled = true; return; }
     if (t) t.textContent = reps.length ? longDate(reps[i].date) : '';
     if (prev) prev.disabled = !reps.length || DAILY.archive || i >= reps.length - 1;   // ‹ = older
     if (next) next.disabled = !reps.length || DAILY.archive || i <= 0;                  // › = newer
   };
   window.moveDaily = function (dir) {
-    if (DAILY.archive) return;
+    if (DAILY.archive || isSum()) return;
     const reps = reports(), n = cur(reps) - dir;
     if (n < 0 || n >= reps.length) return;
     stopDailyAudio(); DAILY.date = reps[n].date; renderDaily(); window.scrollTo(0, 0);
   };
   window.handleDailyClick = function (ev) {
+    if (isSum()) { if (window.handleSummaryClick) handleSummaryClick(ev); return; }
     const row = ev.target.closest('.dr-arow');
     if (row) { stopDailyAudio(); DAILY.date = row.dataset.date; DAILY.archive = false; renderDaily(); window.scrollTo(0, 0); }
   };
   window.setDailyChrome = function () {
     const app = document.getElementById('app'), on = (typeof S !== 'undefined' && S.mode === 'daily');
-    if (app) { app.classList.toggle('mode-daily', on); app.classList.toggle('dr-arch', on && DAILY.archive); }
+    const sum = isSum(), sd = sum && window.SUMMARY && SUMMARY.daily;
+    if (app) { app.classList.toggle('mode-daily', on); app.classList.toggle('dr-arch', on && !sum && DAILY.archive); app.classList.toggle('dr-summ', on && sum); }
     const h = document.getElementById('dailyhead');
     if (h) h.classList.toggle('hidden', !on);
+    const ht = document.getElementById('dailytitle');
+    if (ht) ht.textContent = sum ? (sd ? 'Daily time' : 'Summary') : 'Team Daily Reports';
+    const bk = document.getElementById('dailyback');
+    if (bk) {
+      bk.classList.toggle('hidden', !sd);
+      if (!bk.dataset.bound) { bk.dataset.bound = '1'; bk.addEventListener('click', () => { if (window.SUMMARY) SUMMARY.daily = false; renderDaily(); window.scrollTo(0, 0); }); }
+    }
+    const vs = document.getElementById('rviewseg');
+    if (vs) {
+      vs.querySelectorAll('button[data-rview]').forEach(b => { const o = b.dataset.rview === DAILY.view; b.classList.toggle('on', o); b.setAttribute('aria-selected', o ? 'true' : 'false'); });
+      if (!vs.dataset.bound) {
+        vs.dataset.bound = '1';
+        vs.addEventListener('click', ev => {
+          const b = ev.target.closest('button[data-rview]'); if (!b || S.mode !== 'daily' || b.dataset.rview === DAILY.view) return;
+          stopDailyAudio(); DAILY.view = b.dataset.rview; localStorage.setItem('ht_rview', DAILY.view);
+          if (window.SUMMARY) SUMMARY.daily = false; DAILY.archive = false; renderDaily(); window.scrollTo(0, 0);
+        });
+      }
+    }
     const a = document.getElementById('dailyarchive');
     if (a) {
       a.classList.toggle('on', DAILY.archive);
@@ -211,6 +238,10 @@
       }
     }
     const sub = document.getElementById('dailysub');
-    if (sub) { const n = reports().length; sub.textContent = n ? `Team activity · ${n} day${n > 1 ? 's' : ''}` : ''; }
+    if (sub) {
+      const n = reports().length;
+      sub.textContent = sum ? (sd ? 'Your hours and each bot\'s, per day' : 'Grok Bot time and Tesla API cost')
+        : (n ? `Team activity · ${n} day${n > 1 ? 's' : ''}` : '');
+    }
   };
 })();
