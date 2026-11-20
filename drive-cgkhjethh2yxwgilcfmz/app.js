@@ -674,6 +674,10 @@ function setTitle() {
   else if (S.view === 'week') { const s = weekStart(c), e = addDays(s, 6); t = `${s.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${e.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`; }
   else if (S.view === 'month') t = `${MONTHS[c.getMonth()]} ${c.getFullYear()}`;
   else t = String(c.getFullYear());
+  if (S.mode === 'energy' && S.view === 'week') {   // v91: the filter shares this row, so use the compact range
+    const s = weekStart(c), e = addDays(s, 6), mo = d => d.toLocaleDateString('en-US', { month: 'short' });
+    t = s.getMonth() === e.getMonth() ? `${mo(s)} ${s.getDate()}–${e.getDate()}` : `${mo(s)} ${s.getDate()}–${mo(e)} ${e.getDate()}`;
+  } else if (S.mode === 'energy' && S.view === 'month') t = `${MONTHS[c.getMonth()].slice(0, 3)} ${c.getFullYear()}`;
   $('#title').textContent = t;
   document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.v === S.view));
   syncEFilter();
@@ -683,7 +687,7 @@ function setTitle() {
 function syncEFilter() {
   const el = $('#efilter'), row = document.querySelector('header .toprow');
   if (!el) return;
-  const show = S.mode === 'energy' && S.view === 'day';
+  const show = S.mode === 'energy' && (S.view === 'day' || S.view === 'week' || S.view === 'month');   // v91: also filters the week/month timeline
   el.classList.toggle('hidden', !show);
   if (row) row.classList.toggle('has-efilter', show);
   const cur = S.efilter || 'all';
@@ -1062,8 +1066,16 @@ async function viewYearEnergy() {
   </div>`;
 }
 
-function viewWeek() { return energyMode() ? viewWeekEnergy() : viewWeekSaving(); }
-function viewMonth() { return energyMode() ? viewMonthEnergy() : viewMonthSaving(); }
+async function viewWeek() {
+  const head = energyMode() ? await viewWeekEnergy() : viewWeekSaving();
+  const ws = weekStart(S.cur);
+  return head + `<div class="tl-sec">Timeline</div>` + await tlRange_(rangeKeys(ws, addDays(ws, 6)));
+}
+async function viewMonth() {
+  const head = energyMode() ? viewMonthEnergy() : viewMonthSaving();
+  const c = S.cur;
+  return head + `<div class="tl-sec">Timeline</div>` + await tlRange_(rangeKeys(new Date(c.getFullYear(), c.getMonth(), 1), new Date(c.getFullYear(), c.getMonth() + 1, 0)));
+}
 function viewYear() { return energyMode() ? viewYearEnergy() : viewYearSaving(); }
 
 const MAPS = {};
@@ -1270,36 +1282,153 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
   draw();
 }
 
-async function viewDay() {
-  const k = keyOf(S.cur), m = await month(k.slice(0, 7));
+/* ---------- v91: event timeline (Savings + Energy; Day / Week / Month) ---------- */
+const TLI = (d, w = 16) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const TL_ICO = {
+  charge: '<path d="M9 3v5M15 3v5M6.5 8h11v3a5.5 5.5 0 0 1-11 0z"/><path d="M12 16.5V21"/>',
+  trip: '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7.5a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H16"/>',
+  parked: '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M10 16V8h3a2.5 2.5 0 0 1 0 5h-3"/>',
+  kwh: '<path d="m13 3-7 10h5l-1 8 7-10h-5z"/>',
+  usd: '<circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.4-1-1.5-1.6-2.8-1.6-1.6 0-2.8.8-2.8 2.1 0 2.9 5.8 1.6 5.8 4.5 0 1.3-1.2 2.2-3 2.2-1.4 0-2.6-.7-3-1.8M12 6v1.6M12 16.4V18"/>',
+  mi: '<path d="M12 21s-6-5.7-6-11a6 6 0 0 1 12 0c0 5.3-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>',
+  fsd: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M12 4v6M5.5 15.5 10 13M18.5 15.5 14 13"/>',
+  dur: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  bat: '<rect x="3" y="7" width="16" height="10" rx="2.5"/><path d="M21 10.5v3"/>',
+  w: '<path d="M4 15a8 8 0 1 1 16 0"/><path d="m12 15 3.5-4.5"/>',
+  chev: '<path d="m9 6 6 6-6 6"/>'
+};
+function tlStat(ic, v, cls) { return `<span class="tl-st${cls ? ' ' + cls : ''}">${TLI(TL_ICO[ic], 14)}<b>${v}</b></span>`; }
+function tlRange(s, e, open) {
+  if (open) return `${timeTs(s)} – now`;
+  if (e == null || Math.abs(e - s) < 60) return timeTs(s);
+  const a = timeTs(s), b = timeTs(e), sa = a.slice(-2), sb = b.slice(-2);
+  return (sa === sb && dayKeyTs(s) === dayKeyTs(e) ? a.slice(0, -3) : a) + '–' + b;
+}
+function tlDayLabel(k) {
+  const tk = keyOf(todayD()), yk = keyOf(addDays(todayD(), -1));
+  if (k === tk) return 'Today';
+  if (k === yk) return 'Yesterday';
+  const [y, m, d] = k.split('-').map(Number), dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString('en-US', dt.getFullYear() === new Date().getFullYear() ? { weekday: 'short', month: 'short', day: 'numeric' } : { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+}
+function dayEvents(k, m) {
   const trips = (m.trips || []).filter(t => dayKeyTs(t.s) === k).sort((a, b) => a.s - b.s);
-  if (!energyMode()) {
-    return trips.length ? trips.map((t, i) => tripCard(t, i, trips.length)).join('') : '<div class="empty">No trips this day</div>';
+  const items = trips.map((t, i) => ({ kind: 'trip', s: t.s, t, i, n: trips.length }));
+  if (energyMode()) {
+    (m.charge_slices || []).filter(c => dayKeyTs(c.s) === k || (c.e > c.s && dayKeyTs(c.e - 1) === k)).forEach(c => items.push({ kind: 'charge', s: c.s, c }));
+    (m.parked || []).filter(p => dayKeyTs(p.s) === k || dayKeyTs(p.e - 1) === k).filter(p => (p.kwh || 0) > 0.005).forEach(p => items.push({ kind: 'parked', s: p.s, p }));
   }
-  const t0 = S.cur, start = Date.UTC(t0.getFullYear(), t0.getMonth(), t0.getDate());
-  // Use payload timestamps in local day via dayKeyTs / overlap with the local day
-  const parked = (m.parked || []).filter(p => dayKeyTs(p.s) === k || dayKeyTs(p.e - 1) === k)
-    .filter(p => (p.kwh || 0) > 0.005)
-    .sort((a, b) => a.s - b.s);
-  const slices = (m.charge_slices || []).filter(c => dayKeyTs(c.s) === k || (c.e > c.s && dayKeyTs(c.e - 1) === k))
-    .sort((a, b) => a.s - b.s);
-  const items = [
-    ...trips.map(t => ({ kind: 'trip', s: t.s, t })),
-    ...slices.map(c => ({ kind: 'charge', s: c.s, c })),
-    ...parked.map(p => ({ kind: 'parked', s: p.s, p })),
-  ].sort((a, b) => a.s - b.s);
-  if (!items.length) return '<div class="empty">No energy use this day</div>';
-  /* v89: Energy list filter (All / Charger / Trip). The tiles above always show the whole day. */
-  const ef = S.efilter || 'all';
-  const shown = ef === 'all' ? items : items.filter(it => it.kind === ef);
-  const efNote = ef === 'all' ? '' : `<p class="efnote">${ef === 'charge' ? 'Charging only' : 'Trips only'} · totals above are for the whole day</p>`;
-  if (!shown.length) return efNote + `<div class="empty">${ef === 'charge' ? 'No charging this day' : 'No trips this day'}</div>`;
-  let ti = 0;
-  return efNote + shown.map(it => {
-    if (it.kind === 'trip') return tripCard(it.t, ti++, trips.length);
-    if (it.kind === 'charge') return chargeCard(it.c);
-    return parkedCard(it.p);
-  }).join('');
+  return items.sort((a, b) => b.s - a.s);   // newest first
+}
+function tlChargeTitle(c) {
+  const st = c.station;
+  if (st && (st.match === 'home' || /home/i.test(st.badge || ''))) return 'Home charging';
+  const name = (st && (st.site_name || st.label || st.badge)) || c.label || c.where;
+  return name && name !== 'Charger' ? 'Charging at ' + name : 'Charging';
+}
+function tlItem(it, k) {
+  let id, title, stats = [], when, detail;
+  if (it.kind === 'trip') {
+    const t = it.t; id = 'tl-t' + t.id;
+    title = 'Trip to ' + (t.to || '—');
+    when = tlRange(t.s, t.e);
+    if (t.mi != null) stats.push(tlStat('mi', num(t.mi, t.mi >= 10 ? 1 : 2) + ' mi'));
+    if (t.kwh != null) stats.push(tlStat('kwh', num(t.kwh, 1) + ' kWh'));
+    if (energyMode()) { if (t.elec != null) stats.push(tlStat('usd', money(t.elec))); }
+    else if (t.save != null) stats.push(tlStat('usd', money(t.save) + ' saved', 'g'));
+    if (t.fsd && t.fsd.pct != null) stats.push(tlStat('fsd', 'FSD ' + t.fsd.pct + '%', 'a'));
+    stats.push(tlStat('dur', esc(t.min != null ? t.min + ' min' : fmtSpan(t.s, t.e))));
+    detail = tripCard(t, it.i, it.n);
+  } else if (it.kind === 'charge') {
+    const c = it.c, added = c.added != null ? c.added : c.kwh; id = 'tl-c' + c.s;
+    title = tlChargeTitle(c);
+    when = tlRange(c.s, c.e, c.open);
+    if (added != null) stats.push(tlStat('kwh', '+' + num(added, added >= 10 ? 1 : 2) + ' kWh'));
+    if (c.cost != null) stats.push(tlStat('usd', money(c.cost)));
+    if (c.mi != null && c.mi > 0) stats.push(tlStat('mi', '+' + num(c.mi, c.mi >= 10 ? 0 : 1) + ' mi'));
+    stats.push(tlStat('dur', esc(fmtSpan(c.s, c.e))));
+    detail = chargeCard(c);
+  } else {
+    const p = it.p; id = 'tl-p' + p.s;
+    title = 'Parked';
+    when = tlRange(p.s, p.e);
+    if (p.kwh != null) stats.push(tlStat('kwh', num(p.kwh, 2) + ' kWh'));
+    if (p.w != null) stats.push(tlStat('w', esc(fmtW(p.w)) + ' W'));
+    stats.push(tlStat('dur', esc(fmtSpan(p.s, p.e))));
+    detail = parkedCard(p);
+  }
+  TL_DETAIL[id] = detail;
+  const open = OPEN.has(id);
+  return `<li class="tl-ev ${it.kind}${open ? ' open' : ''}" data-tl="${id}">
+    <span class="tl-node" aria-hidden="true">${TLI(TL_ICO[it.kind], 16)}</span>
+    <div class="tl-time">${esc(when)}</div>
+    <div class="tl-card">
+      <button type="button" class="tl-head" aria-expanded="${open ? 'true' : 'false'}">
+        <span class="tl-main"><span class="tl-title">${esc(title)}</span><span class="tl-stats">${stats.join('')}</span></span>
+        <span class="tl-chev" aria-hidden="true">${TLI(TL_ICO.chev, 18)}</span>
+      </button>
+      <div class="tl-detail">${open ? detail : ''}</div>
+    </div>
+  </li>`;
+}
+function tlDayTotals(k) {
+  const x = S.meta.days[k] || {};
+  const out = [];
+  if (energyMode()) {
+    const used = (x.kwh || 0) + (x.parked_known ? (x.parked || 0) : 0);
+    if (used) out.push(tlStat('kwh', num(used, 1) + ' kWh used'));
+    if (x.charge_added) out.push(tlStat('charge', '+' + num(x.charge_added, 1) + ' kWh'));
+    if (x.elec) out.push(tlStat('usd', money(x.elec)));
+  } else {
+    if (x.kwh) out.push(tlStat('kwh', num(x.kwh, 1) + ' kWh'));
+    if (x.save != null && x.n) out.push(tlStat('usd', money(x.save) + ' saved', 'g'));
+  }
+  if (x.mi) out.push(tlStat('mi', num(x.mi, x.mi >= 10 ? 0 : 1) + ' mi'));
+  return out.join('');
+}
+function tlDay(k, items, multi) {
+  return `<section class="tl-day">
+    <div class="tl-dh"${multi ? ` data-day="${k}" role="button" tabindex="0"` : ''}><h3>${esc(tlDayLabel(k))}</h3>${multi ? `<span class="tl-dgo" aria-hidden="true">${TLI(TL_ICO.chev, 16)}</span>` : ''}</div>
+    <div class="tl-tot">${tlDayTotals(k) || '<span class="tl-none">No totals</span>'}</div>
+    <ol class="tl-list">${items.map(it => tlItem(it, k)).join('')}</ol>
+  </section>`;
+}
+function tlFilterNote() {
+  const ef = energyMode() ? (S.efilter || 'all') : 'all';
+  return ef === 'all' ? '' : `<p class="efnote">${ef === 'charge' ? 'Charging only' : 'Trips only'} · totals are for the whole day</p>`;
+}
+async function tlRange_(keys) {
+  /* keys: day keys (any order). Returns the grouped timeline, newest day first, filtered by the Energy filter. */
+  const tk = keyOf(todayD());
+  const ks = keys.filter(k => k <= tk).sort().reverse();
+  const ef = energyMode() ? (S.efilter || 'all') : 'all';
+  const multi = keys.length > 1;
+  let html = '', any = false;
+  for (const k of ks) {
+    const m = await month(k.slice(0, 7));
+    let items = dayEvents(k, m);
+    if (ef !== 'all') items = items.filter(it => it.kind === ef);
+    if (!items.length) { if (!multi) continue; else continue; }
+    any = true; html += tlDay(k, items, multi);
+  }
+  if (!any) {
+    const what = energyMode() ? (ef === 'charge' ? 'No charging' : ef === 'trip' ? 'No trips' : 'No energy use') : 'No trips';
+    return tlFilterNote() + `<div class="empty">${what} ${multi ? 'in this period' : 'this day'}</div>`;
+  }
+  return tlFilterNote() + `<div class="tl">${html}</div>`;
+}
+const TL_DETAIL = {};
+function tlToggle(li) {
+  if (!li) return;
+  const id = li.dataset.tl, open = !li.classList.contains('open');
+  li.classList.toggle('open', open);
+  li.querySelector('.tl-head').setAttribute('aria-expanded', open ? 'true' : 'false');
+  const box = li.querySelector('.tl-detail');
+  if (open) { OPEN.add(id); if (!box.innerHTML.trim()) box.innerHTML = TL_DETAIL[id] || ''; }
+  else { OPEN.delete(id); const tr = box.querySelector('.trip[data-trip]'); if (tr && PLAYERS[+tr.dataset.trip]) PLAYERS[+tr.dataset.trip].pause(); }
+}
+async function viewDay() {
+  return tlRange_([keyOf(S.cur)]);
 }
 
 
@@ -1856,7 +1985,7 @@ async function render() {
   renderSummary();
   const main = $('#main');
   try {
-    main.innerHTML = S.view === 'day' ? await viewDay() : S.view === 'week' ? await viewWeek() : S.view === 'month' ? viewMonth() : await viewYear();
+    main.innerHTML = S.view === 'day' ? await viewDay() : S.view === 'week' ? await viewWeek() : S.view === 'month' ? await viewMonth() : await viewYear();
   } catch (e) { main.innerHTML = `<div class="empty">Couldn't load: ${esc(e.message)}</div>`; }
   const meta = S.meta, upd = new Date(meta.generated * 1000).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   $('#foot').innerHTML = `Updated ${upd} ET · DTE ${esc(meta.plan)} · premium $${(+meta.gas_home).toFixed(2)} · ${meta.mpg} mpg${meta.pending ? ` · <span class="tag">${meta.pending} charge price to confirm</span>` : ''}<br><a href="#" id="info">How costs are calculated</a> · <a href="#" id="lockout">Lock</a>`;
@@ -1913,6 +2042,9 @@ function wire() {
       return;
     }
     const mt = e.target.closest('.maptoggle'); if (mt) { toggleMap(+mt.closest('.trip').dataset.trip); return; }
+    const th = e.target.closest('.tl-head');
+    if (th) { tlToggle(th.closest('.tl-ev')); return; }
+    if (e.target.closest('.tl-detail')) return;   // clicks inside an opened detail keep their own behaviour
     const d = e.target.closest('[data-day]'), mo = e.target.closest('[data-month]');
     if (d) { const [y, mon, da] = d.dataset.day.split('-').map(Number); S.cur = new Date(y, mon - 1, da); S.view = 'day'; OPEN.clear(); render(); }
     else if (mo) { S.cur = new Date(S.cur.getFullYear(), +mo.dataset.month, 1); S.view = 'month'; OPEN.clear(); render(); }

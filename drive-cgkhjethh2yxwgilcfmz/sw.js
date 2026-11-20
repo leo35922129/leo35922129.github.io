@@ -1,5 +1,5 @@
-const C = 'ht-shell-v90';
-const SHELL = ['./', 'index.html', 'style.css?v=90', 'app.js?v=90', 'report.js?v=90', 'control.css?v=90', 'control.js?v=90', 'daily.css?v=90', 'daily.js?v=90', 'summary.js?v=90', 'maplibre-gl.js', 'maplibre-gl.css', 'manifest.webmanifest', 'icon-192.png'];
+const C = 'ht-shell-v91';
+const SHELL = ['./', 'index.html', 'style.css?v=91', 'app.js?v=91', 'report.js?v=91', 'control.css?v=91', 'control.js?v=91', 'daily.css?v=91', 'daily.js?v=91', 'summary.js?v=91', 'maplibre-gl.js', 'maplibre-gl.css', 'manifest.webmanifest', 'icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(C).then(c => c.addAll(SHELL)));
   self.skipWaiting();
