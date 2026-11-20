@@ -1084,19 +1084,19 @@ function toggleMap(id) {
       feats.push({ type: 'Feature', properties: { fsd: cur ? 1 : 0 }, geometry: { type: 'LineString', coordinates: seg } });
     } else feats.push({ type: 'Feature', properties: { fsd: 2 }, geometry: { type: 'LineString', coordinates: line } });   // no FSD data: neutral blue
     m.addSource('route', { type: 'geojson', data: { type: 'FeatureCollection', features: feats } });
-    const paint = { 'line-color': ['match', ['get', 'fsd'], 1, '#4a8ce0', 0, '#34c759', '#3e8bff'], 'line-width': ['case', ['==', ['get', 'fsd'], 1], 6, 5], 'line-opacity': .95 };
+    const paint = { 'line-color': ['match', ['get', 'fsd'], 1, '#3e8bff', 0, '#34c759', '#3e8bff'], 'line-width': ['case', ['==', ['get', 'fsd'], 1], 6, 5], 'line-opacity': .95 };
     if (est) paint['line-dasharray'] = [1.5, 1.5];
     m.addLayer({ id: 'route', type: 'line', source: 'route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint });
   });
   if (hasFsd) for (let i = 1; i < gps.length; i++) {
-    if (flags[i] === 1 && flags[i - 1] !== 1) new maplibregl.Marker({ element: pinEl('#4a8ce0', '#173a66') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD engaged (≈ within 1 mi)')).addTo(m);
-    if (flags[i] !== 1 && flags[i - 1] === 1) new maplibregl.Marker({ element: pinEl('#ffb340', '#6b4300') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD off / took over (≈ within 1 mi)')).addTo(m);
+    if (flags[i] === 1 && flags[i - 1] !== 1) new maplibregl.Marker({ element: pinEl('#3e8bff', '#152033') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD engaged (≈ within 1 mi)')).addTo(m);
+    if (flags[i] !== 1 && flags[i - 1] === 1) new maplibregl.Marker({ element: pinEl('#f0b040', '#4b3510') }).setLngLat(gps[i - 1]).setPopup(new maplibregl.Popup({ closeButton: false }).setText('FSD off / took over (≈ within 1 mi)')).addTo(m);
   }
   const a = gps[0] || line[0], b = gps[gps.length - 1] || line[line.length - 1];
   new maplibregl.Marker({ element: pinEl('#c7ccd3', '#5a616b') }).setLngLat(a).setPopup(new maplibregl.Popup({ closeButton: false }).setText('Start · ' + timeTs(t.s))).addTo(m);
-  new maplibregl.Marker({ element: pinEl('#ff4d4d', '#7a1c1c') }).setLngLat(b).setPopup(new maplibregl.Popup({ closeButton: false }).setText('End · ' + timeTs(t.e))).addTo(m);
+  new maplibregl.Marker({ element: pinEl('#ff5a4e', '#7a1c1c') }).setLngLat(b).setPopup(new maplibregl.Popup({ closeButton: false }).setText('End · ' + timeTs(t.e))).addTo(m);
   const note = document.createElement('div'); note.className = 'mapnote';
-  if (hasFsd) note.innerHTML = '<span style="color:#4a8ce0">━ FSD</span> &nbsp;<span style="color:#34c759">━ manual</span> &nbsp;<span style="color:#4a8ce0">●</span> on <span style="color:#ffb340">●</span> off';
+  if (hasFsd) note.innerHTML = '<span style="color:var(--fsd)">━ FSD</span> &nbsp;<span style="color:var(--grn)">━ manual</span> &nbsp;<span style="color:var(--fsd)">●</span> on <span style="color:var(--amb)">●</span> off';
   else note.textContent = est ? 'Drive not fully recorded · likely route (dashed)' : `${gps.length} GPS fixes${t.rsrc === 'gps' ? '' : t.rsrc === 'tessie' ? ' (Tessie history)' : ', road-matched'}`;
   el.appendChild(note);
   MAPS[id] = m;
@@ -1198,7 +1198,7 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
   lab.innerHTML = `<span class="wheel">${WHEEL_SVG}</span><b class="spd">0</b><span class="u">mph</span><span class="sep"></span><b class="bat">–</b><span class="u">%</span>`;
   const label = new maplibregl.Marker({ element: lab, anchor: 'center' }).setLngLat(gps[0]).addTo(m);
   const bar = document.createElement('div'); bar.className = 'playbar';
-  bar.innerHTML = `<div class="prow"><button class="pbtn play" aria-label="Play">▶</button><button class="pbtn rst" aria-label="Restart">↺</button>
+  bar.innerHTML = `<div class="prow"><button class="pbtn play" aria-label="Play"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6l11-6.8z"/></svg></button><button class="pbtn rst" aria-label="Restart"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 12a7.4 7.4 0 1 0 2.2-5.3"/><path d="M4.6 4.4v4.3h4.3"/></svg></button>
     <input class="prange" type="range" min="0" max="1000" value="0" aria-label="Position"><span class="ptime"></span></div>`;
   el.after(bar);
   const $b = q => bar.querySelector(q), spd = lab.querySelector('.spd'), bat = lab.querySelector('.bat'), clk = badge.querySelector('.clk'), wheel = lab.querySelector('.wheel');
@@ -1241,7 +1241,7 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
   }
   function setPlaying(on) {
     P.playing = on; P.last = 0; cancelAnimationFrame(P.raf);
-    $b('.play').textContent = on ? '❚❚' : '▶'; $b('.play').setAttribute('aria-label', on ? 'Pause' : 'Play');
+    $b('.play').innerHTML = on ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M6.5 5h4v14h-4zm7 0h4v14h-4z"/></svg>' : '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6l11-6.8z"/></svg>'; $b('.play').setAttribute('aria-label', on ? 'Pause' : 'Play');
     if (on) { if (P.pt >= total) P.pt = 0; P.raf = requestAnimationFrame(frame); }
   }
   P.pause = () => setPlaying(false);
@@ -1472,7 +1472,7 @@ function autoPushPrompt() {
     body = `<p>Get Approve / Skip prompts and alerts on this phone, even when the tracker is closed.</p>
       <button type="button" class="auto-pushbtn" data-auto="push-on"${AUTO.busy ? ' disabled' : ''}>Turn on alerts</button>`;
   }
-  return `<div class="auto-push"><div class="auto-push-h">${autoSvg('brief', '#e8a830', 20)}<b>Alerts on this phone</b></div>${body}${AUTO.pushMsg ? `<p class="auto-small">${esc(AUTO.pushMsg)}</p>` : ''}</div>`;
+  return `<div class="auto-push"><div class="auto-push-h">${autoSvg('brief', '#3e8bff', 20)}<b>Alerts on this phone</b></div>${body}${AUTO.pushMsg ? `<p class="auto-small">${esc(AUTO.pushMsg)}</p>` : ''}</div>`;
 }
 function autoMaster() {
   const st = AUTO.srv || {};
@@ -1490,9 +1490,9 @@ function autoMaster() {
   const b = st.budgets || {};
   return `<div class="auto-master${paused || st.kill_switch ? ' paused' : ''}">
     <div class="auto-row">
-      <div class="auto-badge" style="background:${paused || st.kill_switch ? '#5b616b' : '#3e8bff'}">${autoSvg('refresh', '#fff', 20)}</div>
+      <div class="auto-badge" style="background:${paused || st.kill_switch ? 'var(--dim)' : 'var(--acc)'}">${autoSvg('refresh', '#fff', 20)}</div>
       <div style="flex:1;min-width:0"><div class="auto-name">All automations</div><div class="auto-meta" style="margin:2px 0 0">${esc(sub)}</div></div>
-      <button type="button" class="auto-sw${paused ? '' : ' on'}" data-auto="pause" style="--swc:#3e8bff" aria-label="${paused ? 'Resume' : 'Pause'} all automations"${st.kill_switch ? ' disabled' : ''}><span class="track" aria-hidden="true"><span class="blk"></span></span></button>
+      <button type="button" class="auto-sw${paused ? '' : ' on'}" data-auto="pause" style="--swc:var(--acc)" aria-label="${paused ? 'Resume' : 'Pause'} all automations"${st.kill_switch ? ' disabled' : ''}><span class="track" aria-hidden="true"><span class="blk"></span></span></button>
     </div>
     <div class="auto-tools">
       <button type="button" class="auto-tool" data-auto="alerts">Alerts${st.unread ? ` <span class="auto-count">${st.unread}</span>` : ''}</button>

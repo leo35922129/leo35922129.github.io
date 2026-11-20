@@ -136,7 +136,7 @@
     return lab('Team') + t.map(x => {
       const st = botStyle(x.bot), done = L(x.done);
       return `<section class="dr-card">
-        ${cardHd(st.g, st.c, e(x.bot), typeof x.hours === 'number' ? `${hrs(x.hours)} h` : '')}
+        ${cardHd(st.g, st.c, e(x.bot), typeof x.hours === 'number' ? `${hrs(x.hours)} h` : '', 'bot')}
         ${done.length ? items(done, 'dr-done') : ''}
       </section>`;
     }).join('');

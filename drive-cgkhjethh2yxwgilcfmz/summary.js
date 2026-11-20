@@ -35,7 +35,7 @@
     const comb = bots.reduce((s, b) => s + (b.total_hours || 0), 0);
     const rows = bots.map(b => {
       const st = D.botStyle(b.bot);
-      return `<div class="su-bot">${D.badge(st.g, st.c, 'md')}
+      return `<div class="su-bot">${D.badge(st.g, st.c, 'md bot')}
         <div class="su-bn"><div class="su-bt"><b>${e(b.bot)}</b><span class="su-bh">${H(b.total_hours)} h</span></div>
           <div class="su-bar"><i style="width:${Math.max(2, (b.total_hours || 0) / max * 100).toFixed(1)}%;background:${st.c}"></i></div>
           ${b.first_active ? `<div class="su-bs">Since ${shortD(b.first_active)}</div>` : ''}</div></div>`;
@@ -47,7 +47,7 @@
         <div class="su-meta">${first ? `Since ${longD(first)} · ` : ''}${days.length} active day${days.length === 1 ? '' : 's'}</div>
       </section>
       <section class="dr-card">
-        ${D.cardHd(I.bots, '#5b6472', 'Bot working hours', '')}
+        ${D.cardHd(I.bots, 'var(--dim)', 'Bot working hours', '')}
         <div class="su-bots">${rows || '<p class="su-mut">No bot hours yet.</p>'}</div>
         ${bots.length > 1 ? `<div class="su-comb"><span>Combined bot hours</span><b>${H(comb)} h</b></div>
         <div class="su-cnote">Bots often work at the same time, so combined hours are more than clock time.</div>` : ''}
@@ -88,7 +88,7 @@
         ${cats.map(crow).join('')}
       </section>
       <section class="dr-card">
-        ${D.cardHd(I.free, '#5b6472', 'Not billed', '')}
+        ${D.cardHd(I.free, 'var(--dim)', 'Not billed', '')}
         ${free}
       </section>
       ${perDay(a)}
@@ -145,7 +145,7 @@
     const days = [...all].filter(d => (L[d] || 0) > 0 || bsum(d) > 0).sort().reverse();
     const list = days.map(d => `<div class="su-day">
         <div class="su-dhd"><b>${e(longD(d))}</b><span class="su-you">${L[d] ? `You ${H(L[d])} h` : 'You –'}</span></div>
-        <div class="su-chips">${B.filter(x => x.h[d]).map(x => `<span class="su-chip">${D.badge(x.st.g, x.st.c, 'xs')}${e(x.b.bot)} <b>${H(x.h[d])} h</b></span>`).join('')}</div>
+        <div class="su-chips">${B.filter(x => x.h[d]).map(x => `<span class="su-chip">${D.badge(x.st.g, x.st.c, 'xs bot')}${e(x.b.bot)} <b>${H(x.h[d])} h</b></span>`).join('')}</div>
       </div>`).join('');
     return `
       <section class="dr-card">
@@ -153,7 +153,7 @@
         <div class="su-chart tall">${leiBars}</div>${axis}
       </section>
       <section class="dr-card">
-        ${D.cardHd(I.bots, '#5b6472', 'Bot hours per day', `peak ${H(bmax)} h`)}
+        ${D.cardHd(I.bots, 'var(--dim)', 'Bot hours per day', `peak ${H(bmax)} h`)}
         <div class="su-chart tall">${botBars}</div>${axis}${legend}
       </section>
       ${D.lab('By day', `${days.length} days`)}
