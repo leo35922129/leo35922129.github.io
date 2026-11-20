@@ -154,6 +154,7 @@ function paintControlHome(main){
         </button>
       </div>
       ${ctlRefreshRow(fresh, live + (srcParts.length > 1 ? ' · ' + srcParts.slice(1).join(' · ') : ''))}
+      <div id="ctl-loc-slot"></div>
     </section>
 
     <div class="ctl-sec">Quick controls</div>
@@ -187,11 +188,8 @@ function paintControlHome(main){
       ${rbtn('windows-vent', 'Vent windows', 'Type VENT and your PIN', ICONS.window)}
     </div>
 
-    <div class="ctl-sec">Automations</div>
-    <div class="ctl-auto" id="ctl-auto"></div>
-    <button type="button" class="ctl-link" data-act="goto-auto">Manage in the Automation tab</button>
   `;
-  paintEmbeddedAutos();
+  mountCtlLoc();
   if (CONTROL.waking) paintWake();
   if (CONTROL.confirm) paintConfirm();
   if (typeof S !== 'undefined' && S.mode === 'control' && ctlReady() && !CONTROL._statusOnce && !CONTROL.busy && !CONTROL.refreshing) {
@@ -249,24 +247,6 @@ function wideCharge(st){
       <button type="button" class="ctl-mini" data-act="charge-toggle"${ctlDis()}>${(st.charging_state||'').toLowerCase()==='charging'?'Stop':'Start'}</button>
     </div>
   </div>`;
-}
-
-function paintEmbeddedAutos(){
-  const box = document.getElementById('ctl-auto');
-  if (!box || typeof renderAutomation !== 'function') {
-    if (box) box.innerHTML = `<p class="ctl-src">Automation cards from the Automation tab would sit here.</p>`;
-    return;
-  }
-  // Reuse existing cards by temporarily rendering into a detached main? Simpler: clone after a mini list.
-  let items = null;
-  try { items = (typeof AUTO !== 'undefined' && (AUTO.features || AUTO.items)) || null; } catch(e) { items = null; }
-  if (!items) {
-    box.innerHTML = `<p class="auto-note">The same automation cards from the Automation tab belong here. Open that tab to edit them.</p>`;
-    return;
-  }
-  const on = items.filter(x => x.on).slice(0, 3);
-  box.innerHTML = `<p class="auto-note" style="margin:0 0 8px">On means the droplet engine may run it. Off means it won’t.</p>` +
-    on.map(a => `<div class="auto-card"><div class="auto-row"><div class="auto-name">${ctlEsc(a.name)}</div></div><div class="auto-preview">${ctlEsc(a.action)}</div></div>`).join('');
 }
 
 function softwareData(){
@@ -449,11 +429,6 @@ function handleControlClick(e){
   }
   if (act === 'open-software') { CONTROL.view = 'software'; CONTROL.detail = null; renderControl(); return false; }
   if (act === 'open-version') { CONTROL.view = 'software-detail'; CONTROL.detail = actEl.dataset.ver; renderControl(); return false; }
-  if (act === 'goto-auto') {
-    if (typeof S !== 'undefined') { S.mode = 'automation'; localStorage.setItem('ht_mode', 'automation'); }
-    if (typeof render === 'function') render();
-    return false;
-  }
   if (!ctlReady()) {
     CONTROL.enablePrompt = true;
     CONTROL.enableError = '';
@@ -928,3 +903,177 @@ window.ctlBack = ctlBack;
 window.afterTrackerUnlock = afterTrackerUnlock;
 document.addEventListener('DOMContentLoaded', hookControl);
 if (document.readyState !== 'loading') hookControl();
+
+
+/* ---------- v90: current location map (Control status card) ----------
+   Reads the encrypted snapshot the droplet writes from streamed telemetry (/live/<name>.json on the droplet's nginx).
+   A static file read: it never calls Tesla, never wakes the truck, costs nothing.
+   Moving: refetched every 5 s. Parked or stale: every 60 s. Only while the Control page is on screen. */
+const CTL_LIVE_BASE = 'https://146-190-255-1.sslip.io/live/';
+const CTLLOC = { wrap: null, map: null, marker: null, data: null, err: '', timer: null, name: null, loaded: false, fitted: false };
+const CTL_LOC_ICO = {
+  speed: ctlIco('<path d="M5 17a8 8 0 1 1 14 0"/><path d="m12 13 4-4"/>'),
+  fsd: ctlIco('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M12 4v6M5.5 15.5 10 13M18.5 15.5 14 13"/>'),
+  brake: ctlIco('<circle cx="12" cy="12" r="5"/><path d="M5.6 6a9 9 0 0 0 0 12M18.4 6a9 9 0 0 1 0 12"/>'),
+  heading: ctlIco('<circle cx="12" cy="12" r="8"/><path d="m12 7 3 8-3-2-3 2z"/>'),
+  pin: ctlIco('<path d="M12 21s-6-5.7-6-11a6 6 0 0 1 12 0c0 5.3-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>')
+};
+async function ctlLiveName(){
+  if (CTLLOC.name) return CTLLOC.name;
+  if (typeof S === 'undefined' || !S.key) return null;
+  const k = await crypto.subtle.importKey('raw', S.key, {name: 'HMAC', hash: 'SHA-256'}, false, ['sign']);
+  const sig = new Uint8Array(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode('happytruck-live-v1')));
+  CTLLOC.name = Array.from(sig).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 32) + '.json';
+  return CTLLOC.name;
+}
+function ctlLocLive(d){ return !!(d && d.moving && Date.now() / 1000 - (d.gen || d.ts || 0) < 120); }
+function ctlLocWhen(ts){
+  if (!ts) return '—';
+  const d = new Date(ts * 1000), now = new Date();
+  const t = d.toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit'});
+  if (d.toDateString() === now.toDateString()) return t;
+  const y = new Date(now); y.setDate(now.getDate() - 1);
+  if (d.toDateString() === y.toDateString()) return 'Yesterday ' + t;
+  return d.toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) + ', ' + t;
+}
+function ctlLocAgo(ts){
+  const s = Math.max(0, Math.round(Date.now() / 1000 - ts));
+  return s < 60 ? s + ' s ago' : s < 3600 ? Math.round(s / 60) + ' min ago' : '';
+}
+function ensureCtlLocWrap(){
+  if (CTLLOC.wrap) return CTLLOC.wrap;
+  const w = document.createElement('div');
+  w.className = 'ctl-loc';
+  w.innerHTML = `<div class="ctl-map" id="ctlmap"></div>
+    <div class="ctl-loc-info"><span class="ic">${CTL_LOC_ICO.pin}</span><div class="grow"><div class="pl"></div><div class="sb"></div></div></div>
+    <div class="ctl-loc-live hidden"></div>
+    <p class="ctl-loc-note hidden"></p>`;
+  CTLLOC.wrap = w;
+  return w;
+}
+function mountCtlLoc(){
+  const slot = document.getElementById('ctl-loc-slot');
+  if (!slot) return;
+  const w = ensureCtlLocWrap();
+  slot.replaceWith(w);
+  paintCtlLoc();
+  if (CTLLOC.map) setTimeout(() => { try { CTLLOC.map.resize(); } catch (e) {} }, 0);
+  scheduleCtlLoc(CTLLOC.loaded ? null : 0);
+}
+function ctlLocOnScreen(){
+  return typeof S !== 'undefined' && S.mode === 'control' && CONTROL.view === 'home' && !document.hidden && CTLLOC.wrap && CTLLOC.wrap.isConnected;
+}
+function scheduleCtlLoc(ms){
+  if (ms == null) { if (CTLLOC.timer) return; ms = ctlLocLive(CTLLOC.data) ? 5000 : 60000; }
+  clearTimeout(CTLLOC.timer);
+  CTLLOC.timer = setTimeout(async () => {
+    CTLLOC.timer = null;
+    if (!ctlLocOnScreen()) return;          // resumes when Control is shown again
+    await fetchCtlLoc();
+    scheduleCtlLoc(ctlLocLive(CTLLOC.data) ? 5000 : 60000);
+  }, ms);
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && ctlLocOnScreen()) scheduleCtlLoc(0); });
+async function fetchCtlLoc(){
+  try {
+    const name = await ctlLiveName();
+    if (!name) throw new Error('locked');
+    const r = await fetch(CTL_LIVE_BASE + name + '?t=' + Date.now(), {cache: 'no-store'});
+    if (!r.ok) throw new Error('http ' + r.status);
+    CTLLOC.data = await decrypt(await r.json(), S.key);
+    CTLLOC.err = '';
+  } catch (e) {
+    CTLLOC.err = 'Location unavailable · couldn’t read the droplet’s location snapshot.';
+  }
+  CTLLOC.loaded = true;
+  paintCtlLoc();
+}
+function ctlTrailFeatures(d){
+  const tr = (d.trail || []).map(p => ({c: [p[1], p[0]], f: p[2]}));
+  if (d.moving && d.lat != null) tr.push({c: [d.lon, d.lat], f: tr.length ? tr[tr.length - 1].f : null});
+  const feats = [];
+  if (tr.length < 2) return feats;
+  const cls = f => f === 1 ? 1 : f === 0 ? 0 : 2;
+  let seg = [tr[0].c], cur = cls(tr[1].f);
+  for (let i = 1; i < tr.length; i++) {
+    const k = cls(tr[i].f);
+    if (k !== cur) { feats.push({type: 'Feature', properties: {fsd: cur}, geometry: {type: 'LineString', coordinates: seg}}); seg = [tr[i - 1].c]; cur = k; }
+    seg.push(tr[i].c);
+  }
+  feats.push({type: 'Feature', properties: {fsd: cur}, geometry: {type: 'LineString', coordinates: seg}});
+  return feats;
+}
+function paintCtlLoc(){
+  const w = CTLLOC.wrap; if (!w) return;
+  const d = CTLLOC.data;
+  const mapEl = w.querySelector('.ctl-map'), pl = w.querySelector('.pl'), sb = w.querySelector('.sb');
+  const liveEl = w.querySelector('.ctl-loc-live'), note = w.querySelector('.ctl-loc-note');
+  if (!d) {
+    mapEl.classList.add('empty');
+    pl.textContent = CTLLOC.loaded ? 'Location unavailable' : 'Loading location…';
+    sb.textContent = CTLLOC.loaded ? (CTLLOC.err || '') : 'From streamed telemetry · never wakes the truck';
+    liveEl.classList.add('hidden'); note.classList.add('hidden');
+    return;
+  }
+  mapEl.classList.remove('empty');
+  const live = ctlLocLive(d);
+  if (d.moving) {
+    pl.textContent = live ? 'Driving' + (d.from ? ' · from ' + d.from : '') : 'Last seen driving' + (d.from ? ' · from ' + d.from : '');
+  } else {
+    pl.textContent = d.place || `${(+d.lat).toFixed(4)}, ${(+d.lon).toFixed(4)}`;
+  }
+  const ago = ctlLocAgo(d.ts);
+  sb.textContent = (d.moving ? (live ? 'Live' : 'Signal stale') : 'Parked') + ' · updated ' + ctlLocWhen(d.ts) + (ago && d.moving ? ' (' + ago + ')' : '');
+  if (d.moving) {
+    const na = '<span class="na">Unavailable</span>';
+    const spd = live && d.speed_mph != null ? `${d.speed_mph}<small> mph</small>` : na;
+    liveEl.innerHTML = `
+      <div class="ctl-lr"><span class="ic">${CTL_LOC_ICO.speed}</span><span class="k">Speed</span><span class="v">${spd}</span></div>
+      <div class="ctl-lr"><span class="ic">${CTL_LOC_ICO.fsd}</span><span class="k">FSD</span><span class="v">${d.fsd_now == null ? na : (d.fsd_now ? 'On' : 'Off')}</span></div>
+      <div class="ctl-lr"><span class="ic">${CTL_LOC_ICO.brake}</span><span class="k">Brake</span><span class="v">${d.brake == null ? na : (d.brake ? 'On' : 'Off')}</span></div>
+      <div class="ctl-lr"><span class="ic">${CTL_LOC_ICO.heading}</span><span class="k">Heading</span><span class="v">${d.heading == null ? na : Math.round(d.heading) + '°'}</span></div>`;
+    liveEl.classList.remove('hidden');
+    note.innerHTML = '<span class="lg fsd">━ FSD</span><span class="lg man">━ manual</span><span class="lg unk">━ not known yet</span><br>Trail colors lag about 1 mile. FSD, brake and heading aren’t streamed in real time.';
+    note.classList.remove('hidden');
+  } else {
+    liveEl.classList.add('hidden'); note.classList.add('hidden');
+  }
+  paintCtlMap(d);
+}
+function paintCtlMap(d){
+  if (typeof maplibregl === 'undefined') return;
+  const el = CTLLOC.wrap.querySelector('.ctl-map');
+  const pos = [d.lon, d.lat];
+  const feats = ctlTrailFeatures(d);
+  if (!CTLLOC.map) {
+    const m = new maplibregl.Map({container: el, style: 'https://tiles.openfreemap.org/styles/dark', center: pos, zoom: d.moving ? 14 : 15,
+      attributionControl: {compact: true}, cooperativeGestures: true, dragRotate: false, pitchWithRotate: false});
+    CTLLOC.map = m;
+    const pin = document.createElement('div'); pin.className = 'ctl-truck-pin';
+    CTLLOC.marker = new maplibregl.Marker({element: pin}).setLngLat(pos).addTo(m);
+    m.on('load', () => {
+      const at = el.querySelector('.maplibregl-ctrl-attrib'); if (at) at.classList.remove('maplibregl-compact-show');
+      m.addSource('ctltrail', {type: 'geojson', data: {type: 'FeatureCollection', features: ctlTrailFeatures(CTLLOC.data || d)}});
+      m.addLayer({id: 'ctltrail', type: 'line', source: 'ctltrail', layout: {'line-cap': 'round', 'line-join': 'round'},
+        paint: {'line-color': ['match', ['get', 'fsd'], 1, '#3e8bff', 0, '#34c759', '#6b7380'], 'line-width': 5, 'line-opacity': .95}});
+    });
+  } else {
+    const src = CTLLOC.map.getSource && CTLLOC.map.getSource('ctltrail');
+    if (src) src.setData({type: 'FeatureCollection', features: feats});
+    CTLLOC.marker.setLngLat(pos);
+  }
+  const m = CTLLOC.map;
+  if (d.moving && !CTLLOC.fitted && (d.trail || []).length > 1) {   // first moving view: show the whole recent trail
+    const b = new maplibregl.LngLatBounds(pos, pos);
+    d.trail.forEach(p => b.extend([p[1], p[0]]));
+    m.fitBounds(b, {padding: 28, maxZoom: 15, duration: 0});
+    CTLLOC.fitted = true;
+  } else if (d.moving) {
+    if (!m.getBounds().contains(pos)) m.easeTo({center: pos, duration: 800});   // keep the truck in view without fighting the user
+  } else {
+    if (CTLLOC.fitted) m.jumpTo({center: pos, zoom: 15});
+    else m.jumpTo({center: pos});
+    CTLLOC.fitted = false;
+  }
+  CTLLOC.marker.getElement().classList.toggle('live', ctlLocLive(d));
+}
