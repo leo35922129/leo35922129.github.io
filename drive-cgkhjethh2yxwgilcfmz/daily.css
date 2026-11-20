@@ -440,3 +440,6 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 /* v91: an opened event uses the full width, so the existing detail card keeps its original layout */
 .tl-ev.open .tl-card{margin-left:-46px;position:relative;z-index:1}
 @media (max-width:374px){.tl-ev.open .tl-card{margin-left:-42px}}
+/* v93: filter selected states match the event tags (Charger = Charging-tag green, Trip = blue, All unchanged) */
+.efilter button[data-ef="charge"].on{background:var(--grn-card);color:var(--grn)}
+.efilter button[data-ef="trip"].on{background:var(--acc-soft);color:var(--acc)}

@@ -127,7 +127,16 @@ const DBADGE = '<span class="dbadge" aria-hidden="true">$</span>';
 const WHEEL = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#3e8bff" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.25"/><circle cx="12" cy="12" r="2.15"/><path d="M12 9.85V3.75M3.75 13h6.1M14.15 13h6.1"/></svg>';
 const BOLT_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f5d031" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></svg>';
 const ELEC_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#34c759" stroke-width="1.8"/><g transform="translate(12 12) scale(0.46) translate(-12 -12)"><path fill="#34c759" d="M13.2 2.5 5.8 13.2h5.3l-.8 8.3 8.2-12.2h-5.4z"/></g></svg>';
-const PLUG_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.2 10.15h6.6c.4 0 .7.3.7.7v2.3c0 .4-.3.7-.7.7H3.2c-.7 0-1.2-.5-1.2-1.15v-1.4c0-.65.5-1.15 1.2-1.15z"/><rect x="9.4" y="7.6" width="7" height="8.8" rx="1.8" fill="currentColor"/><rect x="16.2" y="9.15" width="4.6" height="1.7" rx=".7" fill="currentColor"/><rect x="16.2" y="13.15" width="4.6" height="1.7" rx=".7" fill="currentColor"/></svg>';
+/* v93: one shared definition for the event-type icons. The All/Charger/Trip filter buttons, the Trip/Charging tags,
+   the charging chips and the timeline nodes all render from EV_PATHS, so they can't drift apart. */
+const EV_PATHS = {
+  all: '<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
+  charge: '<path d="M9 3v5M15 3v5M6.5 8h11v3a5.5 5.5 0 0 1-11 0z"/><path d="M12 16.5V21"/>',
+  trip: '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7.5a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H16"/>'
+};
+const evIco = (k, cls = 'ico', w = 20) => `<svg class="${cls}" viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${EV_PATHS[k]}</svg>`;
+const PLUG_ICO = evIco('charge');
+const TRIP_ICO = evIco('trip');
 const PUMP_ICO = '<svg class="ico gasico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.8" y="3.5" width="9.2" height="16.5" rx="1.4"/><path d="M7 8h3.2M13 8.2h2.4c1.15 0 2.2.95 2.2 2.15V15"/><circle cx="17.6" cy="16.4" r="1.55" fill="currentColor" stroke="none"/></svg>';
 const PARK_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.2" fill="#f0b040"/><path fill="#1a1408" d="M8.55 6.55h4.7c2.35 0 3.85 1.35 3.85 3.5 0 2.15-1.55 3.55-3.85 3.55h-2.1V17.45H8.55V6.55zm2.55 2.15v2.7h1.9c1.05 0 1.7-.55 1.7-1.35s-.65-1.35-1.7-1.35h-1.9z"/></svg>';
 const GAUGE_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#f0b040" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 17.4a8.6 8.6 0 1 1 14.8 0"/><path d="M12 17.4 16.1 9.7"/><circle cx="12" cy="17.4" r="1.55" fill="#f0b040" stroke="none"/></svg>';
@@ -216,6 +225,7 @@ function syncTopSeg() {
   el.querySelectorAll('button').forEach(b => { const on = b.dataset.v === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   if (!el.dataset.bound) {
     el.dataset.bound = '1';
+    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
     el.addEventListener('click', ev => {
       const b = ev.target.closest('button[data-v]'); if (!b) return;
       if (el.dataset.tab === 'report') { if (window.setNewsSide) setNewsSide(b.dataset.v); return; }
@@ -537,7 +547,7 @@ function tripCard(t, idx, total) {
   const featId = 'trip-' + t.id;
   return `<div class="card trip" data-trip="${t.id}">
     <div class="hd">
-      <span class="badge trip">${WHEEL} Trip ${n}/${total}</span>
+      <span class="badge trip">${TRIP_ICO} Trip ${n}/${total}</span>
       <span class="when">${when}</span>
       <span class="right">${right}</span>
     </div>
@@ -694,6 +704,7 @@ function syncEFilter() {
   el.querySelectorAll('button[data-ef]').forEach(b => { const on = b.dataset.ef === cur; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
   if (!el.dataset.bound) {
     el.dataset.bound = '1';
+    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
     el.addEventListener('click', ev => {
       const b = ev.target.closest('button[data-ef]'); if (!b || b.dataset.ef === (S.efilter || 'all')) return;
       S.efilter = b.dataset.ef; render();
@@ -1285,8 +1296,8 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
 /* ---------- v91: event timeline (Savings + Energy; Day / Week / Month) ---------- */
 const TLI = (d, w = 16) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const TL_ICO = {
-  charge: '<path d="M9 3v5M15 3v5M6.5 8h11v3a5.5 5.5 0 0 1-11 0z"/><path d="M12 16.5V21"/>',
-  trip: '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7.5a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H16"/>',
+  charge: EV_PATHS.charge,
+  trip: EV_PATHS.trip,
   parked: '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M10 16V8h3a2.5 2.5 0 0 1 0 5h-3"/>',
   kwh: '<path d="m13 3-7 10h5l-1 8 7-10h-5z"/>',
   usd: '<circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.4-1-1.5-1.6-2.8-1.6-1.6 0-2.8.8-2.8 2.1 0 2.9 5.8 1.6 5.8 4.5 0 1.3-1.2 2.2-3 2.2-1.4 0-2.6-.7-3-1.8M12 6v1.6M12 16.4V18"/>',
