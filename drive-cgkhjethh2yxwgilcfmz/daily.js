@@ -209,7 +209,7 @@
     const sum = isSum(), sd = sum && window.SUMMARY && SUMMARY.daily;
     if (app) { app.classList.toggle('mode-daily', on); app.classList.toggle('dr-arch', on && !sum && DAILY.archive); app.classList.toggle('dr-summ', on && sum); }
     const h = document.getElementById('dailyhead');
-    if (h) h.classList.toggle('hidden', !on);
+    if (h) h.classList.toggle('hidden', !on || !sd); // v87: no page title under the switch; header only for the Daily time back view
     const ht = document.getElementById('dailytitle');
     if (ht) ht.textContent = sum ? (sd ? 'Daily time' : 'Summary') : 'Team Daily Reports';
     const bk = document.getElementById('dailyback');

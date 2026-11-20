@@ -181,3 +181,8 @@
   #seg.seg button,.auto-cat{padding:0 10px}
   .stat .v{font-size:22px}.stat .v small{font-size:12px}
 }
+
+/* ---- v87: no big page title under the top switch. Sub-pages (Software, automation edit/alerts, Daily time) keep their back header. ---- */
+#app.mode-control .ctlhead:not(.is-sub){display:none!important}
+#app.mode-auto .autohead:not(.is-edit){display:none!important}
+#app.mode-report .reporthead{display:none!important}
