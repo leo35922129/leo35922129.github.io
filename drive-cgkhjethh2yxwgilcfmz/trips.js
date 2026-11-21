@@ -40,7 +40,30 @@
   const range = d => { if (!d) return ''; const a = dlabel(d.start, { month: 'short', day: 'numeric' }); if (!d.end || d.end === d.start) return a;
     const sameM = d.start.slice(0, 7) === d.end.slice(0, 7); return `${a}–${sameM ? +d.end.slice(8) : dlabel(d.end, { month: 'short', day: 'numeric' })}`; };
   const ndays = () => { const a = new Date(ex.start + 'T12:00'), b = new Date((ex.end || ex.start) + 'T12:00'); return Math.max(1, Math.round((b - a) / 864e5) + 1); };
-  const WX = c => c == null ? '' : c === 0 ? 'Clear' : c <= 2 ? 'Partly cloudy' : c === 3 ? 'Cloudy' : c <= 48 ? 'Fog' : c <= 57 ? 'Drizzle' : c <= 67 ? 'Rain' : c <= 77 ? 'Snow' : c <= 82 ? 'Showers' : c <= 86 ? 'Snow showers' : 'Storms';
+  /* v113: Open-Meteo WMO weather code -> [label, icon key]. Icons use the app's single line-icon style (I()), with light condition tints. */
+  const WXK = c => c == null ? null : c === 0 ? ['Clear', 'sun'] : c === 1 ? ['Mostly clear', 'mclear'] : c === 2 ? ['Partly cloudy', 'pcloud']
+    : c === 3 ? ['Cloudy', 'cloud'] : c === 45 || c === 48 ? ['Fog', 'fog'] : c >= 51 && c <= 55 ? ['Drizzle', 'drizzle']
+    : c === 56 || c === 57 ? ['Freezing drizzle', 'freeze'] : c >= 61 && c <= 65 ? ['Rain', 'rain'] : c === 66 || c === 67 ? ['Freezing rain', 'freeze']
+    : c >= 71 && c <= 77 ? ['Snow', 'snow'] : c >= 80 && c <= 82 ? ['Showers', 'shower'] : c === 85 || c === 86 ? ['Snow showers', 'sshower']
+    : c >= 95 ? ['Thunderstorm', 'storm'] : ['Weather', 'cloud'];
+  const WX = c => (WXK(c) || [''])[0];
+  const WXC = 'M7 14h10a3.5 3.5 0 0 0 .4-6.98A5.2 5.2 0 0 0 7.1 6.3 3.9 3.9 0 0 0 7 14z';   // cloud with room for precipitation below
+  const WXP = {
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+    mclear: '<circle cx="10" cy="10" r="3.6"/><path d="M10 3v1.6M3 10h1.6M5 5l1.1 1.1M15 5l-1.1 1.1M5 15l1.1-1.1"/><path d="M13.2 20.5h5.6a2.7 2.7 0 0 0 .2-5.4 3.5 3.5 0 0 0-6.5 1.1 2.15 2.15 0 0 0 .7 4.3z"/>',
+    pcloud: '<circle cx="8" cy="8" r="3"/><path d="M8 2.6v1.2M2.6 8h1.2M4.2 4.2l.85.85M11.8 4.2l-.85.85M4.2 11.8l.85-.85"/><path d="M10.5 20.5h7.5a3.2 3.2 0 0 0 .35-6.38A4.4 4.4 0 0 0 10 13.4a3.55 3.55 0 0 0 .5 7.1z"/>',
+    cloud: '<path d="M7 19h10.5a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.6 10.1 4.5 4.5 0 0 0 7 19z"/>',
+    fog: '<path d="' + WXC + '"/><path d="M4 17.5h16M6.5 21h11"/>',
+    drizzle: '<path d="' + WXC + '"/><path d="M8.5 17.6v.4M12 17.6v.4M15.5 17.6v.4M10.2 20.6v.4M13.8 20.6v.4"/>',
+    rain: '<path d="' + WXC + '"/><path d="M8.6 16.8 7.6 20.4M12.6 16.8l-1 3.6M16.6 16.8l-1 3.6"/>',
+    freeze: '<path d="' + WXC + '"/><path d="M8.2 16.8 7.2 20.4M16.8 16.8l-1 3.6"/><path d="M12 16.6v4.4M10.1 17.7l3.8 2.2M13.9 17.7l-3.8 2.2"/>',
+    shower: '<path d="' + WXC + '"/><path d="M9.6 16.8l-1 3.6M14.6 16.8l-1 3.6"/>',
+    snow: '<path d="' + WXC + '"/><path d="M8.5 16.6v4.2M6.7 17.7l3.6 2M10.3 17.7l-3.6 2M15.5 16.6v4.2M13.7 17.7l3.6 2M17.3 17.7l-3.6 2"/>',
+    sshower: '<path d="' + WXC + '"/><path d="M12 16.6v4.2M10.2 17.7l3.6 2M13.8 17.7l-3.6 2"/>',
+    storm: '<path d="' + WXC + '"/><path d="M12.8 15.2 10.4 18.6h3.2L11.2 22"/>'
+  };
+  const WXT = { sun: 'sun', mclear: 'sun', pcloud: 'cloud', cloud: 'cloud', fog: 'cloud', drizzle: 'rain', rain: 'rain', shower: 'rain', freeze: 'rain', snow: 'snow', sshower: 'snow', storm: 'storm' };
+  const wxIco = c => { const k = WXK(c); return k ? `<span class="trp-wico wx-${WXT[k[1]]}" title="${k[0]}">${I(WXP[k[1]], 22)}</span>` : ''; };
   const tok = () => { try { return localStorage.getItem('ht_control_token') || ''; } catch (e) { return ''; } };
 
   async function api(path, opts = {}) {
@@ -86,7 +109,7 @@
   }
   function weatherCard(d) {
     const w = d.weather || {};
-    const days = (w.days || []).map(x => `<div class="trp-wd"><b>${esc(dlabel(x.date, { weekday: 'short' }))} ${+x.date.slice(8)}</b><span class="trp-wx">${esc(WX(x.code))}</span><span class="trp-t">${x.hi != null ? Math.round(x.hi) + '°' : '–'}<small> / ${x.lo != null ? Math.round(x.lo) + '°' : '–'}</small></span><small>${x.pop != null ? x.pop + '% precip' : ''}${x.wind_mph != null ? ` · ${Math.round(x.wind_mph)} mph` : ''}</small></div>`).join('');
+    const days = (w.days || []).map(x => `<div class="trp-wd"><div class="trp-wdh"><b>${esc(dlabel(x.date, { weekday: 'short' }))} ${+x.date.slice(8)}</b>${wxIco(x.code)}</div><span class="trp-wx">${esc(WX(x.code))}</span><span class="trp-t">${x.hi != null ? Math.round(x.hi) + '°' : '–'}<small> / ${x.lo != null ? Math.round(x.lo) + '°' : '–'}</small></span><small>${x.pop != null ? x.pop + '% precip' : ''}${x.wind_mph != null ? ` · ${Math.round(x.wind_mph)} mph` : ''}</small></div>`).join('');
     const al = (d.alerts || []).map(a => `<div class="trp-alert">${I(P.warn, 18)}<span><b>${esc(a.event || 'Alert')}</b>${a.ends ? ` · until ${esc(new Date(a.ends).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' }))}` : ''}</span></div>`).join('');
     return `<div class="trp-sec">Weather · ${esc((d.dest && d.dest.label || '').split(',')[0])}</div>
       <div class="card trp-wcard">${days ? `<div class="trp-wrow">${days}</div>` : ''}${w.note ? `<div class="trp-note">${esc(w.note)}</div>` : ''}${al}

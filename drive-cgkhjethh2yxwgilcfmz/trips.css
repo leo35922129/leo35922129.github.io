@@ -153,3 +153,14 @@
 /* v112: charging rule caption on the route card */
 .trp-rule{margin-top:6px;color:var(--mut);font-size:var(--fs-cap);line-height:var(--lh)}
 .trp-rule+.trp-trade{margin-top:2px}
+
+/* v113: weather icon per forecast day (top-right of the tile). Line icons like the rest of Trips; light condition tints from tokens. */
+.trp-wdh{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:22px}
+.trp-wico{flex:none;display:flex;color:var(--tx2)}
+.trp-wico svg{display:block}
+.trp-wico.wx-sun{color:var(--amb)}
+.trp-wico.wx-rain{color:var(--acc)}
+.trp-wico.wx-cloud{color:var(--tx2)}
+.trp-wico.wx-snow{color:var(--tx)}
+.trp-wico.wx-storm{color:var(--amb)}
+.trp-wx{white-space:nowrap}
