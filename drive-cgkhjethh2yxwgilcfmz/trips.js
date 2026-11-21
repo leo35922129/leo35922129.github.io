@@ -37,6 +37,8 @@
     event: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m12 12.6.9 1.9 2 .2-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.2z"/>',
     ext: '<path d="M14 4h6v6M20 4l-9 9M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',
     clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    bat: '<rect x="2.5" y="7" width="17" height="10" rx="2.2"/><path d="M22 10.5v3"/><path d="M6 10.5v3M9.5 10.5v3M13 10.5v3"/>',
   };
   const fast = () => (typeof EV_PATHS !== 'undefined' ? EV_PATHS.fast : P.plus);
   const tripP = () => (typeof EV_PATHS !== 'undefined' ? EV_PATHS.trip : P.pin);
@@ -99,18 +101,20 @@
   function searchCard() {
     const res = T.results.length ? `<div class="trp-res">${T.results.map((r, i) => `<button type="button" class="trp-resrow" data-pick="${i}">${I(P.pin, 18)}<span>${esc(r.label)}</span><small>${esc(r.country === 'CA' ? 'Canada' : '')}</small></button>`).join('')}</div>` : '';
     const socs = [70, 80, 90, 100].map(v => `<option value="${v}"${+ex.soc === v ? ' selected' : ''}>${v}%</option>`).join('');
+    /* v117: form boxes are tiles sized like the Control status tiles (card2, 12px radius, 9/8px padding,
+       16px icon + 15px label + 17px semibold value). */
+    const tl = (ic, k, inner, cls = '') => `<label class="trp-tl${cls}"><span class="trp-tlh">${I(ic, 16)}<span class="k">${k}</span></span>${inner}</label>`;
     return `<div class="card trp-search">
-      <label class="trp-q">${I(P.search, 20)}<input id="trp-q" type="search" enterkeyhint="search" autocomplete="off" placeholder="Where to?" value="${esc(T.q || (ex.dest && ex.dest.label) || '')}">${(T.q || ex.dest) ? `<button type="button" class="trp-clr" data-act="clear" aria-label="Clear">${I(P.x, 18)}</button>` : ''}</label>
+      <label class="trp-tl trp-q"><span class="trp-tlh">${I(P.search, 16)}<span class="k">Destination</span></span><span class="trp-qrow"><input id="trp-q" class="v" type="search" enterkeyhint="search" autocomplete="off" placeholder="Where to?" value="${esc(T.q || (ex.dest && ex.dest.label) || '')}">${(T.q || ex.dest) ? `<button type="button" class="trp-clr" data-act="clear" aria-label="Clear">${I(P.x, 18)}</button>` : ''}</span></label>
       ${res}
       <div class="trp-when trp-dates">
-        <label class="trp-chip trp-date"><input type="date" id="trp-start" value="${ex.start}" aria-label="Start date"></label>
-        <span class="trp-arrow">→</span>
-        <label class="trp-chip trp-date"><input type="date" id="trp-end" value="${ex.end}" min="${ex.start}" aria-label="End date"></label>
+        ${tl(P.cal, 'Start', `<input class="v" type="date" id="trp-start" value="${ex.start}" aria-label="Start date">`, ' trp-date')}
+        ${tl(P.cal, 'End', `<input class="v" type="date" id="trp-end" value="${ex.end}" min="${ex.start}" aria-label="End date">`, ' trp-date')}
       </div>
       <div class="trp-when trp-opts">
-        <span class="trp-chip">${I(P.home, 16)}Home</span>
-        <label class="trp-chip">Leave <input type="time" id="trp-dep" value="${ex.depart}" step="900"></label>
-        <label class="trp-chip">at <select id="trp-soc">${socs}</select></label>
+        ${tl(P.home, 'From', '<span class="v">Home</span>')}
+        ${tl(P.clock, 'Leave', `<input class="v" type="time" id="trp-dep" value="${ex.depart}" step="900" aria-label="Leave time">`)}
+        ${tl(P.bat, 'Battery', `<select class="v" id="trp-soc" aria-label="Battery when leaving">${socs}</select>`)}
       </div>
     </div>`;
   }
@@ -431,6 +435,8 @@
     };
     const set = (id, k, num) => { const el = $(id); if (el) el.onchange = () => { ex[k] = num ? +el.value : el.value; if (k === 'start' && ex.end < ex.start) ex.end = ex.start; save(); T.data = null; void loadExplore(true); renderTrips(); }; };
     set('#trp-start', 'start'); set('#trp-end', 'end'); set('#trp-dep', 'depart'); set('#trp-soc', 'soc', true);
+    // v117: the picker icons are hidden in the tiles, so tapping the date/time value opens the native picker
+    ['#trp-start', '#trp-end', '#trp-dep'].forEach(id => { const el = $(id); if (el && el.showPicker) el.addEventListener('click', () => { try { el.showPicker(); } catch (e) {} }); });
   }
   function openAdd(i, place) {
     const p = curPlan(T.data), s = place || (p && p.stops[i]); if (!s) return;
