@@ -99,8 +99,8 @@
     const parts = [];
     if (t.extra_stops) parts.push(`${t.extra_stops > 0 ? '+' : ''}${t.extra_stops} stop${Math.abs(t.extra_stops) === 1 ? '' : 's'}`);
     if (t.extra_charge_minutes) parts.push(`${t.extra_charge_minutes > 0 ? '+' : '−'}${fmtMin(Math.abs(t.extra_charge_minutes))} charging`);
-    if (t.extra_cost_usd != null && t.extra_cost_usd !== 0) parts.push(`${t.extra_cost_usd > 0 ? '+' : '−'}${usd(Math.abs(t.extra_cost_usd))}`);
-    else if (t.cost_complete === false) parts.push('cost n/a');
+    if (t.extra_cost_usd != null && t.extra_cost_usd !== 0) parts.push(`${t.extra_cost_usd > 0 ? '+' : '−'}${usd(Math.abs(t.extra_cost_usd))}${t.cost_complete === false ? ' est' : ''}`);
+    else if (t.extra_cost_usd == null && t.cost_complete === false) parts.push('cost n/a');
     const b = tv.baseline_settings || {};
     return `<div class="trp-trade">vs ${b.min_arrive_charger_pct ?? 15}/${b.min_arrive_dest_pct ?? 20}% plan: ${parts.length ? esc(parts.join(' · ')) : 'same stops and time'}</div>`;
   }
@@ -113,7 +113,7 @@
     return `<div class="trp-sec">Route</div>
     <div class="card trp-route">
       <div class="trp-rline"><b>${Math.round(r.miles)} mi</b><small class="trp-ow">one way</small><span>·</span><b>${fmtMin(tot)}</b><span>·</span><b>${stops} stop${stops === 1 ? '' : 's'}</b><small class="ftag">est</small></div>
-      <div class="trp-rsub">Arrive ${pct(arr)}${ret != null ? ` · Return ${ret ? 'needs a stop' : 'needs no stop'}` : ''}</div>
+      <div class="trp-rsub">Arrive ${pct(arr)}${p && p.cost_usd != null && stops ? ` · Charging ${usd(p.cost_usd)}${p.cost_complete === false ? '<small class="ftag">est</small>' : ''}` : ''}${ret != null ? ` · Return ${ret ? 'needs a stop' : 'needs no stop'}` : ''}</div>
       ${p && p.arrival_note ? `<div class="trp-flag">${I(P.warn, 16)}${esc(p.arrival_note)} (target ${pct(p.arrival_target_pct)})</div>` : ''}
       ${tradeLine(d)}
       <div class="trp-map" id="trp-map"></div>
@@ -135,10 +135,18 @@
       <div class="tl-card trp-scard">
         <div class="trp-shead"><div class="trp-smain"><div class="tl-title">${esc(s.name)}</div><div class="trp-smeta">${esc(meta)}</div></div>${btn}</div>
         <div class="trp-sline"><b>Arrive ${pct(s.arrive_soc_pct)} → ${pct(s.depart_soc_pct)}</b><span>${fmtMin(s.charge_minutes)}</span></div>
-        <div class="trp-sline2">avg ${s.effective_kw != null ? Math.round(s.effective_kw) + ' kW' : '–'} · ${s.usd_per_kwh != null ? `$${s.usd_per_kwh.toFixed(2)}/kWh${when ? ' at ' + esc(when) : ''}` : 'price unknown'}${s.cost_usd != null ? ` · ${usd(s.cost_usd)}` : ''}<small class="ftag">est</small></div>
+        <div class="trp-sline2">avg ${s.effective_kw != null ? Math.round(s.effective_kw) + ' kW' : '–'} · ${priceHtml(s, when)}</div>
         ${short ? `<div class="trp-flag">${I(P.warn, 16)}${esc(short)}</div>` : ''}
         ${badges ? `<div class="trp-bdgs">${badges}</div>` : ''}
       </div></li>`;
+  }
+  /* v107: prices from Travel Planner. price_source 'provided' = real per-site rate; 'estimated_median_supercharger' = Lei's median
+     billed Supercharger rate, always shown with the amber est tag. */
+  function priceHtml(s, when) {
+    if (s.usd_per_kwh == null) return 'price unknown';
+    const est = s.price_source && s.price_source !== 'provided' ? '<small class="ftag">est</small>' : '';
+    const rate = `$${(+s.usd_per_kwh).toFixed(s.usd_per_kwh * 100 % 1 ? 3 : 2)}/kWh`;
+    return `${rate}${est}${s.cost_usd != null ? ` · ${usd(s.cost_usd)}${est}` : ''}${!est && when ? ' at ' + esc(when) : ''}`;
   }
   function plannedHas(cid) {
     const p = S.meta && S.meta.trips && S.meta.trips.planned;
@@ -158,11 +166,14 @@
     const nlr = ch.nlr || {};
     const note = nlr.state === 'waiting_key' ? 'Third-party NACS stations: waiting on the NLR station-search key. Superchargers from supercharge.info.'
       : nlr.state === 'error' ? 'Third-party station search failed this time; Superchargers only.' : `Superchargers (supercharge.info) + ${nlr.count} NACS stations (NLR).`;
+    const anyEst = Object.values((d.plan && d.plan.plans) || {}).some(pl => (pl.stops || []).some(x => x.price_source && x.price_source !== 'provided'));
+    const anyNull = Object.values((d.plan && d.plan.plans) || {}).some(pl => (pl.stops || []).some(x => x.usd_per_kwh == null));
+    const priceNote = anyEst ? 'Prices estimated from your median Supercharger rate until per-site rates are added' : anyNull ? 'Some prices are unknown' : 'Prices from per-site rates';
     return `<div class="trp-cats"><span class="trp-cat on">${I(fast(), 18)}Charging</span></div>
       <div class="trp-sec">Charging on the way</div>
       <div class="auto-cats trp-plans" role="tablist">${tabs}</div>
       ${list}${nearHtml}
-      <div class="trp-note">${esc(note)} Prices: unknown until per-site rates are added; times and battery % are estimates.</div>`;
+      <div class="trp-note">${esc(note)} ${esc(priceNote)}; times and battery % are estimates.</div>`;
   }
   function exploreHTML() {
     let body = '';
