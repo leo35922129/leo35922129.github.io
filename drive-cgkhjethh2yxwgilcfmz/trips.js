@@ -128,7 +128,7 @@
     const when = s.arrival_time ? new Date(s.arrival_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
     const badges = (s.badges || []).map(b => b === 'cheapest' ? `<span class="trp-bdg c">$ Cheapest</span>` : b === 'fastest' ? `<span class="trp-bdg f">› Fastest</span>` : '').join('');
     const short = s.arrival_shortfall_pct ? (s.notes || []).find(n => /short/.test(n)) || `arrives ${pct(s.arrive_soc_pct)}, ${Math.round(s.arrival_shortfall_pct)}% short` : '';
-    const meta = [s.is_destination_charge || s.near_destination ? 'near destination' : `mile ${Math.round(s.route_mile)}`, s.network_name || (s.network === 'tesla_supercharger' ? 'Supercharger' : 'NACS'), s.stalls ? `${s.stalls} stalls` : '', s.max_kw ? `${s.max_kw} kW` : ''].filter(Boolean).join(' · ');
+    const meta = [s.is_destination_charge || s.near_destination ? 'near destination' : `mile ${Math.round(s.route_mile)}`, netName(s.network_name) || (s.network === 'tesla_supercharger' ? 'Supercharger' : 'NACS'), s.stalls ? plural(s.stalls, 'stall') : '', s.max_kw ? `${s.max_kw} kW` : ''].filter(Boolean).join(' · ');
     return `<li class="tl-ev trp-stop">
       <span class="tl-node trp-fast" aria-hidden="true">${I(fast(), 16)}</span>
       <div class="tl-time">${esc(when)}${when ? ' · ' : ''}Stop ${i + 1}</div>
@@ -142,6 +142,22 @@
   }
   /* v107: prices from Travel Planner. price_source 'provided' = real per-site rate; 'estimated_median_supercharger' = Lei's median
      billed Supercharger rate, always shown with the amber est tag. */
+  /* v108: friendly network names for raw NLR ev_network codes + correct plurals */
+  const NETS = { RED_E: 'RED E', RIVIAN_ADVENTURE: 'Rivian Adventure Network', RIVIAN_WAYPOINTS: 'Rivian Waypoints', 'Non-Networked': 'Independent',
+    CHARGEPOINT: 'ChargePoint', 'ChargePoint Network': 'ChargePoint', 'Blink Network': 'Blink', BLINK: 'Blink', EVGO: 'EVgo', 'eVgo Network': 'EVgo',
+    'Electrify America': 'Electrify America', ELECTRIFYAMERICA: 'Electrify America', EVCONNECT: 'EV Connect', 'EV Connect': 'EV Connect',
+    SHELL_RECHARGE: 'Shell Recharge', 'SHELL_RECHARGE': 'Shell Recharge', BPPULSE: 'bp pulse', 'BP_PULSE': 'bp pulse', IONNA: 'IONNA',
+    FLO: 'FLO', CIRCLE_K: 'Circle K', 'CIRCLE_K': 'Circle K', 'Circle K': 'Circle K', FCN: 'Francis Energy', FRANCIS: 'Francis Energy', 'FRANCIS_ENERGY': 'Francis Energy',
+    MERCEDES_BENZ: 'Mercedes-Benz High-Power Charging', 'MERCEDES-BENZ': 'Mercedes-Benz High-Power Charging', WALMART: 'Walmart', PILOT: 'Pilot Flying J',
+    'PILOT-FLYING-J': 'Pilot Flying J', ZEFNET: 'Zef Energy', 'Volta': 'Volta', 'Tesla': 'Tesla Supercharger', 'Tesla Destination': 'Tesla Destination', SEVEN_ELEVEN: '7-Eleven',
+    '7CHARGE': '7Charge', LOOP: 'Loop', NOODOE: 'Noodoe', POWERFLEX: 'PowerFlex', CHARGELAB: 'ChargeLab', SWTCH: 'SWTCH', AMPUP: 'AmpUp', UNIVERSAL: 'Universal EV Charging' };
+  function netName(n) {
+    if (!n) return '';
+    if (NETS[n]) return NETS[n];
+    if (/[a-z]/.test(n) && !/_/.test(n)) return n;  // already human-readable
+    return n.replace(/[_]+/g, ' ').toLowerCase().replace(/\b[a-z]/g, c => c.toUpperCase());
+  }
+  const plural = (n, w, ws) => `${n} ${+n === 1 ? w : (ws || w + 's')}`;
   function priceHtml(s, when) {
     if (s.usd_per_kwh == null) return 'price unknown';
     const est = s.price_source && s.price_source !== 'provided' ? '<small class="ftag">est</small>' : '';
@@ -162,10 +178,10 @@
     else list = `<ol class="tl-list trp-stops">${p.stops.map((s, i) => stopCard(s, i, d)).join('')}</ol>`;
     const near = ch.near_destination || [];
     const nearHtml = near.length ? `<button type="button" class="card trp-near" data-act="near" aria-expanded="${T.nearOpen}">${I(fast(), 18)}<span>Near destination (${near.length})</span><span class="trp-nchev${T.nearOpen ? ' open' : ''}">${I(P.chev, 18)}</span></button>
-      ${T.nearOpen ? `<div class="card trp-nlist">${near.map(c => `<div class="trp-nrow"><b>${esc(c.name)}</b><small>${c.mi} mi from center · ${esc(c.network_name || 'Supercharger')}${c.stalls ? ` · ${c.stalls} stalls` : ''}${c.max_kw ? ` · ${c.max_kw} kW` : ''}</small></div>`).join('')}</div>` : ''}` : '';
+      ${T.nearOpen ? `<div class="card trp-nlist">${near.map(c => `<div class="trp-nrow"><b>${esc(c.name)}</b><small>${c.mi} mi from center · ${esc(netName(c.network_name) || 'Supercharger')}${c.stalls ? ` · ${plural(c.stalls, 'stall')}` : ''}${c.max_kw ? ` · ${c.max_kw} kW` : ''}</small></div>`).join('')}</div>` : ''}` : '';
     const nlr = ch.nlr || {};
     const note = nlr.state === 'waiting_key' ? 'Third-party NACS stations: waiting on the NLR station-search key. Superchargers from supercharge.info.'
-      : nlr.state === 'error' ? 'Third-party station search failed this time; Superchargers only.' : `Superchargers (supercharge.info) + ${nlr.count} NACS stations (NLR).`;
+      : nlr.state === 'error' ? 'Third-party station search failed this time; Superchargers only.' : `Superchargers (supercharge.info) + ${plural(nlr.count, 'NACS station')} (NLR).`;
     const anyEst = Object.values((d.plan && d.plan.plans) || {}).some(pl => (pl.stops || []).some(x => x.price_source && x.price_source !== 'provided'));
     const anyNull = Object.values((d.plan && d.plan.plans) || {}).some(pl => (pl.stops || []).some(x => x.usd_per_kwh == null));
     const priceNote = anyEst ? 'Prices estimated from your median Supercharger rate until per-site rates are added' : anyNull ? 'Some prices are unknown' : 'Prices from per-site rates';
@@ -228,7 +244,7 @@
   }
   function rowHTML(t, kind) {
     const right = kind === 'past'
-      ? [t.miles != null ? `${Math.round(t.miles)} mi` : '', t.wh_mi ? `${t.wh_mi} Wh/mi` : '', t.stops != null ? `${t.stops} stop${t.stops === 1 ? '' : 's'}` : ''].filter(Boolean).join(' · ')
+      ? [t.miles != null ? `${Math.round(t.miles)} mi` : '', t.wh_mi ? `${t.wh_mi} Wh/mi` : '', t.stops != null ? plural(t.stops, 'stop') : ''].filter(Boolean).join(' · ')
       : [t.miles != null ? `${Math.round(t.miles)} mi` : '', t.est_cost_usd != null ? `est ${usd(t.est_cost_usd)}` : ''].filter(Boolean).join(' · ');
     return `<button type="button" class="card trp-row" data-trip="${esc(t.id)}" data-kind="${kind}">
       <span class="trp-rnode">${I(tripP(), 18)}</span>
