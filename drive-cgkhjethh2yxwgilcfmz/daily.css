@@ -436,7 +436,7 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .tl-ev.open .tl-card{margin-left:-46px;position:relative;z-index:1}
 @media (max-width:374px){.tl-ev.open .tl-card{margin-left:-42px}}
 /* v93: filter selected states match the event tags (Charger = Charging-tag green, Trip = blue, All unchanged) */
-.efilter button[data-ef="charge"].on{background:var(--grn-card);color:var(--grn)}
+.efilter button[data-ef="charge"].on{background:rgba(52,199,89,.14);color:var(--grn)}   /* v102: 14% tint, matching --acc-soft */
 .efilter button[data-ef="trip"].on{background:var(--acc-soft);color:var(--acc)}
 /* v94: daily totals row removed from timeline day headers; the thin divider now sits under the header text */
 .tl-dh{padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:12px}
@@ -453,7 +453,7 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .tl-detail .routebox .rinner{padding-top:8px}
 /* v98: Station filter (public charging) — same shared plug, red tint; selected = stronger red fill */
 /* v101: unselected Fast charge looks like the other unselected buttons; red only when selected */
-.efilter button[data-ef="station"].on{background:var(--red);color:#fff}
+.efilter button[data-ef="station"].on{background:rgba(255,107,94,.14);color:var(--red)}   /* v102: same 14% tint treatment as All/Trip blue */
 .efilter button.hidden{display:none}
 .tl-ev.charge.pub .tl-node{background:var(--red-soft);color:var(--red)}
 .badge.chg.pub{background:var(--red-soft);color:var(--red)}
