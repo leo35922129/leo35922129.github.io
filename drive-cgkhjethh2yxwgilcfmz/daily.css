@@ -471,3 +471,9 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .tl-detail .fbox .fbody{display:block}
 .tl-detail .fbox .fhd{pointer-events:none;cursor:default}
 .tl-detail .fbox .fhd .chev{display:none}
+/* v104: opened card title row = title (ellipsis) · duration (muted, never wraps) + chevron; collapsed cards unchanged */
+.tl-trow{display:block;min-width:0}
+.tl-dur{display:none}
+.tl-ev.open .tl-trow{display:flex;align-items:baseline;min-width:0}
+.tl-ev.open .tl-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
+.tl-ev.open .tl-dur{display:inline;flex:none;white-space:nowrap;color:var(--mut);font-weight:400;font-size:var(--fs-title)}

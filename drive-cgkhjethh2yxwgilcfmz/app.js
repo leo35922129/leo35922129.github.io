@@ -1376,7 +1376,7 @@ function tlChargeTitle(c) {
   return name && name !== 'Charger' ? 'Charging at ' + name : 'Charging';
 }
 function tlItem(it, k) {
-  let id, title, stats = [], when, detail;
+  let id, title, stats = [], when, detail, dur = '';
   if (it.kind === 'trip') {
     const t = it.t; id = 'tl-t' + t.id;
     title = 'Trip to ' + (t.to || '—');
@@ -1391,7 +1391,8 @@ function tlItem(it, k) {
       if (t.save != null) stats.push(tlStat('saved', money(t.save) + ' saved', 'g'));
     }
     if (t.fsd && t.fsd.pct != null) stats.push(tlStat('fsd', 'FSD ' + t.fsd.pct + '%', 'a'));
-    stats.push(tlStat('dur', esc(t.min != null ? t.min + ' min' : fmtSpan(t.s, t.e))));
+    dur = t.min != null ? t.min + ' min' : fmtSpan(t.s, t.e);
+    stats.push(tlStat('dur', esc(dur)));
     detail = tripCard(t, it.i, it.n);
   } else if (it.kind === 'charge') {
     const c = it.c, added = c.added != null ? c.added : c.kwh; id = 'tl-c' + c.s;
@@ -1400,7 +1401,8 @@ function tlItem(it, k) {
     if (added != null) stats.push(tlStat('kwh', '+' + num(added, added >= 10 ? 1 : 2) + ' kWh'));
     if (c.cost != null) stats.push(tlStat('usd', money(c.cost)));
     if (c.mi != null && c.mi > 0) stats.push(tlStat('mi', '+' + num(c.mi, c.mi >= 10 ? 0 : 1) + ' mi'));
-    stats.push(tlStat('dur', esc(fmtSpan(c.s, c.e))));
+    dur = fmtSpan(c.s, c.open ? Math.max(c.e || 0, Date.now() / 1000) : c.e);   // ongoing: elapsed so far
+    stats.push(tlStat('dur', esc(dur)));
     detail = chargeCard(c);
   } else {
     const p = it.p; id = 'tl-p' + p.s;
@@ -1408,7 +1410,8 @@ function tlItem(it, k) {
     when = tlRange(p.s, p.e);
     if (p.kwh != null) stats.push(tlStat('kwh', num(p.kwh, 2) + ' kWh'));
     if (p.w != null) stats.push(tlStat('w', esc(fmtW(p.w)) + ' W'));
-    stats.push(tlStat('dur', esc(fmtSpan(p.s, p.e))));
+    dur = fmtSpan(p.s, p.e);
+    stats.push(tlStat('dur', esc(dur)));
     detail = parkedCard(p);
   }
   TL_DETAIL[id] = detail;
@@ -1419,7 +1422,7 @@ function tlItem(it, k) {
     <div class="tl-time">${esc(when)}</div>
     <div class="tl-card">
       <button type="button" class="tl-head" aria-expanded="${open ? 'true' : 'false'}">
-        <span class="tl-main"><span class="tl-title">${esc(title)}</span><span class="tl-stats">${stats.join('')}</span></span>
+        <span class="tl-main"><span class="tl-trow"><span class="tl-title">${esc(title)}</span>${dur ? `<span class="tl-dur">\u00a0·\u00a0${esc(dur)}</span>` : ''}</span><span class="tl-stats">${stats.join('')}</span></span>
         <span class="tl-chev" aria-hidden="true">${TLI(TL_ICO.chev, 18)}</span>
       </button>
       <div class="tl-detail">${open ? detail : ''}</div>
