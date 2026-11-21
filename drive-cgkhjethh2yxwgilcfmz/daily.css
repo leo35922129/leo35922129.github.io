@@ -443,3 +443,5 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 /* v93: filter selected states match the event tags (Charger = Charging-tag green, Trip = blue, All unchanged) */
 .efilter button[data-ef="charge"].on{background:var(--grn-card);color:var(--grn)}
 .efilter button[data-ef="trip"].on{background:var(--acc-soft);color:var(--acc)}
+/* v94: daily totals row removed from timeline day headers; the thin divider now sits under the header text */
+.tl-dh{padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:12px}

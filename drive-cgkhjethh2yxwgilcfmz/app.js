@@ -1382,25 +1382,9 @@ function tlItem(it, k) {
     </div>
   </li>`;
 }
-function tlDayTotals(k) {
-  const x = S.meta.days[k] || {};
-  const out = [];
-  if (energyMode()) {
-    const used = (x.kwh || 0) + (x.parked_known ? (x.parked || 0) : 0);
-    if (used) out.push(tlStat('kwh', num(used, 1) + ' kWh used'));
-    if (x.charge_added) out.push(tlStat('charge', '+' + num(x.charge_added, 1) + ' kWh'));
-    if (x.elec) out.push(tlStat('usd', money(x.elec)));
-  } else {
-    if (x.kwh) out.push(tlStat('kwh', num(x.kwh, 1) + ' kWh'));
-    if (x.save != null && x.n) out.push(tlStat('usd', money(x.save) + ' saved', 'g'));
-  }
-  if (x.mi) out.push(tlStat('mi', num(x.mi, x.mi >= 10 ? 0 : 1) + ' mi'));
-  return out.join('');
-}
 function tlDay(k, items, multi) {
   return `<section class="tl-day">
     <div class="tl-dh"${multi ? ` data-day="${k}" role="button" tabindex="0"` : ''}><h3>${esc(tlDayLabel(k))}</h3>${multi ? `<span class="tl-dgo" aria-hidden="true">${TLI(TL_ICO.chev, 16)}</span>` : ''}</div>
-    <div class="tl-tot">${tlDayTotals(k) || '<span class="tl-none">No totals</span>'}</div>
     <ol class="tl-list">${items.map(it => tlItem(it, k)).join('')}</ol>
   </section>`;
 }
