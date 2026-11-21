@@ -272,3 +272,16 @@
 .ctl-status .ctl-hero .n{font-size:56px}
 .ctl-status .ctl-hero .n small{font-size:24px}
 @media (max-width:374px){.ctl-status .ctl-hero .n{font-size:50px}.ctl-status .ctl-hero .n small{font-size:22px}.ctl-status .ctl-hi{width:28px;height:28px;margin-top:11px}.ctl-status .ctl-hi svg{width:28px;height:28px}}
+
+/* v116: range sits right after battery (not pushed to the card edge). Fixed gap via a spacer that only shrinks
+   when the numbers are very wide (e.g. 100% / 310 mi on a 360 phone). */
+.ctl-status .ctl-hero{justify-content:flex-start;gap:0;margin-right:0}
+.ctl-status .ctl-hero > .ctl-hgap{flex:0 1 60px;min-width:18px}
+@media (max-width:374px){.ctl-status .ctl-hero > .ctl-hgap{flex-basis:52px}}
+/* v116: trims so range can sit next to battery with a ~60px gap without reaching the card edge; number sizes unchanged */
+.ctl-status .ctl-hb{gap:6px}
+.ctl-status .ctl-hi,.ctl-status .ctl-hi svg{width:26px;height:26px}
+.ctl-status .ctl-hi{margin-top:14px}
+.ctl-status .ctl-hero .n{letter-spacing:-.045em}
+.ctl-status .ctl-hero .n small{font-size:19px;margin-left:3px;letter-spacing:0}
+@media (max-width:374px){.ctl-status .ctl-hi,.ctl-status .ctl-hi svg{width:24px;height:24px}.ctl-status .ctl-hi{margin-top:13px}.ctl-status .ctl-hero .n small{font-size:17px}}
