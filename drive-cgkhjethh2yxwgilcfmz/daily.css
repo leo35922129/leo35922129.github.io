@@ -466,11 +466,7 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .toprow.has-efilter .daterow{grid-row:2}
 .toprow.has-efilter #today{grid-row:2;grid-column:3}
 .efilter button{width:40px}
-/* v100: an opened card drops its title; the chevron floats top-right so the from/to (or charging) block starts at the top */
-.tl-ev.open .tl-main{display:none}
-.tl-ev.open .tl-head{position:absolute;top:6px;right:6px;width:var(--tap);height:var(--tap);min-height:0;padding:0;justify-content:center;z-index:2}
-.tl-ev.open .tl-detail>.card{padding-top:14px}
-.tl-ev.open .tl-detail>.card>.hd+*{padding-right:46px}
+/* v103: v100's hidden-title rules removed — opened cards keep their title row (title + chevron) again */
 /* v100: Feature energy usage is shown expanded inside an opened timeline card; its header is a plain title row (no arrow, not a toggle) */
 .tl-detail .fbox .fbody{display:block}
 .tl-detail .fbox .fhd{pointer-events:none;cursor:default}
