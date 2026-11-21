@@ -102,7 +102,7 @@
     if (t.extra_cost_usd != null && t.extra_cost_usd !== 0) parts.push(`${t.extra_cost_usd > 0 ? '+' : '−'}${usd(Math.abs(t.extra_cost_usd))}${t.cost_complete === false ? ' est' : ''}`);
     else if (t.extra_cost_usd == null && t.cost_complete === false) parts.push('cost n/a');
     const b = tv.baseline_settings || {};
-    return `<div class="trp-trade">vs ${b.min_arrive_charger_pct ?? 15}/${b.min_arrive_dest_pct ?? 20}% plan: ${parts.length ? esc(parts.join(' · ')) : 'same stops and time'}</div>`;
+    return `<div class="trp-trade">vs ${b.arrival_target_charger_pct ?? b.min_arrive_charger_pct ?? 15}/${b.min_arrive_dest_pct ?? 20}% plan: ${parts.length ? esc(parts.join(' · ')) : 'same stops and time'}</div>`;
   }
   function routeCard(d) {
     const p = curPlan(d), r = d.route || {};
@@ -113,13 +113,18 @@
     /* v110: planner's pre-departure home charge (departure on the plan or plan set); info, not a warning */
     const dep = (p && p.departure) || (d.plan && d.plan.departure);
     const depRow = dep && dep.recommended_depart_soc_pct != null && dep.current_soc_pct != null && dep.recommended_depart_soc_pct > dep.current_soc_pct
-      ? `<div class="trp-dep">${I(P.home, 16)}<span>${esc(dep.note || `Charge to ${pct(dep.recommended_depart_soc_pct)} at home before leaving`)}${dep.extra_kwh ? ` (+${Math.round(dep.extra_kwh)} kWh)` : ''}</span></div>` : '';
+      ? `<div class="trp-dep">${I(P.home, 16)}<span>${esc(dep.note || `Charge to ${pct(dep.recommended_depart_soc_pct)} at home before leaving`)}${dep.extra_kwh ? ` (+${Math.round(dep.extra_kwh)} kWh${dep.home_cost_usd != null ? ` · home ${usd(dep.home_cost_usd)}` : ''})` : ''}${dep.extra_kwh && dep.home_cost_usd != null ? '<small class="ftag">est</small>' : ''}</span></div>` : '';
+    /* v112: Lei's rule (21 Nov): aim ~20% at stops, arrive 80% — read from the plan settings, not hardcoded */
+    const st = (d.plan && d.plan.settings) || {};
+    const ruleTxt = `Aim ~${Math.round(st.arrival_target_charger_pct ?? st.min_arrive_charger_pct ?? 20)}% at stops, arrive ${Math.round(st.min_arrive_dest_pct ?? 80)}%`;
+    const homeCost = dep && dep.home_cost_usd > 0 && p && p.trip_cost_incl_home_usd != null;
     return `<div class="trp-sec">Route</div>
     <div class="card trp-route">
       ${depRow}
       <div class="trp-rline"><b>${Math.round(r.miles)} mi</b><small class="trp-ow">one way</small><span>·</span><b>${fmtMin(tot)}</b><span>·</span><b>${stops} stop${stops === 1 ? '' : 's'}</b><small class="ftag">est</small></div>
-      <div class="trp-rsub">Arrive ${pct(arr)}${p && p.cost_usd != null && stops ? ` · Charging ${usd(p.cost_usd)}${p.cost_complete === false ? '<small class="ftag">est</small>' : ''}` : ''}${ret != null ? ` · Return ${ret ? 'needs a stop' : 'needs no stop'}` : ''}</div>
+      <div class="trp-rsub">Arrive ${pct(arr)}${p && p.cost_usd != null && stops ? ` · ${homeCost ? 'Road charging' : 'Charging'} ${usd(p.cost_usd)}${p.cost_complete === false ? '<small class="ftag">est</small>' : ''}` : ''}${homeCost ? ` · Trip total incl. home ${usd(p.trip_cost_incl_home_usd)}<small class="ftag">est</small>` : ''}${ret != null ? ` · Return ${ret ? 'needs a stop' : 'needs no stop'}` : ''}</div>
       ${p && p.arrival_note ? `<div class="trp-flag">${I(P.warn, 16)}${esc(p.arrival_note)} (target ${pct(p.arrival_target_pct)})</div>` : ''}
+      <div class="trp-rule">${esc(ruleTxt)}</div>
       ${tradeLine(d)}
       <div class="trp-map" id="trp-map"></div>
       <div class="trp-src">Route: ${esc(r.source || 'OSRM')} · ${d.temp_f_used != null ? `${d.temp_f_used}°F, ` : ''}${Math.round((d.plan && d.plan.prediction_no_stops && d.plan.prediction_no_stops.wh_mi) || 0)} Wh/mi from your drives · leave ${pct(d.start_soc)}</div>
