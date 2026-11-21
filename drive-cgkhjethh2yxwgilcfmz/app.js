@@ -1308,7 +1308,24 @@ const TL_ICO = {
   w: '<path d="M4 15a8 8 0 1 1 16 0"/><path d="m12 15 3.5-4.5"/>',
   chev: '<path d="m9 6 6 6-6 6"/>'
 };
-function tlStat(ic, v, cls) { return `<span class="tl-st${cls ? ' ' + cls : ''}">${TLI(TL_ICO[ic], 14)}<b>${v}</b></span>`; }
+/* v95: timeline stat icons reuse the Saving/Energy tile icon constants (WHEEL, ELEC_ICO, BOLT_ICO, DBADGE, PUMP_ICO),
+   so the cards and tiles can't drift. FSD / duration / watts have no tile icon: drawn in the same tile style (stroke 1.85). */
+const tileStyleIco = (paths, stroke) => `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+const FSD_TILE_ICO = tileStyleIco('<circle cx="12" cy="12" r="8.25"/><circle cx="12" cy="12" r="2.15"/><path d="M12 3.75v6.1M5.5 15.5 10 13M18.5 15.5 14 13"/>', '#3e8bff');
+const DUR_TILE_ICO = tileStyleIco('<circle cx="12" cy="12" r="8.25"/><path d="M12 7.5V12l3 2"/>', 'currentColor');
+const W_TILE_ICO = tileStyleIco('<path d="M4.6 17.4a8.6 8.6 0 1 1 14.8 0"/><path d="M12 17.4 16.1 9.7"/>', 'currentColor');
+function tlStatIco(ic) {
+  if (ic === 'mi') return WHEEL;                               // Miles tile
+  if (ic === 'kwh') return energyMode() ? BOLT_ICO : ELEC_ICO;  // Energy tile bolt on Energy; Electric Cost circled bolt on Savings
+  if (ic === 'usd') return ELEC_ICO;                            // Electric Cost tile
+  if (ic === 'saved') return DBADGE;                            // Saved tile
+  if (ic === 'gas') return PUMP_ICO;                            // Gas Cost tile
+  if (ic === 'fsd') return FSD_TILE_ICO;
+  if (ic === 'dur') return DUR_TILE_ICO;
+  if (ic === 'w') return W_TILE_ICO;
+  return TLI(TL_ICO[ic], 14);
+}
+function tlStat(ic, v, cls) { return `<span class="tl-st${cls ? ' ' + cls : ''}">${tlStatIco(ic)}<b>${v}</b></span>`; }
 function tlRange(s, e, open) {
   if (open) return `${timeTs(s)} – now`;
   if (e == null || Math.abs(e - s) < 60) return timeTs(s);
@@ -1346,7 +1363,7 @@ function tlItem(it, k) {
     if (t.mi != null) stats.push(tlStat('mi', num(t.mi, t.mi >= 10 ? 1 : 2) + ' mi'));
     if (t.kwh != null) stats.push(tlStat('kwh', num(t.kwh, 1) + ' kWh'));
     if (energyMode()) { if (t.elec != null) stats.push(tlStat('usd', money(t.elec))); }
-    else if (t.save != null) stats.push(tlStat('usd', money(t.save) + ' saved', 'g'));
+    else if (t.save != null) stats.push(tlStat('saved', money(t.save) + ' saved', 'g'));
     if (t.fsd && t.fsd.pct != null) stats.push(tlStat('fsd', 'FSD ' + t.fsd.pct + '%', 'a'));
     stats.push(tlStat('dur', esc(t.min != null ? t.min + ' min' : fmtSpan(t.s, t.e))));
     detail = tripCard(t, it.i, it.n);

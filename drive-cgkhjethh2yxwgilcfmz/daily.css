@@ -445,3 +445,7 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .efilter button[data-ef="trip"].on{background:var(--acc-soft);color:var(--acc)}
 /* v94: daily totals row removed from timeline day headers; the thin divider now sits under the header text */
 .tl-dh{padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:12px}
+/* v95: tile icons in the timeline stat row, scaled to the row text */
+.tl-st .ico{width:1.25em;height:1.25em;flex:none;display:block}
+.tl-st .dbadge{width:1.25em;height:1.25em;font-size:.72em;background:var(--lime);color:var(--on-light)}
+.tl-st svg.ico{color:var(--tx2)}
