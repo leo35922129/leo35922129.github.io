@@ -1436,8 +1436,23 @@ function tlToggle(li) {
   li.classList.toggle('open', open);
   li.querySelector('.tl-head').setAttribute('aria-expanded', open ? 'true' : 'false');
   const box = li.querySelector('.tl-detail');
-  if (open) { OPEN.add(id); if (!box.innerHTML.trim()) box.innerHTML = TL_DETAIL[id] || ''; }
-  else { OPEN.delete(id); const tr = box.querySelector('.trip[data-trip]'); if (tr && PLAYERS[+tr.dataset.trip]) PLAYERS[+tr.dataset.trip].pause(); }
+  if (open) { OPEN.add(id); if (!box.innerHTML.trim()) box.innerHTML = TL_DETAIL[id] || ''; tlOpenMap(li); }
+  else { OPEN.delete(id); tlCloseMap(li); box.innerHTML = ''; }   // detail is rebuilt lazily on the next open
+}
+/* v97: an opened trip shows its route map straight away (no Show route step); the map is created lazily on open
+   and removed on collapse so repeated open/close doesn't leak MapLibre instances or playback loops. */
+function tlOpenMap(li) {
+  const tr = li && li.querySelector('.tl-detail .trip[data-trip]');
+  if (!tr || !tr.querySelector('.routebox')) return;
+  const tid = +tr.dataset.trip;
+  if (!tr.querySelector('.routebox').classList.contains('open')) toggleMap(tid);
+}
+function tlCloseMap(li) {
+  const tr = li && li.querySelector('.tl-detail .trip[data-trip]');
+  if (!tr) return;
+  const tid = +tr.dataset.trip;
+  if (PLAYERS[tid]) { try { PLAYERS[tid].pause(); cancelAnimationFrame(PLAYERS[tid].raf); } catch (e) {} delete PLAYERS[tid]; }
+  if (MAPS[tid]) { try { MAPS[tid].remove(); } catch (e) {} delete MAPS[tid]; }
 }
 async function viewDay() {
   return tlRange_([keyOf(S.cur)]);
@@ -1999,6 +2014,7 @@ async function render() {
   try {
     main.innerHTML = S.view === 'day' ? await viewDay() : S.view === 'week' ? await viewWeek() : S.view === 'month' ? await viewMonth() : await viewYear();
   } catch (e) { main.innerHTML = `<div class="empty">Couldn't load: ${esc(e.message)}</div>`; }
+  document.querySelectorAll('#main .tl-ev.open').forEach(li => tlOpenMap(li));   // v97: cards left open across re-renders get their map back
   const meta = S.meta, upd = new Date(meta.generated * 1000).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   $('#foot').innerHTML = `Updated ${upd} ET · DTE ${esc(meta.plan)} · premium $${(+meta.gas_home).toFixed(2)} · ${meta.mpg} mpg${meta.pending ? ` · <span class="tag">${meta.pending} charge price to confirm</span>` : ''}<br><a href="#" id="info">How costs are calculated</a> · <a href="#" id="lockout">Lock</a>`;
   $('#info').onclick = e => { e.preventDefault(); showInfo(); };

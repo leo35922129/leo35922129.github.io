@@ -1040,6 +1040,22 @@ function paintCtlLoc(){
   }
   paintCtlMap(d);
 }
+/* v97: heading isn't streamed, so the marker faces the direction between the last two trail points
+   (≥3 m apart) while moving; parked keeps the last orientation we saw, or north if there's none. */
+function ctlBearing(d) {
+  let brg = null;
+  try { const v = localStorage.getItem('ht-ctl-brg'); if (v !== null && isFinite(+v)) brg = +v; } catch (e) {}
+  if (d.moving || brg === null) {
+    const pts = (d.trail || []).map(p => [p[1], p[0]]);
+    const last = pts.length ? pts[pts.length - 1] : null;
+    if (d.moving && (!last || distM(last, [d.lon, d.lat]) > 3)) pts.push([d.lon, d.lat]);
+    for (let i = pts.length - 1; i > 0; i--) {
+      for (let j = i - 1; j >= 0; j--) if (distM(pts[j], pts[i]) > 3) { brg = bearingDeg(pts[j], pts[i]); i = 0; break; }
+    }
+    if (brg !== null) { try { localStorage.setItem('ht-ctl-brg', String(Math.round(brg))); } catch (e) {} }
+  }
+  return brg === null ? 0 : brg;
+}
 function paintCtlMap(d){
   if (typeof maplibregl === 'undefined') return;
   const el = CTLLOC.wrap.querySelector('.ctl-map');
@@ -1049,8 +1065,8 @@ function paintCtlMap(d){
     const m = new maplibregl.Map({container: el, style: 'https://tiles.openfreemap.org/styles/dark', center: pos, zoom: d.moving ? 14 : 15,
       attributionControl: {compact: true}, cooperativeGestures: true, dragRotate: false, pitchWithRotate: false});
     CTLLOC.map = m;
-    const pin = document.createElement('div'); pin.className = 'ctl-truck-pin';
-    CTLLOC.marker = new maplibregl.Marker({element: pin}).setLngLat(pos).addTo(m);
+    const pin = document.createElement('div'); pin.className = 'truck ctl-truck'; pin.innerHTML = TRUCK_SVG;   // v97: same Cybertruck marker as trip playback
+    CTLLOC.marker = new maplibregl.Marker({element: pin, rotationAlignment: 'map', pitchAlignment: 'map', rotation: ctlBearing(d)}).setLngLat(pos).addTo(m);
     m.on('load', () => {
       const at = el.querySelector('.maplibregl-ctrl-attrib'); if (at) at.classList.remove('maplibregl-compact-show');
       m.addSource('ctltrail', {type: 'geojson', data: {type: 'FeatureCollection', features: ctlTrailFeatures(CTLLOC.data || d)}});
@@ -1061,6 +1077,7 @@ function paintCtlMap(d){
     const src = CTLLOC.map.getSource && CTLLOC.map.getSource('ctltrail');
     if (src) src.setData({type: 'FeatureCollection', features: feats});
     CTLLOC.marker.setLngLat(pos);
+    CTLLOC.marker.setRotation(ctlBearing(d));
   }
   const m = CTLLOC.map;
   if (d.moving && !CTLLOC.fitted && (d.trail || []).length > 1) {   // first moving view: show the whole recent trail

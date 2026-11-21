@@ -453,3 +453,6 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
    time/duration header are hidden. Collapsing shows the stat row again. */
 .tl-ev.open .tl-stats{display:none}
 .tl-ev.open .tl-detail>.card>.hd{display:none}
+/* v97: opened trip cards show the route map directly: no Show/Hide route header */
+.tl-detail .routebox .maptoggle{display:none}
+.tl-detail .routebox .rinner{padding-top:8px}
