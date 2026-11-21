@@ -1430,8 +1430,9 @@ function tlItem(it, k) {
   </li>`;
 }
 function tlDay(k, items, multi) {
-  return `<section class="tl-day">
-    <div class="tl-dh"${multi ? ` data-day="${k}" role="button" tabindex="0"` : ''}><h3>${esc(tlDayLabel(k))}</h3>${multi ? `<span class="tl-dgo" aria-hidden="true">${TLI(TL_ICO.chev, 16)}</span>` : ''}</div>
+  /* v105: Day view drops the day-group header + divider (the date bar already shows the date); Week/Month keep it */
+  return `<section class="tl-day${multi ? '' : ' tl-day1'}">
+    ${multi ? `<div class="tl-dh" data-day="${k}" role="button" tabindex="0"><h3>${esc(tlDayLabel(k))}</h3><span class="tl-dgo" aria-hidden="true">${TLI(TL_ICO.chev, 16)}</span></div>` : ''}
     <ol class="tl-list">${items.map(it => tlItem(it, k)).join('')}</ol>
   </section>`;
 }
