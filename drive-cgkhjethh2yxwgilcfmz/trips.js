@@ -7,6 +7,7 @@
   const T = window.TRIPS_UI = {
     sub: 'upcoming', plan: 'balanced', detail: null, day: 1, q: '', results: [], searching: false,
     data: null, dataKey: '', busy: false, err: '', nearOpen: false, addFor: null, addBusy: false, msg: '',
+    cat: 'charge', pl: {}, plBusy: {}, open: null, bars: false,   // v114 Explore categories (Google Places, server-side)
   };
   let ex = {};
   try { ex = JSON.parse(localStorage.getItem(LS) || '{}') || {}; } catch (e) { ex = {}; }
@@ -30,6 +31,12 @@
     pin: '<path d="M12 21s-6-5.7-6-11a6 6 0 0 1 12 0c0 5.3-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>',
     bed: '<path d="M3 18V7M3 13h18v5M21 13a3 3 0 0 0-3-3h-7v3"/><circle cx="7" cy="10.5" r="1.6"/>',
     star: '<path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.3L12 16l-4.9 2.6 1.1-5.3-4-3.7 5.4-.6z"/>',
+    sight: '<path d="M4 20h16M6 20v-8M10 20v-8M14 20v-8M18 20v-8M3.5 12h17L12 5z"/>',
+    food: '<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16.5 21V3c-2.2 1.2-3.5 3.6-3.5 7v4h3.5"/>',
+    scenic: '<path d="m2.5 19 6.5-10 4.2 6.2 2.6-3.7 5.7 7.5z"/><circle cx="17" cy="6" r="2"/>',
+    event: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m12 12.6.9 1.9 2 .2-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.2z"/>',
+    ext: '<path d="M14 4h6v6M20 4l-9 9M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
   };
   const fast = () => (typeof EV_PATHS !== 'undefined' ? EV_PATHS.fast : P.plus);
   const tripP = () => (typeof EV_PATHS !== 'undefined' ? EV_PATHS.trip : P.pin);
@@ -219,11 +226,73 @@
     const anyEst = Object.values((d.plan && d.plan.plans) || {}).some(pl => (pl.stops || []).some(x => x.price_source && x.price_source !== 'provided'));
     const anyNull = Object.values((d.plan && d.plan.plans) || {}).some(pl => (pl.stops || []).some(x => x.usd_per_kwh == null));
     const priceNote = anyEst ? 'Prices estimated from your median Supercharger rate until per-site rates are added' : anyNull ? 'Some prices are unknown' : 'Prices from per-site rates';
-    return `<div class="trp-cats"><span class="trp-cat on">${I(fast(), 18)}Charging</span></div>
-      <div class="trp-sec">Charging on the way</div>
+    return `<div class="trp-sec">Charging on the way</div>
       <div class="auto-cats trp-plans" role="tablist">${tabs}</div>
       ${list}${nearHtml}
       <div class="trp-note">${esc(note)} ${esc(priceNote)}; times and battery % are estimates.</div>`;
+  }
+
+  /* v114: Explore categories. Places come from the droplet (/api/trips/places), which calls Google Places API (New)
+     server-side with a 100/day cap and a 7-day cache. No key, photo or Google request ever reaches the browser. */
+  const CATS = [['charge', 'Charging', null], ['sights', 'Sights', 'sight'], ['food', 'Food', 'food'], ['scenic', 'Scenic', 'scenic'], ['events', 'Events', 'event']];
+  const CAT_SEC = { sights: 'Things to see', food: 'Restaurants', scenic: 'Scenic stops', events: 'Events' };
+  function catsHTML() {
+    return `<div class="trp-cats" role="tablist">${CATS.map(([k, l, ic]) => `<button type="button" class="trp-cat c-${k}${T.cat === k ? ' on' : ''}" data-cat="${k}" role="tab" aria-selected="${T.cat === k}">${I(ic ? P[ic] : fast(), 20)}<span>${l}</span></button>`).join('')}</div>`;
+  }
+  const pkey = cat => ex.dest ? `${cat}|${(+ex.dest.lat).toFixed(3)},${(+ex.dest.lon).toFixed(3)}` : '';
+  async function loadPlaces(cat) {
+    const k = pkey(cat); if (!k || T.pl[k] || T.plBusy[k]) return;
+    T.plBusy[k] = true;
+    try { T.pl[k] = await api('/places?' + new URLSearchParams({ cat, lat: ex.dest.lat, lon: ex.dest.lon, name: ex.dest.label })); }
+    catch (e) { T.pl[k] = { state: e.message === 'auth' ? 'auth' : 'error', error: e.message, items: [] }; }
+    finally { delete T.plBusy[k]; }
+    if (S.mode === 'trips' && T.cat === cat) renderTrips();
+  }
+  const fmtN = n => n == null ? '' : n >= 10000 ? `${Math.round(n / 1000)}k` : n.toLocaleString('en-US');
+  const placeIn = it => { const p = S.meta && S.meta.trips && S.meta.trips.planned;
+    return !!(p && Object.values(p.items || {}).some(t => (t.items || []).some(x => x.detail && x.detail.place_id === it.place_id))); };
+  function shownPlaces(r, cat) {
+    const all = (r && r.items) || [];
+    return cat === 'food' && !T.bars ? all.filter(x => !x.bar) : all;
+  }
+  function placeCard(it, i, cat) {
+    const q = queued(), qk = `${(ex.dest && ex.dest.label) || ''}|${it.place_id}`;
+    const btn = placeIn(it) ? `<span class="trp-in">${I(P.check, 16)}In trip</span>` : q[qk] ? `<span class="trp-in q">${I(P.check, 16)}Sent</span>`
+      : `<button type="button" class="trp-add" data-padd="${i}" aria-label="Add ${esc(it.title)} to trip">${I(P.plus, 20)}</button>`;
+    const rating = it.rating != null ? `<span class="trp-rate">${I(P.star, 13)}${(+it.rating).toFixed(1)}</span>${it.rating_count ? `<span class="trp-cnt">(${fmtN(it.rating_count)})</span>` : ''}` : '';
+    const open = it.open_now === true ? '<span class="trp-open">Open now</span>' : it.open_now === false ? '<span class="trp-closed">Closed now</span>' : '';
+    const where = it.where === 'route' && it.route_mile != null ? `mile ${it.route_mile} on route` : it.mi_from_dest != null ? `${it.mi_from_dest < 0.15 ? '<0.1' : it.mi_from_dest} mi away` : '';
+    const meta = [rating, it.price_level ? esc(it.price_level) : '', open, esc(where)].filter(Boolean).join('<i>·</i>');
+    const isOpen = T.open === it.id;
+    let more = '';
+    if (isOpen) {
+      const dow = new Date(ex.start + 'T12:00').getDay(), hrs = (it.hours || [])[(dow + 6) % 7];
+      more = `<div class="trp-pmore">
+        ${it.address ? `<div class="trp-prow">${I(P.pin, 16)}<span>${esc(it.address)}</span></div>` : ''}
+        ${hrs ? `<div class="trp-prow">${I(P.clock, 16)}<span>${esc(hrs.replace(/\u2009|\u202f/g, ' '))}<small> (trip day)</small></span></div>` : ''}
+        ${it.where === 'route' && it.off_route_mi != null ? `<div class="trp-prow">${I(tripP(), 16)}<span>${it.off_route_mi} mi off the route at mile ${it.route_mile}</span></div>` : ''}
+        <div class="trp-pbtns">${it.maps_url ? `<a class="pill" href="${esc(it.maps_url)}" target="_blank" rel="noopener">${I(P.ext, 16)}Google Maps</a>` : ''}${btn.includes('data-padd') ? `<button type="button" class="pill acc" data-padd="${i}">${I(P.plus, 16)}Add to trip</button>` : ''}</div>
+      </div>`;
+    }
+    return `<div class="card trp-pcard${isOpen ? ' open' : ''}" data-popen="${esc(it.id)}" role="button" tabindex="0" aria-expanded="${isOpen}">
+      <div class="trp-phead"><div class="trp-smain"><div class="trp-ptitle">${esc(it.title)}</div><div class="trp-psub">${esc(it.subtitle || '')}</div><div class="trp-pmeta">${meta}</div></div>${btn}</div>${more}</div>`;
+  }
+  function placesHTML(cat) {
+    const sec = `<div class="trp-sec">${esc(CAT_SEC[cat])}${ex.dest ? ' · ' + esc(ex.dest.label.split(',')[0]) : ''}</div>`;
+    if (cat === 'events') return sec + `<div class="card trp-blank">${I(P.event, 28)}<b>Events are coming soon</b><span>Google Places doesn’t list events, and there’s no free event source without another key yet. Nothing is shown rather than guessed.</span></div>`;
+    const k = pkey(cat), r = T.pl[k];
+    if (!r) { void loadPlaces(cat); return sec + `<div class="card trp-blank"><span class="trp-spin" aria-hidden="true"></span><span>Looking up places…</span></div>`; }
+    if (r.state === 'auth') return sec + `<div class="card trp-blank">${I(P.warn, 28)}<b>Remote access is off on this device</b><span>Turn on remote controls in Control once, then come back.</span></div>`;
+    if (r.state === 'error') return sec + `<div class="card trp-blank">${I(P.warn, 28)}<b>Couldn’t look up places</b><span>${esc(r.error || '')}</span><button type="button" class="pill" data-act="pretry">Try again</button></div>`;
+    if (r.state === 'limit') return sec + `<div class="card trp-blank">${I(P.clock, 28)}<b>Daily limit reached</b><span>Place lookups are capped at ${r.usage ? r.usage.day_cap : 100} a day to stay inside Google’s free tier. Places you already opened still show. Try again tomorrow.</span></div>`;
+    if (r.state === 'no_key') return sec + `<div class="card trp-blank">${I(P.warn, 28)}<b>Places aren’t set up</b><span>The Google Places key isn’t installed on the server.</span></div>`;
+    const list = shownPlaces(r, cat), hidden = (r.items || []).length - list.length;
+    const filt = cat === 'food' ? `<div class="trp-pfilt"><span>${I(P.star, 14)}4.3+${T.bars ? '' : ' · no bars'}</span><button type="button" class="trp-tog${T.bars ? ' on' : ''}" data-act="bars" aria-pressed="${T.bars}">${T.bars ? 'Hide bars' : `Include bars${hidden ? ` (${hidden})` : ''}`}</button></div>` : '';
+    const body = list.length ? `<div class="trp-plist">${list.map((it, i) => placeCard(it, i, cat)).join('')}</div>` : `<div class="trp-empty">Nothing found near here</div>`;
+    const u = r.usage || {};
+    const note = [r.note, r.state === 'partial_limit' ? 'Daily lookup limit reached, so this list may be incomplete.' : '',
+      `Places data from Google Maps, refreshed weekly. ${u.today != null ? `${u.today} of ${u.day_cap} lookups used today.` : ''} Open now is right now, not on the trip day.`].filter(Boolean).join(' ');
+    return sec + filt + body + `<div class="trp-note">${esc(note)}</div>`;
   }
   function exploreHTML() {
     let body = '';
@@ -231,7 +300,7 @@
     else if (T.err === 'auth') body = `<div class="card trp-blank">${I(P.warn, 28)}<b>Remote access is off on this device</b><span>Turn on remote controls in Control once, then come back. Trips uses the same device sign-in.</span></div>`;
     else if (T.err) body = `<div class="card trp-blank">${I(P.warn, 28)}<b>Couldn’t plan this trip</b><span>${esc(T.err)}</span><button type="button" class="pill" data-act="retry">Try again</button></div>`;
     else if (T.busy || !T.data) body = `<div class="card trp-blank"><span class="trp-spin" aria-hidden="true"></span><span>Planning route, weather and charging…</span></div>`;
-    else body = weatherCard(T.data) + routeCard(T.data) + chargingCard(T.data);
+    else body = weatherCard(T.data) + routeCard(T.data) + catsHTML() + (T.cat === 'charge' ? chargingCard(T.data) : placesHTML(T.cat));
     return `<div class="trp">${searchCard()}${body}${T.msg ? `<div class="trp-toast">${esc(T.msg)}</div>` : ''}</div>`;
   }
   function ekey() { return ex.dest ? [ex.dest.lat, ex.dest.lon, ex.start, ex.end, ex.depart, ex.soc].join('|') : ''; }
@@ -363,20 +432,34 @@
     const set = (id, k, num) => { const el = $(id); if (el) el.onchange = () => { ex[k] = num ? +el.value : el.value; if (k === 'start' && ex.end < ex.start) ex.end = ex.start; save(); T.data = null; void loadExplore(true); renderTrips(); }; };
     set('#trp-start', 'start'); set('#trp-end', 'end'); set('#trp-dep', 'depart'); set('#trp-soc', 'soc', true);
   }
-  function openAdd(i) {
-    const p = curPlan(T.data), s = p && p.stops[i]; if (!s) return;
+  function openAdd(i, place) {
+    const p = curPlan(T.data), s = place || (p && p.stops[i]); if (!s) return;
     const n = ndays();
-    $('#sheetbody').innerHTML = `<h3 style="margin-top:0">Add to trip</h3><p class="trp-sheetp">${esc(s.name)} · ${esc(T.data.dest.label)}</p>
+    $('#sheetbody').innerHTML = `<h3 style="margin-top:0">Add to trip</h3><p class="trp-sheetp">${esc(s.name || s.title)} · ${esc(T.data.dest.label)}</p>
       <div class="trp-daybtns">${Array.from({ length: n }, (_, k) => `<button type="button" class="pill" data-addday="${k + 1}">Day ${k + 1}<small>${esc(dlabel(iso(new Date(new Date(ex.start + 'T12:00').getTime() + k * 864e5))))}</small></button>`).join('')}</div>
       <p class="trp-sheetp">Travel Planner adds it to the itinerary; the card then shows In trip.</p>
       <button type="button" class="pill trp-cancel" data-addday="0">Cancel</button>`;
-    T.addFor = i;
+    T.addFor = place ? { place } : i;
     $('#sheet').classList.remove('hidden');
   }
   async function doAdd(day) {
     const i = T.addFor; T.addFor = null; $('#sheet').classList.add('hidden');
-    if (!day) return;
-    const d = T.data, s = curPlan(d).stops[i];
+    if (!day || i == null) return;
+    const d = T.data;
+    if (i && i.place) {   // v114: Google Places card -> same trips inbox flow
+      const it = i.place;
+      const card = { kind: it.kind, name: it.title, place_id: it.place_id, category: it.category, subtitle: it.subtitle, primary_type: it.primary_type,
+        lat: it.lat, lon: it.lon, address: it.address, rating: it.rating, rating_count: it.rating_count, price_level: it.price_level,
+        maps_url: it.maps_url, route_mile: it.route_mile ?? null, mi_from_dest: it.mi_from_dest ?? null, source: 'google_places' };
+      try {
+        await api('/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ day, plan: T.plan, dest: d.dest, dates: d.dates, card }) });
+        const q = queued(); q[`${d.dest.label}|${it.place_id}`] = Date.now(); try { localStorage.setItem(LSQ, JSON.stringify(q)); } catch (e) {}
+        T.msg = `Sent to Travel Planner for Day ${day}`;
+      } catch (e) { T.msg = e.message === 'auth' ? 'Turn on remote controls in Control first' : 'Couldn’t add: ' + e.message; }
+      renderTrips(); setTimeout(() => { T.msg = ''; if (S.mode === 'trips') { const t = document.querySelector('.trp-toast'); if (t) t.remove(); } }, 3500);
+      return;
+    }
+    const s = curPlan(d).stops[i];
     const card = { kind: 'charge', charger_id: s.charger_id, name: s.name, lat: s.lat, lon: s.lon, route_mile: s.route_mile, network: s.network,
       arrive_soc_pct: s.arrive_soc_pct, depart_soc_pct: s.depart_soc_pct, charge_minutes: s.charge_minutes, effective_kw: s.effective_kw,
       usd_per_kwh: s.usd_per_kwh, arrival_time: s.arrival_time, badges: s.badges, arrival_shortfall_pct: s.arrival_shortfall_pct };
@@ -402,9 +485,15 @@
       else if (a === 'near') { T.nearOpen = !T.nearOpen; renderTrips(); }
       else if (a === 'back') { T.detail = null; renderTrips(); window.scrollTo(0, 0); }
       else if (a === 'toexplore') goMode('trips');
+      else if (a === 'bars') { T.bars = !T.bars; T.open = null; renderTrips(); }
+      else if (a === 'pretry') { delete T.pl[pkey(T.cat)]; renderTrips(); }
       return;
     }
     const pl = t.closest('[data-plan]'); if (pl) { T.plan = pl.dataset.plan; renderTrips(); return; }
+    const ct = t.closest('[data-cat]'); if (ct) { if (T.cat !== ct.dataset.cat) { T.cat = ct.dataset.cat; T.open = null; renderTrips(); } return; }
+    const pa = t.closest('[data-padd]'); if (pa) { const r = T.pl[pkey(T.cat)], it = shownPlaces(r, T.cat)[+pa.dataset.padd]; if (it) openAdd(null, it); return; }
+    if (t.closest('.trp-pmore a')) return;
+    const po = t.closest('[data-popen]'); if (po) { T.open = T.open === po.dataset.popen ? null : po.dataset.popen; renderTrips(); return; }
     const sb = t.closest('[data-sub]'); if (sb) { T.sub = sb.dataset.sub; T.detail = null; renderTrips(); return; }
     const dy = t.closest('[data-day1]'); if (dy) { T.day = +dy.dataset.day1; renderTrips(); return; }
     const ad = t.closest('[data-add]'); if (ad) { openAdd(+ad.dataset.add); return; }
