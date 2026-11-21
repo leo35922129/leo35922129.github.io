@@ -477,3 +477,7 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .tl-ev.open .tl-trow{display:flex;align-items:baseline;min-width:0}
 .tl-ev.open .tl-title{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
 .tl-ev.open .tl-dur{display:inline;flex:none;white-space:nowrap;color:var(--mut);font-weight:400;font-size:var(--fs-title)}
+
+/* v111: the Energy filter sits on the TIMELINE label row, right-aligned (off the date row). Same icons, tints and 40px buttons in a 44px bar. */
+.tl-sechd{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;margin-bottom:6px}
+.tl-sechd .efilter:not(.hidden){display:flex;flex:none;gap:2px;padding:2px;background:var(--card);border-radius:var(--r-md);text-transform:none;letter-spacing:0}

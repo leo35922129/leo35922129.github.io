@@ -634,8 +634,18 @@ function isFastCharge(c) {
   return FAST_NET.test([st.network, st.badge, st.label, st.site_name, c.where, c.label].filter(Boolean).join(' '));
 }
 const isPublicCharge = isFastCharge;   // v98 name, kept for the call sites
+/* v111: keep a reference to the filter: it now lives inside #main (Timeline row), which is re-rendered */
+const efEl = () => (window._efEl = window._efEl || document.getElementById('efilter'));
+/* the Timeline section label; in Energy (day/week/month) it carries the filter, right-aligned */
+const tlSec = () => energyMode() ? `<div class="tl-sec tl-sechd"><span>Timeline</span><span class="efslot"></span></div>` : `<div class="tl-sec">Timeline</div>`;
+function placeEFilter() {
+  const el = efEl(); if (!el) return;
+  const slot = document.querySelector('#main .efslot');
+  if (slot && !el.classList.contains('hidden')) { if (el.parentElement !== slot) slot.appendChild(el); }
+  else { const row = document.querySelector('header .toprow'); if (row && el.parentElement !== row) row.insertBefore(el, row.firstChild); }
+}
 function setStationFilter(has) {
-  const el = $('#efilter'), b = el && el.querySelector('button[data-ef="station"]');
+  const el = efEl(), b = el && el.querySelector('button[data-ef="station"]');
   if (!b) return;
   b.classList.toggle('hidden', !has);
   el.classList.toggle('has-station', has);
@@ -717,11 +727,12 @@ function setTitle() {
 }
 /* v89: All / Charger / Trip toggles on the Energy day list (left edge of the date row). Default All, not persisted. */
 function syncEFilter() {
-  const el = $('#efilter'), row = document.querySelector('header .toprow');
+  const el = efEl(), row = document.querySelector('header .toprow');
   if (!el) return;
   const show = S.mode === 'energy' && (S.view === 'day' || S.view === 'week' || S.view === 'month');   // v91: also filters the week/month timeline
   el.classList.toggle('hidden', !show);
-  if (row) row.classList.toggle('has-efilter', show);
+  if (row) row.classList.remove('has-efilter');   // v111: the filter sits on the Timeline row, not above the date row
+  placeEFilter();
   const cur = S.efilter || 'all';
   el.querySelectorAll('button[data-ef]').forEach(b => { const on = b.dataset.ef === cur; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
   if (!el.dataset.bound) {
@@ -1102,12 +1113,12 @@ async function viewYearEnergy() {
 async function viewWeek() {
   const head = energyMode() ? await viewWeekEnergy() : viewWeekSaving();
   const ws = weekStart(S.cur);
-  return head + `<div class="tl-sec">Timeline</div>` + await tlRange_(rangeKeys(ws, addDays(ws, 6)));
+  return head + tlSec() + await tlRange_(rangeKeys(ws, addDays(ws, 6)));
 }
 async function viewMonth() {
   const head = energyMode() ? viewMonthEnergy() : viewMonthSaving();
   const c = S.cur;
-  return head + `<div class="tl-sec">Timeline</div>` + await tlRange_(rangeKeys(new Date(c.getFullYear(), c.getMonth(), 1), new Date(c.getFullYear(), c.getMonth() + 1, 0)));
+  return head + tlSec() + await tlRange_(rangeKeys(new Date(c.getFullYear(), c.getMonth(), 1), new Date(c.getFullYear(), c.getMonth() + 1, 0)));
 }
 function viewYear() { return energyMode() ? viewYearEnergy() : viewYearSaving(); }
 
@@ -1497,7 +1508,7 @@ function tlCloseMap(li) {
   if (MAPS[tid]) { try { MAPS[tid].remove(); } catch (e) {} delete MAPS[tid]; }
 }
 async function viewDay() {
-  return tlRange_([keyOf(S.cur)]);
+  return (energyMode() ? tlSec() : '') + await tlRange_([keyOf(S.cur)]);   // v111: Energy day gets the Timeline row so the filter has a home
 }
 
 
@@ -2060,6 +2071,7 @@ async function render() {
   try {
     main.innerHTML = S.view === 'day' ? await viewDay() : S.view === 'week' ? await viewWeek() : S.view === 'month' ? await viewMonth() : await viewYear();
   } catch (e) { main.innerHTML = `<div class="empty">Couldn't load: ${esc(e.message)}</div>`; }
+  placeEFilter();   // v111: re-home the filter in the new Timeline row
   document.querySelectorAll('#main .tl-ev.open').forEach(li => tlOpenMap(li));   // v97: cards left open across re-renders get their map back
   const meta = S.meta, upd = new Date(meta.generated * 1000).toLocaleString('en-US', { timeZone: TZ, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   $('#foot').innerHTML = `Updated ${upd} ET · DTE ${esc(meta.plan)} · premium $${(+meta.gas_home).toFixed(2)} · ${meta.mpg} mpg${meta.pending ? ` · <span class="tag">${meta.pending} charge price to confirm</span>` : ''}<br><a href="#" id="info">How costs are calculated</a> · <a href="#" id="lockout">Lock</a>`;
