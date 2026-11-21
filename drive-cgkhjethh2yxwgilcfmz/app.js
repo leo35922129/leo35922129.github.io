@@ -188,10 +188,11 @@ function exampleSplit(total, specs) {
 
 /* v85: four bottom tabs. Saving = Savings|Energy, Control = Control|Automation, News = Grok|ChatGPT, Report = Summary|Team Daily Reports.
    Each tab remembers its last view (ht_tab_<tab>); ht_mode still stores the exact view, so old stored states land on the merged page. */
-const TAB_OF = { saving: 'saving', energy: 'saving', control: 'control', automation: 'control', report: 'report', daily: 'daily' };
+const TAB_OF = { saving: 'saving', energy: 'saving', control: 'control', automation: 'control', trips: 'trips', tripsplan: 'trips', report: 'report', daily: 'daily' };
 const TOPSEG = {
   saving: [['saving', 'Savings'], ['energy', 'Energy']],
-  control: [['control', 'Control'], ['automation', 'Automation']]
+  control: [['control', 'Control'], ['automation', 'Automation']],
+  trips: [['trips', 'Explore'], ['tripsplan', 'Trip']]   // v106 Trips tab
 };
 function tabLastMode(tab) {
   const m = localStorage.getItem('ht_tab_' + tab);
@@ -274,6 +275,7 @@ function setModeClass() {
   }
   if (typeof setControlChrome === 'function') setControlChrome();
   if (typeof setDailyChrome === 'function') setDailyChrome();
+  if (typeof setTripsChrome === 'function') setTripsChrome();
   if (TAB_OF[S.mode]) localStorage.setItem('ht_tab_' + TAB_OF[S.mode], S.mode);
   syncTopSeg();
   placeArchive();
@@ -2049,6 +2051,10 @@ async function render() {
     if (window.renderDaily) renderDaily();
     return;
   }
+  if (TAB_OF[S.mode] === 'trips') {
+    if (window.renderTrips) renderTrips();
+    return;
+  }
   renderSummary();
   const main = $('#main');
   try {
@@ -2070,7 +2076,7 @@ function showInfo() {
 }
 function move(dir) {
   if (S.mode === 'daily') { if (window.moveDaily) moveDaily(dir); return; }
-  if (S.mode === 'automation' || S.mode === 'control') return;
+  if (S.mode === 'automation' || S.mode === 'control' || TAB_OF[S.mode] === 'trips') return;
   if (S.mode === 'report') { if (window.moveReport) moveReport(dir); return; }
   const c = new Date(S.cur);
   if (S.view === 'day') c.setDate(c.getDate() + dir);
@@ -2091,6 +2097,7 @@ function wire() {
       if (mode === S.mode) {
         if (mode === 'automation' && (AUTO.editing != null || AUTO.view !== 'list')) { AUTO.editing = null; AUTO.view = 'list'; render(); }
         if (mode === 'control' && window.CONTROL && CONTROL.view !== 'home') { CONTROL.view = 'home'; CONTROL.detail = null; render(); }
+        if (mode === 'tripsplan' && window.TRIPS_UI && TRIPS_UI.detail) { TRIPS_UI.detail = null; render(); }
         return;
       }
       goMode(mode);
@@ -2101,6 +2108,7 @@ function wire() {
     if (S.mode === 'automation') { handleAutoClick(e); return; }
     if (S.mode === 'control') { if (window.handleControlClick) { handleControlClick(e); } return; }
     if (S.mode === 'daily') { if (window.handleDailyClick) handleDailyClick(e); return; }
+    if (TAB_OF[S.mode] === 'trips') { if (window.handleTripsClick) handleTripsClick(e); return; }
     const fh = e.target.closest('.fhd');
     if (fh) {
       const box = fh.closest('.fbox'), id = box && box.dataset.id;
