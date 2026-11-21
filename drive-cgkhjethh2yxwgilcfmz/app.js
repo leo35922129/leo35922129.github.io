@@ -225,7 +225,7 @@ function syncTopSeg() {
   el.querySelectorAll('button').forEach(b => { const on = b.dataset.v === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   if (!el.dataset.bound) {
     el.dataset.bound = '1';
-    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
+    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef === 'station' ? 'charge' : b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
     el.addEventListener('click', ev => {
       const b = ev.target.closest('button[data-v]'); if (!b) return;
       if (el.dataset.tab === 'report') { if (window.setNewsSide) setNewsSide(b.dataset.v); return; }
@@ -615,6 +615,19 @@ function stationMeta(it) {
   if (!bits.length) return '';
   return `<div class="stn-meta">${esc(bits.join(' · '))}</div>`;
 }
+/* v98: public-station charging = any charge session that isn't at home (Superchargers, EVgo, other networks). */
+function isPublicCharge(c) {
+  if (!c) return false;
+  if (c.station) return stationBadgeClass(c.station) !== 'home';
+  return !!c.kind && c.kind !== 'home';
+}
+function setStationFilter(has) {
+  const el = $('#efilter'), b = el && el.querySelector('button[data-ef="station"]');
+  if (!b) return;
+  b.classList.toggle('hidden', !has);
+  el.classList.toggle('has-station', has);
+  const row = document.querySelector('header .toprow'); if (row) row.classList.toggle('has-station', has);
+}
 function chargeCard(it) {
   const ongoing = !!it.open;
   const when = `${timeTs(it.s)} – ${ongoing ? 'now' : timeTs(it.e)}`;
@@ -627,7 +640,7 @@ function chargeCard(it) {
     : `<span>${esc(dur)}</span>`;
   return `<div class="card charge${ongoing ? ' live' : ''}">
     <div class="hd">
-      <span class="badge chg">${PLUG_ICO} Charging</span>
+      <span class="badge chg${isPublicCharge(it) ? ' pub' : ''}">${PLUG_ICO} Charging</span>
       <span class="when">${esc(when)}</span>
       <span class="right">${right}</span>
     </div>
@@ -704,7 +717,7 @@ function syncEFilter() {
   el.querySelectorAll('button[data-ef]').forEach(b => { const on = b.dataset.ef === cur; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
   if (!el.dataset.bound) {
     el.dataset.bound = '1';
-    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
+    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef === 'station' ? 'charge' : b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
     el.addEventListener('click', ev => {
       const b = ev.target.closest('button[data-ef]'); if (!b || b.dataset.ef === (S.efilter || 'all')) return;
       S.efilter = b.dataset.ef; render();
@@ -1361,9 +1374,14 @@ function tlItem(it, k) {
     title = 'Trip to ' + (t.to || '—');
     when = tlRange(t.s, t.e);
     if (t.mi != null) stats.push(tlStat('mi', num(t.mi, t.mi >= 10 ? 1 : 2) + ' mi'));
-    if (t.kwh != null) stats.push(tlStat('kwh', num(t.kwh, 1) + ' kWh'));
-    if (energyMode()) { if (t.elec != null) stats.push(tlStat('usd', money(t.elec))); }
-    else if (t.save != null) stats.push(tlStat('saved', money(t.save) + ' saved', 'g'));
+    if (energyMode()) {
+      if (t.kwh != null) stats.push(tlStat('kwh', num(t.kwh, 1) + ' kWh'));
+      if (t.elec != null) stats.push(tlStat('usd', money(t.elec)));
+    } else {   // v98: Savings = miles · electric cost · gas cost · saved · FSD · duration, icons from the Saving tiles
+      if (t.elec != null) stats.push(tlStat('usd', money(t.elec) + (t.cest ? '<span class="tl-est"> est</span>' : '')));
+      if (t.gas != null) stats.push(tlStat('gas', money(t.gas)));
+      if (t.save != null) stats.push(tlStat('saved', money(t.save) + ' saved', 'g'));
+    }
     if (t.fsd && t.fsd.pct != null) stats.push(tlStat('fsd', 'FSD ' + t.fsd.pct + '%', 'a'));
     stats.push(tlStat('dur', esc(t.min != null ? t.min + ' min' : fmtSpan(t.s, t.e))));
     detail = tripCard(t, it.i, it.n);
@@ -1387,7 +1405,8 @@ function tlItem(it, k) {
   }
   TL_DETAIL[id] = detail;
   const open = OPEN.has(id);
-  return `<li class="tl-ev ${it.kind}${open ? ' open' : ''}" data-tl="${id}">
+  const pub = it.kind === 'charge' && isPublicCharge(it.c);
+  return `<li class="tl-ev ${it.kind}${pub ? ' pub' : ''}${open ? ' open' : ''}" data-tl="${id}">
     <span class="tl-node" aria-hidden="true">${TLI(TL_ICO[it.kind], 16)}</span>
     <div class="tl-time">${esc(when)}</div>
     <div class="tl-card">
@@ -1407,24 +1426,31 @@ function tlDay(k, items, multi) {
 }
 function tlFilterNote() {
   const ef = energyMode() ? (S.efilter || 'all') : 'all';
-  return ef === 'all' ? '' : `<p class="efnote">${ef === 'charge' ? 'Charging only' : 'Trips only'} · totals are for the whole day</p>`;
+  return ef === 'all' ? '' : `<p class="efnote">${ef === 'charge' ? 'Charging only' : ef === 'station' ? 'Public stations only' : 'Trips only'} · totals are for the whole day</p>`;
 }
 async function tlRange_(keys) {
   /* keys: day keys (any order). Returns the grouped timeline, newest day first, filtered by the Energy filter. */
   const tk = keyOf(todayD());
   const ks = keys.filter(k => k <= tk).sort().reverse();
-  const ef = energyMode() ? (S.efilter || 'all') : 'all';
+  let ef = energyMode() ? (S.efilter || 'all') : 'all';
   const multi = keys.length > 1;
   let html = '', any = false;
-  for (const k of ks) {
-    const m = await month(k.slice(0, 7));
-    let items = dayEvents(k, m);
-    if (ef !== 'all') items = items.filter(it => it.kind === ef);
+  const days = [];
+  for (const k of ks) days.push([k, dayEvents(k, await month(k.slice(0, 7)))]);
+  if (energyMode()) {   // v98: Station button only when this range has public-station charging; fall back to All otherwise
+    const hasPub = days.some(([, its]) => its.some(it => it.kind === 'charge' && isPublicCharge(it.c)));
+    setStationFilter(hasPub);
+    if (!hasPub && ef === 'station') { S.efilter = ef = 'all'; syncEFilter(); }
+  }
+  for (const [k, all] of days) {
+    let items = all;
+    if (ef === 'station') items = items.filter(it => it.kind === 'charge' && isPublicCharge(it.c));
+    else if (ef !== 'all') items = items.filter(it => it.kind === ef);
     if (!items.length) { if (!multi) continue; else continue; }
     any = true; html += tlDay(k, items, multi);
   }
   if (!any) {
-    const what = energyMode() ? (ef === 'charge' ? 'No charging' : ef === 'trip' ? 'No trips' : 'No energy use') : 'No trips';
+    const what = energyMode() ? (ef === 'charge' ? 'No charging' : ef === 'station' ? 'No public charging' : ef === 'trip' ? 'No trips' : 'No energy use') : 'No trips';
     return tlFilterNote() + `<div class="empty">${what} ${multi ? 'in this period' : 'this day'}</div>`;
   }
   return tlFilterNote() + `<div class="tl">${html}</div>`;

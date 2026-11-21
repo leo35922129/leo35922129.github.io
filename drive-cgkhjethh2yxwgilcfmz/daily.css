@@ -456,3 +456,17 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 /* v97: opened trip cards show the route map directly: no Show/Hide route header */
 .tl-detail .routebox .maptoggle{display:none}
 .tl-detail .routebox .rinner{padding-top:8px}
+/* v98: Station filter (public charging) — same shared plug, red tint; selected = stronger red fill */
+.efilter button[data-ef="station"]{background:var(--red-soft);color:var(--red)}
+.efilter button[data-ef="station"].on{background:var(--red);color:#fff}
+.efilter button.hidden{display:none}
+.efilter.has-station button{width:30px}
+.toprow.has-efilter.has-station{column-gap:var(--sp-1)}
+.toprow.has-efilter.has-station .daterow .nav{width:24px}
+.toprow.has-efilter.has-station #today{padding:0 10px}
+@media (max-width:374px){.efilter.has-station button{width:28px}.toprow.has-efilter.has-station .daterow .nav{width:22px}#app .toprow.has-efilter.has-station .title{font-size:var(--fs-sub)}}
+.tl-ev.charge.pub .tl-node{background:var(--red-soft);color:var(--red)}
+.badge.chg.pub{background:var(--red-soft);color:var(--red)}
+/* v98: Savings trip stats — estimate tag like the tile's "est" */
+.tl-st .tl-est{font-weight:400;color:var(--amb);font-size:var(--fs-micro)}
+.tl-st svg.gasico{color:var(--gas)}   /* v98: red pump, as on the Gas Cost tile */
