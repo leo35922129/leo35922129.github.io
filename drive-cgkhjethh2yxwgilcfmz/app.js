@@ -132,6 +132,7 @@ const ELEC_ICO = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circl
 const EV_PATHS = {
   all: '<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
   charge: '<path d="M9 3v5M15 3v5M6.5 8h11v3a5.5 5.5 0 0 1-11 0z"/><path d="M12 16.5V21"/>',
+  fast: '<path d="M5.5 3.5v4M10.5 3.5v4M3 7.5h10v2.8a5 5 0 0 1-10 0z"/><path d="M8 15.3V21"/><path d="M20 2.5 15.6 11h4.8L16.6 20"/>',   // v99: DC fast charging (plug + bolt)
   trip: '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7.5a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H16"/>'
 };
 const evIco = (k, cls = 'ico', w = 20) => `<svg class="${cls}" viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${EV_PATHS[k]}</svg>`;
@@ -225,7 +226,7 @@ function syncTopSeg() {
   el.querySelectorAll('button').forEach(b => { const on = b.dataset.v === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   if (!el.dataset.bound) {
     el.dataset.bound = '1';
-    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef === 'station' ? 'charge' : b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
+    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef === 'station' ? 'fast' : b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
     el.addEventListener('click', ev => {
       const b = ev.target.closest('button[data-v]'); if (!b) return;
       if (el.dataset.tab === 'report') { if (window.setNewsSide) setNewsSide(b.dataset.v); return; }
@@ -615,12 +616,22 @@ function stationMeta(it) {
   if (!bits.length) return '';
   return `<div class="stn-meta">${esc(bits.join(' · '))}</div>`;
 }
-/* v98: public-station charging = any charge session that isn't at home (Superchargers, EVgo, other networks). */
-function isPublicCharge(c) {
-  if (!c) return false;
-  if (c.station) return stationBadgeClass(c.station) !== 'home';
-  return !!c.kind && c.kind !== 'home';
+/* v99: the red Station category = high-power DC fast charging. Signals, best first:
+   1) the session's DC flag (charges[].dc, attached to the slice as c.dc); 2) power (peak or average ≥ 50 kW);
+   3) station network/name. Home and slow public Level 2 sessions stay under the green Charger filter. */
+const FAST_NET = /supercharger|\btesla\b|evgo|electrify america|ionna|mercedes[- ]benz hpc|\bhpc\b|walmart|circle k|pilot|flying j|bp pulse|shell recharge|rivian adventure|\bdcfc\b|dc fast/i;
+function isHomeCharge(c) { return c.station ? stationBadgeClass(c.station) === 'home' : c.kind === 'home'; }
+function isFastCharge(c) {
+  if (!c || isHomeCharge(c)) return false;
+  if (c.dc === 1 || c.dc === true) return true;
+  if (c.dc === 0 || c.dc === false) return false;
+  const pk = Math.max((c.station && c.station.peak_kw) || 0, c.kw || 0);
+  if (pk >= 50) return true;
+  if (pk > 0) return false;   // measured, and below DC fast-charge power
+  const st = c.station || {};
+  return FAST_NET.test([st.network, st.badge, st.label, st.site_name, c.where, c.label].filter(Boolean).join(' '));
 }
+const isPublicCharge = isFastCharge;   // v98 name, kept for the call sites
 function setStationFilter(has) {
   const el = $('#efilter'), b = el && el.querySelector('button[data-ef="station"]');
   if (!b) return;
@@ -640,7 +651,7 @@ function chargeCard(it) {
     : `<span>${esc(dur)}</span>`;
   return `<div class="card charge${ongoing ? ' live' : ''}">
     <div class="hd">
-      <span class="badge chg${isPublicCharge(it) ? ' pub' : ''}">${PLUG_ICO} Charging</span>
+      <span class="badge chg${isFastCharge(it) ? ' pub' : ''}">${isFastCharge(it) ? evIco('fast') : PLUG_ICO} Charging</span>
       <span class="when">${esc(when)}</span>
       <span class="right">${right}</span>
     </div>
@@ -717,7 +728,7 @@ function syncEFilter() {
   el.querySelectorAll('button[data-ef]').forEach(b => { const on = b.dataset.ef === cur; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
   if (!el.dataset.bound) {
     el.dataset.bound = '1';
-    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef === 'station' ? 'charge' : b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
+    el.querySelectorAll('button[data-ef]').forEach(b => { b.innerHTML = evIco(b.dataset.ef === 'station' ? 'fast' : b.dataset.ef, 'efi', 20); });   // v93: shared icon definition
     el.addEventListener('click', ev => {
       const b = ev.target.closest('button[data-ef]'); if (!b || b.dataset.ef === (S.efilter || 'all')) return;
       S.efilter = b.dataset.ef; render();
@@ -1356,7 +1367,8 @@ function dayEvents(k, m) {
   const trips = (m.trips || []).filter(t => dayKeyTs(t.s) === k).sort((a, b) => a.s - b.s);
   const items = trips.map((t, i) => ({ kind: 'trip', s: t.s, t, i, n: trips.length }));
   if (energyMode()) {
-    (m.charge_slices || []).filter(c => dayKeyTs(c.s) === k || (c.e > c.s && dayKeyTs(c.e - 1) === k)).forEach(c => items.push({ kind: 'charge', s: c.s, c }));
+    if (!m._dc) { m._dc = {}; (m.charges || []).forEach(x => { if (x.id != null) m._dc[x.id] = x.dc; }); }   // v99: DC flag from the session
+    (m.charge_slices || []).filter(c => dayKeyTs(c.s) === k || (c.e > c.s && dayKeyTs(c.e - 1) === k)).forEach(c => { if (c.dc === undefined && m._dc[c.id] != null) c.dc = m._dc[c.id]; items.push({ kind: 'charge', s: c.s, c }); });
     (m.parked || []).filter(p => dayKeyTs(p.s) === k || dayKeyTs(p.e - 1) === k).filter(p => (p.kwh || 0) > 0.005).forEach(p => items.push({ kind: 'parked', s: p.s, p }));
   }
   return items.sort((a, b) => b.s - a.s);   // newest first
@@ -1407,7 +1419,7 @@ function tlItem(it, k) {
   const open = OPEN.has(id);
   const pub = it.kind === 'charge' && isPublicCharge(it.c);
   return `<li class="tl-ev ${it.kind}${pub ? ' pub' : ''}${open ? ' open' : ''}" data-tl="${id}">
-    <span class="tl-node" aria-hidden="true">${TLI(TL_ICO[it.kind], 16)}</span>
+    <span class="tl-node" aria-hidden="true">${TLI(pub ? EV_PATHS.fast : TL_ICO[it.kind], 16)}</span>
     <div class="tl-time">${esc(when)}</div>
     <div class="tl-card">
       <button type="button" class="tl-head" aria-expanded="${open ? 'true' : 'false'}">
@@ -1426,7 +1438,7 @@ function tlDay(k, items, multi) {
 }
 function tlFilterNote() {
   const ef = energyMode() ? (S.efilter || 'all') : 'all';
-  return ef === 'all' ? '' : `<p class="efnote">${ef === 'charge' ? 'Charging only' : ef === 'station' ? 'Public stations only' : 'Trips only'} · totals are for the whole day</p>`;
+  return ef === 'all' ? '' : `<p class="efnote">${ef === 'charge' ? 'Charging only' : ef === 'station' ? 'DC fast charging only' : 'Trips only'} · totals are for the whole day</p>`;
 }
 async function tlRange_(keys) {
   /* keys: day keys (any order). Returns the grouped timeline, newest day first, filtered by the Energy filter. */
@@ -1450,7 +1462,7 @@ async function tlRange_(keys) {
     any = true; html += tlDay(k, items, multi);
   }
   if (!any) {
-    const what = energyMode() ? (ef === 'charge' ? 'No charging' : ef === 'station' ? 'No public charging' : ef === 'trip' ? 'No trips' : 'No energy use') : 'No trips';
+    const what = energyMode() ? (ef === 'charge' ? 'No charging' : ef === 'station' ? 'No DC fast charging' : ef === 'trip' ? 'No trips' : 'No energy use') : 'No trips';
     return tlFilterNote() + `<div class="empty">${what} ${multi ? 'in this period' : 'this day'}</div>`;
   }
   return tlFilterNote() + `<div class="tl">${html}</div>`;
