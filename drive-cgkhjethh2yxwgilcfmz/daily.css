@@ -452,7 +452,7 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .tl-detail .routebox .maptoggle{display:none}
 .tl-detail .routebox .rinner{padding-top:8px}
 /* v98: Station filter (public charging) — same shared plug, red tint; selected = stronger red fill */
-.efilter button[data-ef="station"]{background:var(--red-soft);color:var(--red)}
+/* v101: unselected Fast charge looks like the other unselected buttons; red only when selected */
 .efilter button[data-ef="station"].on{background:var(--red);color:#fff}
 .efilter button.hidden{display:none}
 .tl-ev.charge.pub .tl-node{background:var(--red-soft);color:var(--red)}
