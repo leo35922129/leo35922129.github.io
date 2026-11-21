@@ -261,3 +261,14 @@
 @keyframes ctlpulse{0%{box-shadow:0 0 0 0 rgba(62,139,255,.6)}100%{box-shadow:0 0 0 14px rgba(62,139,255,0)}}
 /* v97: Control map uses the trip-playback Cybertruck marker instead of the blue dot */
 .ctl-truck{width:22px;height:44px}
+
+/* v115: hero row = Battery | Rated range only (Parked pill removed), bigger numbers, line icons in front, wider gap */
+.ctl-status .ctl-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:2px 4px 12px 0;flex-wrap:nowrap}
+.ctl-status .ctl-hb{display:flex;align-items:flex-start;gap:8px;flex:none;min-width:0}
+.ctl-status .ctl-hi{flex:none;display:flex;width:30px;height:30px;margin-top:12px}
+.ctl-status .ctl-hi.bat.lv-ok{color:var(--grn)}.ctl-status .ctl-hi.bat.lv-mid{color:var(--amb)}.ctl-status .ctl-hi.bat.lv-low{color:var(--red)}
+.ctl-status .ctl-hi.bat{color:var(--grn)}
+.ctl-status .ctl-hi.rng{color:var(--acc)}
+.ctl-status .ctl-hero .n{font-size:56px}
+.ctl-status .ctl-hero .n small{font-size:24px}
+@media (max-width:374px){.ctl-status .ctl-hero .n{font-size:50px}.ctl-status .ctl-hero .n small{font-size:22px}.ctl-status .ctl-hi{width:28px;height:28px;margin-top:11px}.ctl-status .ctl-hi svg{width:28px;height:28px}}

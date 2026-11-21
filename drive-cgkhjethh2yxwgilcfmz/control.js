@@ -100,7 +100,8 @@ function paintControlHome(main){
   const st = CONTROL.st || {};
   const fresh = ctlIsFresh(st);
   const driving = fresh && st.gear && st.gear !== 'P' && st.gear !== 'N';
-  const driveLabel = driving ? `Driving · ${dash(st.speed_mph)} mph` : 'Parked';
+  /* v115: Parked/Driving pill removed from the hero row (Lei). Motion state still shows on the Location card. */
+  const batLv = st.battery_pct == null ? '' : (+st.battery_pct >= 50 ? 'lv-ok' : +st.battery_pct >= 20 ? 'lv-mid' : 'lv-low');
   const clim = ctlClimateLabel(st, fresh);
   const charge = st.plugged_in == null && !st.charging_state ? '—' : (st.plugged_in ? dash(st.charging_state || 'Plugged in') : 'Unplugged');
   const live = ctlLiveLabel(st, fresh);
@@ -115,10 +116,8 @@ function paintControlHome(main){
   main.innerHTML = `
     <section class="ctl-status">
       <div class="ctl-hero">
-        <div><div class="n bat ${st.battery_pct == null ? '' : (+st.battery_pct >= 50 ? 'lv-ok' : +st.battery_pct >= 20 ? 'lv-mid' : 'lv-low')}">${st.battery_pct == null ? '—' : st.battery_pct}${st.battery_pct == null ? '' : '<small>%</small>'}</div><div class="k">Battery</div></div>
-        <div class="ctl-hero-gap" aria-hidden="true"></div>
-        <div><div class="n rng">${st.rated_range_mi == null ? '—' : st.rated_range_mi}${st.rated_range_mi == null ? '' : '<small> mi</small>'}</div><div class="k">Rated range</div></div>
-        <div class="ctl-hero-state"><span class="ctl-pill${driving ? ' drive' : ''}" title="${ctlEsc(driveLabel)}" aria-label="${ctlEsc(driveLabel)}">${driving ? 'Driving' : 'Parked'}</span></div>
+        <div class="ctl-hb"><span class="ctl-hi bat ${batLv}" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="17" height="10" rx="2.2"/><path d="M22 10.5v3"/><path d="M6 10.5v3M9.5 10.5v3M13 10.5v3"/></svg></span><div><div class="n bat ${batLv}">${st.battery_pct == null ? '—' : st.battery_pct}${st.battery_pct == null ? '' : '<small>%</small>'}</div><div class="k">Battery</div></div></div>
+        <div class="ctl-hb"><span class="ctl-hi rng" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 17.5a8.5 8.5 0 1 1 15.6 0"/><path d="M12 15.5l4.2-5"/><circle cx="12" cy="15.5" r="1.4"/></svg></span><div><div class="n rng">${st.rated_range_mi == null ? '—' : st.rated_range_mi}${st.rated_range_mi == null ? '' : '<small> mi</small>'}</div><div class="k">Rated range</div></div></div>
       </div>
       <div class="ctl-chips">
         <div class="ctl-chip${st.locked === false ? ' alert' : ''}">
