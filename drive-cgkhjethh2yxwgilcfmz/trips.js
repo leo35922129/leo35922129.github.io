@@ -128,14 +128,15 @@
     const when = s.arrival_time ? new Date(s.arrival_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
     const badges = (s.badges || []).map(b => b === 'cheapest' ? `<span class="trp-bdg c">$ Cheapest</span>` : b === 'fastest' ? `<span class="trp-bdg f">› Fastest</span>` : '').join('');
     const short = s.arrival_shortfall_pct ? (s.notes || []).find(n => /short/.test(n)) || `arrives ${pct(s.arrive_soc_pct)}, ${Math.round(s.arrival_shortfall_pct)}% short` : '';
-    const meta = [s.is_destination_charge || s.near_destination ? 'near destination' : `mile ${Math.round(s.route_mile)}`, netName(s.network_name) || (s.network === 'tesla_supercharger' ? 'Supercharger' : 'NACS'), s.stalls ? plural(s.stalls, 'stall') : '', s.max_kw ? `${s.max_kw} kW` : ''].filter(Boolean).join(' · ');
+    const meta = [s.is_destination_charge || s.near_destination ? 'near destination' : `mile ${Math.round(s.route_mile)}`, netName(s.network_name) || (s.network === 'tesla_supercharger' ? 'Tesla Supercharger' : 'NACS'), s.stalls ? plural(s.stalls, 'stall') : '', s.max_kw ? `max ${s.max_kw} kW` : ''].filter(Boolean).join(' · ');
+    const kwEst = s.kw_source === 'estimated' ? '<small class="ftag">est</small>' : '';  // v109: planner assumed the site kW
     return `<li class="tl-ev trp-stop">
       <span class="tl-node trp-fast" aria-hidden="true">${I(fast(), 16)}</span>
       <div class="tl-time">${esc(when)}${when ? ' · ' : ''}Stop ${i + 1}</div>
       <div class="tl-card trp-scard">
-        <div class="trp-shead"><div class="trp-smain"><div class="tl-title">${esc(s.name)}</div><div class="trp-smeta">${esc(meta)}</div></div>${btn}</div>
+        <div class="trp-shead"><div class="trp-smain"><div class="tl-title">${esc(s.name)}</div><div class="trp-smeta">${esc(meta)}${s.max_kw ? kwEst : ''}</div></div>${btn}</div>
         <div class="trp-sline"><b>Arrive ${pct(s.arrive_soc_pct)} → ${pct(s.depart_soc_pct)}</b><span>${fmtMin(s.charge_minutes)}</span></div>
-        <div class="trp-sline2">avg ${s.effective_kw != null ? Math.round(s.effective_kw) + ' kW' : '–'} · ${priceHtml(s, when)}</div>
+        <div class="trp-sline2">avg ${s.effective_kw != null ? Math.round(s.effective_kw) + ' kW' + kwEst : '–'} · ${priceHtml(s, when)}</div>
         ${short ? `<div class="trp-flag">${I(P.warn, 16)}${esc(short)}</div>` : ''}
         ${badges ? `<div class="trp-bdgs">${badges}</div>` : ''}
       </div></li>`;
@@ -178,7 +179,7 @@
     else list = `<ol class="tl-list trp-stops">${p.stops.map((s, i) => stopCard(s, i, d)).join('')}</ol>`;
     const near = ch.near_destination || [];
     const nearHtml = near.length ? `<button type="button" class="card trp-near" data-act="near" aria-expanded="${T.nearOpen}">${I(fast(), 18)}<span>Near destination (${near.length})</span><span class="trp-nchev${T.nearOpen ? ' open' : ''}">${I(P.chev, 18)}</span></button>
-      ${T.nearOpen ? `<div class="card trp-nlist">${near.map(c => `<div class="trp-nrow"><b>${esc(c.name)}</b><small>${c.mi} mi from center · ${esc(netName(c.network_name) || 'Supercharger')}${c.stalls ? ` · ${plural(c.stalls, 'stall')}` : ''}${c.max_kw ? ` · ${c.max_kw} kW` : ''}</small></div>`).join('')}</div>` : ''}` : '';
+      ${T.nearOpen ? `<div class="card trp-nlist">${near.map(c => `<div class="trp-nrow"><b>${esc(c.name)}</b><small>${c.mi} mi from center · ${esc(netName(c.network_name) || 'Tesla Supercharger')}${c.stalls ? ` · ${plural(c.stalls, 'stall')}` : ''}${c.max_kw ? ` · ${c.max_kw} kW` : ''}</small></div>`).join('')}</div>` : ''}` : '';
     const nlr = ch.nlr || {};
     const note = nlr.state === 'waiting_key' ? 'Third-party NACS stations: waiting on the NLR station-search key. Superchargers from supercharge.info.'
       : nlr.state === 'error' ? 'Third-party station search failed this time; Superchargers only.' : `Superchargers (supercharge.info) + ${plural(nlr.count, 'NACS station')} (NLR).`;
