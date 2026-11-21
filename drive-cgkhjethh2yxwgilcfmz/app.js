@@ -704,14 +704,10 @@ function setTitle() {
   if (next) next.disabled = false;
   const c = S.cur; let t;
   // v89: the Energy day row also holds the list filter, so the year is dropped there when it is the current year (fits at 360px).
-  if (S.view === 'day') t = c.toLocaleDateString('en-US', (S.mode === 'energy' && c.getFullYear() === new Date().getFullYear()) ? { weekday: 'short', month: 'short', day: 'numeric' } : { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  if (S.view === 'day') t = c.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });   // v100: same label on Savings and Energy
   else if (S.view === 'week') { const s = weekStart(c), e = addDays(s, 6); t = `${s.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${e.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`; }
   else if (S.view === 'month') t = `${MONTHS[c.getMonth()]} ${c.getFullYear()}`;
   else t = String(c.getFullYear());
-  if (S.mode === 'energy' && S.view === 'week') {   // v91: the filter shares this row, so use the compact range
-    const s = weekStart(c), e = addDays(s, 6), mo = d => d.toLocaleDateString('en-US', { month: 'short' });
-    t = s.getMonth() === e.getMonth() ? `${mo(s)} ${s.getDate()}–${e.getDate()}` : `${mo(s)} ${s.getDate()}–${mo(e)} ${e.getDate()}`;
-  } else if (S.mode === 'energy' && S.view === 'month') t = `${MONTHS[c.getMonth()].slice(0, 3)} ${c.getFullYear()}`;
   $('#title').textContent = t;
   document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.v === S.view));
   syncEFilter();
@@ -1480,6 +1476,8 @@ function tlToggle(li) {
 /* v97: an opened trip shows its route map straight away (no Show route step); the map is created lazily on open
    and removed on collapse so repeated open/close doesn't leak MapLibre instances or playback loops. */
 function tlOpenMap(li) {
+  // v100: inside an opened timeline card the Feature energy usage section is always open, with no toggle
+  if (li) li.querySelectorAll('.tl-detail .fbox').forEach(f => { f.classList.add('open'); const h = f.querySelector('.fhd'); if (h) { h.setAttribute('aria-expanded', 'true'); h.tabIndex = -1; } });
   const tr = li && li.querySelector('.tl-detail .trip[data-trip]');
   if (!tr || !tr.querySelector('.routebox')) return;
   const tid = +tr.dataset.trip;

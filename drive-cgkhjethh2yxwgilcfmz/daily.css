@@ -380,18 +380,13 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 
 /* ---- v89: Energy day list filter (All / Charger / Trip) at the left edge of the date row ---- */
 .efilter{display:none}
-.toprow.has-efilter{grid-template-columns:auto minmax(0,1fr) auto;column-gap:var(--sp-2)}
-.toprow.has-efilter .efilter:not(.hidden){grid-column:1;display:flex;gap:2px;padding:2px;background:var(--card);border-radius:var(--r-md);align-self:center}
+/* v100: removed (Energy date row now matches Savings) */
+.toprow.has-efilter .efilter:not(.hidden){grid-row:1;grid-column:1/-1;justify-self:start;display:flex;gap:2px;padding:2px;background:var(--card);border-radius:var(--r-md);align-self:center}
 .efilter button{width:34px;height:40px;padding:0;border:0;border-radius:var(--r-sm);background:transparent;color:var(--dim);
   display:flex;align-items:center;justify-content:center}
 .efilter button svg{width:var(--ico-md);height:var(--ico-md);display:block}
 .efilter button.on{background:var(--acc-soft);color:var(--acc)}
-.toprow.has-efilter .daterow{grid-column:2;gap:0;min-width:0}
-.toprow.has-efilter .daterow .nav{width:30px}
-#app .toprow.has-efilter .title{font-size:var(--fs-lg);min-width:0;overflow:hidden;text-overflow:ellipsis}
-.toprow.has-efilter #today{grid-column:3}
 .efnote{margin:0 2px 8px;color:var(--mut);font-size:var(--fs-cap);line-height:var(--lh)}
-@media (max-width:374px){.toprow.has-efilter{column-gap:var(--sp-1)}.toprow.has-efilter .daterow .nav{width:26px}.toprow.has-efilter #today{padding:0 10px}}
 
 /* ---------- v91: event timeline (Savings + Energy) ---------- */
 .tl-sec{font-size:var(--fs-label);margin:18px 2px 4px;font-weight:var(--fw-semi);letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--mut)}
@@ -460,13 +455,23 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .efilter button[data-ef="station"]{background:var(--red-soft);color:var(--red)}
 .efilter button[data-ef="station"].on{background:var(--red);color:#fff}
 .efilter button.hidden{display:none}
-.efilter.has-station button{width:30px}
-.toprow.has-efilter.has-station{column-gap:var(--sp-1)}
-.toprow.has-efilter.has-station .daterow .nav{width:24px}
-.toprow.has-efilter.has-station #today{padding:0 10px}
-@media (max-width:374px){.efilter.has-station button{width:28px}.toprow.has-efilter.has-station .daterow .nav{width:22px}#app .toprow.has-efilter.has-station .title{font-size:var(--fs-sub)}}
 .tl-ev.charge.pub .tl-node{background:var(--red-soft);color:var(--red)}
 .badge.chg.pub{background:var(--red-soft);color:var(--red)}
 /* v98: Savings trip stats — estimate tag like the tile's "est" */
 .tl-st .tl-est{font-weight:400;color:var(--amb);font-size:var(--fs-micro)}
 .tl-st svg.gasico{color:var(--gas)}   /* v98: red pump, as on the Gas Cost tile */
+
+/* v100: Energy's date row is the same as Savings (same .title/.nav rules, same strings); the filter gets its own row above it */
+.toprow.has-efilter{grid-template-rows:auto auto;row-gap:var(--sp-2)}
+.toprow.has-efilter .daterow{grid-row:2}
+.toprow.has-efilter #today{grid-row:2;grid-column:3}
+.efilter button{width:40px}
+/* v100: an opened card drops its title; the chevron floats top-right so the from/to (or charging) block starts at the top */
+.tl-ev.open .tl-main{display:none}
+.tl-ev.open .tl-head{position:absolute;top:6px;right:6px;width:var(--tap);height:var(--tap);min-height:0;padding:0;justify-content:center;z-index:2}
+.tl-ev.open .tl-detail>.card{padding-top:14px}
+.tl-ev.open .tl-detail>.card>.hd+*{padding-right:46px}
+/* v100: Feature energy usage is shown expanded inside an opened timeline card; its header is a plain title row (no arrow, not a toggle) */
+.tl-detail .fbox .fbody{display:block}
+.tl-detail .fbox .fhd{pointer-events:none;cursor:default}
+.tl-detail .fbox .fhd .chev{display:none}
