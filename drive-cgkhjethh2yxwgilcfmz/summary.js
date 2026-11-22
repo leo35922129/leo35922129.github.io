@@ -26,9 +26,10 @@
   const api = () => (S.meta && S.meta.tesla_api) || null;
 
   /* ---------- Grok Bot usage ---------- */
+  const secHd = (t, note) => `<div class="rp-sec dr-sec"><b>${t}</b>${note ? `<span class="dr-labnote">${note}</span>` : ''}</div>`;   // v126: News "Top stories" style
   function usageCards(u) {
     const D = window.DR;
-    if (!u) return D.lab('Grok Bot usage') + `<section class="dr-card su-empty"><p>Usage hours aren't available yet. They appear after the next nightly refresh.</p></section>`;
+    if (!u) return secHd('Grok Bot usage') + `<section class="dr-card su-empty"><p>Usage hours aren't available yet. They appear after the next nightly refresh.</p></section>`;
     const lei = u.lei || {}, days = (lei.daily || []).filter(d => d.hours > 0), first = lei.first_active || (days[0] || {}).date;
     const bots = (u.bots || []).filter(b => b && b.bot);
     const max = Math.max(0.01, ...bots.map(b => b.total_hours || 0));
@@ -40,13 +41,21 @@
           <div class="su-bar"><i style="width:${Math.max(2, (b.total_hours || 0) / max * 100).toFixed(1)}%;background:${st.c}"></i></div>
           ${b.first_active ? `<div class="su-bs">Since ${shortD(b.first_active)}</div>` : ''}</div></div>`;
     }).join('');
-    return D.lab('Grok Bot usage') + `
-      <section class="dr-card glow glow-slate">
+    /* v126: top section in one indigo glow card (like Team Daily Reports); the rest below under News-style section headers */
+    const a = api();
+    return `<div class="glowbot glow-indigo su-top">
+      <section class="dr-card">
         ${D.cardHd(I.chat, 'var(--acc)', 'Your time with Grok Bot', '')}
         <div class="su-hero"><span class="su-big">${H(lei.total_hours)}</span><span class="su-unit">hours</span></div>
         <div class="su-meta">${first ? `Since ${longD(first)} · ` : ''}${days.length} active day${days.length === 1 ? '' : 's'}</div>
       </section>
-      <section class="dr-card">
+      <div class="su-tiles">
+        <div class="su-tile"><span class="k">Bot hours</span><span class="v">${H(comb)} h</span></div>
+        <div class="su-tile"><span class="k">Bots</span><span class="v">${bots.length}</span></div>
+        <div class="su-tile pay"><span class="k">Tesla API</span><span class="v">${a ? $m(a.after_credit_projected) : '—'}</span></div>
+      </div>
+    </div>
+      ${secHd('Team')}<section class="dr-card">
         ${D.cardHd(I.bots, 'var(--dim)', 'Bot working hours', '')}
         <div class="su-bots">${rows || '<p class="su-mut">No bot hours yet.</p>'}</div>
         ${bots.length > 1 ? `<div class="su-comb"><span>Combined bot hours</span><b>${H(comb)} h</b></div>
@@ -59,7 +68,7 @@
   /* ---------- Tesla Fleet API ---------- */
   function apiCards(a) {
     const D = window.DR;
-    if (!a) return D.lab('Tesla Fleet API') + `<section class="dr-card su-empty"><p>Tesla API usage isn't available right now.</p></section>`;
+    if (!a) return secHd('Tesla Fleet API') + `<section class="dr-card su-empty"><p>Tesla API usage isn't available right now.</p></section>`;
     const [y, m] = a.month.split('-').map(Number), mon = MONL[m - 1], P = a.pricing || {};
     const cats = a.cats || [], billable = cats.reduce((s, c) => s + (c.n || 0), 0);
     const price = { device_data: '$1 / 500', commands: '$1 / 1,000', wakes: '$1 / 50', signals: '$1 / 150,000' };
@@ -72,7 +81,7 @@
         <div class="su-cl"><b>Tessie</b><span>Status cache and nightly trip backfill: flat Tessie subscription, not billed per call</span></div>
         <div class="su-cr"><span>Not counted</span></div></div>`;
     const credit = P.credit || 10, under = a.projected <= credit;
-    return D.lab('Tesla Fleet API', `${mon} ${y}`) + `
+    return secHd('Tesla Fleet API', `${mon} ${y}`) + `
       <section class="dr-card su-api">
         ${D.cardHd(I.cost, 'var(--grn)', 'Cost this month', '')}
         <div class="su-tiles">

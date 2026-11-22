@@ -578,3 +578,9 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .dr-wrap .rp-sec.dr-sec{display:flex;align-items:baseline;gap:8px;margin:14px 2px 0}
 .dr-wrap .dr-card.dr-issues{padding-top:10px;padding-bottom:10px}
 .dr-wrap .dr-card > .dr-sub:first-child{margin-top:0}
+
+/* v126: Report > Summary top card = standalone indigo glow card (no date row above it) */
+.dr-wrap > .glowbot.su-top{--hh:0px;margin:0 0 4px;padding:12px;border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.glowbot.su-top .su-tile{background:rgba(255,255,255,.065)}
+.glowbot.su-top .su-tile .k{color:var(--g-mut)}
+.su-wrap .rp-sec.dr-sec:first-child{margin-top:4px}
