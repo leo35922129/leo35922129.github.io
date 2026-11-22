@@ -496,3 +496,7 @@
 #app .playbar .prange::-moz-range-track{height:4px;border-radius:999px;background:#2a2d33}
 #app .playbar .prange::-moz-range-progress{height:4px;border-radius:999px;background:var(--acc)}
 #app .playbar .prange::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--acc)}
+
+/* v138: Lei - "Make Feature energy usage title font color become white". Energy's green card only (.fbox.glow-teal):
+   title, its icon and chevron -> var(--tx); weight/size unchanged. '% of total', bars and the Savings amber box untouched. */
+#app .fbox.glow-teal .fhd,#app .fbox.glow-teal .fhd .feico,#app .fbox.glow-teal .fhd .chev{color:var(--tx)}
