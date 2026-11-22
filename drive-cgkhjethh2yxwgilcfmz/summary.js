@@ -24,6 +24,7 @@
   };
   const usage = () => (S.meta && S.meta.usage_summary) || null;
   const api = () => (S.meta && S.meta.tesla_api) || null;
+  const gapi = () => (S.meta && S.meta.google_api) || null;   // v130: Places API (New) counter from the Trips service
 
   /* ---------- Grok Bot usage ---------- */
   const secHd = (t, note) => `<div class="rp-sec dr-sec"><b>${t}</b>${note ? `<span class="dr-labnote">${note}</span>` : ''}</div>`;   // v126: News "Top stories" style
@@ -42,7 +43,7 @@
           ${b.first_active ? `<div class="su-bs">Since ${shortD(b.first_active)}</div>` : ''}</div></div>`;
     }).join('');
     /* v126: top section in one indigo glow card (like Team Daily Reports); the rest below under News-style section headers */
-    const a = api();
+    const a = api(), g = gapi();
     return `<div class="glowbot glow-indigo su-top">
       <section class="dr-card">
         ${D.cardHd(I.chat, 'var(--acc)', 'Your time with Grok Bot', '')}
@@ -53,6 +54,7 @@
         <div class="su-tile"><span class="k">Bot hours</span><span class="v">${H(comb)} h</span></div>
         <div class="su-tile"><span class="k">Bots</span><span class="v">${bots.length}</span></div>
         <div class="su-tile pay"><span class="k">Tesla API</span><span class="v">${a ? $m(a.after_credit_projected) : '—'}</span></div>
+        <div class="su-tile pay"><span class="k">Google API</span><span class="v">${g ? $m(g.projected) : '—'}</span></div>
       </div>
     </div>
       ${secHd('Team')}<section class="dr-card">
@@ -103,6 +105,35 @@
       ${perDay(a)}
       <p class="su-foot">Pricing from Tesla: data $1 per 500 requests, commands $1 per 1,000, wakes $1 per 50, streaming $1 per 150,000 signals, $${credit} monthly discount, requests with status codes below 500 are billed, charges rounded to $0.01. Vehicle state and charging history are listed as "not charged". Sources: <a href="${e(P.source)}" target="_blank" rel="noopener">developer.tesla.com</a>, <a href="${e(P.source_billing)}" target="_blank" rel="noopener">Billing and Limits</a>, <a href="${e(P.source_endpoints)}" target="_blank" rel="noopener">endpoint pricing categories</a> (checked ${e(shortD(P.checked || '2026-11-20'))}, ${e((P.checked || '').slice(0, 4))}).</p>
       <p class="su-foot">${footNotes(a)} Projection = month to date + the last 7 days' average × days left. Updated ${e(timeET(a.as_of))}.</p>`;
+  }
+  /* ---------- Google Places API (New), v130 ---------- */
+  function googleCards(g) {
+    const D = window.DR;
+    if (!g) return secHd('Google Places API') + `<section class="dr-card su-empty"><p>Google API usage isn't available right now.</p></section>`;
+    const [y, m] = g.month.split('-').map(Number), mon = MONL[m - 1], P = g.pricing || {};
+    const since = g.tracked_since ? `tracked since ${shortD(g.tracked_since)}` : 'tracking starts with the next Trips lookup';
+    const row = (k, note, v, sub) => `<div class="su-crow">
+        <div class="su-cl"><b>${k}</b><span>${note}</span></div>
+        <div class="su-cr"><b>${v}</b>${sub != null ? `<span>${sub}</span>` : ''}</div></div>`;
+    const trial = P.trial_expires ? longD(P.trial_expires).replace(/^\w+, /, '') : 'Feb 20, 2027';
+    return secHd('Google Places API', `${mon} ${y}`) + `
+      <section class="dr-card su-api">
+        ${D.cardHd(I.cost, 'var(--grn)', 'Cost this month', '')}
+        <div class="su-tiles">
+          <div class="su-tile"><span class="k">To date</span><span class="v">${$m(g.cost_to_date)}</span></div>
+          <div class="su-tile"><span class="k">Projected ${mon.slice(0, 3)}</span><span class="v">${$m(g.projected)}</span></div>
+          <div class="su-tile pay"><span class="k">Free left</span><span class="v">${N(g.free_left)}</span></div>
+        </div>
+        <p class="su-say">${N(g.month_calls)} of ${N(P.free_per_month || 1000)} free Text Search calls used this month. At this pace ${mon} comes to about ${N(g.projected_calls)} calls, so it costs ${$m(g.projected)}. The server stops at ${N(g.month_cap)} a month, below the free ${N(P.free_per_month || 1000)}, so it can't go over.</p>
+      </section>
+      <section class="dr-card">
+        ${D.cardHd(I.calls, 'var(--acc)', 'Calls', `${N(g.month_calls)}`)}
+        ${row('Today', `server cap ${N(g.day_cap)} a day`, N(g.today), `of ${N(g.day_cap)}`)}
+        ${row('This month', `server cap ${N(g.month_cap)} a month`, N(g.month_calls), `of ${N(g.month_cap)}`)}
+        ${row('Cache hits', `answered from the ${P.cache_days || 7}-day cache, no Google call · ${e(since)}`, g.cache_hits_month == null ? '–' : N(g.cache_hits_month), '$0.00')}
+        ${row('Free allowance', `${e(P.sku || 'Places API (New) Text Search Enterprise')}: ${N(P.free_per_month || 1000)} free a month, then $${P.per_1000 || 35} per 1,000`, N(g.free_left), 'left')}
+      </section>
+      <p class="su-foot">Free Trial $${(P.trial_credit || 300).toFixed(0)} credit expires ${e(trial)} · $${(P.budget_alert || 1).toFixed(0)} budget alert set. Calls are counted on the server before each request, failed ones included; repeat searches within ${P.cache_days || 7} days come from the cache. ${g.last_call ? `Last Google call ${e(timeET(Date.parse(g.last_call) / 1000))}. ` : ''}Updated ${e(timeET(g.as_of))}.</p>`;
   }
   function catNote(c, a) {
     if (c.key === 'device_data') return 'fallback polls + 1 read after each command';
@@ -171,7 +202,7 @@
   }
 
   window.renderUsageSummary = function (main) {
-    main.innerHTML = `<div class="dr-wrap su-wrap">${SUM.daily ? dailyTime(usage()) : usageCards(usage()) + apiCards(api())}</div>`;
+    main.innerHTML = `<div class="dr-wrap su-wrap">${SUM.daily ? dailyTime(usage()) : usageCards(usage()) + apiCards(api()) + googleCards(gapi())}</div>`;
   };
   window.handleSummaryClick = function (ev) {
     const b = ev.target.closest('[data-su]');

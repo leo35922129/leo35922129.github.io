@@ -606,3 +606,6 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
   background-color:var(--gx-base)}
 #app #statcard.statcard:is(.glow-steel,.glow-teal) .stat:not(.hi-save):not(.hi-eff){background:rgb(var(--gx-tile) / .05)}
 #app #pcard.pcardtop:is(.glow-steel,.glow-teal) .pill{background:rgb(var(--gx-tile) / .07)}
+
+/* v130: Report > Summary hero has 4 tiles (Bot hours, Bots, Tesla API, Google API) -> 2x2 grid */
+.glowbot.su-top .su-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
