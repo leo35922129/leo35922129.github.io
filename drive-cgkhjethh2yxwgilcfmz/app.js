@@ -404,7 +404,9 @@ function renderSummary() {
     `<div class="stat ${x.cls}"><div class="k">${x.k}</div><div class="v">${x.v}</div><div class="stat-foot">${x.mid || ''}</div></div>`
   ).join('');
   const sc = document.getElementById('statcard');   // v121: one big glow card around the stat row (+ Energy note)
-  if (sc) { sc.classList.toggle('glow-indigo', !energyMode()); sc.classList.toggle('glow-teal', energyMode()); }
+  const pc = document.getElementById('pcard');   // v122: tabs + date row are the top of the same glow card
+  [sc, pc].forEach(n => { if (n) { n.classList.toggle('glow-indigo', !energyMode()); n.classList.toggle('glow-teal', energyMode()); } });
+  syncPCard();
   fitStats();
   const kind = S.view;
   setEffNote(energyMode() && whmi != null ? effNoteText(whmi, keys, kind) : '');
@@ -412,6 +414,19 @@ function renderSummary() {
 
 /* v121: auto-shrink stat tile labels/values that would clip (long Year totals like $1283.18, "Electric Cost" at 360).
    Steps the font down 0.5px at a time until the text fits its tile; never below 14px (value) / 10.5px (label). */
+/* v122: #pcard (period tabs + date row, inside the sticky header) and #statcard (tiles + note) render as ONE glow card.
+   The glow is drawn in page px from the top of #pcard; #statcard offsets it by --hh so the gradient is continuous.
+   The header stays sticky as before; once scrolled, the pinned top part gets rounded bottom corners (.stuck). */
+function syncPCard() {
+  const pc = document.getElementById('pcard'), sc = document.getElementById('statcard');
+  if (!pc || !sc) return;
+  const h = pc.getBoundingClientRect().height;
+  if (h) sc.style.setProperty('--hh', Math.round(h) + 'px');
+  pc.classList.toggle('stuck', window.scrollY > 4);
+}
+window.addEventListener('scroll', () => { const pc = document.getElementById('pcard'); if (pc) pc.classList.toggle('stuck', window.scrollY > 4); }, { passive: true });
+window.addEventListener('resize', () => syncPCard());
+
 function fitStats() {
   const root = document.getElementById('summary');
   if (!root) return;
