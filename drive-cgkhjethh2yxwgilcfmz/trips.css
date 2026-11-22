@@ -329,3 +329,69 @@
 #app.mode-report:not(.rpt-arch) .pcardtop.stuck,
 #app.mode-daily:not(.dr-arch):not(.dr-summ) .pcardtop.stuck{box-shadow:var(--card-edge)}
 #app #statcard.statcard,#app.mode-report:not(.rpt-arch) .glowbot,#app.mode-daily:not(.dr-arch):not(.dr-summ) .glowbot:not(.su-top){box-shadow:var(--card-edge-bot)}
+
+/* v135: Upcoming trip card, trip detail, edit and delete confirm (Lei: "the trip card will show on upcoming trips ...
+   destination name, weather, day 1, 2, 3, 4 spots overview ... edit button ... delete this trip"). v134 card edge,
+   v131 thin weights, Trip blue accent. */
+#app .card.trp-up{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;width:100%;margin:0 0 10px;padding:14px 12px 12px 14px;
+  border-radius:var(--r-lg);cursor:pointer;background:linear-gradient(180deg,#1b2029 0%,#15181d 100%);box-shadow:var(--card-edge)}
+.trp-up .tup-h{display:flex;align-items:flex-start;gap:8px}
+.trp-up .tup-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.trp-up .tup-date{color:var(--acc-tx);font-size:var(--fs-xs);font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.trp-up .tup-t b{color:var(--tx);font-size:20px;font-weight:500;letter-spacing:-.01em;line-height:1.25}
+.trp-up .tup-t small{color:#9aa1ab;font-size:var(--fs-cap);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trp-up .tl-chev{flex:none;color:var(--mut);margin-top:16px}
+.trp-up .tup-wx{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:6px}
+.trp-up .tup-wd{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;padding:8px 2px 7px;border-radius:12px;background:rgba(255,255,255,.045)}
+.trp-up .tup-wdl{color:#9aa1ab;font-size:var(--fs-xs);font-weight:400;white-space:nowrap}
+.trp-up .tup-hl{color:var(--tx);font-size:var(--fs-cap);font-weight:400;white-space:nowrap}
+.trp-up .tup-hl small{color:var(--mut);font-weight:300;margin-left:3px;font-size:var(--fs-xs)}
+.trp-up .tup-nofc{color:var(--mut);font-size:11px;font-weight:300;text-align:center;line-height:1.2}
+.trp-up .tup-days{display:flex;flex-direction:column;gap:7px;border-top:1px solid rgba(255,255,255,.06);padding-top:10px}
+.trp-up .tup-day{display:flex;align-items:baseline;gap:10px;min-width:0}
+.trp-up .tup-dn{flex:none;width:44px;color:var(--acc-tx);font-size:var(--fs-cap);font-weight:500}
+.trp-up .tup-ds{flex:1;min-width:0;color:var(--tx2);font-size:var(--fs-cap);font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trp-up .tup-ds em{font-style:normal;font-weight:400;color:var(--tx)}
+.trp-up .tup-ds i{font-style:normal;color:var(--mut)}
+#app .tl-node{flex:none}
+.tdt-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.tdt-head .trp-dt b{font-weight:500}
+.tdt-head .trp-dt span{font-weight:400}
+.tdt-edit{flex:none;background:var(--acc-soft)!important;color:var(--acc-tx)!important;font-weight:500;margin-top:2px}
+.tdt-dh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tdt-dw{display:inline-flex;align-items:center;gap:4px;text-transform:none;letter-spacing:0;font-weight:400;color:var(--tx2)}
+#app.mode-trips main .card.tdt-card,#app .card.tdt-card{padding:4px 12px 10px;margin:0}
+.tdt-stop,.ted-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.tdt-stop:last-of-type,.ted-row:last-of-type{border-bottom:0}
+.tdt-stop .tl-node,.ted-row .tl-node{position:static;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--acc-card);color:var(--acc)}
+.tdt-sm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tdt-sm b{color:var(--tx);font-size:var(--fs-body);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tdt-sm small{color:#9aa1ab;font-size:var(--fs-cap);font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tdt-sm small i{font-style:normal;opacity:.75}
+.tdt-sm .trp-rate{font-weight:400}
+.tdt-map{flex:none;display:inline-flex;align-items:center;gap:4px;color:var(--acc-tx);font-size:var(--fs-cap);font-weight:400;text-decoration:none;padding:6px 2px;min-height:32px}
+.tdt-del{all:unset;box-sizing:border-box;display:block;width:100%;text-align:center;margin:18px 0 4px;padding:13px;border-radius:var(--r-md);background:var(--red-soft);color:var(--red);font-size:var(--fs-body);font-weight:500;cursor:pointer}
+#app .tdt-card .trp-src{margin-top:6px}
+.ted-ctl{flex:none;display:flex;align-items:center;gap:2px}
+.ted-b{all:unset;box-sizing:border-box;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:var(--tx2);cursor:pointer}
+.ted-b:disabled{opacity:.25;cursor:default}
+.ted-x{color:var(--red)}
+.ted-day{appearance:none;-webkit-appearance:none;background:var(--card2);color:var(--tx2);border:0;border-radius:10px;padding:6px 8px;font:400 var(--fs-xs)/1 var(--font);margin:0 2px}
+.ted-gone{text-decoration:line-through;color:var(--mut)!important}
+.ted-undo{flex:none}
+.ted-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin:16px 0 6px}
+.ted-actions .pill{justify-content:center;text-align:center}
+.ted-save{background:var(--acc)!important;color:var(--on-acc)!important;font-weight:500}
+.ted-save:disabled{opacity:.6}
+#sheet.tdz-sheet .sheetbody{padding-top:22px}
+.tdz{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.tdz-ico{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--red-soft);color:var(--red)}
+.tdz h3{margin:6px 0 0;font-weight:500;color:var(--tx)}
+.tdz .trp-sheetp{margin:0 0 8px;max-width:330px}
+.tdz .pill{width:100%;justify-content:center}
+.tdz-go{background:var(--red)!important;color:#fff!important;font-weight:500}
+@media (max-width:374px){.trp-up .tup-dn{width:40px}.ted-day{padding:6px 5px}.ted-b{width:28px}}
+.tdt-stop .tl-node.trp-fast,.ted-row .tl-node.trp-fast{background:var(--red-soft);color:var(--red)}
+.tdt-tiles .trp-tile .v{font-weight:300}
+.tdt-tiles .trp-tile .k{font-weight:400;color:#9aa1ab}
+.trp .trp-wcard .trp-wd b{font-weight:500}

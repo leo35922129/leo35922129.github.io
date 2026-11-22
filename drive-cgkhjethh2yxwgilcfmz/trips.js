@@ -344,7 +344,10 @@
 
   /* ---------- Trip (Upcoming | Past) ---------- */
   function tripsMeta() { return (S.meta && S.meta.trips) || {}; }
-  function upcoming() { const p = tripsMeta().planned; return p ? (p.index || []).filter(t => t.status !== 'done').sort((a, b) => a.dates.start.localeCompare(b.dates.start)) : []; }
+  function upcoming() {
+    if (T.trips) return T.trips.filter(t => t.status !== 'done').sort((a, b) => a.dates.start.localeCompare(b.dates.start));   // v135 droplet trips
+    const p = tripsMeta().planned; return p ? (p.index || []).filter(t => t.status !== 'done').sort((a, b) => a.dates.start.localeCompare(b.dates.start)) : [];
+  }
   function past() {
     const p = tripsMeta().planned, done = p ? (p.index || []).filter(t => t.status === 'done') : [];
     return done.map(t => ({ ...t, planned: true })).concat(tripsMeta().past || []).sort((a, b) => b.dates.start.localeCompare(a.dates.start));
@@ -363,7 +366,9 @@
     let body;
     if (T.sub === 'upcoming') {
       const u = upcoming();
-      body = u.length ? u.map(t => rowHTML(t, 'up')).join('') : `<div class="card trp-blank">${I(tripP(), 28)}<b>No upcoming trips</b><span>Pick a destination in Explore and add stops. Travel Planner turns them into a dated trip here.</span><button type="button" class="pill" data-act="toexplore">Explore</button></div>`;
+      body = (T.tErr === 'auth' && !u.length) ? `<div class="card trp-blank">${I(tripP(), 28)}<b>Sign in to see your trips</b><span>Trips live on the droplet. Turn on remote controls in Control on this device, then come back.</span><button type="button" class="pill" data-act="tretry">Try again</button></div>`
+        : (T.tBusy && !T.trips) ? `<div class="card trp-blank"><span>Loading trips…</span></div>`
+        : u.length ? u.map(t => t.card_summary ? upCardHTML(t) : rowHTML(t, 'up')).join('') + (T.tErr && T.tErr !== 'auth' ? `<div class="trp-note">Couldn’t refresh: ${esc(T.tErr)}</div>` : '') : `<div class="card trp-blank">${I(tripP(), 28)}<b>No upcoming trips</b><span>Pick a destination in Explore and add stops. The trip shows up here as soon as you add the first one.</span><button type="button" class="pill" data-act="toexplore">Explore</button></div>`;
     } else {
       const p = past();
       body = p.length ? `<div class="trp-note">Detected from your drives: leaves home and returns, 150+ mi.</div>` + p.map(t => rowHTML(t, 'past')).join('')
@@ -383,6 +388,8 @@
         <div class="card trp-kv">${t.charges != null ? `<div><span>Charging sessions</span><b>${t.charges}</b></div>` : ''}${t.charge_kwh != null ? `<div><span>Energy added</span><b>${t.charge_kwh} kWh</b></div>` : ''}${t.charge_cost != null ? `<div><span>Charging cost</span><b>${usd(t.charge_cost)}</b></div>` : ''}${t.far_mi != null ? `<div><span>Farthest from home</span><b>${t.far_mi} mi</b></div>` : ''}</div>
         <div class="trp-note">Actuals from the tracker's drive and charge log.</div></div>`;
     }
+    if (T.edit && T.edit.id === id) return editHTML();
+    if (T.trips && (T.full[id] || T.trips.some(x => x.id === id))) return upDetailHTML(id, back);
     const p = tripsMeta().planned || {}, t = (p.items || {})[id];
     if (!t) { T.detail = null; return listHTML(); }
     const n = Math.max(1, Math.round((new Date(t.dates.end + 'T12:00') - new Date(t.dates.start + 'T12:00')) / 864e5) + 1);
@@ -408,18 +415,192 @@
       ${days}${tl}</div>`;
   }
 
+  /* ---------- v135 Upcoming trip cards (droplet adapter: GET /trips, GET /trip, POST /trip/edit, /trip/delete) ---------- */
+  T.trips = null; T.tErr = ''; T.tBusy = false; T.full = {}; T.fBusy = {}; T.fErr = {}; T.edit = null; T.saving = false;
+  const reTrip = () => { if (S.mode === 'tripsplan') renderTrips(); };
+  async function loadTrips(force) {
+    if (T.tBusy) return; T.tBusy = true; if (force) T.tErr = '';
+    try { const j = await api('/trips'); T.trips = j.trips || []; T.tErr = ''; }
+    catch (e) { T.tErr = e.message === 'auth' ? 'auth' : (e.message || 'error'); }
+    T.tBusy = false; reTrip();
+  }
+  async function loadTrip(id) {
+    T.fBusy[id] = true;
+    try { const j = await api('/trip?id=' + encodeURIComponent(id)); T.full[id] = j.trip; delete T.fErr[id]; }
+    catch (e) { T.fErr[id] = e.message === 'auth' ? 'Sign in on Control to load details' : (e.message || 'error'); }
+    T.fBusy[id] = false; reTrip();
+  }
+  const rnd = v => v == null ? '–' : Math.round(v);
+  const hhmm = s => { if (!s) return ''; const [h, m] = s.split(':').map(Number); return new Date(2000, 0, 1, h, m).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
+  const wxS = (c, w = 18) => { const k = WXK(c); return k ? `<span class="trp-wico wx-${WXT[k[1]]}" title="${k[0]}">${I(WXP[k[1]], w)}</span>` : ''; };
+  const KIND = { charge: ['Charge', null], sight: ['Sight', 'sight'], food: ['Food', 'food'], scenic: ['Scenic', 'scenic'], event: ['Event', 'event'], hotel: ['Stay', 'bed'] };
+  const kIco = k => k === 'charge' ? fast() : P[(KIND[k] || [])[1]] || P.star;
+  const depLine = t => { const d = t.departure || {}; return [`from ${d.place || 'Home'}`, d.time ? `leave ${hhmm(d.time)}` : '', d.battery_pct != null ? `${d.battery_pct}%` : ''].filter(Boolean).join(' · '); };
+  function upCardHTML(t) {
+    const cs = t.card_summary, city = (cs.destination || cs.title || '').split(',')[0];
+    const wx = cs.days.map(d => { const w = d.weather || {};
+      return `<div class="tup-wd"><span class="tup-wdl">${esc(dlabel(d.date, { weekday: 'short' }))} ${+d.date.slice(8)}</span>${w.forecast
+        ? `${wxS(w.code, 18)}<span class="tup-hl">${rnd(w.hi)}°<small>${rnd(w.lo)}°</small></span>` : `<small class="tup-nofc">No forecast yet</small>`}</div>`; }).join('');
+    const days = cs.days.map(d => {
+      const n = d.count, names = d.names || [];
+      const txt = !n ? '<i>Nothing planned</i>' : n > 3 ? `<em>${n} stops</em> · ${esc(names.slice(0, 2).join(', '))}…` : esc(names.join(' · '));
+      return `<div class="tup-day"><span class="tup-dn">Day ${d.day}</span><span class="tup-ds">${txt}</span></div>`; }).join('');
+    return `<button type="button" class="card trp-up" data-trip="${esc(t.id)}" data-kind="up">
+      <span class="tup-h"><span class="tup-t"><span class="tup-date">${esc(range(t.dates))} · ${cs.days.length} day${cs.days.length === 1 ? '' : 's'}</span><b>${esc(city)}</b><small>${plural(cs.stop_count, 'stop')} · ${esc(depLine(t))}</small></span><span class="tl-chev">${I(P.chev, 18)}</span></span>
+      <span class="tup-wx">${wx}</span>
+      <span class="tup-days">${days}</span></button>`;
+  }
+  function stopMeta(s, city) {
+    if (s.kind === 'charge') {
+      const a = [s.route_mile != null ? `mile ${Math.round(s.route_mile)}` : '', s.arrive_soc_pct != null ? `${pct(s.arrive_soc_pct)} → ${pct(s.depart_soc_pct)}` : '', s.charge_minutes != null ? fmtMin(s.charge_minutes) : ''].filter(Boolean);
+      return a.join(' · ');
+    }
+    const a = [];
+    if (s.rating != null) a.push(`<span class="trp-rate">${I(P.star, 12)}${(+s.rating).toFixed(1)}</span>${s.rating_count ? ` <i>(${(+s.rating_count).toLocaleString('en-US')})</i>` : ''}`);
+    if (s.mi_from_dest != null) a.push(`${(+s.mi_from_dest).toFixed(s.mi_from_dest < 10 ? 1 : 0)} mi from ${esc(city)}`);
+    else if (s.route_mile != null) a.push(`mile ${Math.round(s.route_mile)} on route`);
+    return a.join(' · ');
+  }
+  function upDetailHTML(id, back) {
+    const t = T.full[id] || T.trips.find(x => x.id === id), city = (t.destination.label || '').split(',')[0];
+    const est = t.estimate, tp = t.days.some(d => (d.legs || []).some(l => l.source !== 'explore_estimate'));
+    const wx = t.days.map(d => { const w = d.weather || {};
+      return `<div class="trp-wd"><div class="trp-wdh"><b>${esc(dlabel(d.date, { weekday: 'short' }))} ${+d.date.slice(8)}</b>${w.forecast ? wxS(w.code, 22) : ''}</div>${w.forecast
+        ? `<span class="trp-wx">${esc(WX(w.code))}</span><span class="trp-t">${rnd(w.hi)}°<small> / ${rnd(w.lo)}°</small></span><small>${w.pop != null ? w.pop + '% precip' : ''}${w.wind_mph != null ? ` · ${Math.round(w.wind_mph)} mph` : ''}</small>`
+        : `<small>Beyond 16-day forecast</small>`}</div>`; }).join('');
+    let plan = '';
+    if (est) {
+      const r = est.route || {};
+      const tiles = [tile('Round trip', rnd(r.round_trip_miles), 'mi'), tile('Drive each way', esc(fmtMin(r.drive_minutes))), tile('Energy one way', rnd(est.energy_kwh), 'kWh est'),
+        tile('Road charging', est.road_cost_usd != null ? usd(est.road_cost_usd) : '–', est.road_cost_usd != null ? 'est' : '')].join('');
+      const ch = (est.charging || []).map(c => `<div class="tdt-stop"><span class="tl-node trp-fast">${I(fast(), 16)}</span><span class="tdt-sm"><b>${esc(c.name)}</b><small>mile ${rnd(c.route_mile)} · ${pct(c.arrive_soc_pct)} → ${pct(c.depart_soc_pct)} · ${esc(fmtMin(c.charge_minutes))}${c.cost_usd != null ? ` · ${usd(c.cost_usd)} est` : ''}</small></span></div>`).join('');
+      plan = `<div class="trp-sec">Drive &amp; charging · estimate</div><div class="trp-tiles tdt-tiles">${tiles}</div>
+        <div class="card tdt-card">${ch || '<div class="trp-empty">No charging stop needed one way</div>'}
+        <div class="trp-src">Estimate from the Explore planner (OSRM route, ${esc(est.plan)} plan, Home → ${esc(city)}, one way). Arrive ${pct(est.arrive_soc_pct)}${est.cost_complete === false ? '. Supercharger prices are estimated at your median billed rate' : ''}${est.departure_note ? '. ' + esc(est.departure_note) : ''}. Travel Planner hasn’t added its own plan yet.</div></div>`;
+    } else if (tp) {
+      plan = `<div class="trp-sec">Drive &amp; charging · Travel Planner</div><div class="card tdt-card">${t.days.map(d => (d.legs || []).map(l => `<div class="tdt-stop"><span class="tl-node">${I(tripP(), 16)}</span><span class="tdt-sm"><b>${esc(l.from)} → ${esc(l.to)}</b><small>${rnd(l.miles)} mi${l.drive_minutes != null ? ' · ' + esc(fmtMin(l.drive_minutes)) : ''}${l.kwh != null ? ` · ${rnd(l.kwh)} kWh` : ''}${l.arrive_battery_pct != null ? ` · arrive ${pct(l.arrive_battery_pct)}` : ''}</small></span></div>`).join('')).join('')}</div>`;
+    } else if (T.fBusy[id]) plan = `<div class="trp-note">Loading drive and charging estimate…</div>`;
+    else if (T.fErr[id] || t.estimate_note) plan = `<div class="trp-note">${esc(T.fErr[id] || t.estimate_note)}</div>`;
+    const days = t.days.map(d => {
+      const w = d.weather || {};
+      const stops = d.stops.map(ref => { const s = t.stops[ref] || {}; const m = stopMeta(s, city);
+        return `<div class="tdt-stop"><span class="tl-node${s.kind === 'charge' ? ' trp-fast' : ''}">${I(kIco(s.kind), 16)}</span><span class="tdt-sm"><b>${esc(s.name || ref)}</b>${m ? `<small>${m}</small>` : ''}</span>${s.maps_link ? `<a class="tdt-map" href="${esc(s.maps_link)}" target="_blank" rel="noopener" aria-label="Open ${esc(s.name || '')} in Google Maps">${I(P.ext, 16)}<span>Maps</span></a>` : ''}</div>`; }).join('');
+      return `<div class="trp-sec tdt-dh"><span>Day ${d.day} · ${esc(dlabel(d.date))}</span>${w.forecast ? `<span class="tdt-dw">${wxS(w.code, 16)}${rnd(w.hi)}° / ${rnd(w.lo)}°</span>` : '<span class="tdt-dw">No forecast yet</span>'}</div>
+        <div class="card tdt-card">${stops || `<div class="trp-empty">Nothing planned for Day ${d.day} yet</div>`}${d.cost && d.cost.energy_usd != null ? `<div class="trp-src">Road charging ${usd(d.cost.energy_usd)}${d.cost.estimate ? ' est' : ''}</div>` : ''}</div>`; }).join('');
+    return `<div class="trp">${back}<div class="tdt-head"><div class="trp-dt"><b>${esc(city)}</b><span>${esc(range(t.dates))} · ${esc(depLine(t))}</span></div>
+      <button type="button" class="pill tdt-edit" data-act="tedit">Edit</button></div>
+      <div class="trp-sec">Weather · ${esc(city)}</div><div class="card trp-wcard"><div class="trp-wrow">${wx}</div><div class="trp-src">Open-Meteo forecast${t.weather_note ? ' · ' + esc(t.weather_note) : ''}</div></div>
+      ${plan}${days}
+      <button type="button" class="tdt-del" data-act="tdel">Delete trip</button>
+      <div class="trp-note">Updated ${esc(new Date(t.updated_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }))}${(t.user_locked || []).length ? ' · edited by you' : ''}</div></div>`;
+  }
+  /* edit draft */
+  const dayCount = (a, b) => Math.max(1, Math.round((new Date(b + 'T12:00') - new Date(a + 'T12:00')) / 864e5) + 1);
+  function startEdit(id) {
+    const t = T.full[id] || (T.trips || []).find(x => x.id === id); if (!t) return;
+    T.edit = { id, start: t.dates.start, end: t.dates.end, place: (t.departure || {}).place || 'Home', time: (t.departure || {}).time || '08:00',
+      bat: (t.departure || {}).battery_pct ?? 90, days: t.days.map(d => d.stops.slice()), removed: [], stops: t.stops, err: '' };
+    renderTrips(); window.scrollTo(0, 0);
+  }
+  function rebucket() {
+    const e = T.edit, n = Math.min(31, dayCount(e.start, e.end));
+    while (e.days.length < n) e.days.push([]);
+    if (e.days.length > n) { const extra = e.days.splice(n).flat(); e.days[n - 1].push(...extra); }
+  }
+  function editHTML() {
+    const e = T.edit, city = ((T.full[e.id] || {}).destination || {}).label || '';
+    const tl = (ic, k, inner) => `<label class="trp-tl"><span class="trp-tlh">${I(ic, 16)}<span class="k">${k}</span></span>${inner}</label>`;
+    const bats = [50, 60, 70, 80, 90, 100].concat([+e.bat]).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a - b).map(v => `<option value="${v}"${+e.bat === v ? ' selected' : ''}>${v}%</option>`).join('');
+    const n = e.days.length;
+    const days = e.days.map((refs, di) => `<div class="trp-sec">Day ${di + 1} · ${esc(dlabel(iso(new Date(new Date(e.start + 'T12:00').getTime() + di * 864e5))))}</div>
+      <div class="card tdt-card">${refs.length ? refs.map((ref, si) => { const s = e.stops[ref] || {};
+        const first = di === 0 && si === 0, last = di === n - 1 && si === refs.length - 1;
+        return `<div class="ted-row"><span class="tl-node${s.kind === 'charge' ? ' trp-fast' : ''}">${I(kIco(s.kind), 16)}</span><span class="tdt-sm"><b>${esc(s.name || ref)}</b></span>
+          <span class="ted-ctl"><button type="button" class="ted-b" data-tmv="${di}:${si}:-1" aria-label="Move up"${first ? ' disabled' : ''}>${I('<path d="m6 15 6-6 6 6"/>', 18)}</button><button type="button" class="ted-b" data-tmv="${di}:${si}:1" aria-label="Move down"${last ? ' disabled' : ''}>${I('<path d="m6 9 6 6 6-6"/>', 18)}</button>
+          <select class="ted-day" data-tday="${di}:${si}" aria-label="Move to day">${e.days.map((_, k) => `<option value="${k}"${k === di ? ' selected' : ''}>Day ${k + 1}</option>`).join('')}</select>
+          <button type="button" class="ted-b ted-x" data-trm="${di}:${si}" aria-label="Remove ${esc(s.name || '')}">${I(P.x, 18)}</button></span></div>`; }).join('') : `<div class="trp-empty">No stops on Day ${di + 1}</div>`}</div>`).join('');
+    const rm = e.removed.length ? `<div class="trp-sec">Removed</div><div class="card tdt-card">${e.removed.map((r, i) => `<div class="ted-row"><span class="tdt-sm"><b class="ted-gone">${esc((e.stops[r.ref] || {}).name || r.ref)}</b><small>Day ${r.day + 1}</small></span><button type="button" class="pill ted-undo" data-tundo="${i}">Undo</button></div>`).join('')}</div>` : '';
+    return `<div class="trp"><button type="button" class="trp-back" data-act="tcancel">${I(P.back, 22)}<span>Cancel</span></button>
+      <div class="trp-dt"><b>Edit trip</b><span>${esc(city.split(',')[0])}</span></div>
+      <div class="card trp-search">
+        <div class="trp-when trp-dates">${tl(P.cal, 'Start', `<input class="v" type="date" id="ted-start" value="${e.start}" aria-label="Start date">`)}${tl(P.cal, 'End', `<input class="v" type="date" id="ted-end" value="${e.end}" min="${e.start}" aria-label="End date">`)}</div>
+        <div class="trp-when trp-opts">${tl(P.home, 'From', `<input class="v" type="text" id="ted-place" value="${esc(e.place)}" maxlength="60" aria-label="Start from">`)}${tl(P.clock, 'Leave', `<input class="v" type="time" id="ted-time" value="${e.time}" step="900" aria-label="Leave time">`)}${tl(P.bat, 'Battery', `<select class="v" id="ted-bat" aria-label="Battery when leaving">${bats}</select>`)}</div>
+      </div>${days}${rm}
+      ${e.err ? `<div class="trp-flag">${I(P.warn, 16)}${esc(e.err)}</div>` : ''}
+      <div class="ted-actions"><button type="button" class="pill" data-act="tcancel">Cancel</button><button type="button" class="pill ted-save" data-act="tsave"${T.saving ? ' disabled' : ''}>${T.saving ? 'Saving…' : 'Save changes'}</button></div></div>`;
+  }
+  function bindEdit() {
+    const e = T.edit; if (!e) return;
+    const on = (id, f) => { const el = $(id); if (el) el.onchange = () => { f(el.value); renderTrips(); }; };
+    on('#ted-start', v => { if (!v) return; e.start = v; if (e.end < e.start) e.end = e.start; rebucket(); });
+    on('#ted-end', v => { if (!v) return; e.end = v < e.start ? e.start : v; rebucket(); });
+    on('#ted-place', v => { e.place = v.trim() || 'Home'; }); on('#ted-time', v => { if (v) e.time = v; }); on('#ted-bat', v => { e.bat = +v; });
+    document.querySelectorAll('[data-tday]').forEach(sel => sel.onchange = () => { const [di, si] = sel.dataset.tday.split(':').map(Number); const ref = e.days[di].splice(si, 1)[0]; e.days[+sel.value].push(ref); renderTrips(); });
+    ['#ted-start', '#ted-end', '#ted-time'].forEach(id => { const el = $(id); if (el && el.showPicker) el.addEventListener('click', () => { try { el.showPicker(); } catch (x) {} }); });
+  }
+  function tripEditClick(t) {
+    const e = T.edit; if (!e) return false;
+    const mv = t.closest('[data-tmv]');
+    if (mv) { const [di, si, dir] = mv.dataset.tmv.split(':').map(Number); const d = e.days[di];
+      if (dir < 0) { if (si > 0) [d[si - 1], d[si]] = [d[si], d[si - 1]]; else if (di > 0) e.days[di - 1].push(d.shift()); }
+      else { if (si < d.length - 1) [d[si + 1], d[si]] = [d[si], d[si + 1]]; else if (di < e.days.length - 1) e.days[di + 1].unshift(d.pop()); }
+      renderTrips(); return true; }
+    const rm = t.closest('[data-trm]'); if (rm) { const [di, si] = rm.dataset.trm.split(':').map(Number); e.removed.push({ ref: e.days[di].splice(si, 1)[0], day: di }); renderTrips(); return true; }
+    const un = t.closest('[data-tundo]'); if (un) { const r = e.removed.splice(+un.dataset.tundo, 1)[0]; if (r) e.days[Math.min(r.day, e.days.length - 1)].push(r.ref); renderTrips(); return true; }
+    return !!t.closest('.ted-day');
+  }
+  async function saveEdit() {
+    const e = T.edit; if (!e || T.saving) return; T.saving = true; e.err = ''; renderTrips();
+    try {
+      const j = await api('/trip/edit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: e.id,
+        dates: { start: e.start, end: e.end }, departure: { place: e.place, time: e.time, battery_pct: +e.bat },
+        days: e.days.map((stops, i) => ({ day: i + 1, stops })), remove: e.removed.map(r => r.ref) }) });
+      T.full[e.id] = j.trip; T.edit = null; T.msg = 'Trip saved'; void loadTrips(true);
+      setTimeout(() => { T.msg = ''; const m = document.querySelector('.trp-toast'); if (m) m.remove(); }, 3000);
+    } catch (x) { e.err = x.message === 'auth' ? 'Turn on remote controls in Control first' : 'Couldn’t save: ' + x.message; }
+    T.saving = false; renderTrips(); window.scrollTo(0, 0);
+  }
+  function confirmDelete() {
+    const id = T.detail && T.detail.id, t = id && (T.full[id] || (T.trips || []).find(x => x.id === id)); if (!t) return;
+    const n = Object.keys(t.stops || {}).length;
+    $('#sheetbody').innerHTML = `<div class="tdz"><span class="tdz-ico">${I('<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5"/>', 24)}</span>
+      <h3>Delete this trip?</h3><p class="trp-sheetp">${esc((t.destination.label || '').split(',')[0])} · ${esc(range(t.dates))} · ${plural(n, 'stop')}. It leaves Upcoming on every device, and a sync from Travel Planner won’t bring it back. This can’t be undone here.</p>
+      <button type="button" class="pill tdz-go" data-tdel="1">Delete trip</button><button type="button" class="pill trp-cancel" data-tdel="0">Cancel</button></div>`;
+    $('#sheet').classList.add('tdz-sheet'); $('#sheet').classList.remove('hidden');
+  }
+  async function doDelete(go) {
+    $('#sheet').classList.add('hidden'); $('#sheet').classList.remove('tdz-sheet');
+    const id = T.detail && T.detail.id; if (!go || !id) return;
+    try { await api('/trip/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+      T.detail = null; delete T.full[id]; if (T.trips) T.trips = T.trips.filter(x => x.id !== id); T.msg = 'Trip deleted'; void loadTrips(true); }
+    catch (x) { T.msg = x.message === 'auth' ? 'Turn on remote controls in Control first' : 'Couldn’t delete: ' + x.message; }
+    renderTrips(); setTimeout(() => { T.msg = ''; const m = document.querySelector('.trp-toast'); if (m) m.remove(); }, 3500);
+  }
+  document.addEventListener('click', e => { const b = e.target.closest('#sheet [data-tdel]'); if (b) void doDelete(b.dataset.tdel === '1'); });
+  function tripAct(a) {
+    if (a === 'tretry') { T.tErr = ''; void loadTrips(true); renderTrips(); return true; }
+    if (a === 'tedit') { startEdit(T.detail.id); return true; }
+    if (a === 'tcancel') { T.edit = null; renderTrips(); window.scrollTo(0, 0); return true; }
+    if (a === 'tsave') { void saveEdit(); return true; }
+    if (a === 'tdel') { confirmDelete(); return true; }
+    return false;
+  }
+
   /* ---------- render + events ---------- */
   window.renderTrips = function () {
     const main = $('#main');
     if (MAPS.trips) { try { MAPS.trips.remove(); } catch (e) {} delete MAPS.trips; }
     const exploreMode = S.mode === 'trips';
     main.innerHTML = exploreMode ? exploreHTML() : (T.detail ? detailHTML() : listHTML());
+    if (!exploreMode && T.msg) main.insertAdjacentHTML('beforeend', `<div class="trp-toast">${esc(T.msg)}</div>`);
     if (typeof setModeClass === 'function') setModeClass();
+    if (!exploreMode && !T.trips && !T.tBusy && !T.tErr) void loadTrips(false);
+    if (!exploreMode && T.detail && T.detail.kind === 'up' && T.trips && !T.full[T.detail.id] && !T.fBusy[T.detail.id]) void loadTrip(T.detail.id);
     if (exploreMode) {
       if (T.data && !T.busy) drawMap(T.data);
       else if (ex.dest && !T.err) void loadExplore(false);
       bindInputs();
-    }
+    } else bindEdit();
   };
   let qTimer = null;
   function bindInputs() {
@@ -443,7 +624,7 @@
     const n = ndays();
     $('#sheetbody').innerHTML = `<h3 style="margin-top:0">Add to trip</h3><p class="trp-sheetp">${esc(s.name || s.title)} · ${esc(T.data.dest.label)}</p>
       <div class="trp-daybtns">${Array.from({ length: n }, (_, k) => `<button type="button" class="pill" data-addday="${k + 1}">Day ${k + 1}<small>${esc(dlabel(iso(new Date(new Date(ex.start + 'T12:00').getTime() + k * 864e5))))}</small></button>`).join('')}</div>
-      <p class="trp-sheetp">Travel Planner adds it to the itinerary; the card then shows In trip.</p>
+      <p class="trp-sheetp">It shows in Trip › Upcoming right away; Travel Planner can add a drive and charging plan.</p>
       <button type="button" class="pill trp-cancel" data-addday="0">Cancel</button>`;
     T.addFor = place ? { place } : i;
     $('#sheet').classList.remove('hidden');
@@ -458,9 +639,10 @@
         lat: it.lat, lon: it.lon, address: it.address, rating: it.rating, rating_count: it.rating_count, price_level: it.price_level,
         maps_url: it.maps_url, route_mile: it.route_mile ?? null, mi_from_dest: it.mi_from_dest ?? null, source: 'google_places' };
       try {
-        await api('/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ day, plan: T.plan, dest: d.dest, dates: d.dates, card }) });
+        await api('/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ day, plan: T.plan, dest: d.dest, dates: d.dates, card, departure: { place: 'Home', time: ex.depart, battery_pct: +ex.soc } }) });
+        T.trips = null; T.full = {};
         const q = queued(); q[`${d.dest.label}|${it.place_id}`] = Date.now(); try { localStorage.setItem(LSQ, JSON.stringify(q)); } catch (e) {}
-        T.msg = `Sent to Travel Planner for Day ${day}`;
+        T.msg = `Added to Day ${day} · see Trip › Upcoming`;
       } catch (e) { T.msg = e.message === 'auth' ? 'Turn on remote controls in Control first' : 'Couldn’t add: ' + e.message; }
       renderTrips(); setTimeout(() => { T.msg = ''; if (S.mode === 'trips') { const t = document.querySelector('.trp-toast'); if (t) t.remove(); } }, 3500);
       return;
@@ -470,9 +652,10 @@
       arrive_soc_pct: s.arrive_soc_pct, depart_soc_pct: s.depart_soc_pct, charge_minutes: s.charge_minutes, effective_kw: s.effective_kw,
       usd_per_kwh: s.usd_per_kwh, arrival_time: s.arrival_time, badges: s.badges, arrival_shortfall_pct: s.arrival_shortfall_pct };
     try {
-      await api('/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ day, plan: T.plan, dest: d.dest, dates: d.dates, card }) });
+      await api('/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ day, plan: T.plan, dest: d.dest, dates: d.dates, card, departure: { place: 'Home', time: ex.depart, battery_pct: +ex.soc } }) });
+        T.trips = null; T.full = {};
       const q = queued(); q[`${d.dest.label}|${s.charger_id}`] = Date.now(); try { localStorage.setItem(LSQ, JSON.stringify(q)); } catch (e) {}
-      T.msg = `Sent to Travel Planner for Day ${day}`;
+      T.msg = `Added to Day ${day} · see Trip › Upcoming`;
     } catch (e) { T.msg = e.message === 'auth' ? 'Turn on remote controls in Control first' : 'Couldn’t add: ' + e.message; }
     renderTrips(); setTimeout(() => { T.msg = ''; if (S.mode === 'trips') { const t = document.querySelector('.trp-toast'); if (t) t.remove(); } }, 3500);
   }
@@ -489,10 +672,11 @@
       if (a === 'clear') { ex.dest = null; T.q = ''; T.results = []; T.data = null; T.err = ''; T.dataKey = ''; save(); renderTrips(); }
       else if (a === 'retry') { T.err = ''; void loadExplore(true); renderTrips(); }
       else if (a === 'near') { T.nearOpen = !T.nearOpen; renderTrips(); }
-      else if (a === 'back') { T.detail = null; renderTrips(); window.scrollTo(0, 0); }
+      else if (a === 'back') { T.detail = null; T.edit = null; renderTrips(); window.scrollTo(0, 0); }
       else if (a === 'toexplore') goMode('trips');
       else if (a === 'bars') { T.bars = !T.bars; T.open = null; renderTrips(); }
       else if (a === 'pretry') { delete T.pl[pkey(T.cat)]; renderTrips(); }
+      else if (tripAct(a, act)) { /* v135 trip edit / delete */ }
       return;
     }
     const pl = t.closest('[data-plan]'); if (pl) { T.plan = pl.dataset.plan; renderTrips(); return; }
@@ -503,6 +687,7 @@
     const sb = t.closest('[data-sub]'); if (sb) { T.sub = sb.dataset.sub; T.detail = null; renderTrips(); return; }
     const dy = t.closest('[data-day1]'); if (dy) { T.day = +dy.dataset.day1; renderTrips(); return; }
     const ad = t.closest('[data-add]'); if (ad) { openAdd(+ad.dataset.add); return; }
+    if (tripEditClick(t)) return;
     const row = t.closest('[data-trip]'); if (row) { T.detail = { id: row.dataset.trip, kind: row.dataset.kind }; T.day = 1; renderTrips(); window.scrollTo(0, 0); }
   };
 })();
