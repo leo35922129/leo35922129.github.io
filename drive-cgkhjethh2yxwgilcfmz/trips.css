@@ -267,3 +267,34 @@
 #app .ctl-status .ctl-chip{background:rgba(255,255,255,.065);box-shadow:none;border:0}
 #app .ctl-status .ctl-wake-refresh,#app .ctl-status .ctl-mini{background:rgba(255,255,255,.08)}
 #app .ctl-status .ctl-map{background:rgba(255,255,255,.05)}
+
+/* v133 (1/2): Lei - thinner Oura-style progress bars. 4px tall, fully rounded ends, subtle #2a2d33 track; semantic fills unchanged.
+   Bottom tab bar untouched. Player seek tracks were already 4px (kept; on glow cards they keep their translucent track). */
+:root{--track-thin:#2a2d33}
+#app .etrack{height:4px;border-radius:2px;background:var(--track-thin)}                  /* Energy segmented bars 8 -> 4px */
+#app .estk{height:4px;border-radius:2px}
+#app .etrack .earr{border-width:3px 0 3px 4px}                                            /* capped-bar arrow scaled with the bar */
+#app .wtk .fb,#app .fsdbar .fb{height:4px;border-radius:2px;background:var(--track-thin)} /* Savings FSD bars 8 -> 4px */
+#app .wtk .fb div,#app .fsdbar .fb div{border-radius:2px}
+#app .fbar{height:4px;border-radius:2px;background:var(--track-thin)}                     /* Feature energy bars 5 -> 4px */
+#app .fbar i{border-radius:2px}
+#app .su-bar{height:4px;border-radius:2px;background:var(--track-thin)}                   /* Summary bot-hours bars 6 -> 4px */
+#app .su-bar i{border-radius:2px}
+#app .rp-track{border-radius:2px}
+/* trip detail FSD bar: label + value on a line above the bar (Oura contributors style) */
+#app .fsdbar{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:baseline;column-gap:8px;row-gap:6px}
+#app .fsdbar>span:first-child{grid-row:1;grid-column:1;width:auto}
+#app .fsdbar b{grid-row:1;grid-column:2}
+#app .fsdbar .of{grid-row:1;grid-column:3;text-align:right;overflow:hidden;text-overflow:ellipsis}
+#app .fsdbar .fb{grid-row:2;grid-column:1 / -1}
+
+/* v133 (2/2): Lei - Control fonts thinner to match v131. Colours and layout unchanged. */
+#app.mode-control main{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text",Roboto,Inter,system-ui,"Segoe UI",Helvetica,sans-serif}
+#app .ctl-hero .n{font-weight:300}                                                        /* battery / range numbers 700 -> 300, size kept */
+#app .ctl-hero .n small{font-weight:var(--fw-reg)}                                        /* % / mi unit 600 -> 400 */
+#app .ctl-hero .k,#app .ctl-chip .k{font-weight:var(--fw-reg);color:#9aa1ab}             /* labels 500 -> 400, softer grey */
+#app .ctl-chip .v{font-weight:var(--fw-reg)}                                              /* status values 600 -> 400 */
+#app .ctl-live,#app .ctl-live.stale,#app .ctl-row .r,#app .ctl-lr .v{font-weight:var(--fw-reg)}  /* Seen time, rows 600 -> 400 */
+#app .ctl-loc-info .pl,#app .ctl-btn .nm,#app .ctl-rbtn .nm{font-weight:var(--fw-med)}   /* place name, control button names 600 -> 500 */
+#app .ctl-refresh-btn,#app .ctl-wake-refresh,#app .ctl-mini,#app .ctl-enable-btn,#app .ctl-enable .go,#app .ctl-enable .cancel,#app .ctl-confirm .go,#app .ctl-confirm .cancel{font-weight:var(--fw-med)}  /* buttons 600-700 -> 500 */
+#app .ctl-sec{font-weight:var(--fw-med)}
