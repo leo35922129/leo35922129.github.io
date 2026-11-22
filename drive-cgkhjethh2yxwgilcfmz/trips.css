@@ -473,3 +473,26 @@
 .trp-open .trp-sec:first-child{margin-top:6px}
 .trp-open .tdt-del{margin:16px 0 2px}
 .trp-open .tdt-in > .trp-note:last-child{margin-bottom:0}
+
+/* v137 (1): Lei - "Make energy page feature usage chart background from yellow to green to match overview card green."
+   Energy's Feature energy usage card (.fbox, given .glow-teal in Energy mode) uses the v128 teal glow tokens of the Energy
+   overview card (core #26423b, mid #20322f, outer #1c2826, vignette #0f1816, base #161d1c) instead of the amber tint, with
+   the v134 card edge. Bar segment colours are unchanged. */
+#app .fbox.glow-teal,#app .fbox.glow-teal.open{border-color:transparent;box-shadow:var(--card-edge);
+  background:
+    radial-gradient(ellipse 140% 100% at 50% 100%, rgb(var(--gx-vig) / 0) 0%, rgb(var(--gx-vig) / 0) 55%, rgb(var(--gx-vig) / .35) 85%, rgb(var(--gx-vig) / .55) 100%),
+    radial-gradient(ellipse 110% 300px at 50% 0%, rgb(var(--gx-core)) 0%, rgb(var(--gx-core) / .9) 16%, rgb(var(--gx-mid) / .7) 40%, rgb(var(--gx-mid) / .4) 62%, rgb(var(--gx-out) / .15) 85%, rgb(var(--gx-out) / 0) 100%),
+    linear-gradient(180deg, var(--gx-top) 0%, var(--gx-upper) 35%, var(--gx-low) 70%, var(--gx-base) 100%);
+  background-color:var(--gx-base)}
+#app .fbox.glow-teal .fhd:active{background:rgb(var(--gx-tile) / .06)}
+
+/* v137 (2): Lei - "Make saving page route map playback play bar thinner and play button become round."
+   Playback scrub bar: 4px track (#2a2d33), rounded ends, blue filled part (--p set by app.js), 14px round thumb; the input
+   keeps a 44px-tall hit area. Play and restart buttons are true 44px circles (icon centred). */
+#app .playbar .pbtn{width:44px;height:44px;min-width:44px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
+#app .playbar .prange{-webkit-appearance:none;appearance:none;height:44px;margin:0;background:transparent;--p:0%;cursor:pointer;touch-action:none}
+#app .playbar .prange::-webkit-slider-runnable-track{height:4px;border-radius:999px;background:linear-gradient(90deg,var(--acc) 0 var(--p),#2a2d33 var(--p) 100%)}
+#app .playbar .prange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;margin-top:-5px;border:0;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px rgb(62 139 255 / .18)}
+#app .playbar .prange::-moz-range-track{height:4px;border-radius:999px;background:#2a2d33}
+#app .playbar .prange::-moz-range-progress{height:4px;border-radius:999px;background:var(--acc)}
+#app .playbar .prange::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--acc)}

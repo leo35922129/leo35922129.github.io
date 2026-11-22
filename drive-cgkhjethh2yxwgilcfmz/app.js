@@ -492,7 +492,7 @@ function featureNotes(real, feats) {
 function featureBox(id, feats, tone) {
   const real = !!(feats && feats.length);
   const open = OPEN.has(id);
-  return `<div class="fbox${open ? ' open' : ''}" data-id="${esc(id)}">
+  return `<div class="fbox${open ? ' open' : ''}${energyMode() ? ' glow-teal' : ''}" data-id="${esc(id)}">
     <button type="button" class="fhd" aria-expanded="${open ? 'true' : 'false'}">
       ${FEAT_ICO}<span class="fl">Feature energy usage</span>${CHEV}
     </button>
@@ -555,7 +555,7 @@ function periodFeatureBox(id, keys, parkedNote) {
       <div class="exsec">While parked${parkedNote ? ` · ${esc(parkedNote)}` : ''}</div>
       ${pFeats.length ? featureRows(pFeats, 'parked') : '<div class="exsub">No parked use in this period</div>'}`
     : featureNotes(false);
-  return `<div class="fbox${open ? ' open' : ''}" data-id="${esc(id)}">
+  return `<div class="fbox${open ? ' open' : ''}${energyMode() ? ' glow-teal' : ''}" data-id="${esc(id)}">
     <button type="button" class="fhd" aria-expanded="${open ? 'true' : 'false'}">
       ${FEAT_ICO}<span class="fl">Feature energy usage</span>${CHEV}
     </button>
@@ -1357,7 +1357,7 @@ function setupPlayer(id, t, m, gps0, flags0, el, routeLine) {
     wheel.className = 'wheel' + (fsd ? ' fsd' : '');
     wheel.title = fsd ? 'FSD' : 'Manual';
     clk.textContent = clockTs(t.s + P.pt);
-    $b('.prange').value = Math.round(P.pt / total * 1000);
+    { const pr = $b('.prange'); pr.value = Math.round(P.pt / total * 1000); pr.style.setProperty('--p', (pr.value / 10) + '%'); }   // v137: filled part of the thin track
     $b('.ptime').textContent = `${fmtDur(P.pt)} / ${fmtDur(total)}`;
   }
   function frame(ts) {
