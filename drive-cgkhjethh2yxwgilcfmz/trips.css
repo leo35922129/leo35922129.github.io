@@ -395,3 +395,81 @@
 .tdt-tiles .trp-tile .v{font-weight:300}
 .tdt-tiles .trp-tile .k{font-weight:400;color:#9aa1ab}
 .trp .trp-wcard .trp-wd b{font-weight:500}
+
+/* v136 (A): Lei - "Reference image 1 font size to modify image 2, 3 font, make them thinner. For explore card, make destination
+   box fonts bigger. Features card title; weather Chicago, route. And route card info; 291 mi one way whole line font bigger."
+   Standard = Control v133 tiles: label 15px/400 #9aa1ab, value 17px/400, hero numbers 300. */
+:root{--t-lab:15px;--t-lab-c:#9aa1ab;--t-val:17px}
+/* Trips Explore form */
+#app .trp-search .trp-tl .k{font-size:var(--t-lab);font-weight:400;color:var(--t-lab-c);letter-spacing:0}
+#app .trp-search .trp-tl .v{font-size:var(--t-val);font-weight:400}
+#app .trp-search .trp-q .v{font-size:21px;font-weight:400;letter-spacing:-.01em}
+#app .trp-search .trp-q .v::placeholder{font-weight:300}
+/* Trips section titles (Weather · Chicago, Route, Charging, trip detail days...) bigger, same uppercase style, thin */
+#app .trp-sec{font-size:15px;font-weight:500;letter-spacing:.06em;margin:18px 2px 9px}
+#app .tdt-dh .tdt-dw{font-size:var(--fs-cap)}
+/* Weather tiles */
+#app .trp-wd b{font-size:var(--t-lab);font-weight:400;color:var(--t-lab-c)}
+#app .trp-wx{font-size:14px;font-weight:400;color:var(--tx2)}
+#app .trp-t{font-size:20px;font-weight:300}
+#app .trp-t small{font-size:var(--fs-cap);font-weight:300}
+#app .trp-wd>small{font-weight:300}
+/* Route top line: numbers 21px/400, units 300 */
+#app .trp-rline{font-size:21px;gap:6px;flex-wrap:nowrap;white-space:nowrap;letter-spacing:-.01em}
+#app .trp-rline b{font-weight:400}
+#app .trp-rline .u{font-style:normal;font-weight:300;font-size:16px;color:var(--tx2);margin-left:2px}
+#app .trp-rline .u + *{margin-left:0}
+#app .trp-rline .trp-ow{font-size:16px;font-weight:300;margin-left:-1px}
+#app .trp-rline span{font-weight:300}
+#app .trp-rsub{font-weight:300}
+@media (max-width:374px){#app .trp-rline{font-size:20px;gap:5px;letter-spacing:-.02em}#app .trp-rline .u,#app .trp-rline .trp-ow{font-size:14px}}
+/* Report Summary */
+#app .su-big{font-weight:300}
+#app .su-unit{font-weight:300;color:var(--t-lab-c)}
+#app .su-tile .k,#app .glowbot.su-top .su-tile .k{font-size:var(--t-lab);font-weight:400;color:var(--t-lab-c)}
+#app .su-tile .v{font-weight:300}
+#app .su-bt b{font-weight:500}
+#app .su-bh{font-size:var(--t-val);font-weight:400}
+#app .su-wrap .dr-ctitle,#app .su-top .dr-ctitle{font-weight:500}
+@media (max-width:374px){#app .su-tile .k,#app .glowbot.su-top .su-tile .k{font-size:14px}}
+#app .su-api .su-tiles .su-tile .k{font-size:14px}                     /* 3-up tiles: "Projected Nov" fits without ellipsis */
+@media (max-width:374px){#app .su-api .su-tiles .su-tile .k{font-size:12.5px}}
+
+/* v136 (B): Lei - "Make this page blue to orange, match this page other orange color." News (Grok + ChatGPT) only:
+   the blue accent tokens are remapped to the News play-button orange inside News. Grey topic chips and --sel unchanged;
+   Team Daily Reports (incl. its Daily briefing player) is a different mode and stays blue. */
+:root{--news-orange:#d9733f;--news-orange-rgb:217 115 63}
+#app .glow-umber .rp-play{background:var(--news-orange)}
+#app.mode-report main{
+  --acc:var(--news-orange);--acc2:var(--news-orange);--fsd:var(--news-orange);
+  --acc-tx:#f2c9ad;                                   /* light warm text (was light blue #8fb8ff) */
+  --acc-soft:rgb(var(--news-orange-rgb) / .14);--acc-line:rgb(var(--news-orange-rgb) / .4);--acc-card:#2a1c15}
+#app.mode-report main a.rp-src,#app.mode-report main .rp-tag.tesla{background:rgb(var(--news-orange-rgb) / .14);color:var(--news-orange)}
+#app.mode-report main .rp-why{background:rgb(var(--news-orange-rgb) / .13);color:#f2c9ad}
+#app.mode-report main .rp-why .lab{color:var(--news-orange)}
+
+/* v136 (C): Lei - "Remove EST. Beside saving icon & cost, FSD % keep it green and blue, others icon color change to light gray
+   as their text." Savings/Energy timeline stat rows (trip + charge cards, every range) and the Savings day rows (.wc).
+   Saved ($ badge, green) and FSD (blue) keep their colors; the opened card's cost row keeps its own "est" note. */
+#app .tl-st .tl-est{display:none}
+#app .tl-st:not(.g):not(.a) svg.ico,#app .wc>span:not(.g) svg.ico{color:inherit}
+#app .tl-st:not(.g):not(.a) svg.ico [stroke]:not([stroke="none"]),#app .wc>span:not(.g) svg.ico [stroke]:not([stroke="none"]),
+#app .tl-st:not(.g):not(.a) svg.ico[stroke]:not([stroke="none"]),#app .wc>span:not(.g) svg.ico[stroke]:not([stroke="none"]){stroke:currentColor}
+#app .tl-st:not(.g):not(.a) svg.ico [fill]:not([fill="none"]),#app .wc>span:not(.g) svg.ico [fill]:not([fill="none"]){fill:currentColor}
+
+/* v136 (D): the opened Upcoming trip expands in place inside its own card. Explore/Trip and Upcoming/Past stay above it;
+   the card keeps its gradient + v134 edge around everything (weather, plan, days, Edit, Delete). Inner blocks become flat
+   inset panels (no second edge/shadow) so it reads as one big card, like Savings/Energy. Tap the header to collapse. */
+#app .card.trp-up.trp-open{cursor:default;gap:10px;padding:14px 12px 14px 14px}
+.trp-open .tup-hbtn{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.trp-open .tup-hbtn:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:12px}
+.trp-open .tup-h .tl-chev{transform:rotate(-90deg);transition:transform .18s ease}
+.trp-open .tup-body{min-width:0;border-top:1px solid rgba(255,255,255,.07);padding-top:10px}
+.trp-open .tdt-head{align-items:center;margin-bottom:2px}
+.trp-open .tdt-hint{color:#9aa1ab;font-size:var(--fs-cap);font-weight:400}
+#app .trp-open .card,#app.mode-trips main .trp-open .card,#app .trp-open .trp-tile{background:rgba(255,255,255,.045);box-shadow:none;border:0}
+#app .trp-open .card.trp-search{background:rgba(255,255,255,.045);box-shadow:none}
+.trp-open .trp-wd{background:rgba(255,255,255,.05)}
+.trp-open .trp-sec:first-child{margin-top:6px}
+.trp-open .tdt-del{margin:16px 0 2px}
+.trp-open .tdt-in > .trp-note:last-child{margin-bottom:0}

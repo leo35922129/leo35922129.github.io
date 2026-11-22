@@ -138,6 +138,8 @@
     const b = tv.baseline_settings || {};
     return `<div class="trp-trade">vs ${b.arrival_target_charger_pct ?? b.min_arrive_charger_pct ?? 15}/${b.min_arrive_dest_pct ?? 20}% plan: ${parts.length ? esc(parts.join(' · ')) : 'same stops and time'}</div>`;
   }
+  /* v136: numbers 400, units 300 in the route line */
+  const unitize = t => esc(t).replace(/(\d)\s*([a-z]+)/g, '$1<i class="u">$2</i>');
   function routeCard(d) {
     const p = curPlan(d), r = d.route || {};
     const stops = p ? p.stops.length : 0;
@@ -155,7 +157,7 @@
     return `<div class="trp-sec">Route</div>
     <div class="card trp-route">
       ${depRow}
-      <div class="trp-rline"><b>${Math.round(r.miles)} mi</b><small class="trp-ow">one way</small><span>·</span><b>${fmtMin(tot)}</b><span>·</span><b>${stops} stop${stops === 1 ? '' : 's'}</b><small class="ftag">est</small></div>
+      <div class="trp-rline"><b>${Math.round(r.miles)}<i class="u">mi</i></b><small class="trp-ow">one way</small><span>·</span><b>${unitize(fmtMin(tot))}</b><span>·</span><b>${stops}<i class="u">stop${stops === 1 ? '' : 's'}</i></b><small class="ftag">est</small></div>
       <div class="trp-rsub">Arrive ${pct(arr)}${p && p.cost_usd != null && stops ? ` · ${homeCost ? 'Road charging' : 'Charging'} ${usd(p.cost_usd)}${p.cost_complete === false ? '<small class="ftag">est</small>' : ''}` : ''}${homeCost ? ` · Trip total incl. home ${usd(p.trip_cost_incl_home_usd)}<small class="ftag">est</small>` : ''}${ret != null ? ` · Return ${ret ? 'needs a stop' : 'needs no stop'}` : ''}</div>
       ${p && p.arrival_note ? `<div class="trp-flag">${I(P.warn, 16)}${esc(p.arrival_note)} (target ${pct(p.arrival_target_pct)})</div>` : ''}
       <div class="trp-rule">${esc(ruleTxt)}</div>
@@ -368,7 +370,7 @@
       const u = upcoming();
       body = (T.tErr === 'auth' && !u.length) ? `<div class="card trp-blank">${I(tripP(), 28)}<b>Sign in to see your trips</b><span>Trips live on the droplet. Turn on remote controls in Control on this device, then come back.</span><button type="button" class="pill" data-act="tretry">Try again</button></div>`
         : (T.tBusy && !T.trips) ? `<div class="card trp-blank"><span>Loading trips…</span></div>`
-        : u.length ? u.map(t => t.card_summary ? upCardHTML(t) : rowHTML(t, 'up')).join('') + (T.tErr && T.tErr !== 'auth' ? `<div class="trp-note">Couldn’t refresh: ${esc(T.tErr)}</div>` : '') : `<div class="card trp-blank">${I(tripP(), 28)}<b>No upcoming trips</b><span>Pick a destination in Explore and add stops. The trip shows up here as soon as you add the first one.</span><button type="button" class="pill" data-act="toexplore">Explore</button></div>`;
+        : u.length ? u.map(t => (T.detail && T.detail.kind === 'up' && T.detail.id === t.id && t.card_summary) ? upOpenHTML(t) : t.card_summary ? upCardHTML(t) : rowHTML(t, 'up')).join('') + (T.tErr && T.tErr !== 'auth' ? `<div class="trp-note">Couldn’t refresh: ${esc(T.tErr)}</div>` : '') : `<div class="card trp-blank">${I(tripP(), 28)}<b>No upcoming trips</b><span>Pick a destination in Explore and add stops. The trip shows up here as soon as you add the first one.</span><button type="button" class="pill" data-act="toexplore">Explore</button></div>`;
     } else {
       const p = past();
       body = p.length ? `<div class="trp-note">Detected from your drives: leaves home and returns, 150+ mi.</div>` + p.map(t => rowHTML(t, 'past')).join('')
@@ -388,6 +390,7 @@
         <div class="card trp-kv">${t.charges != null ? `<div><span>Charging sessions</span><b>${t.charges}</b></div>` : ''}${t.charge_kwh != null ? `<div><span>Energy added</span><b>${t.charge_kwh} kWh</b></div>` : ''}${t.charge_cost != null ? `<div><span>Charging cost</span><b>${usd(t.charge_cost)}</b></div>` : ''}${t.far_mi != null ? `<div><span>Farthest from home</span><b>${t.far_mi} mi</b></div>` : ''}</div>
         <div class="trp-note">Actuals from the tracker's drive and charge log.</div></div>`;
     }
+    if (kind === 'up' && T.trips && T.sub === 'upcoming' && upcoming().some(x => x.id === id && x.card_summary)) return listHTML();   // v136: opens inline in its card
     if (T.edit && T.edit.id === id) return editHTML();
     if (T.trips && (T.full[id] || T.trips.some(x => x.id === id))) return upDetailHTML(id, back);
     const p = tripsMeta().planned || {}, t = (p.items || {})[id];
@@ -445,10 +448,27 @@
       const n = d.count, names = d.names || [];
       const txt = !n ? '<i>Nothing planned</i>' : n > 3 ? `<em>${n} stops</em> · ${esc(names.slice(0, 2).join(', '))}…` : esc(names.join(' · '));
       return `<div class="tup-day"><span class="tup-dn">Day ${d.day}</span><span class="tup-ds">${txt}</span></div>`; }).join('');
-    return `<button type="button" class="card trp-up" data-trip="${esc(t.id)}" data-kind="up">
-      <span class="tup-h"><span class="tup-t"><span class="tup-date">${esc(range(t.dates))} · ${cs.days.length} day${cs.days.length === 1 ? '' : 's'}</span><b>${esc(city)}</b><small>${plural(cs.stop_count, 'stop')} · ${esc(depLine(t))}</small></span><span class="tl-chev">${I(P.chev, 18)}</span></span>
+    return `<button type="button" class="card trp-up" data-trip="${esc(t.id)}" data-kind="up" aria-expanded="false">
+      ${upHeadHTML(t)}
       <span class="tup-wx">${wx}</span>
       <span class="tup-days">${days}</span></button>`;
+  }
+  function upHeadHTML(t) {
+    const cs = t.card_summary, city = (cs.destination || cs.title || '').split(',')[0];
+    return `<span class="tup-h"><span class="tup-t"><span class="tup-date">${esc(range(t.dates))} · ${cs.days.length} day${cs.days.length === 1 ? '' : 's'}</span><b>${esc(city)}</b><small>${plural(cs.stop_count, 'stop')} · ${esc(depLine(t))}</small></span><span class="tl-chev">${I(P.chev, 18)}</span></span>`;
+  }
+  /* v136: Lei - "Even the trip card is opened, keep upcoming and past button there, and also keep the whole card background
+     color there". The opened trip expands in place inside its own card (same gradient + v134 edge); the header collapses it. */
+  function scrollToTrip(id) {   // v136: keep the Explore/Trip switch and Upcoming/Past tabs on screen when the card is near the top
+    const c = id && document.querySelector(`.trp-open[data-open="${CSS.escape(id)}"], .trp-up[data-trip="${CSS.escape(id)}"]`);
+    const y = c ? c.getBoundingClientRect().top + window.scrollY : 0;
+    window.scrollTo(0, y < innerHeight * 0.45 ? 0 : y - 70);
+  }
+  function upOpenHTML(t) {
+    const editing = T.edit && T.edit.id === t.id;
+    return `<div class="card trp-up trp-open" data-open="${esc(t.id)}">
+      <button type="button" class="tup-hbtn" data-act="back" aria-expanded="true" aria-label="Collapse trip">${upHeadHTML(t)}</button>
+      <div class="tup-body">${editing ? editHTML(true) : upDetailHTML(t.id, '', true)}</div></div>`;
   }
   function stopMeta(s, city) {
     if (s.kind === 'charge') {
@@ -461,7 +481,7 @@
     else if (s.route_mile != null) a.push(`mile ${Math.round(s.route_mile)} on route`);
     return a.join(' · ');
   }
-  function upDetailHTML(id, back) {
+  function upDetailHTML(id, back, inline) {
     const t = T.full[id] || T.trips.find(x => x.id === id), city = (t.destination.label || '').split(',')[0];
     const est = t.estimate, tp = t.days.some(d => (d.legs || []).some(l => l.source !== 'explore_estimate'));
     const wx = t.days.map(d => { const w = d.weather || {};
@@ -487,7 +507,7 @@
         return `<div class="tdt-stop"><span class="tl-node${s.kind === 'charge' ? ' trp-fast' : ''}">${I(kIco(s.kind), 16)}</span><span class="tdt-sm"><b>${esc(s.name || ref)}</b>${m ? `<small>${m}</small>` : ''}</span>${s.maps_link ? `<a class="tdt-map" href="${esc(s.maps_link)}" target="_blank" rel="noopener" aria-label="Open ${esc(s.name || '')} in Google Maps">${I(P.ext, 16)}<span>Maps</span></a>` : ''}</div>`; }).join('');
       return `<div class="trp-sec tdt-dh"><span>Day ${d.day} · ${esc(dlabel(d.date))}</span>${w.forecast ? `<span class="tdt-dw">${wxS(w.code, 16)}${rnd(w.hi)}° / ${rnd(w.lo)}°</span>` : '<span class="tdt-dw">No forecast yet</span>'}</div>
         <div class="card tdt-card">${stops || `<div class="trp-empty">Nothing planned for Day ${d.day} yet</div>`}${d.cost && d.cost.energy_usd != null ? `<div class="trp-src">Road charging ${usd(d.cost.energy_usd)}${d.cost.estimate ? ' est' : ''}</div>` : ''}</div>`; }).join('');
-    return `<div class="trp">${back}<div class="tdt-head"><div class="trp-dt"><b>${esc(city)}</b><span>${esc(range(t.dates))} · ${esc(depLine(t))}</span></div>
+    return `<div class="${inline ? 'tdt-in' : 'trp'}">${back}<div class="tdt-head">${inline ? `<div class="tdt-hint">Trip details</div>` : `<div class="trp-dt"><b>${esc(city)}</b><span>${esc(range(t.dates))} · ${esc(depLine(t))}</span></div>`}
       <button type="button" class="pill tdt-edit" data-act="tedit">Edit</button></div>
       <div class="trp-sec">Weather · ${esc(city)}</div><div class="card trp-wcard"><div class="trp-wrow">${wx}</div><div class="trp-src">Open-Meteo forecast${t.weather_note ? ' · ' + esc(t.weather_note) : ''}</div></div>
       ${plan}${days}
@@ -500,14 +520,14 @@
     const t = T.full[id] || (T.trips || []).find(x => x.id === id); if (!t) return;
     T.edit = { id, start: t.dates.start, end: t.dates.end, place: (t.departure || {}).place || 'Home', time: (t.departure || {}).time || '08:00',
       bat: (t.departure || {}).battery_pct ?? 90, days: t.days.map(d => d.stops.slice()), removed: [], stops: t.stops, err: '' };
-    renderTrips(); window.scrollTo(0, 0);
+    renderTrips(); scrollToTrip(id);
   }
   function rebucket() {
     const e = T.edit, n = Math.min(31, dayCount(e.start, e.end));
     while (e.days.length < n) e.days.push([]);
     if (e.days.length > n) { const extra = e.days.splice(n).flat(); e.days[n - 1].push(...extra); }
   }
-  function editHTML() {
+  function editHTML(inline) {
     const e = T.edit, city = ((T.full[e.id] || {}).destination || {}).label || '';
     const tl = (ic, k, inner) => `<label class="trp-tl"><span class="trp-tlh">${I(ic, 16)}<span class="k">${k}</span></span>${inner}</label>`;
     const bats = [50, 60, 70, 80, 90, 100].concat([+e.bat]).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a - b).map(v => `<option value="${v}"${+e.bat === v ? ' selected' : ''}>${v}%</option>`).join('');
@@ -520,8 +540,8 @@
           <select class="ted-day" data-tday="${di}:${si}" aria-label="Move to day">${e.days.map((_, k) => `<option value="${k}"${k === di ? ' selected' : ''}>Day ${k + 1}</option>`).join('')}</select>
           <button type="button" class="ted-b ted-x" data-trm="${di}:${si}" aria-label="Remove ${esc(s.name || '')}">${I(P.x, 18)}</button></span></div>`; }).join('') : `<div class="trp-empty">No stops on Day ${di + 1}</div>`}</div>`).join('');
     const rm = e.removed.length ? `<div class="trp-sec">Removed</div><div class="card tdt-card">${e.removed.map((r, i) => `<div class="ted-row"><span class="tdt-sm"><b class="ted-gone">${esc((e.stops[r.ref] || {}).name || r.ref)}</b><small>Day ${r.day + 1}</small></span><button type="button" class="pill ted-undo" data-tundo="${i}">Undo</button></div>`).join('')}</div>` : '';
-    return `<div class="trp"><button type="button" class="trp-back" data-act="tcancel">${I(P.back, 22)}<span>Cancel</span></button>
-      <div class="trp-dt"><b>Edit trip</b><span>${esc(city.split(',')[0])}</span></div>
+    return `<div class="${inline ? 'tdt-in ted-in' : 'trp'}">${inline ? '<div class="tdt-head"><div class="tdt-hint">Edit trip</div></div>' : `<button type="button" class="trp-back" data-act="tcancel">${I(P.back, 22)}<span>Cancel</span></button>
+      <div class="trp-dt"><b>Edit trip</b><span>${esc(city.split(',')[0])}</span></div>`}
       <div class="card trp-search">
         <div class="trp-when trp-dates">${tl(P.cal, 'Start', `<input class="v" type="date" id="ted-start" value="${e.start}" aria-label="Start date">`)}${tl(P.cal, 'End', `<input class="v" type="date" id="ted-end" value="${e.end}" min="${e.start}" aria-label="End date">`)}</div>
         <div class="trp-when trp-opts">${tl(P.home, 'From', `<input class="v" type="text" id="ted-place" value="${esc(e.place)}" maxlength="60" aria-label="Start from">`)}${tl(P.clock, 'Leave', `<input class="v" type="time" id="ted-time" value="${e.time}" step="900" aria-label="Leave time">`)}${tl(P.bat, 'Battery', `<select class="v" id="ted-bat" aria-label="Battery when leaving">${bats}</select>`)}</div>
@@ -558,7 +578,7 @@
       T.full[e.id] = j.trip; T.edit = null; T.msg = 'Trip saved'; void loadTrips(true);
       setTimeout(() => { T.msg = ''; const m = document.querySelector('.trp-toast'); if (m) m.remove(); }, 3000);
     } catch (x) { e.err = x.message === 'auth' ? 'Turn on remote controls in Control first' : 'Couldn’t save: ' + x.message; }
-    T.saving = false; renderTrips(); window.scrollTo(0, 0);
+    T.saving = false; renderTrips(); scrollToTrip(T.detail && T.detail.id);
   }
   function confirmDelete() {
     const id = T.detail && T.detail.id, t = id && (T.full[id] || (T.trips || []).find(x => x.id === id)); if (!t) return;
@@ -580,7 +600,7 @@
   function tripAct(a) {
     if (a === 'tretry') { T.tErr = ''; void loadTrips(true); renderTrips(); return true; }
     if (a === 'tedit') { startEdit(T.detail.id); return true; }
-    if (a === 'tcancel') { T.edit = null; renderTrips(); window.scrollTo(0, 0); return true; }
+    if (a === 'tcancel') { T.edit = null; renderTrips(); scrollToTrip(T.detail && T.detail.id); return true; }
     if (a === 'tsave') { void saveEdit(); return true; }
     if (a === 'tdel') { confirmDelete(); return true; }
     return false;
@@ -672,7 +692,7 @@
       if (a === 'clear') { ex.dest = null; T.q = ''; T.results = []; T.data = null; T.err = ''; T.dataKey = ''; save(); renderTrips(); }
       else if (a === 'retry') { T.err = ''; void loadExplore(true); renderTrips(); }
       else if (a === 'near') { T.nearOpen = !T.nearOpen; renderTrips(); }
-      else if (a === 'back') { T.detail = null; T.edit = null; renderTrips(); window.scrollTo(0, 0); }
+      else if (a === 'back') { const was = T.detail && T.detail.id; T.detail = null; T.edit = null; renderTrips(); scrollToTrip(was); }
       else if (a === 'toexplore') goMode('trips');
       else if (a === 'bars') { T.bars = !T.bars; T.open = null; renderTrips(); }
       else if (a === 'pretry') { delete T.pl[pkey(T.cat)]; renderTrips(); }
@@ -688,6 +708,6 @@
     const dy = t.closest('[data-day1]'); if (dy) { T.day = +dy.dataset.day1; renderTrips(); return; }
     const ad = t.closest('[data-add]'); if (ad) { openAdd(+ad.dataset.add); return; }
     if (tripEditClick(t)) return;
-    const row = t.closest('[data-trip]'); if (row) { T.detail = { id: row.dataset.trip, kind: row.dataset.kind }; T.day = 1; renderTrips(); window.scrollTo(0, 0); }
+    const row = t.closest('[data-trip]'); if (row) { T.detail = { id: row.dataset.trip, kind: row.dataset.kind }; T.day = 1; renderTrips(); scrollToTrip(row.dataset.kind === 'up' ? row.dataset.trip : null); }
   };
 })();
