@@ -609,3 +609,14 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 
 /* v130: Report > Summary hero has 4 tiles (Bot hours, Bots, Tesla API, Google API) -> 2x2 grid */
 .glowbot.su-top .su-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* v131: Lei "thinner fonts like the Oura timeline" - Savings/Energy timeline trip + charge cards (all ranges, open cards too).
+   Stack with true light weights: SF Pro on iPhone/Mac, Segoe UI Variable on Windows, Roboto/Inter elsewhere. */
+.tl{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text",Roboto,Inter,system-ui,"Segoe UI",Helvetica,sans-serif}
+.tl .tl-title{font-weight:var(--fw-med)}                                   /* 700 -> 500, size unchanged (16px) */
+.tl .tl-time{font-weight:var(--fw-reg);color:#9aa1ab;letter-spacing:.005em} /* 600 -> 400, softer grey (was --tx2 #c7ccd3) */
+.tl .tl-st{font-size:12.5px}                                               /* 13px -> 12.5px */
+.tl .tl-st b{font-weight:300}                                              /* 600 -> 300 */
+.tl .tl-st .tl-est{font-weight:300}                                        /* 400 -> 300, amber unchanged */
+#app .tl .tl-ev .tl-st svg.ico,#app .tl .tl-ev .tl-st svg.ico *,#app .tl .tl-ev .tl-st svg.ico [stroke-width]{stroke-width:1.5px}                /* 1.7-1.85 -> 1.5 (stroked icons only; fills untouched) */
+.tl .tl-ev.open .tl-dur{font-weight:300}
