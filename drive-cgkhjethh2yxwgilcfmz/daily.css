@@ -497,11 +497,12 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .glow-slate{--g-top:42 61 79;--g-mid:#121a24;--g-base:#0a0f16;--g-mut:#9aa6b4}
 .glow-indigo{--g-top:44 53 80;--g-mid:#121727;--g-base:#0a0d16;--g-mut:#98a2b8}
 .glow-teal{--g-top:31 74 64;--g-mid:#0f1d19;--g-base:#0a1411;--g-mut:#93a8a0}
+.glow-umber{--g-top:74 53 48;--g-mid:#1e1614;--g-base:#120d0c;--g-mut:#b0a39d}   /* v123: News (Oura Stress Management warm brown) */
 /* inner elements on glow cards */
-.glow .rp-track{background:rgba(255,255,255,.14)}
-.glow .rp-times,.glow .rp-chev,.glow .rp-line,.glow .su-meta,.glow .dr-cright{color:var(--g-mut)}
-.glow .rp-line.on{color:var(--tx);background:rgba(62,139,255,.22)}
-.glow .dr-chip{background:rgba(255,255,255,.08)}
+:is(.glow,.glowbot) .rp-track{background:rgba(255,255,255,.14)}
+:is(.glow,.glowbot) .rp-times,:is(.glow,.glowbot) .rp-chev,:is(.glow,.glowbot) .rp-line,:is(.glow,.glowbot) .su-meta,:is(.glow,.glowbot) .dr-cright{color:var(--g-mut)}
+:is(.glow,.glowbot) .rp-line.on{color:var(--tx);background:rgba(62,139,255,.22)}
+:is(.glow,.glowbot) .dr-chip{background:rgba(255,255,255,.08)}
 
 /* v121: Savings/Energy stat row = ONE big glow card (Lei: "make all info have one big piece of background"), like the
    v118 Trips form: 20px radius, 12px padding, faint top sheen, no ring. Indigo on Savings, teal on Energy (toggled in
@@ -521,11 +522,20 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 @media(min-width:700px){.statcard{max-width:736px;margin-left:auto;margin-right:auto}}
 @media (max-width:374px){.statcard .stat .k .ico,.statcard .stat .k .dbadge{width:18px;height:18px}}
 
-/* v122: Lei: "Make background cover all of these info as Image show." Period tabs + date/Today row + stat tiles + Energy
-   note = one glow card (Savings indigo, Energy teal). Savings|Energy switch stays outside. #pcard is the top of the card
-   (inside the sticky header), #statcard the bottom; both draw the same glow measured from the card top (--hh = #pcard height). */
+/* v122/v123: one glow card spanning the sticky header's top part (#pcard) and the first content block below it.
+   Lei: "Make background cover all of these info as Image show." / "Same rule for image 1. But use image 2 color." /
+   "Same background rule for this image. Keep this color."
+   Savings (indigo) + Energy (teal): #pcard = period tabs + date row; bottom = #statcard (tiles + Energy note).
+   News (umber): #pcard = date/Archive row; bottom = .glowbot in #main (3-min + 10-min players + summary).
+   Team Daily Reports (slate): #pcard = date/Archive row; bottom = .glowbot (Daily briefing + Overview).
+   Switches (Savings|Energy, Grok|ChatGPT, Summary|Team Daily Reports) stay outside. Glow is drawn from the card top;
+   the bottom part offsets it by --hh (#pcard height, set on #app by syncPCard()). Header stays sticky; when scrolled,
+   the pinned #pcard gets .stuck (full radius + soft shadow). Archive / Summary views keep the plain header. */
+#app{--hh:110px}
 .pcardtop{display:contents}
-#app:not(.mode-auto):not(.mode-report):not(.mode-control):not(.mode-daily):not(.mode-trips) .pcardtop{
+#app:not(.mode-auto):not(.mode-report):not(.mode-control):not(.mode-daily):not(.mode-trips) .pcardtop,
+#app.mode-report:not(.rpt-arch) .pcardtop,
+#app.mode-daily:not(.dr-arch):not(.dr-summ) .pcardtop{
   display:block;padding:4px 12px 0;border-radius:20px 20px 0 0;
   background:
     radial-gradient(ellipse 150% 380px at 50% 0, rgb(var(--g-top) / .95) 0%, rgb(var(--g-top) / .55) 40%, rgb(var(--g-top) / 0) 100%),
@@ -534,14 +544,31 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
   box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
   transition:border-radius .15s;
 }
-#app:not(.mode-auto):not(.mode-report):not(.mode-control):not(.mode-daily):not(.mode-trips) .pcardtop.stuck{border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.45)}
+#app:not(.mode-auto):not(.mode-report):not(.mode-control):not(.mode-daily):not(.mode-trips) .pcardtop.stuck,
+#app.mode-report:not(.rpt-arch) .pcardtop.stuck,
+#app.mode-daily:not(.dr-arch):not(.dr-summ) .pcardtop.stuck{border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.45)}
 .pcardtop #seg.seg{border-bottom:1px solid rgba(255,255,255,.08);background:transparent}
 .pcardtop .toprow{border-bottom:0}
-.pcardtop #today.pill{background:rgba(255,255,255,.08)}
-#statcard.statcard{
-  --hh:110px;margin-top:0;padding-top:2px;border-radius:0 0 20px 20px;box-shadow:none;
+.pcardtop .pill{background:rgba(255,255,255,.08)}
+#statcard.statcard,.glowbot{
+  margin-top:0;padding:2px 12px 12px;border-radius:0 0 20px 20px;box-shadow:none;
   background:
     radial-gradient(ellipse 150% 380px at 50% calc(-1 * var(--hh)), rgb(var(--g-top) / .95) 0%, rgb(var(--g-top) / .55) 40%, rgb(var(--g-top) / 0) 100%),
     linear-gradient(180deg, var(--g-mid) calc(-1 * var(--hh)), var(--g-base) calc(380px - var(--hh)));
   background-color:var(--g-base);
 }
+#app.mode-report.rpt-arch .glowbot,#app.mode-daily.dr-arch .glowbot{border-radius:20px}
+.glowbot{margin:-8px 0 14px;display:flex;flex-direction:column;gap:8px}
+.glowbot .dr-player{margin:0}
+.glowbot .rp-player,.glowbot .rp-lead,.glowbot .dr-card{background:rgba(255,255,255,.065);box-shadow:none;border:0;margin:0;border-radius:var(--r-md)}
+/* News only: warm orange accents (Daily briefing keeps the blue play button) */
+.glow-umber .rp-play{background:#d9733f;color:#fff}
+.glow-umber .rp-play svg{fill:#fff}
+.glow-umber .rp-fill{background:#e0874f}
+.glow-umber .rp-speed{color:#e0957a}
+.glow-umber .rp-line.on{background:rgba(224,135,79,.18);box-shadow:inset 3px 0 0 #e0874f}
+.dr-wrap > .glowbot{margin:-4px 0 0}
+/* v123: date row + Archive pill inside the card (News, Team Daily Reports): less side padding and narrower arrows so
+   the › arrow never sits under the Archive pill at 360/390 */
+#app.mode-report:not(.rpt-arch) .pcardtop,#app.mode-daily:not(.dr-arch):not(.dr-summ) .pcardtop{padding:4px 4px 0}
+#app .pcardtop .toprow.has-arch .daterow .nav{width:36px}

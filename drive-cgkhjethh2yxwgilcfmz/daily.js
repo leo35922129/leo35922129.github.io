@@ -113,7 +113,7 @@
     const b = L(r.blockers), q = L(r.open_questions);
     const rows = (arr, ico, color, label) => arr.length ? `<div class="dr-rows"><div class="dr-rowlab" style="color:${color}">${label}</div>${arr.map(x =>
       `<div class="dr-row">${badge(ico, color, 'sm')}<span>${e(x)}</span></div>`).join('')}</div>` : '';
-    return `<section class="dr-card glow glow-slate">
+    return `<section class="dr-card">
       ${cardHd('overview', 'var(--acc)', 'Overview', h ? `${h.est ? 'est. ' : ''}${hrs(h.v)} h` : '')}
       <p class="dr-sum">${e(r.summary || 'No activity recorded')}</p>
       ${chips ? `<div class="dr-chips">${chips}</div>` : ''}
@@ -182,8 +182,9 @@
     }
     if (DAILY.archive) { stopDailyAudio(); main.innerHTML = `<div class="dr-wrap">${archive(reps)}</div>`; return; }
     const r = reps[cur(reps)];
-    main.innerHTML = `<div class="dr-wrap">${playerHtml(r)}${overview(r)}${suggestions(r)}${team(r)}${requests(r)}</div>`;
+    main.innerHTML = `<div class="dr-wrap"><div class="glowbot glow-slate">${playerHtml(r)}${overview(r)}</div>${suggestions(r)}${team(r)}${requests(r)}</div>`;
     bindDailyPlayer(main, r);
+    if (window.syncPCard) syncPCard();   // v123: date row + briefing + Overview = one slate glow card
   };
   window.setDailyTitle = function () {
     const reps = reports(), i = cur(reps), prev = document.getElementById('prev'), next = document.getElementById('next');

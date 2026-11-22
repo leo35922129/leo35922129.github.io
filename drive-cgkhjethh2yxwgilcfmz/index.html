@@ -14,10 +14,10 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=122">
-<link rel="stylesheet" href="control.css?v=122">
-<link rel="stylesheet" href="daily.css?v=122">
-<link rel="stylesheet" href="trips.css?v=122">
+<link rel="stylesheet" href="style.css?v=123">
+<link rel="stylesheet" href="control.css?v=123">
+<link rel="stylesheet" href="daily.css?v=123">
+<link rel="stylesheet" href="trips.css?v=123">
 <title>Happy Truck · Drives</title>
 </head>
 <body>
@@ -33,6 +33,9 @@
 <div id="app" class="hidden">
   <header>
     <div id="topseg" class="seg dr-viewseg topseg hidden" role="tablist" aria-label="View"></div>
+    <div id="rviewseg" class="seg dr-viewseg" role="tablist" aria-label="Report view">
+      <button type="button" data-rview="summary" role="tab">Summary</button><button type="button" data-rview="reports" role="tab">Team Daily Reports</button>
+    </div>
     <div id="pcard" class="pcardtop glow-indigo">
     <div class="seg" id="seg">
       <button data-v="day">Day</button><button data-v="week">Week</button><button data-v="month">Month</button><button data-v="year">Year</button>
@@ -46,9 +49,6 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4.5h16a1.2 1.2 0 0 1 1.2 1.2V8H2.8V5.7A1.2 1.2 0 0 1 4 4.5zm.8 5.3h14.4v8.5A1.7 1.7 0 0 1 17.5 20h-11A1.7 1.7 0 0 1 4.8 18.3zM9 12.2h6v1.8H9z"/></svg>
         Archive
       </button>
-    </div>
-    <div id="rviewseg" class="seg dr-viewseg" role="tablist" aria-label="Report view">
-      <button type="button" data-rview="summary" role="tab">Summary</button><button type="button" data-rview="reports" role="tab">Team Daily Reports</button>
     </div>
     <div id="dailyhead" class="reporthead dailyhead hidden">
       <button type="button" id="dailyback" class="auto-back dr-back hidden" aria-label="Back to Summary">
@@ -126,11 +126,11 @@
 </div>
 <div id="sheet" class="sheet hidden"><div class="sheetbody" id="sheetbody"></div></div>
 <script src="maplibre-gl.js"></script>
-<script src="app.js?v=122"></script>
-<script src="report.js?v=122"></script>
-<script src="control.js?v=122"></script>
-<script src="daily.js?v=122"></script>
-<script src="summary.js?v=122"></script>
-<script src="trips.js?v=122"></script>
+<script src="app.js?v=123"></script>
+<script src="report.js?v=123"></script>
+<script src="control.js?v=123"></script>
+<script src="daily.js?v=123"></script>
+<script src="summary.js?v=123"></script>
+<script src="trips.js?v=123"></script>
 </body>
 </html>

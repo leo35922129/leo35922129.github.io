@@ -280,6 +280,7 @@ function setModeClass() {
   syncTopSeg();
   placeArchive();
   if (app) app.classList.toggle('tab-saving', TAB_OF[S.mode] === 'saving');
+  syncPCard();   // v123: card tint, --hh and the date-title fit follow every title/chrome change
   document.querySelectorAll('#tabbar button').forEach(b => {
     const on = b.dataset.mode === TAB_OF[S.mode];
     b.classList.toggle('on', on);
@@ -404,9 +405,7 @@ function renderSummary() {
     `<div class="stat ${x.cls}"><div class="k">${x.k}</div><div class="v">${x.v}</div><div class="stat-foot">${x.mid || ''}</div></div>`
   ).join('');
   const sc = document.getElementById('statcard');   // v121: one big glow card around the stat row (+ Energy note)
-  const pc = document.getElementById('pcard');   // v122: tabs + date row are the top of the same glow card
-  [sc, pc].forEach(n => { if (n) { n.classList.toggle('glow-indigo', !energyMode()); n.classList.toggle('glow-teal', energyMode()); } });
-  syncPCard();
+  syncPCard();   // v122: tabs + date row are the top of the same glow card
   fitStats();
   const kind = S.view;
   setEffNote(energyMode() && whmi != null ? effNoteText(whmi, keys, kind) : '');
@@ -418,12 +417,24 @@ function renderSummary() {
    The glow is drawn in page px from the top of #pcard; #statcard offsets it by --hh so the gradient is continuous.
    The header stays sticky as before; once scrolled, the pinned top part gets rounded bottom corners (.stuck). */
 function syncPCard() {
-  const pc = document.getElementById('pcard'), sc = document.getElementById('statcard');
-  if (!pc || !sc) return;
+  const pc = document.getElementById('pcard'), sc = document.getElementById('statcard'), app = document.getElementById('app');
+  if (!pc || !app) return;
+  // v123: tint per page — Savings indigo, Energy teal, News umber, Team Daily Reports slate
+  const tint = S.mode === 'report' ? 'glow-umber' : S.mode === 'daily' ? 'glow-slate' : energyMode() ? 'glow-teal' : 'glow-indigo';
+  [pc, sc].forEach(n => { if (!n) return; ['glow-indigo', 'glow-teal', 'glow-umber', 'glow-slate'].forEach(c => n.classList.toggle(c, c === tint)); });
+  // v123: long week titles (e.g. "Oct 27 – Nov 2, 2026") shrink so the › arrow never runs under the Archive pill
+  const row = pc.querySelector('.toprow'), dr = row && row.querySelector('.daterow'), t = document.getElementById('title');
+  if (t) { t.style.fontSize = ''; if (row.classList.contains('has-arch') && dr) {
+    const arch = row.querySelector('.rpt-archive:not(.hidden)');
+    let fs = parseFloat(getComputedStyle(t).fontSize), n = 0;
+    const over = () => arch && arch.offsetParent && dr.lastElementChild.getBoundingClientRect().right > arch.getBoundingClientRect().left - 2;
+    while (over() && fs > 15 && n++ < 20) { fs -= 0.5; t.style.fontSize = fs + 'px'; }
+  } }
   const h = pc.getBoundingClientRect().height;
-  if (h) sc.style.setProperty('--hh', Math.round(h) + 'px');
+  if (h) app.style.setProperty('--hh', Math.round(h) + 'px');
   pc.classList.toggle('stuck', window.scrollY > 4);
 }
+window.syncPCard = syncPCard;
 window.addEventListener('scroll', () => { const pc = document.getElementById('pcard'); if (pc) pc.classList.toggle('stuck', window.scrollY > 4); }, { passive: true });
 window.addEventListener('resize', () => syncPCard());
 

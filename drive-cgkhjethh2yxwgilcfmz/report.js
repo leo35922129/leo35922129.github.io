@@ -247,7 +247,7 @@ function rpPlayer(kind, audio) {
   ).join('');
   const open = REPORT.open[kind] ? ' open' : '';
   if (audio && audio.unavailable) {
-    return `<article class="rp-player rp-player-off glow glow-slate${open}" data-audio="${esc(kind)}">
+    return `<article class="rp-player rp-player-off${open}" data-audio="${esc(kind)}">
     <div class="rp-row">
       <button type="button" class="rp-play" disabled aria-label="Audio coming">${PLAY_ICO}</button>
       <div class="rp-mid">
@@ -266,7 +266,7 @@ function rpPlayer(kind, audio) {
     <div class="rp-script">${lines}</div>
   </article>`;
   }
-  return `<article class="rp-player glow glow-slate${open}" data-audio="${esc(kind)}">
+  return `<article class="rp-player${open}" data-audio="${esc(kind)}">
     <audio preload="metadata" src="${esc(audio.file)}"></audio>
     <div class="rp-row">
       <button type="button" class="rp-play" aria-label="Play">${PLAY_ICO}</button>
@@ -461,9 +461,11 @@ function renderReportBody(w) {
   ).join('');
 
   return `
+    <div class="glowbot glow-umber">
     ${rpPlayer('summary', w.audio.summary)}
     ${rpPlayer('deep', w.audio.deep)}
-    <article class="rp-lead glow glow-slate">${esc(w.lead)}</article>
+    <article class="rp-lead">${esc(w.lead)}</article>
+    </div>
     <div class="rp-sec"><b>Top stories</b></div>
     ${heads}
     ${hasTable(w.robotaxi_table) ? rpCompare('rp-robotaxi', 'Robotaxi comparison', w.robotaxi_table, src) : ''}
@@ -707,6 +709,7 @@ function renderReport() {
   bindMaybePlayer(main.querySelector('.rp-player[data-audio="deep"]'), w.audio && w.audio.deep);
   bindReportClicks(main);
   syncReportChrome();
+  if (window.syncPCard) syncPCard();   // v123: date row + players + summary = one umber glow card
 }
 
 window.renderReport = renderReport;
