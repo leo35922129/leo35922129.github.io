@@ -585,20 +585,24 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .glowbot.su-top .su-tile .k{color:var(--g-mut)}
 .su-wrap .rp-sec.dr-sec:first-child{margin-top:4px}
 
-/* v127: reference-matched glow for Savings (.glow-steel) and Energy (.glow-teal).
-   Lei: Savings "For saving page background reference this image especially these gradient effects." (/workspace/refs/savings-gradient-ref.jpg, Oura Daytime Stress)
-        Energy  "This is for energy page." (/workspace/refs/energy-gradient-ref.jpg, Oura Readiness)
-   Sampled (PIL, background only): Savings core #2a3a48, mid #222e38, outer #1e252b, corners #1b1f24, bottom #1b1e23.
-                                   Energy  core #263b38, mid #212f2f, outer #1d2526, corners #1a2020, bottom #191d20.
-   Big soft radial glow centred near the top-middle + corner vignette, multi-stop to avoid banding. Same centre on #pcard and
-   #statcard (statcard offset by --hh) so the two halves read as one gradient. #app #pcard beats the generic #app:not(...) .pcardtop rule. */
-.glow-steel{--gx-core:43 59 73;--gx-mid:34 46 56;--gx-out:30 37 43;--gx-top:#1f262d;--gx-upper:#1d2329;--gx-low:#1b1f24;--gx-base:#1a1e23;--g-base:#1a1e23}
-.glow-teal{--gx-core:39 61 57;--gx-mid:33 47 47;--gx-out:29 37 38;--gx-top:#1d2525;--gx-upper:#1c2424;--gx-low:#1a2121;--gx-base:#191d20;--g-base:#191d20}
+/* v127 -> v128: reference-matched glow for Savings (.glow-steel) and Energy (.glow-teal).
+   v127 Lei: Savings "For saving page background reference this image especially these gradient effects." / Energy "This is for energy page."
+   v128 Lei: "Saving page and energy page background, make it less muddy. Close to this reference image I sent."
+   Sampled (PIL, background only) from /workspace/refs/savings-gradient-ref.jpg: core #283947, mid #222e38, outer #1e252b, corners #1b1f24, bottom #1b1e23
+                                and /workspace/refs/energy-gradient-ref.jpg:  core #263b38, mid #212f2f, outer #1d2526, corners #1a2020, bottom #191d20.
+   v128: hues used directly with a small saturation lift (core #2a3e4f / #26423b), vignette darkens toward the same hue's dark (no neutral
+   black/grey wash), base linear stays in-hue, inner tiles are a low in-hue tint instead of 6.5% white. Multi-stop, smooth. */
+.glow-steel{--gx-core:42 62 79;--gx-mid:34 48 60;--gx-out:29 39 48;--gx-vig:16 22 29;--gx-tile:150 190 225;
+  --gx-top:#1f2a33;--gx-upper:#1d262e;--gx-low:#1a2128;--gx-base:#181e24;--g-base:#181e24}
+.glow-teal{--gx-core:38 66 59;--gx-mid:32 50 47;--gx-out:28 40 38;--gx-vig:15 24 22;--gx-tile:150 215 195;
+  --gx-top:#1d2a28;--gx-upper:#1b2624;--gx-low:#182120;--gx-base:#161d1c;--g-base:#161d1c}
 #app #pcard.pcardtop:is(.glow-steel,.glow-teal){--gs-y:96px}
 #app #statcard.statcard:is(.glow-steel,.glow-teal){--gs-y:calc(96px - var(--hh, 0px))}
 #app #pcard.pcardtop:is(.glow-steel,.glow-teal),#app #statcard.statcard:is(.glow-steel,.glow-teal){
   background:
-    radial-gradient(ellipse 120% 330px at 50% var(--gs-y), rgba(6,8,10,0) 0%, rgba(6,8,10,0) 55%, rgba(6,8,10,.16) 70%, rgba(6,8,10,.34) 86%, rgba(6,8,10,.48) 100%),
-    radial-gradient(ellipse 78% 250px at 50% var(--gs-y), rgb(var(--gx-core)) 0%, rgb(var(--gx-core) / .92) 14%, rgb(var(--gx-core) / .72) 28%, rgb(var(--gx-mid) / .62) 44%, rgb(var(--gx-mid) / .36) 60%, rgb(var(--gx-out) / .16) 78%, rgb(var(--gx-out) / 0) 100%),
+    radial-gradient(ellipse 120% 330px at 50% var(--gs-y), rgb(var(--gx-vig) / 0) 0%, rgb(var(--gx-vig) / 0) 56%, rgb(var(--gx-vig) / .22) 72%, rgb(var(--gx-vig) / .45) 88%, rgb(var(--gx-vig) / .6) 100%),
+    radial-gradient(ellipse 80% 260px at 50% var(--gs-y), rgb(var(--gx-core)) 0%, rgb(var(--gx-core) / .94) 14%, rgb(var(--gx-core) / .76) 28%, rgb(var(--gx-mid) / .66) 44%, rgb(var(--gx-mid) / .4) 60%, rgb(var(--gx-out) / .18) 78%, rgb(var(--gx-out) / 0) 100%),
     linear-gradient(180deg, var(--gx-top) calc(var(--gs-y) - 96px), var(--gx-upper) calc(var(--gs-y) + 44px), var(--gx-low) calc(var(--gs-y) + 204px), var(--gx-base) calc(var(--gs-y) + 320px));
   background-color:var(--gx-base)}
+#app #statcard.statcard:is(.glow-steel,.glow-teal) .stat:not(.hi-save):not(.hi-eff){background:rgb(var(--gx-tile) / .05)}
+#app #pcard.pcardtop:is(.glow-steel,.glow-teal) .pill{background:rgb(var(--gx-tile) / .07)}

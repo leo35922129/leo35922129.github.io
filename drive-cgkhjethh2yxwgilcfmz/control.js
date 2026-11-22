@@ -114,7 +114,7 @@ function paintControlHome(main){
   const sentry = st.sentry == null ? '—' : (st.sentry ? 'On' : 'Off');
   const swVer = dash(st.software_version);
   main.innerHTML = `
-    <section class="ctl-status">
+    <section class="ctl-status glow-graphite">
       <div class="ctl-hero">
         <div class="ctl-hb"><span class="ctl-hi bat ${batLv}" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="17" height="10" rx="2.2"/><path d="M22 10.5v3"/><path d="M6 10.5v3M9.5 10.5v3M13 10.5v3"/></svg></span><div><div class="n bat ${batLv}">${st.battery_pct == null ? '—' : st.battery_pct}${st.battery_pct == null ? '' : '<small>%</small>'}</div><div class="k">Battery</div></div></div>
         <div class="ctl-hgap" aria-hidden="true"></div>
