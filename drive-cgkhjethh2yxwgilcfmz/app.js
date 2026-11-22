@@ -420,8 +420,8 @@ function syncPCard() {
   const pc = document.getElementById('pcard'), sc = document.getElementById('statcard'), app = document.getElementById('app');
   if (!pc || !app) return;
   // v123: tint per page — Savings indigo, Energy teal, News umber, Team Daily Reports slate
-  const tint = S.mode === 'report' ? 'glow-umber' : S.mode === 'daily' ? 'glow-slate' : energyMode() ? 'glow-teal' : 'glow-indigo';
-  [pc, sc].forEach(n => { if (!n) return; ['glow-indigo', 'glow-teal', 'glow-umber', 'glow-slate'].forEach(c => n.classList.toggle(c, c === tint)); });
+  const tint = S.mode === 'report' ? 'glow-umber' : S.mode === 'daily' ? 'glow-slate' : energyMode() ? 'glow-teal' : 'glow-steel';   // v124: Savings steel (was indigo)
+  [pc, sc].forEach(n => { if (!n) return; ['glow-indigo', 'glow-steel', 'glow-teal', 'glow-umber', 'glow-slate'].forEach(c => n.classList.toggle(c, c === tint)); });
   // v123: long week titles (e.g. "Oct 27 – Nov 2, 2026") shrink so the › arrow never runs under the Archive pill
   const row = pc.querySelector('.toprow'), dr = row && row.querySelector('.daterow'), t = document.getElementById('title');
   if (t) { t.style.fontSize = ''; if (row.classList.contains('has-arch') && dr) {

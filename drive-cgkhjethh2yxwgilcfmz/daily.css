@@ -496,7 +496,8 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 }
 .glow-slate{--g-top:42 61 79;--g-mid:#121a24;--g-base:#0a0f16;--g-mut:#9aa6b4}
 .glow-indigo{--g-top:44 53 80;--g-mid:#121727;--g-base:#0a0d16;--g-mut:#98a2b8}
-.glow-teal{--g-top:31 74 64;--g-mid:#0f1d19;--g-base:#0a1411;--g-mut:#93a8a0}
+.glow-steel{--g-top:42 65 82;--g-mid:#18222b;--g-base:#151d24;--g-mut:#9eabb7}   /* v124: Savings, Lei "Make saving page color like this" (Oura Activity steel/petrol #2a4152 -> #151d24) */
+.glow-teal{--g-top:29 58 53;--g-mid:#162523;--g-base:#121c1b;--g-mut:#9aaba6}   /* v124: Lei "Make energy page green to this one" (Oura Cardiovascular Age pine: #1d3a35 -> #121c1b); was #1f4a40 -> #0a1411 */
 .glow-umber{--g-top:74 53 48;--g-mid:#1e1614;--g-base:#120d0c;--g-mut:#b0a39d}   /* v123: News (Oura Stress Management warm brown) */
 /* inner elements on glow cards */
 :is(.glow,.glowbot) .rp-track{background:rgba(255,255,255,.14)}
