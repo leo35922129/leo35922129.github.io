@@ -620,3 +620,29 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 .tl .tl-st .tl-est{font-weight:300}                                        /* 400 -> 300, amber unchanged */
 #app .tl .tl-ev .tl-st svg.ico,#app .tl .tl-ev .tl-st svg.ico *,#app .tl .tl-ev .tl-st svg.ico [stroke-width]{stroke-width:1.5px}                /* 1.7-1.85 -> 1.5 (stroked icons only; fills untouched) */
 .tl .tl-ev.open .tl-dur{font-weight:300}
+
+/* v132: Lei - same Oura-style thin weights on the Savings/Energy row views (week day rows, Energy year month rows,
+   month calendar cells, Savings year month cards). Colours, bars, layout and sizes unchanged. */
+.wrow,.ewk,.grid,.year{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text",Roboto,Inter,system-ui,"Segoe UI",Helvetica,sans-serif}
+#app .wrow .d b,#app .ewk .d b,#app .cell .n{font-weight:var(--fw-med)}            /* day number / month name 600-700 -> 500 */
+#app .wrow .d span,#app .ewk .d span{font-weight:var(--fw-reg);color:#9aa1ab}       /* weekday label -> 400, softer grey */
+#app .ewk .ebat{font-weight:var(--fw-reg);color:#9aa1ab}                             /* start/end % 600 -> 400, softer grey */
+#app .ewk .et{font-weight:var(--fw-reg)}                                             /* daily kWh total 500 -> 400 */
+#app .ecap .ei{font-weight:300}                                                      /* drive/park/charge/Wh/mi 600 -> 300 */
+#app .ecap .ei .w,#app .ecap .ei.mute{font-weight:300}                               /* W, n/a 500 -> 300 */
+#app .ecap .ei.eff .eff-chip,#app .egrid .cell .eff-chip{font-weight:var(--fw-med)} /* efficiency pill 700 -> 500 */
+#app .wm .fl{font-weight:var(--fw-med)}                                              /* FSD label 600 -> 500 */
+#app .wtk b{font-weight:var(--fw-reg)}                                               /* FSD % 700 -> 400 */
+#app .wl{font-weight:300}                                                            /* trips / mi 400 -> 300 */
+#app .wc{font-weight:300}                                                            /* charge $, gas $, saved $ 400 -> 300 */
+#app .wc .g .sv{font-weight:300}                                                     /* 'saved' 500 -> 300 */
+#app .egrid .cell .s,#app .cell .s{font-weight:300}                                  /* month cell values 400-600 -> 300 */
+#app .mon h3{font-weight:var(--fw-med)}                                              /* Savings year month name bold -> 500 */
+#app .mon .t{font-weight:300}#app .mon .t .g{font-weight:var(--fw-reg)}              /* year totals; saved 700 -> 400 */
+#app :is(.wrow,.ewk) svg.ico.ico.ico,#app :is(.wrow,.ewk) svg.ico.ico.ico *,#app :is(.wrow,.ewk) svg.ico.ico.ico [stroke-width]{stroke-width:1.5px}  /* icons 1.7-1.85 -> 1.5 */
+@media (max-width:374px){   /* v132: the efficiency pill was clipped by up to 13px at 360 (pre-existing); tighten gaps */
+  #app .ecap{gap:4px}
+  #app .ecap .ei{gap:3px}
+  #app .ecap .ei.eff{gap:4px}
+  #app .ecap .ei.eff .eff-chip{padding:1px 6px}
+}
