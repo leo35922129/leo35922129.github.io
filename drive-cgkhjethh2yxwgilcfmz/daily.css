@@ -481,3 +481,41 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 /* v111: the Energy filter sits on the TIMELINE label row, right-aligned (off the date row). Same icons, tints and 40px buttons in a 44px bar. */
 .tl-sechd{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;margin-bottom:6px}
 .tl-sechd .efilter:not(.hidden){display:flex;flex:none;gap:2px;padding:2px;background:var(--card);border-radius:var(--r-md);text-transform:none;letter-spacing:0}
+
+/* v119: shared blue-slate card (Lei: "Make first three image backgrounds like image 4 backgrounds";
+   reference = Oura/Whoop-style deep blue-slate, soft steel-blue glow top-centre fading to near-black navy).
+   Used only on: Daily briefing player + Overview (Team Daily Reports), News 3-min/10-min players + summary
+   lead card (Grok and ChatGPT), Report > Summary "Your time with Grok Bot". No outline. */
+.card-slate,.rp-player.card-slate,.rp-lead.card-slate,.dr-card.card-slate{
+  background:
+    radial-gradient(130% 95% at 50% 0%, rgba(42,61,79,.95) 0%, rgba(28,42,56,.75) 34%, rgba(14,21,30,0) 72%),
+    linear-gradient(180deg, #131c27 0%, #0d131b 55%, #0a0f16 100%);
+  background-color:#0a0f16;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.card-slate .rp-track{background:rgba(255,255,255,.14)}
+.card-slate .rp-times,.card-slate .rp-chev,.card-slate .rp-line{color:#9aa6b4}
+.card-slate .rp-line.on{color:var(--tx);background:rgba(62,139,255,.22)}
+.card-slate .dr-chip{background:rgba(255,255,255,.08)}
+.card-slate .su-meta,.card-slate .dr-cright{color:#9aa6b4}
+
+/* v119: indigo sibling of .card-slate for the Savings stat tiles (Miles, Electric Cost, Gas Cost, Saved) in
+   Day/Week/Month/Year (Lei: "Make image 1 background like image 2"; indigo/navy Daytime Stress reference).
+   Saved keeps its identity with a muted green glow on the same navy base: no flat green block, no border. */
+.stat.card-indigo{
+  background:
+    radial-gradient(140% 100% at 50% 0%, rgba(44,53,80,.95) 0%, rgba(30,36,56,.7) 38%, rgba(10,13,22,0) 78%),
+    linear-gradient(180deg, #141a2a 0%, #0e1220 55%, #0a0d16 100%);
+  background-color:#0a0d16;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.stat.card-indigo.hi-save{
+  background:
+    radial-gradient(140% 100% at 50% 0%, rgba(31,74,53,.95) 0%, rgba(22,50,40,.7) 38%, rgba(10,13,22,0) 78%),
+    linear-gradient(180deg, #11201c 0%, #0c1419 55%, #0a0d16 100%);
+  background-color:#0a0d16;
+}
+.stat.card-indigo .k{color:#98a2b8}
+.stat.card-indigo .v small{color:#98a2b8}
+.stat.card-indigo.hi-save .k{color:var(--saved-lab)}
+.stat.card-indigo.hi-save .v small{color:rgba(233,237,242,.75)}

@@ -387,10 +387,10 @@ function renderSummary() {
   if (!energyMode()) {
     const mi = t.mi >= 1000 ? fmtCom(t.mi, 0) : fmtCom(t.mi, 1);
     tiles = [
-      { k: `${WHEEL} Miles`, v: val(mi, 'mi'), cls: '' },
-      { k: `${ELEC_ICO} Electric Cost`, v: val(money(t.elec)), cls: '' },
-      { k: `${PUMP_ICO} Gas Cost`, v: val(money(t.gas)), cls: '' },
-      { k: `${DBADGE} Saved`, v: val(money(t.save)), cls: 'hi-save' },
+      { k: `${WHEEL} Miles`, v: val(mi, 'mi'), cls: 'card-indigo' },
+      { k: `${ELEC_ICO} Electric Cost`, v: val(money(t.elec)), cls: 'card-indigo' },
+      { k: `${PUMP_ICO} Gas Cost`, v: val(money(t.gas)), cls: 'card-indigo' },
+      { k: `${DBADGE} Saved`, v: val(money(t.save)), cls: 'card-indigo hi-save' },   // v119: indigo glow; Saved = green-tinted glow
     ];
   } else {
     tiles = [

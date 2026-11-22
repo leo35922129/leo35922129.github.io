@@ -113,7 +113,7 @@
     const b = L(r.blockers), q = L(r.open_questions);
     const rows = (arr, ico, color, label) => arr.length ? `<div class="dr-rows"><div class="dr-rowlab" style="color:${color}">${label}</div>${arr.map(x =>
       `<div class="dr-row">${badge(ico, color, 'sm')}<span>${e(x)}</span></div>`).join('')}</div>` : '';
-    return `<section class="dr-card">
+    return `<section class="dr-card card-slate">
       ${cardHd('overview', 'var(--acc)', 'Overview', h ? `${h.est ? 'est. ' : ''}${hrs(h.v)} h` : '')}
       <p class="dr-sum">${e(r.summary || 'No activity recorded')}</p>
       ${chips ? `<div class="dr-chips">${chips}</div>` : ''}
