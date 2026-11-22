@@ -255,10 +255,11 @@
 /* v128: Control status card, Lei "Modify control page background reference. Remove these hills, just make it dark grey gradient effects like other page gradients."
    v125 SVG hills removed. .glow-graphite = same big soft radial glow + corner vignette as Savings/Energy (v127), neutral grey, no tint:
    core #3a3a3e, mid #26262a, outer #1a1a1d, base #0e0e10. Radius 20, faint top sheen, no ring. */
-.glow-graphite{--gx-core:58 58 62;--gx-mid:38 38 42;--gx-out:26 26 29;--gx-top:#1c1c1f;--gx-upper:#18181b;--gx-low:#131315;--gx-base:#0e0e10;--g-base:#0e0e10;--g-mut:#a3a3a8}
+/* v129: Lei "Make control page background more cool color dark gray, not warm gray." Cool blue-grey: core #363b43, mid #23272e, outer #181b20, base #0d0f12 */
+.glow-graphite{--gx-core:54 59 67;--gx-mid:35 39 46;--gx-out:24 27 32;--gx-top:#1a1d22;--gx-upper:#16191d;--gx-low:#111317;--gx-base:#0d0f12;--g-base:#0d0f12;--g-mut:#a0a6b0}
 #app .ctl-status.glow-graphite{--gs-y:96px;border-radius:20px;border:0;
   background:
-    radial-gradient(ellipse 120% 360px at 50% var(--gs-y), rgba(4,4,5,0) 0%, rgba(4,4,5,0) 52%, rgba(4,4,5,.18) 68%, rgba(4,4,5,.38) 84%, rgba(4,4,5,.55) 100%),
+    radial-gradient(ellipse 120% 360px at 50% var(--gs-y), rgba(6,8,11,0) 0%, rgba(6,8,11,0) 52%, rgba(6,8,11,.18) 68%, rgba(6,8,11,.38) 84%, rgba(6,8,11,.55) 100%),
     radial-gradient(ellipse 80% 270px at 50% var(--gs-y), rgb(var(--gx-core)) 0%, rgb(var(--gx-core) / .9) 14%, rgb(var(--gx-core) / .7) 28%, rgb(var(--gx-mid) / .62) 44%, rgb(var(--gx-mid) / .36) 60%, rgb(var(--gx-out) / .16) 78%, rgb(var(--gx-out) / 0) 100%),
     linear-gradient(180deg, var(--gx-top) 0, var(--gx-upper) 140px, var(--gx-low) 300px, var(--gx-base) 420px);
   background-color:var(--gx-base);
