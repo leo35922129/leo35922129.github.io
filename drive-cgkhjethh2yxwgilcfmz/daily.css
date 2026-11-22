@@ -487,7 +487,7 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
    .glow-slate  = blue-slate (#2a3d4f -> #0a0f16): Daily briefing + Overview, News players + summary, "Your time with Grok Bot"
    .glow-indigo = indigo/navy (#2c3550 -> #0a0d16): Savings stat tiles; .hi-save = green glow (#1f4a35) on the same navy
    .glow-teal   = teal-green (#1f4a40 -> #0a1411): Energy stat tiles; .hi-eff = amber glow (#4a3a1c) on the same base */
-.glow,.glow.dr-card,.glow.rp-player,.glow.rp-lead,.glow.stat{
+.glow,.glow.dr-card,.glow.rp-player,.glow.rp-lead{
   background:
     radial-gradient(135% 100% at 50% 0%, rgb(var(--g-top) / .95) 0%, rgb(var(--g-top) / .55) 36%, rgb(var(--g-top) / 0) 74%),
     linear-gradient(180deg, var(--g-mid) 0%, var(--g-base) 100%);
@@ -496,15 +496,27 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
 }
 .glow-slate{--g-top:42 61 79;--g-mid:#121a24;--g-base:#0a0f16;--g-mut:#9aa6b4}
 .glow-indigo{--g-top:44 53 80;--g-mid:#121727;--g-base:#0a0d16;--g-mut:#98a2b8}
-.glow-indigo.hi-save{--g-top:31 74 53;--g-mid:#0f1a1a}
 .glow-teal{--g-top:31 74 64;--g-mid:#0f1d19;--g-base:#0a1411;--g-mut:#93a8a0}
-.glow-teal.hi-eff{--g-top:74 58 28;--g-mid:#17160f}
 /* inner elements on glow cards */
 .glow .rp-track{background:rgba(255,255,255,.14)}
 .glow .rp-times,.glow .rp-chev,.glow .rp-line,.glow .su-meta,.glow .dr-cright{color:var(--g-mut)}
 .glow .rp-line.on{color:var(--tx);background:rgba(62,139,255,.22)}
 .glow .dr-chip{background:rgba(255,255,255,.08)}
-.glow.stat .k,.glow.stat .v small{color:var(--g-mut)}
-.glow.stat.hi-save .k{color:var(--saved-lab)}
-.glow.stat.hi-eff .k{color:var(--eff-lab)}
-.glow.stat.hi-save .v small,.glow.stat.hi-eff .v small{color:rgba(233,237,242,.75)}
+
+/* v121: Savings/Energy stat row = ONE big glow card (Lei: "make all info have one big piece of background"), like the
+   v118 Trips form: 20px radius, 12px padding, faint top sheen, no ring. Indigo on Savings, teal on Energy (toggled in
+   renderSummary). Tiles inside are translucent; Saved / Efficiency get a subtle green / amber tint. */
+.statcard{margin:12px 12px 8px;padding:12px;border-radius:20px}
+.statcard .summary{padding:0;gap:6px}
+.statcard .effnote{padding:10px 2px 0;margin:0;color:var(--g-mut)}
+.statcard .effnote[hidden]{display:none}
+.statcard .stat{background:rgba(255,255,255,.065);box-shadow:none;border:0;border-radius:var(--r-md)}
+.statcard .stat .k,.statcard .stat .v small{color:var(--g-mut)}
+.statcard .stat.hi-save{background:rgba(107,220,106,.10)}
+.statcard .stat.hi-eff{background:rgba(232,168,48,.10)}
+.statcard .stat.hi-save .k{color:var(--saved-lab)}
+.statcard .stat.hi-eff .k{color:var(--eff-lab)}
+.statcard .stat.hi-save .v small,.statcard .stat.hi-eff .v small{color:rgba(233,237,242,.75)}
+#app.mode-auto #statcard,#app.mode-report #statcard,#app.mode-control #statcard,#app.mode-daily #statcard,#app.mode-trips #statcard{display:none!important}
+@media(min-width:700px){.statcard{max-width:736px;margin-left:auto;margin-right:auto}}
+@media (max-width:374px){.statcard .stat .k .ico,.statcard .stat .k .dbadge{width:18px;height:18px}}

@@ -387,25 +387,52 @@ function renderSummary() {
   if (!energyMode()) {
     const mi = t.mi >= 1000 ? fmtCom(t.mi, 0) : fmtCom(t.mi, 1);
     tiles = [
-      { k: `${WHEEL} Miles`, v: val(mi, 'mi'), cls: 'glow glow-indigo' },
-      { k: `${ELEC_ICO} Electric Cost`, v: val(money(t.elec)), cls: 'glow glow-indigo' },
-      { k: `${PUMP_ICO} Gas Cost`, v: val(money(t.gas)), cls: 'glow glow-indigo' },
-      { k: `${DBADGE} Saved`, v: val(money(t.save)), cls: 'glow glow-indigo hi-save' },   // v119: indigo glow; Saved = green-tinted glow
+      { k: `${WHEEL} Miles`, v: val(mi, 'mi'), cls: '' },
+      { k: `${ELEC_ICO} Electric Cost`, v: val(money(t.elec)), cls: '' },
+      { k: `${PUMP_ICO} Gas Cost`, v: val(money(t.gas)), cls: '' },
+      { k: `${DBADGE} Saved`, v: val(money(t.save)), cls: 'hi-save' },   // v121: tinted inner tile on the indigo card
     ];
   } else {
     tiles = [
-      { k: `${BOLT_ICO} Energy`, v: kwhVal(en.total), cls: 'glow glow-teal' },
-      { k: `${WHEEL} Driving`, v: kwhVal(en.driving), cls: 'glow glow-teal' },
-      { k: `${PARK_ICO} Parked`, v: en.known ? kwhVal(en.parked) : 'n/a', cls: 'glow glow-teal' },
-      { k: `${GAUGE_ICO} Efficiency`, v: whmi != null ? val(whmi, 'Wh/mi') : '–', cls: 'glow glow-teal hi-eff', mid: energyMode() ? effChipHtml(currentEffRate(whmi, keys)) : '' },
+      { k: `${BOLT_ICO} Energy`, v: kwhVal(en.total), cls: '' },
+      { k: `${WHEEL} Driving`, v: kwhVal(en.driving), cls: '' },
+      { k: `${PARK_ICO} Parked`, v: en.known ? kwhVal(en.parked) : 'n/a', cls: '' },
+      { k: `${GAUGE_ICO} Efficiency`, v: whmi != null ? val(whmi, 'Wh/mi') : '–', cls: 'hi-eff', mid: energyMode() ? effChipHtml(currentEffRate(whmi, keys)) : '' },
     ];
   }
   $('#summary').innerHTML = tiles.map(x =>
     `<div class="stat ${x.cls}"><div class="k">${x.k}</div><div class="v">${x.v}</div><div class="stat-foot">${x.mid || ''}</div></div>`
   ).join('');
+  const sc = document.getElementById('statcard');   // v121: one big glow card around the stat row (+ Energy note)
+  if (sc) { sc.classList.toggle('glow-indigo', !energyMode()); sc.classList.toggle('glow-teal', energyMode()); }
+  fitStats();
   const kind = S.view;
   setEffNote(energyMode() && whmi != null ? effNoteText(whmi, keys, kind) : '');
 }
+
+/* v121: auto-shrink stat tile labels/values that would clip (long Year totals like $1283.18, "Electric Cost" at 360).
+   Steps the font down 0.5px at a time until the text fits its tile; never below 14px (value) / 10.5px (label). */
+function fitStats() {
+  const root = document.getElementById('summary');
+  if (!root) return;
+  const fit = (el, min) => {
+    el.style.fontSize = ''; el.style.letterSpacing = '';
+    let fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+    while (el.scrollWidth > el.clientWidth + 0.5 && fs > min && n++ < 40) { fs -= 0.5; el.style.fontSize = fs + 'px'; }
+  };
+  const vs = [];
+  root.querySelectorAll('.stat').forEach(t => {
+    const k = t.querySelector('.k'), v = t.querySelector('.v');
+    if (k) fit(k, 10.5);
+    if (v) { fit(v, 14); vs.push(v); }
+  });
+  // v121: one value size per row (the smallest needed), so a long total doesn't leave mismatched numbers
+  const shrunk = vs.filter(v => v.style.fontSize);
+  if (shrunk.length) { const m = Math.min(...shrunk.map(v => parseFloat(v.style.fontSize))); vs.forEach(v => { v.style.fontSize = m + 'px'; }); }
+}
+let fitStatsT = 0;
+window.addEventListener('resize', () => { clearTimeout(fitStatsT); fitStatsT = setTimeout(fitStats, 120); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitStats());
 
 function featureRows(feats, tone) {
   return (feats || []).filter(f => f.id !== 'elevation').map(f => {
