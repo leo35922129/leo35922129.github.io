@@ -41,7 +41,7 @@
           ${b.first_active ? `<div class="su-bs">Since ${shortD(b.first_active)}</div>` : ''}</div></div>`;
     }).join('');
     return D.lab('Grok Bot usage') + `
-      <section class="dr-card card-slate">
+      <section class="dr-card glow glow-slate">
         ${D.cardHd(I.chat, 'var(--acc)', 'Your time with Grok Bot', '')}
         <div class="su-hero"><span class="su-big">${H(lei.total_hours)}</span><span class="su-unit">hours</span></div>
         <div class="su-meta">${first ? `Since ${longD(first)} · ` : ''}${days.length} active day${days.length === 1 ? '' : 's'}</div>

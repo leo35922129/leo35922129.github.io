@@ -387,17 +387,17 @@ function renderSummary() {
   if (!energyMode()) {
     const mi = t.mi >= 1000 ? fmtCom(t.mi, 0) : fmtCom(t.mi, 1);
     tiles = [
-      { k: `${WHEEL} Miles`, v: val(mi, 'mi'), cls: 'card-indigo' },
-      { k: `${ELEC_ICO} Electric Cost`, v: val(money(t.elec)), cls: 'card-indigo' },
-      { k: `${PUMP_ICO} Gas Cost`, v: val(money(t.gas)), cls: 'card-indigo' },
-      { k: `${DBADGE} Saved`, v: val(money(t.save)), cls: 'card-indigo hi-save' },   // v119: indigo glow; Saved = green-tinted glow
+      { k: `${WHEEL} Miles`, v: val(mi, 'mi'), cls: 'glow glow-indigo' },
+      { k: `${ELEC_ICO} Electric Cost`, v: val(money(t.elec)), cls: 'glow glow-indigo' },
+      { k: `${PUMP_ICO} Gas Cost`, v: val(money(t.gas)), cls: 'glow glow-indigo' },
+      { k: `${DBADGE} Saved`, v: val(money(t.save)), cls: 'glow glow-indigo hi-save' },   // v119: indigo glow; Saved = green-tinted glow
     ];
   } else {
     tiles = [
-      { k: `${BOLT_ICO} Energy`, v: kwhVal(en.total), cls: '' },
-      { k: `${WHEEL} Driving`, v: kwhVal(en.driving), cls: '' },
-      { k: `${PARK_ICO} Parked`, v: en.known ? kwhVal(en.parked) : 'n/a', cls: '' },
-      { k: `${GAUGE_ICO} Efficiency`, v: whmi != null ? val(whmi, 'Wh/mi') : '–', cls: 'hi-eff', mid: energyMode() ? effChipHtml(currentEffRate(whmi, keys)) : '' },
+      { k: `${BOLT_ICO} Energy`, v: kwhVal(en.total), cls: 'glow glow-teal' },
+      { k: `${WHEEL} Driving`, v: kwhVal(en.driving), cls: 'glow glow-teal' },
+      { k: `${PARK_ICO} Parked`, v: en.known ? kwhVal(en.parked) : 'n/a', cls: 'glow glow-teal' },
+      { k: `${GAUGE_ICO} Efficiency`, v: whmi != null ? val(whmi, 'Wh/mi') : '–', cls: 'glow glow-teal hi-eff', mid: energyMode() ? effChipHtml(currentEffRate(whmi, keys)) : '' },
     ];
   }
   $('#summary').innerHTML = tiles.map(x =>
