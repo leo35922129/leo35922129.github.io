@@ -573,3 +573,8 @@ div.empty,.rp-empty,.dr-empty,.su-empty{background:var(--card);border-radius:var
    the › arrow never sits under the Archive pill at 360/390 */
 #app.mode-report:not(.rpt-arch) .pcardtop,#app.mode-daily:not(.dr-arch):not(.dr-summ) .pcardtop{padding:4px 4px 0}
 #app .pcardtop .toprow.has-arch .daterow .nav{width:36px}
+
+/* v125: Team Daily Reports grouped like News: glow card = date/Archive + briefing + Overview; everything else below under section headers */
+.dr-wrap .rp-sec.dr-sec{display:flex;align-items:baseline;gap:8px;margin:14px 2px 0}
+.dr-wrap .dr-card.dr-issues{padding-top:10px;padding-bottom:10px}
+.dr-wrap .dr-card > .dr-sub:first-child{margin-top:0}

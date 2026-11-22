@@ -110,22 +110,25 @@
     const chips = [bots ? `<span class="dr-chip">${bots} bot${bots > 1 ? 's' : ''}</span>` : '',
       nr ? `<span class="dr-chip">${nr} request${nr > 1 ? 's' : ''}</span>` : '',
       r.sample ? '<span class="dr-chip">Sample</span>' : ''].join('');
-    const b = L(r.blockers), q = L(r.open_questions);
-    const rows = (arr, ico, color, label) => arr.length ? `<div class="dr-rows"><div class="dr-rowlab" style="color:${color}">${label}</div>${arr.map(x =>
-      `<div class="dr-row">${badge(ico, color, 'sm')}<span>${e(x)}</span></div>`).join('')}</div>` : '';
     return `<section class="dr-card">
       ${cardHd('overview', 'var(--acc)', 'Overview', h ? `${h.est ? 'est. ' : ''}${hrs(h.v)} h` : '')}
       <p class="dr-sum">${e(r.summary || 'No activity recorded')}</p>
       ${chips ? `<div class="dr-chips">${chips}</div>` : ''}
-      ${rows(b, 'blocker', 'var(--red)', b.length > 1 ? `${b.length} blockers` : 'Blocker')}
-      ${rows(q, 'question', 'var(--amb)', `Open question${q.length > 1 ? 's' : ''} for you`)}
     </section>`;
+  }
+  /* v125: blockers / open questions moved out of the glow card into their own sections (News "Top stories" style headers) */
+  const secHd = (t, note) => `<div class="rp-sec dr-sec"><b>${t}</b>${note ? `<span class="dr-labnote">${note}</span>` : ''}</div>`;
+  function issues(r) {
+    const b = L(r.blockers), q = L(r.open_questions);
+    const card = (arr, ico, color) => `<section class="dr-card dr-issues">${arr.map(x =>
+      `<div class="dr-row">${badge(ico, color, 'sm')}<span>${e(x)}</span></div>`).join('')}</section>`;
+    return (b.length ? secHd(b.length > 1 ? `Blockers · ${b.length}` : 'Blocker') + card(b, 'blocker', 'var(--red)') : '') +
+      (q.length ? secHd(`Open question${q.length > 1 ? 's' : ''} for you`) + card(q, 'question', 'var(--amb)') : '');
   }
   function suggestions(r) {
     const s = r.suggestions || {}, im = L(s.improvements), id = L(s.ideas);
     if (!im.length && !id.length) return '';
-    return `<section class="dr-card">
-      ${cardHd('bulb', 'var(--bolt)', 'Improvements &amp; Suggestions', '', 'dark')}
+    return secHd('Improvements &amp; Suggestions') + `<section class="dr-card">
       ${im.length ? `<div class="dr-sub">Improvements</div>${items(im)}` : ''}
       ${id.length ? `<div class="dr-sub">New ideas</div>${items(id)}` : ''}
     </section>`;
@@ -133,7 +136,7 @@
   function team(r) {
     const t = (r.team || []).filter(x => x && x.bot);
     if (!t.length) return '';
-    return lab('Team') + t.map(x => {
+    return secHd('Team') + t.map(x => {
       const st = botStyle(x.bot), done = L(x.done);
       return `<section class="dr-card">
         ${cardHd(st.g, st.c, e(x.bot), typeof x.hours === 'number' ? `${hrs(x.hours)} h` : '', 'bot')}
@@ -144,7 +147,7 @@
   function requests(r) {
     const q = L(r.requested);
     if (!q.length) return '';
-    return lab('My Requests', 'Not in audio') + `<section class="dr-card">
+    return secHd('My Requests', 'Not in audio') + `<section class="dr-card">
       <ol class="dr-ol">${q.map(x => `<li>${e(x)}</li>`).join('')}</ol>
     </section>`;
   }
@@ -182,7 +185,7 @@
     }
     if (DAILY.archive) { stopDailyAudio(); main.innerHTML = `<div class="dr-wrap">${archive(reps)}</div>`; return; }
     const r = reps[cur(reps)];
-    main.innerHTML = `<div class="dr-wrap"><div class="glowbot glow-slate">${playerHtml(r)}${overview(r)}</div>${suggestions(r)}${team(r)}${requests(r)}</div>`;
+    main.innerHTML = `<div class="dr-wrap"><div class="glowbot glow-indigo">${playerHtml(r)}${overview(r)}</div>${issues(r)}${suggestions(r)}${team(r)}${requests(r)}</div>`;
     bindDailyPlayer(main, r);
     if (window.syncPCard) syncPCard();   // v123: date row + briefing + Overview = one slate glow card
   };
