@@ -16,7 +16,17 @@
   if (!ex.start) { const s = nextSat(), e = new Date(s); e.setDate(e.getDate() + 1); ex.start = iso(s); ex.end = iso(e); }
   ex.depart = ex.depart || '08:00'; ex.soc = ex.soc || 90;
   const save = () => { try { localStorage.setItem(LS, JSON.stringify(ex)); } catch (e) {} };
+  /* v139: 'Sent' marks are scoped to destination + travel dates (label|start|end|id) and only bridge the few minutes until the
+     trip list shows the stop. Old destination-only keys and anything older than 15 min are dropped on load. */
+  const QTTL = 15 * 60 * 1000;
   const queued = () => { try { return JSON.parse(localStorage.getItem(LSQ) || '{}') || {}; } catch (e) { return {}; } };
+  const qKey = (d, id) => [(d && d.dest && d.dest.label) || '', (d && d.dates && d.dates.start) || '', (d && d.dates && d.dates.end) || '', id].join('|');
+  (function pruneQueue() {
+    const q = queued(), now = Date.now(), out = {};
+    for (const [k, t] of Object.entries(q)) if (k.split('|').length === 4 && now - t < QTTL) out[k] = t;
+    try { if (Object.keys(out).length) localStorage.setItem(LSQ, JSON.stringify(out)); else localStorage.removeItem(LSQ); } catch (e) {}
+  })();
+  const sentHas = (d, id) => { const t = queued()[qKey(d, id)]; return !!t && Date.now() - t < QTTL; };
 
   const I = (p, w = 18, cls = 'ico') => `<svg class="${cls}" viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
   const P = {
@@ -167,9 +177,8 @@
     </div>`;
   }
   function stopCard(s, i, d) {
-    const q = queued(), key = `${(d.dest && d.dest.label) || ''}|${s.charger_id}`;
     const inTrip = plannedHas(s.charger_id);
-    const btn = inTrip ? `<span class="trp-in">${I(P.check, 16)}In trip</span>` : q[key] ? `<span class="trp-in q">${I(P.check, 16)}Sent</span>`
+    const btn = inTrip ? `<span class="trp-in">${I(P.check, 16)}In trip</span>` : sentHas(d, s.charger_id) ? `<span class="trp-in q">${I(P.check, 16)}Sent</span>`
       : `<button type="button" class="trp-add" data-add="${i}" aria-label="Add to trip">${I(P.plus, 20)}</button>`;
     const when = s.arrival_time ? new Date(s.arrival_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
     const badges = (s.badges || []).map(b => b === 'cheapest' ? `<span class="trp-bdg c">$ Cheapest</span>` : b === 'fastest' ? `<span class="trp-bdg f">› Fastest</span>` : '').join('');
@@ -211,10 +220,27 @@
     const rate = `$${(+s.usd_per_kwh).toFixed(s.usd_per_kwh * 100 % 1 ? 3 : 2)}/kWh`;
     return `${rate}${est}${s.cost_usd != null ? ` · ${usd(s.cost_usd)}${est}` : ''}${!est && when ? ' at ' + esc(when) : ''}`;
   }
-  function plannedHas(cid) {
-    const p = S.meta && S.meta.trips && S.meta.trips.planned;
-    return !!(p && Object.values(p.items || {}).some(t => (t.items || []).some(it => it.detail && it.detail.charger_id === cid) || (t.explore_cards || []).some(c => c.in_trip && c.id && c.id.endsWith(cid))));
+  /* v139: Lei - a spot is 'In trip' only when it's a stop of an existing (not deleted) upcoming trip whose destination AND
+     travel dates match the trip being planned in Explore right now. Live trip list first (it honours deletes/edits); the
+     published meta (deleted trips filtered server-side) only as a fallback when the list can't load. */
+  const sameDest = (a, b) => { if (!a || !b) return false;
+    const la = (a.label || '').trim().toLowerCase(), lb = (b.label || '').trim().toLowerCase();
+    if (la && lb && la === lb) return true;
+    return a.lat != null && b.lat != null && Math.abs(a.lat - b.lat) < 0.15 && Math.abs(a.lon - b.lon) < 0.15; };
+  function tripStopIds(t) {
+    const ids = new Set();
+    Object.values(t.stops || {}).forEach(s => { if (s.charger_id) ids.add(s.charger_id); if (s.place_id) ids.add(s.place_id); });
+    (t.items || []).forEach(it => { const d = it.detail || {}; if (d.charger_id) ids.add(d.charger_id); if (d.place_id) ids.add(d.place_id); });
+    return ids;
   }
+  function matchTrips(d) {
+    const dest = d && d.dest, dt = d && d.dates; if (!dest || !dt || !dt.start) return [];
+    const src = Array.isArray(T.trips) ? T.trips : Object.values(((S.meta && S.meta.trips && S.meta.trips.planned) || {}).items || {});
+    return src.filter(t => t && t.status !== 'done' && !t.trip_tombstone && t.dates && t.dates.start === dt.start && (t.dates.end || t.dates.start) === (dt.end || dt.start)
+      && sameDest(t.destination || {}, dest));
+  }
+  const inTripNow = (d, id) => !!id && matchTrips(d).some(t => tripStopIds(t).has(id));
+  function plannedHas(cid) { return inTripNow(T.data, cid); }
   function chargingCard(d) {
     const p = curPlan(d), ch = d.chargers || {};
     const tabs = [['balanced', 'Balanced'], ['cheapest', 'Cheapest'], ['fastest', 'Fastest']].map(([k, l]) => `<button type="button" class="auto-cat${T.plan === k ? ' on' : ''}" data-plan="${k}" aria-pressed="${T.plan === k}">${l}</button>`).join('');
@@ -255,15 +281,13 @@
     if (S.mode === 'trips' && T.cat === cat) renderTrips();
   }
   const fmtN = n => n == null ? '' : n >= 10000 ? `${Math.round(n / 1000)}k` : n.toLocaleString('en-US');
-  const placeIn = it => { const p = S.meta && S.meta.trips && S.meta.trips.planned;
-    return !!(p && Object.values(p.items || {}).some(t => (t.items || []).some(x => x.detail && x.detail.place_id === it.place_id))); };
+  const placeIn = it => inTripNow(T.data, it.place_id);
   function shownPlaces(r, cat) {
     const all = (r && r.items) || [];
     return cat === 'food' && !T.bars ? all.filter(x => !x.bar) : all;
   }
   function placeCard(it, i, cat) {
-    const q = queued(), qk = `${(ex.dest && ex.dest.label) || ''}|${it.place_id}`;
-    const btn = placeIn(it) ? `<span class="trp-in">${I(P.check, 16)}In trip</span>` : q[qk] ? `<span class="trp-in q">${I(P.check, 16)}Sent</span>`
+    const btn = placeIn(it) ? `<span class="trp-in">${I(P.check, 16)}In trip</span>` : sentHas(T.data, it.place_id) ? `<span class="trp-in q">${I(P.check, 16)}Sent</span>`
       : `<button type="button" class="trp-add" data-padd="${i}" aria-label="Add ${esc(it.title)} to trip">${I(P.plus, 20)}</button>`;
     const rating = it.rating != null ? `<span class="trp-rate">${I(P.star, 13)}${(+it.rating).toFixed(1)}</span>${it.rating_count ? `<span class="trp-cnt">(${fmtN(it.rating_count)})</span>` : ''}` : '';
     const open = it.open_now === true ? '<span class="trp-open">Open now</span>' : it.open_now === false ? '<span class="trp-closed">Closed now</span>' : '';
@@ -420,7 +444,7 @@
 
   /* ---------- v135 Upcoming trip cards (droplet adapter: GET /trips, GET /trip, POST /trip/edit, /trip/delete) ---------- */
   T.trips = null; T.tErr = ''; T.tBusy = false; T.full = {}; T.fBusy = {}; T.fErr = {}; T.edit = null; T.saving = false;
-  const reTrip = () => { if (S.mode === 'tripsplan') renderTrips(); };
+  const reTrip = () => { if (S.mode === 'tripsplan' || S.mode === 'trips') renderTrips(); };
   async function loadTrips(force) {
     if (T.tBusy) return; T.tBusy = true; if (force) T.tErr = '';
     try { const j = await api('/trips'); T.trips = j.trips || []; T.tErr = ''; }
@@ -614,7 +638,7 @@
     main.innerHTML = exploreMode ? exploreHTML() : (T.detail ? detailHTML() : listHTML());
     if (!exploreMode && T.msg) main.insertAdjacentHTML('beforeend', `<div class="trp-toast">${esc(T.msg)}</div>`);
     if (typeof setModeClass === 'function') setModeClass();
-    if (!exploreMode && !T.trips && !T.tBusy && !T.tErr) void loadTrips(false);
+    if (!T.trips && !T.tBusy && !T.tErr) void loadTrips(false);   // v139: Explore needs it too for 'In trip'
     if (!exploreMode && T.detail && T.detail.kind === 'up' && T.trips && !T.full[T.detail.id] && !T.fBusy[T.detail.id]) void loadTrip(T.detail.id);
     if (exploreMode) {
       if (T.data && !T.busy) drawMap(T.data);
@@ -661,7 +685,8 @@
       try {
         await api('/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ day, plan: T.plan, dest: d.dest, dates: d.dates, card, departure: { place: 'Home', time: ex.depart, battery_pct: +ex.soc } }) });
         T.trips = null; T.full = {};
-        const q = queued(); q[`${d.dest.label}|${it.place_id}`] = Date.now(); try { localStorage.setItem(LSQ, JSON.stringify(q)); } catch (e) {}
+        const q = queued(); q[qKey(d, it.place_id)] = Date.now(); try { localStorage.setItem(LSQ, JSON.stringify(q)); } catch (e) {}
+        void loadTrips(true);
         T.msg = `Added to Day ${day} · see Trip › Upcoming`;
       } catch (e) { T.msg = e.message === 'auth' ? 'Turn on remote controls in Control first' : 'Couldn’t add: ' + e.message; }
       renderTrips(); setTimeout(() => { T.msg = ''; if (S.mode === 'trips') { const t = document.querySelector('.trp-toast'); if (t) t.remove(); } }, 3500);
@@ -674,7 +699,8 @@
     try {
       await api('/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ day, plan: T.plan, dest: d.dest, dates: d.dates, card, departure: { place: 'Home', time: ex.depart, battery_pct: +ex.soc } }) });
         T.trips = null; T.full = {};
-      const q = queued(); q[`${d.dest.label}|${s.charger_id}`] = Date.now(); try { localStorage.setItem(LSQ, JSON.stringify(q)); } catch (e) {}
+      const q = queued(); q[qKey(d, s.charger_id)] = Date.now(); try { localStorage.setItem(LSQ, JSON.stringify(q)); } catch (e) {}
+      void loadTrips(true);
       T.msg = `Added to Day ${day} · see Trip › Upcoming`;
     } catch (e) { T.msg = e.message === 'auth' ? 'Turn on remote controls in Control first' : 'Couldn’t add: ' + e.message; }
     renderTrips(); setTimeout(() => { T.msg = ''; if (S.mode === 'trips') { const t = document.querySelector('.trp-toast'); if (t) t.remove(); } }, 3500);
