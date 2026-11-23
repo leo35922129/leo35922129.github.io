@@ -22,7 +22,15 @@
     chart: '<path d="M4 20V4M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-6"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>'
   };
-  const usage = () => (S.meta && S.meta.usage_summary) || null;
+  /* v141: never blank. Keep the last good usage block on this device (hours and message counts only) and fall back to it when a
+     publish ships none; the 'Updated' time shown is always the data's own generated_at. */
+  const ULS = 'ht_usage_lastgood';
+  const usage = () => {
+    const u = S.meta && S.meta.usage_summary;
+    if (u && u.lei) { if (!u.stale) try { localStorage.setItem(ULS, JSON.stringify(u)); } catch (er) {} return u; }
+    try { const c = JSON.parse(localStorage.getItem(ULS) || 'null'); if (c && c.lei) return Object.assign(c, { stale: true }); } catch (er) {}
+    return null;
+  };
   const api = () => (S.meta && S.meta.tesla_api) || null;
   const gapi = () => (S.meta && S.meta.google_api) || null;   // v130: Places API (New) counter from the Trips service
 
@@ -66,7 +74,7 @@
         <div class="su-cnote">Bots often work at the same time, so combined hours are more than clock time.</div>` : ''}
       </section>
       <button type="button" class="su-dailybtn" data-su="daily">${D.svg(I.clock, 'dr-ico')}<span>Daily time</span><svg class="su-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
-      <p class="su-foot">Hours are estimates from message timestamps, not billed usage.${u.generated_at ? ` Updated ${e(timeET(Date.parse(u.generated_at) / 1000))}.` : ''}</p>`;
+      <p class="su-foot">Hours are estimates from message timestamps, not billed usage.${u.generated_at ? ` ${u.stale ? 'Showing the last good numbers, updated' : 'Updated'} ${e(timeET(Date.parse(u.generated_at) / 1000))}.` : ''}</p>`;
   }
 
   /* ---------- v140: messages Lei sent (his own messages only, from usage.json lei.messages) ---------- */
