@@ -66,7 +66,6 @@
         <div class="su-tile pay"><span class="k">Google API</span><span class="v">${g ? $m(g.projected) : '—'}</span></div>
       </div>
     </div>
-      ${msgCard(lei.messages)}
       ${secHd('Team')}<section class="dr-card">
         ${D.cardHd(I.bots, 'var(--dim)', 'Bot working hours', '')}
         <div class="su-bots">${rows || '<p class="su-mut">No bot hours yet.</p>'}</div>
@@ -77,32 +76,7 @@
       <p class="su-foot">Hours are estimates from message timestamps, not billed usage.${u.generated_at ? ` ${u.stale ? 'Showing the last good numbers, updated' : 'Updated'} ${e(timeET(Date.parse(u.generated_at) / 1000))}.` : ''}</p>`;
   }
 
-  /* ---------- v140: messages Lei sent (his own messages only, from usage.json lei.messages) ---------- */
-  const detroitDay = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Detroit' });   // YYYY-MM-DD
-  function msgCard(m) {
-    if (!m || !m.total) return '';
-    const D = window.DR, today = detroitDay(), p = dp(today);
-    const mon = new Date(p.y, p.m - 1, p.dd - ((p.dow + 6) % 7)), wk = iso(mon), mo = today.slice(0, 7);   // week starts Monday
-    const cnt = f => (m.daily || []).filter(d => f(d.date)).reduce((s, d) => s + (d.count || 0), 0);
-    const t = { today: cnt(d => d === today), week: cnt(d => d >= wk && d <= today), month: cnt(d => d.slice(0, 7) === mo) };
-    const max = Math.max(1, ...(m.by_bot || []).map(b => b.count || 0));
-    const rows = (m.by_bot || []).filter(b => b.count > 0).map(b => { const st = D.botStyle(b.bot);
-      return `<div class="su-bot">${D.badge(st.g, st.c, 'md bot')}
-        <div class="su-bn"><div class="su-bt"><b>${e(b.bot)}</b><span class="su-bh">${N(b.count)}</span></div>
-          <div class="su-bar"><i style="width:${Math.max(2, b.count / max * 100).toFixed(1)}%"></i></div></div></div>`; }).join('');
-    return `${secHd('Messages you sent')}<section class="dr-card su-msg">
-        ${D.cardHd(I.chat, 'var(--dim)', 'Your messages', `${N(m.total)} total`)}
-        <div class="su-tiles">
-          <div class="su-tile"><span class="k">Today</span><span class="v">${N(t.today)}</span></div>
-          <div class="su-tile"><span class="k">This week</span><span class="v">${N(t.week)}</span></div>
-          <div class="su-tile"><span class="k">This month</span><span class="v">${N(t.month)}</span></div>
-          <div class="su-tile"><span class="k">All time</span><span class="v">${N(m.total)}</span></div>
-        </div>
-        ${rows ? `<div class="su-bots">${rows}</div>` : ''}
-        <div class="su-cnote">Only messages you typed or said to a bot. Bot replies, routines and bot-to-bot messages aren't counted. The week starts Monday.</div>
-      </section>`;
-  }
-
+  /* v142: the v140 'Messages you sent' card was removed at Lei's request (counts stay in usage.json, unused here). */
   /* ---------- Tesla Fleet API ---------- */
   function apiCards(a) {
     const D = window.DR;
