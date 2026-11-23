@@ -500,3 +500,10 @@
 /* v138: Lei - "Make Feature energy usage title font color become white". Energy's green card only (.fbox.glow-teal):
    title, its icon and chevron -> var(--tx); weight/size unchanged. '% of total', bars and the Savings amber box untouched. */
 #app .fbox.glow-teal .fhd,#app .fbox.glow-teal .fhd .feico,#app .fbox.glow-teal .fhd .chev{color:var(--tx)}
+
+/* v140 Summary: Lei's active-time rule caption + "Messages you sent" card (neutral accents, thin type, 4px bars) */
+#app .su-est{margin-left:6px;font-size:var(--t-lab);font-weight:400;color:var(--t-lab-c);align-self:baseline}
+#app .su-rule{margin:8px 2px 0;font-size:13px;line-height:1.4;font-weight:400;color:var(--t-lab-c)}
+#app .su-msg .su-tiles{grid-template-columns:repeat(2,minmax(0,1fr));margin:2px 0 14px}
+#app .su-msg .su-bots{display:flex;flex-direction:column;gap:12px;margin-bottom:10px}
+#app .su-msg .su-bar i{background:var(--t-lab-c)}

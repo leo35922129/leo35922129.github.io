@@ -47,8 +47,9 @@
     return `<div class="glowbot glow-indigo su-top">
       <section class="dr-card">
         ${D.cardHd(I.chat, 'var(--acc)', 'Your time with Grok Bot', '')}
-        <div class="su-hero"><span class="su-big">${H(lei.total_hours)}</span><span class="su-unit">hours</span></div>
-        <div class="su-meta">${first ? `Since ${longD(first)} · ` : ''}${days.length} active day${days.length === 1 ? '' : 's'}</div>
+        <div class="su-hero"><span class="su-big">${H(lei.total_hours)}</span><span class="su-unit">hours</span>${lei.rule ? '<span class="su-est">est.</span>' : ''}</div>
+        <div class="su-meta">${first ? `Since ${longD(first)} · ` : ''}${days.length} active day${days.length === 1 ? '' : 's'}${lei.messages && lei.messages.sessions ? ` · ${N(lei.messages.sessions)} sessions` : ''}</div>
+        ${lei.rule ? `<p class="su-rule">${e(lei.rule)}</p>` : ''}
       </section>
       <div class="su-tiles">
         <div class="su-tile"><span class="k">Bot hours</span><span class="v">${H(comb)} h</span></div>
@@ -57,6 +58,7 @@
         <div class="su-tile pay"><span class="k">Google API</span><span class="v">${g ? $m(g.projected) : '—'}</span></div>
       </div>
     </div>
+      ${msgCard(lei.messages)}
       ${secHd('Team')}<section class="dr-card">
         ${D.cardHd(I.bots, 'var(--dim)', 'Bot working hours', '')}
         <div class="su-bots">${rows || '<p class="su-mut">No bot hours yet.</p>'}</div>
@@ -65,6 +67,32 @@
       </section>
       <button type="button" class="su-dailybtn" data-su="daily">${D.svg(I.clock, 'dr-ico')}<span>Daily time</span><svg class="su-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
       <p class="su-foot">Hours are estimates from message timestamps, not billed usage.${u.generated_at ? ` Updated ${e(timeET(Date.parse(u.generated_at) / 1000))}.` : ''}</p>`;
+  }
+
+  /* ---------- v140: messages Lei sent (his own messages only, from usage.json lei.messages) ---------- */
+  const detroitDay = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Detroit' });   // YYYY-MM-DD
+  function msgCard(m) {
+    if (!m || !m.total) return '';
+    const D = window.DR, today = detroitDay(), p = dp(today);
+    const mon = new Date(p.y, p.m - 1, p.dd - ((p.dow + 6) % 7)), wk = iso(mon), mo = today.slice(0, 7);   // week starts Monday
+    const cnt = f => (m.daily || []).filter(d => f(d.date)).reduce((s, d) => s + (d.count || 0), 0);
+    const t = { today: cnt(d => d === today), week: cnt(d => d >= wk && d <= today), month: cnt(d => d.slice(0, 7) === mo) };
+    const max = Math.max(1, ...(m.by_bot || []).map(b => b.count || 0));
+    const rows = (m.by_bot || []).filter(b => b.count > 0).map(b => { const st = D.botStyle(b.bot);
+      return `<div class="su-bot">${D.badge(st.g, st.c, 'md bot')}
+        <div class="su-bn"><div class="su-bt"><b>${e(b.bot)}</b><span class="su-bh">${N(b.count)}</span></div>
+          <div class="su-bar"><i style="width:${Math.max(2, b.count / max * 100).toFixed(1)}%"></i></div></div></div>`; }).join('');
+    return `${secHd('Messages you sent')}<section class="dr-card su-msg">
+        ${D.cardHd(I.chat, 'var(--dim)', 'Your messages', `${N(m.total)} total`)}
+        <div class="su-tiles">
+          <div class="su-tile"><span class="k">Today</span><span class="v">${N(t.today)}</span></div>
+          <div class="su-tile"><span class="k">This week</span><span class="v">${N(t.week)}</span></div>
+          <div class="su-tile"><span class="k">This month</span><span class="v">${N(t.month)}</span></div>
+          <div class="su-tile"><span class="k">All time</span><span class="v">${N(m.total)}</span></div>
+        </div>
+        ${rows ? `<div class="su-bots">${rows}</div>` : ''}
+        <div class="su-cnote">Only messages you typed or said to a bot. Bot replies, routines and bot-to-bot messages aren't counted. The week starts Monday.</div>
+      </section>`;
   }
 
   /* ---------- Tesla Fleet API ---------- */
