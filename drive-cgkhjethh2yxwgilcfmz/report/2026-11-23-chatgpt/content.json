@@ -1,0 +1,250 @@
+{
+  "headlines": [
+    {
+      "h": "Aptiv PRISM: Advanced ADAS at approximately half the cost",
+      "t": "Aptiv introduced PRISM, its next-generation AI-powered ADAS platform, on November 19. The platform emphasizes scalable architecture, advanced driving intelligence, and continuous learning. Aptiv targets a cost reduction of about 50% compared with industry-leading hands-free driving systems; independent production-level comparisons remain necessary. Aptiv positions PRISM as an open platform that allows OEMs to introduce increasingly capable automated-driving functions across different vehicle segments.",
+      "why": "If suppliers can significantly reduce sensor, computing, development, and validation costs, sophisticated supervised driving could become a mainstream expectation rather than a premium differentiator. The ADAS competition is increasingly about capability per dollar across the entire vehicle lifecycle, not simply sensor count or computing performance.",
+      "s": [
+        "aptiv"
+      ],
+      "tags": [
+        "Aptiv"
+      ]
+    },
+    {
+      "h": "Waymo suspends freeway operations: Designing for capability regression",
+      "t": "On November 18, Waymo temporarily suspended freeway robotaxi operations across its US markets after California's Department of Motor Vehicles prohibited its driverless freeway operations. The regulatory action followed incidents involving vehicles entering active construction zones. Waymo continues operating on surface streets while evaluating its freeway performance and working with regulators on corrective measures.",
+      "why": "Most SDV roadmaps assume capabilities will continuously expand, but autonomous capabilities may be introduced, restricted, suspended, revised, and eventually restored. A mature SDV must be designed not only to introduce capabilities but also to manage their temporary removal responsibly.",
+      "s": [
+        "reuters_waymo"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "h": "Genesis introduces EV-inspired stationary experiences in hybrid vehicles",
+      "t": "On November 18–19, Genesis showed the G80 Hybrid (global debut in Los Angeles, with an extended body, hybrid powertrain, and a more passenger-oriented luxury experience) and the GV80 Hybrid (North American debut). Features include Stay Mode, providing cabin climate and multimedia without initially running the engine; predictive energy control informed by upcoming route conditions; smart regenerative braking adapted to traffic and navigation; Digital Key 2 Premium; and an integrated OLED cockpit.",
+      "why": "Stationary experiences could become an independent product category rather than an EV-exclusive feature. Design them around customer intentions, then adapt the underlying execution to each powertrain's capabilities, for example by translating available energy into experience duration instead of showing state of charge alone.",
+      "s": [
+        "kcb_genesis"
+      ],
+      "tags": [
+        "Genesis"
+      ]
+    },
+    {
+      "h": "Hyundai Elantra: The intelligent cockpit moves into affordable vehicles",
+      "t": "On November 19, Hyundai introduced the redesigned 2027 Elantra to North America at the Los Angeles Auto Show. The corresponding Korean-market Avante previews Hyundai's next-generation Pleos Connect infotainment and Gleo AI assistant direction. Exact US software availability and feature packaging still warrant confirmation (Korean Car Blog, per the brief).",
+      "why": "Bringing next-generation cockpit architecture into an entry-level model could make natural-language AI, personalized profiles, OTA improvements, connected services, and sophisticated driving assistance baseline expectations. Software democratization will make experience quality more important than feature exclusivity.",
+      "tags": [
+        "Hyundai"
+      ]
+    },
+    {
+      "h": "AI assistant UX: Where the next commercial opportunities may emerge",
+      "t": "On November 17, Future Market Insights published a forecast for in-vehicle generative AI platforms: a $1.9 billion 2026 estimate, an $18.9 billion 2036 forecast, and a projected 25.8% CAGR. These are commercial market-research estimates, not independently verified revenue or guaranteed growth. The report expects particularly strong growth in AI-supported driver assistance and predictive maintenance, beyond conversational infotainment.",
+      "why": "The brief treats the forecast cautiously; the more interesting observation is AI migrating from entertainment toward practical ownership services, from conversational AI to vehicle-aware AI to a proactive ownership agent.",
+      "tags": []
+    }
+  ],
+  "watch": [
+    {
+      "t": "Waymo is evaluating its freeway performance and working with regulators on corrective measures; surface-street operations continue.",
+      "s": [
+        "reuters_waymo"
+      ],
+      "tags": [
+        "Waymo"
+      ]
+    },
+    {
+      "t": "Hyundai's US software availability and feature packaging for the 2027 Elantra still warrant confirmation.",
+      "tags": [
+        "Hyundai"
+      ]
+    },
+    {
+      "t": "Aptiv's roughly 50% cost-reduction claim still needs independent production-level comparisons.",
+      "s": [
+        "aptiv"
+      ],
+      "tags": [
+        "Aptiv"
+      ]
+    }
+  ],
+  "robotaxi_table": {
+    "columns": [
+      "Operator",
+      "This week",
+      "Notes"
+    ],
+    "rows": [
+      [
+        {
+          "t": "Waymo",
+          "operator_id": "waymo"
+        },
+        {
+          "t": "Temporarily suspended freeway robotaxi operations across its US markets after the California DMV prohibited its driverless freeway operations.",
+          "s": [
+            "reuters_waymo"
+          ]
+        },
+        {
+          "t": "Followed incidents involving vehicles entering active construction zones. Surface-street operations continue while Waymo evaluates freeway performance and works with regulators."
+        }
+      ]
+    ]
+  },
+  "adas_table": {
+    "columns": [
+      "Platform",
+      "This week",
+      "Notes"
+    ],
+    "rows": [
+      [
+        {
+          "t": "Aptiv PRISM"
+        },
+        {
+          "t": "Next-generation AI-powered ADAS platform introduced November 19.",
+          "s": [
+            "aptiv"
+          ]
+        },
+        {
+          "t": "Aptiv targets about 50% lower cost than industry-leading hands-free systems; positioned as an open platform across vehicle segments. Independent production-level comparisons remain necessary."
+        }
+      ]
+    ]
+  },
+  "deep": [
+    {
+      "h": "Evaluating ADAS platforms over the lifecycle",
+      "tags": [
+        "Aptiv"
+      ],
+      "items": [
+        {
+          "t": "The brief suggests evaluating ADAS platforms on SOP cost, lifetime capability, compute headroom, sensor capability, software flexibility, validation cost, and revenue potential. A less expensive platform is not necessarily a better lifetime investment if its hardware limits future OTA capabilities, and expensive hardware without a credible software roadmap can become wasted investment. If a $35,000 crossover and an $80,000 luxury SUV share comparable driving assistance, premium differentiators could include smoother behavior, better communication, deeper personalization, broader validated operating conditions, and greater automation availability.",
+          "s": [
+            "aptiv"
+          ]
+        }
+      ]
+    },
+    {
+      "h": "Capability availability UX",
+      "tags": [
+        "Waymo"
+      ],
+      "items": [
+        {
+          "t": "Rather than treating ADAS availability as a simple on/off state, the brief proposes states with customer-facing messages: available (ready to activate), conditionally available (on supported roads), temporarily unavailable (current conditions prevent activation), restricted (some previously supported functions are unavailable), under validation (restoration not yet confirmed), and restored. A customer who bought an eyes-off subscription for a highway commute needs to understand what changed, why, what alternatives remain, and whether the subscription is affected.",
+          "s": [
+            "reuters_waymo"
+          ]
+        }
+      ]
+    },
+    {
+      "h": "Stationary experiences across powertrains",
+      "tags": [
+        "Genesis"
+      ],
+      "items": [
+        {
+          "t": "The brief lists illustrative use cases (not confirmed Genesis modes): personal relaxation, mobile productivity, family comfort, and outdoor lifestyle. Engine-off climate is generally supported on BEVs, architecture-dependent on EREVs, and battery-dependent on hybrids; engine-start management matters for EREVs and hybrids. Instead of exposing the technical architecture, the interface could say, for example, that quiet cabin comfort is available for approximately 2 hours. Any automatic engine-start behavior would need clear communication, safeguards, and restrictions against operation in enclosed spaces.",
+          "s": [
+            "kcb_genesis"
+          ]
+        }
+      ]
+    },
+    {
+      "h": "Mainstream versus premium intelligent UX",
+      "tags": [
+        "Hyundai"
+      ],
+      "items": [
+        {
+          "t": "When similar software foundations reach every price point, the brief contrasts mainstream intelligent UX (simple interaction, useful personalization, clear information, reliable automation, a functional voice assistant) with premium intelligent UX (anticipatory assistance, deeper contextual personalization, carefully prioritized information, refined automation, coordinated multisensory comfort, seamless orchestration). Mainstream customers should not receive intentionally frustrating software; premium products should add meaningful capability and refinement."
+        }
+      ]
+    },
+    {
+      "h": "AI ownership intelligence and connected-service value",
+      "tags": [
+        "Tesla"
+      ],
+      "items": [
+        {
+          "t": "The brief describes three generations of automotive AI: conversational AI (convenience), vehicle-aware AI (vehicle understanding), and a proactive ownership agent (reduced ownership effort). A vehicle-aware AI could answer questions such as why energy consumption rose this month or how much home charging saved. It suggests an AI Ownership Intelligence Dashboard that turns existing Tesla and Tessie telemetry into actionable insights: energy-cost optimization, driving-versus-stationary analysis, personalized OTA recommendations, predictive maintenance, and ownership-cost forecasting."
+        },
+        {
+          "t": "Its illustrative revenue scenario, a $15 monthly subscription with 25% adoption over 5 years, yields $11.25 million a year, $56.25 million lifetime, 62,500 paying customers, and $225 per eligible vehicle, excluding churn, AI inference, cloud, taxes, and development costs. The important metric is customer value relative to subscription cost; basic safety information, essential diagnostics, and fundamental functionality should not be placed behind subscriptions."
+        }
+      ]
+    },
+    {
+      "h": "Standards watch: behavioral compatibility after OTA",
+      "tags": [
+        "Waymo"
+      ],
+      "items": [
+        {
+          "t": "No major newly finalized automotive HMI standard was identified this week. The brief lists frameworks made more relevant by Waymo's setback: ISO 26262, ISO 21448 SOTIF, ISO/PAS 8800, ISO 24089, UNECE R156, ISO/SAE 21434, and SAE J3016. A software update can be technically successful while introducing a new human-factors problem, such as changing how the system initiates lane changes, so OTA validation should add behavioral compatibility testing.",
+          "s": [
+            "reuters_waymo"
+          ]
+        }
+      ]
+    },
+    {
+      "h": "Research watch: takeover readiness",
+      "tags": [],
+      "items": [
+        {
+          "t": "The preprint When Context Dominates: Multimodal Signatures of Takeover Readiness Under Varying Hazard and Cognitive Load Conditions (published July 12, 2026) used a driving simulator, hazard scenarios, secondary tasks, and physiological and cognitive-state measures. The type of external hazard was a major determinant of takeover behavior; pedestrian scenarios produced more variable responses than static crash scenarios, while secondary activities had smaller effects on some objective measures. It is simulator-based preprint research, not conclusive evidence of production-system safety. Adaptive communication should never relax validated safety requirements.",
+          "s": [
+            "arxiv_takeover"
+          ]
+        }
+      ]
+    },
+    {
+      "h": "Design concept in the brief: Powertrain-Agnostic Experience Architecture",
+      "tags": [
+        "Genesis",
+        "Hyundai",
+        "Aptiv"
+      ],
+      "items": [
+        {
+          "t": "Instead of defining experiences separately for BEV, EREV, hybrid, and ICE platforms, define a common experience architecture that adapts to the hardware underneath. The brief's example is a Personal Retreat Mode the customer activates the same way regardless of powertrain, while the vehicle architecture determines available functions, energy management, and restrictions.",
+          "s": [
+            "arcfox"
+          ]
+        }
+      ]
+    }
+  ],
+  "before": [
+    {
+      "t": "The takeover-readiness preprint the brief revisits was published July 12, 2026.",
+      "s": [
+        "arxiv_takeover"
+      ],
+      "tags": []
+    }
+  ],
+  "analysis": [
+    "Advanced intelligence does not necessarily belong only in expensive vehicles. Aptiv's PRISM platform points toward more affordable ADAS architectures.",
+    "Vehicle capabilities do not always increase over time. Waymo's freeway suspension demonstrates the importance of designing for restrictions, recovery, and revalidation.",
+    "Intelligent stationary experiences do not belong exclusively to BEVs. Genesis is bringing EV-inspired comfort and predictive energy management into hybrid vehicles.",
+    "The brief recommends separating the customer experience roadmap from the powertrain roadmap while maintaining explicit hardware dependencies, and asks: what if customers chose vehicles based on the experiences they enable throughout their lives, rather than the technology or powertrain underneath them?"
+  ]
+}

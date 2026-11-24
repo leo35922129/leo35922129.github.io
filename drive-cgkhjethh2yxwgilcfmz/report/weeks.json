@@ -51,6 +51,26 @@
       "group_window": "Nov 3 – Nov 15, 2026"
     },
     {
+      "date": "2026-11-16",
+      "window": "Nov 10 – Nov 16, 2026",
+      "title": "Automotive UX Weekly Brief",
+      "source": "chatgpt",
+      "source_label": "ChatGPT · Automotive UX Weekly Brief",
+      "folder": "2026-11-16-chatgpt",
+      "group": "2026-11-16",
+      "group_window": "Nov 10 – Nov 16, 2026"
+    },
+    {
+      "date": "2026-11-23",
+      "window": "Nov 17 – Nov 23, 2026",
+      "title": "Automotive UX Weekly Brief",
+      "source": "chatgpt",
+      "source_label": "ChatGPT · Automotive UX Weekly Brief",
+      "folder": "2026-11-23-chatgpt",
+      "group": "2026-11-23",
+      "group_window": "Nov 17 – Nov 23, 2026"
+    },
+    {
       "date": "2026-11-23",
       "window": "Nov 16 – Nov 23, 2026",
       "title": "Autonomy Weekly: AV, automotive AI & SDV",

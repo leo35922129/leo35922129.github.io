@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-23",
+  "window": "Nov 17 – Nov 23, 2026",
+  "title": "Automotive UX Weekly Brief",
+  "source": "chatgpt",
+  "source_label": "ChatGPT · Automotive UX Weekly Brief",
+  "lead": "Intelligent vehicle experiences are moving beyond premium EVs. Aptiv introduced its PRISM ADAS platform, claiming performance comparable to leading hands-free systems at approximately half the cost; Waymo suspended freeway operations across its US markets after a California regulatory intervention; and Genesis brought stationary comfort and predictive energy management to its new hybrids, while Hyundai unveiled its next-generation Elantra at the Los Angeles Auto Show.",
+  "src": {
+    "aptiv": [
+      "Aptiv, Nov 19",
+      "https://www.aptiv.com/en/newsroom/article/aptiv-introduces-next-generation-adas-platform-purpose-built-for-the-ai-era"
+    ],
+    "reuters_waymo": [
+      "Reuters, Nov 18",
+      "https://www.reuters.com/business/autos-transportation/waymo-pauses-robotaxi-rides-us-freeways-after-california-ban-2026-11-18/"
+    ],
+    "kcb_genesis": [
+      "Korean Car Blog",
+      "https://thekoreancarblog.com/genesis-gv80-hybrid-north-american-debut-la-auto-show/"
+    ],
+    "arxiv_takeover": [
+      "arXiv, Jul 12",
+      "https://arxiv.org/abs/2607.10945"
+    ],
+    "arcfox": [
+      "arcfox.com.cn",
+      "https://www.arcfox.com.cn/t-fonst.html"
+    ]
+  },
+  "audio": {
+    "summary": {
+      "file": "summary.mp3",
+      "duration_s": 171.552,
+      "label": "2:51",
+      "title": "3-min summary"
+    },
+    "deep": {
+      "file": "deep-dive.mp3",
+      "duration_s": 805.704,
+      "label": "13:25",
+      "title": "Deep dive"
+    }
+  }
+}

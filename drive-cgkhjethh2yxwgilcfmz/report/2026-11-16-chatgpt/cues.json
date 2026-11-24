@@ -1,0 +1,706 @@
+{
+ "summary": [
+  {
+   "t": "Automotive UX Weekly Brief, for the week of November 10 through November 16, 2026.",
+   "start": 0.0,
+   "end": 6.9
+  },
+  {
+   "t": "This is the three-minute summary.",
+   "start": 6.9,
+   "end": 8.975
+  },
+  {
+   "t": "The executive take this week is that autonomy is becoming a product customers can buy, subscribe to, and experience.",
+   "start": 8.975,
+   "end": 16.337
+  },
+  {
+   "t": "Advanced driving intelligence is moving from engineering demonstrations into commercial products and customer-facing services.",
+   "start": 16.337,
+   "end": 23.85
+  },
+  {
+   "t": "First, Tesla has begun offering its purpose-built Cybercab to select private customers, with a purchase price of 29,990 dollars and a separate autonomy subscription of 299 dollars a month.",
+   "start": 23.85,
+   "end": 37.525
+  },
+  {
+   "t": "Over five years, that is 47,930 dollars, before taxes, insurance, maintenance, financing, and price changes.",
+   "start": 37.525,
+   "end": 45.975
+  },
+  {
+   "t": "The Cybercab lacks ordinary manual-driving controls, and reporting on the agreement indicates that vehicle movement depends on maintaining an active subscription.",
+   "start": 45.975,
+   "end": 55.513
+  },
+  {
+   "t": "The offering remains limited to selected customers.",
+   "start": 55.513,
+   "end": 58.938
+  },
+  {
+   "t": "The brief's takeaway is that when software is essential to a product's basic function, subscription transparency becomes part of product safety and usability.",
+   "start": 58.938,
+   "end": 68.263
+  },
+  {
+   "t": "Tesla also announced plans to invest approximately 3 billion euros, or 3.3 billion dollars, to expand its Grünheide plant near Berlin, targeting eventual capacity of up to one million Cybercabs a year.",
+   "start": 68.263,
+   "end": 81.912
+  },
+  {
+   "t": "Construction is expected to begin in the first half of 2027, with production targeted for 2029.",
+   "start": 81.912,
+   "end": 89.2
+  },
+  {
+   "t": "These are plans, not completed capacity or confirmed demand.",
+   "start": 89.2,
+   "end": 93.45
+  },
+  {
+   "t": "Second, Mercedes-Benz unveiled two driver-assistance offerings.",
+   "start": 93.45,
+   "end": 97.763
+  },
+  {
+   "t": "MB.Drive Assist Pro provides supervised point-to-point urban driving, and Hands-Free Highway Assist allows hands-free driving on approved highways at up to 85 miles per hour.",
+   "start": 97.763,
+   "end": 108.737
+  },
+  {
+   "t": "The reported system uses 27 sensors, 254 TOPS of computing, and NVIDIA Drive AV software.",
+   "start": 108.737,
+   "end": 116.713
+  },
+  {
+   "t": "Invite-only access is planned in California in December 2026, with a broader rollout in 2027.",
+   "start": 116.713,
+   "end": 124.125
+  },
+  {
+   "t": "Pricing has not been announced.",
+   "start": 124.125,
+   "end": 126.237
+  },
+  {
+   "t": "Third, Zoox robotaxis can now be matched to eligible Uber riders in Las Vegas, covering the Strip, downtown, and the Arts District, at no extra charge.",
+   "start": 126.237,
+   "end": 136.275
+  },
+  {
+   "t": "The companies also announced a multiyear partnership with MGM Resorts, and Los Angeles is planned, with Uber integration expected in 2027.",
+   "start": 136.275,
+   "end": 145.9
+  },
+  {
+   "t": "The UX problem is no longer whether a vehicle can drive itself, but whether customers can reliably discover, select, board, and trust an autonomous ride.",
+   "start": 145.9,
+   "end": 155.625
+  },
+  {
+   "t": "The brief found no major new AI assistant launch and no newly finalized AV design standard this week.",
+   "start": 155.625,
+   "end": 161.975
+  },
+  {
+   "t": "That is the week's core news.",
+   "start": 161.975,
+   "end": 163.85
+  },
+  {
+   "t": "The deep dive covers mobility entitlement design, behavior as brand, robotaxi service maturity, assistant architecture, standards, research, and the brief's Autonomous Experience Contract.",
+   "start": 163.85,
+   "end": 176.376
+  }
+ ],
+ "deep": [
+  {
+   "t": "Automotive UX Weekly Brief, for the week of November 10 through November 16, 2026.",
+   "start": 0.0,
+   "end": 6.888
+  },
+  {
+   "t": "This is the deep dive.",
+   "start": 6.888,
+   "end": 8.562
+  },
+  {
+   "t": "The executive take is that autonomy is becoming a product customers can buy, subscribe to, and experience.",
+   "start": 8.562,
+   "end": 15.312
+  },
+  {
+   "t": "The brief's central design question is this: when intelligence becomes the product, how should automakers design its ownership, availability, behavior, and long-term value?",
+   "start": 15.312,
+   "end": 25.925
+  },
+  {
+   "t": "Start with the Tesla Cybercab, which the brief calls the most consequential automotive business-model experiment this week.",
+   "start": 25.925,
+   "end": 33.1
+  },
+  {
+   "t": "Tesla's Cybercab is now being offered to select customers, marking a transition from a robotaxi concept to a restricted private-purchase offering.",
+   "start": 33.1,
+   "end": 42.087
+  },
+  {
+   "t": "The purchase price is 29,990 dollars, and the autonomy subscription is 299 dollars per month.",
+   "start": 42.087,
+   "end": 50.25
+  },
+  {
+   "t": "Purchase plus 60 months of subscription at the announced rate comes to 47,930 dollars, excluding taxes, insurance, maintenance, financing, and price changes.",
+   "start": 50.25,
+   "end": 61.663
+  },
+  {
+   "t": "The crucial difference from a conventional FSD subscription is that the Cybercab lacks ordinary manual-driving controls.",
+   "start": 61.663,
+   "end": 69.362
+  },
+  {
+   "t": "Reporting on the agreement indicates that vehicle movement depends on maintaining an active autonomy subscription.",
+   "start": 69.362,
+   "end": 75.938
+  },
+  {
+   "t": "Tesla's offering remains limited to selected customers.",
+   "start": 75.938,
+   "end": 79.725
+  },
+  {
+   "t": "It is not evidence of unrestricted nationwide driverless operation.",
+   "start": 79.725,
+   "end": 84.225
+  },
+  {
+   "t": "Traditional vehicle ownership assumes a baseline of permanent utility.",
+   "start": 84.225,
+   "end": 88.675
+  },
+  {
+   "t": "You purchase a car, and even if connected services expire, you can still drive it.",
+   "start": 88.675,
+   "end": 94.075
+  },
+  {
+   "t": "Cybercab introduces a different model: physical ownership plus continuously licensed mobility capability.",
+   "start": 94.075,
+   "end": 101.3
+  },
+  {
+   "t": "Questions immediately emerge.",
+   "start": 101.3,
+   "end": 103.588
+  },
+  {
+   "t": "What happens when a payment fails?",
+   "start": 103.588,
+   "end": 105.812
+  },
+  {
+   "t": "What if connectivity is interrupted?",
+   "start": 105.812,
+   "end": 108.287
+  },
+  {
+   "t": "What if the subscription price increases?",
+   "start": 108.287,
+   "end": 110.938
+  },
+  {
+   "t": "What if the service is temporarily restricted in a particular geography?",
+   "start": 110.938,
+   "end": 115.65
+  },
+  {
+   "t": "What does resale mean when the vehicle's core functionality depends on a license?",
+   "start": 115.65,
+   "end": 120.45
+  },
+  {
+   "t": "These are not merely legal or commercial questions.",
+   "start": 120.45,
+   "end": 123.7
+  },
+  {
+   "t": "They directly affect trust, onboarding, mobile UX, and product expectations.",
+   "start": 123.7,
+   "end": 129.0
+  },
+  {
+   "t": "The brief's design opportunity is mobility entitlement UX: a new experience layer that clearly communicates the customer's ability to use the vehicle.",
+   "start": 129.0,
+   "end": 138.412
+  },
+  {
+   "t": "It should explain subscription status, geographic eligibility, upcoming restrictions, payment problems, and what assistance is available if service becomes unavailable.",
+   "start": 138.412,
+   "end": 149.287
+  },
+  {
+   "t": "A customer should never discover a mobility restriction only after entering the vehicle.",
+   "start": 149.287,
+   "end": 154.625
+  },
+  {
+   "t": "When software is essential to a product's basic function, subscription transparency becomes part of product safety and usability, not simply commerce UX.",
+   "start": 154.625,
+   "end": 164.45
+  },
+  {
+   "t": "Second, Tesla's Berlin expansion.",
+   "start": 164.45,
+   "end": 167.262
+  },
+  {
+   "t": "On November 16, Tesla announced plans to invest approximately 3 billion euros, or 3.3 billion dollars, in an expansion at its Grünheide facility near Berlin.",
+   "start": 167.262,
+   "end": 178.525
+  },
+  {
+   "t": "The proposed expansion targets eventual production capacity of up to one million Cybercabs annually.",
+   "start": 178.525,
+   "end": 184.95
+  },
+  {
+   "t": "Construction is expected to begin in the first half of 2027, with production targeted for 2029.",
+   "start": 184.95,
+   "end": 192.225
+  },
+  {
+   "t": "These are plans, not completed capacity or confirmed sales demand.",
+   "start": 192.225,
+   "end": 196.912
+  },
+  {
+   "t": "Purpose-built autonomous vehicles challenge assumptions embedded in conventional vehicle programs.",
+   "start": 196.912,
+   "end": 202.675
+  },
+  {
+   "t": "A vehicle designed for autonomous use does not necessarily need the same steering controls, instrument cluster, driver seating ergonomics, or cabin architecture as a manually driven car.",
+   "start": 202.675,
+   "end": 214.125
+  },
+  {
+   "t": "But eliminating traditional controls creates new dependencies on sensors, compute, electrical redundancy, communication, remote support, and fallback behavior.",
+   "start": 214.125,
+   "end": 224.425
+  },
+  {
+   "t": "The bigger strategic question for 2029 to 2035 vehicle programs is whether to develop a conventional vehicle that can support autonomy, or an architecture optimized for autonomy from the beginning.",
+   "start": 224.425,
+   "end": 237.175
+  },
+  {
+   "t": "A personally owned autonomous vehicle, a fleet robotaxi, and a supervised family SUV may share intelligence but have fundamentally different passenger, maintenance, and emergency-experience requirements.",
+   "start": 237.175,
+   "end": 250.1
+  },
+  {
+   "t": "Third, Mercedes-Benz, which the brief frames as a direct challenge to Tesla's supervised-driving experience.",
+   "start": 250.1,
+   "end": 256.712
+  },
+  {
+   "t": "Mercedes introduced two forthcoming driver-assistance offerings.",
+   "start": 256.712,
+   "end": 261.025
+  },
+  {
+   "t": "MB.Drive Assist Pro provides supervised point-to-point urban driving, including intersections, traffic lights, lane changes, and highway exits.",
+   "start": 261.025,
+   "end": 271.332
+  },
+  {
+   "t": "Drivers must keep their hands on the steering wheel and remain responsible for supervision.",
+   "start": 271.332,
+   "end": 276.719
+  },
+  {
+   "t": "Hands-Free Highway Assist provides hands-free driving on approved highways, including automatic lane changes, at speeds up to 85 miles per hour.",
+   "start": 276.719,
+   "end": 285.694
+  },
+  {
+   "t": "Drivers must continue supervising.",
+   "start": 285.694,
+   "end": 288.307
+  },
+  {
+   "t": "The reported system uses 27 sensors, 254 TOPS of computing performance, and NVIDIA Drive AV software.",
+   "start": 288.307,
+   "end": 296.919
+  },
+  {
+   "t": "Mercedes plans invite-only access in California in December 2026, followed by a broader 2027 rollout.",
+   "start": 296.919,
+   "end": 305.007
+  },
+  {
+   "t": "Subscription pricing has not yet been announced.",
+   "start": 305.007,
+   "end": 308.244
+  },
+  {
+   "t": "Mercedes is prioritizing broader supervised-driving capability rather than immediately pushing Level 3 eyes-off driving across all environments.",
+   "start": 308.244,
+   "end": 317.469
+  },
+  {
+   "t": "Functional breadth and automation level are not the same thing.",
+   "start": 317.469,
+   "end": 321.156
+  },
+  {
+   "t": "A Level 2 system may navigate complex city streets while requiring continuous supervision.",
+   "start": 321.156,
+   "end": 326.994
+  },
+  {
+   "t": "A Level 3 system may permit eyes-off operation, but only under narrower conditions.",
+   "start": 326.994,
+   "end": 332.557
+  },
+  {
+   "t": "In the brief's comparison, both Tesla FSD Supervised and MB.Drive Assist Pro are Level 2 with continuous supervision.",
+   "start": 332.557,
+   "end": 341.169
+  },
+  {
+   "t": "Tesla offers broad supervised urban capability with a camera-centered approach across its existing eligible fleet.",
+   "start": 341.169,
+   "end": 348.469
+  },
+  {
+   "t": "Mercedes plans point-to-point capability on a multi-sensor architecture, differentiating through integrated assistance and brand behavior, with limited access first.",
+   "start": 348.469,
+   "end": 358.882
+  },
+  {
+   "t": "The distinction that matters to UX is how confidently the system communicates its operating limits and how naturally it handles situations that still require human involvement.",
+   "start": 358.882,
+   "end": 369.419
+  },
+  {
+   "t": "The brief calls this opportunity behavior as brand.",
+   "start": 369.419,
+   "end": 372.719
+  },
+  {
+   "t": "If multiple automakers use similar underlying AI driving models, designers may need to define brand-specific behavior within validated safety limits.",
+   "start": 372.719,
+   "end": 382.344
+  },
+  {
+   "t": "For Cadillac, that might mean smooth, predictable acceleration, early deceleration, and restrained communication.",
+   "start": 382.344,
+   "end": 389.744
+  },
+  {
+   "t": "For Chevrolet, it might mean simple, approachable, highly legible assistance with minimal learning burden.",
+   "start": 389.744,
+   "end": 396.257
+  },
+  {
+   "t": "Those are design hypotheses, not announced brand settings.",
+   "start": 396.257,
+   "end": 400.294
+  },
+  {
+   "t": "The next ADAS design system should specify how the vehicle moves, communicates, and responds, not just what appears on the cluster.",
+   "start": 400.294,
+   "end": 408.244
+  },
+  {
+   "t": "Fourth, Uber and Zoox.",
+   "start": 408.244,
+   "end": 410.044
+  },
+  {
+   "t": "Zoox robotaxis can now be matched to eligible Uber riders in Las Vegas.",
+   "start": 410.044,
+   "end": 414.869
+  },
+  {
+   "t": "The initial service covers tourist-oriented areas including the Strip, downtown, and the Arts District.",
+   "start": 414.869,
+   "end": 421.507
+  },
+  {
+   "t": "Eligible Uber ride types can receive a Zoox vehicle at no extra charge, while riders can adjust preferences to improve their chances of matching with one.",
+   "start": 421.507,
+   "end": 430.944
+  },
+  {
+   "t": "The companies also announced a multiyear partnership with MGM Resorts to improve pickup and drop-off experiences around resort properties.",
+   "start": 430.944,
+   "end": 439.382
+  },
+  {
+   "t": "Expansion to Los Angeles is planned, with Uber integration expected in 2027.",
+   "start": 439.382,
+   "end": 445.432
+  },
+  {
+   "t": "The most interesting UX problem, the brief says, is the robotaxi lottery.",
+   "start": 445.432,
+   "end": 450.319
+  },
+  {
+   "t": "Citing Axios, it notes that Uber is preparing a dedicated robotaxi tier but has not yet introduced it in Las Vegas, because the company wants sufficient fleet availability and competitive pricing first.",
+   "start": 450.319,
+   "end": 462.869
+  },
+  {
+   "t": "If customers cannot reliably choose the experience they want, the product may feel experimental even when the underlying technology is impressive.",
+   "start": 462.869,
+   "end": 471.957
+  },
+  {
+   "t": "The brief describes three stages of maturity.",
+   "start": 471.957,
+   "end": 474.957
+  },
+  {
+   "t": "Opportunistic autonomy, where customers occasionally receive an autonomous vehicle through ordinary ride matching.",
+   "start": 474.957,
+   "end": 481.707
+  },
+  {
+   "t": "Selectable autonomy, where customers can specifically request a robotaxi with reasonable confidence one will arrive.",
+   "start": 481.707,
+   "end": 489.219
+  },
+  {
+   "t": "And dependable autonomy, where the service delivers predictable pickup, pricing, journey completion, accessibility, and assistance.",
+   "start": 489.219,
+   "end": 497.869
+  },
+  {
+   "t": "The MGM partnership is particularly useful because pickup and drop-off are often more difficult than the driving itself.",
+   "start": 497.869,
+   "end": 505.082
+  },
+  {
+   "t": "Large resorts have multiple entrances, complex traffic circulation, crowds, luggage, and ambiguous passenger locations.",
+   "start": 505.082,
+   "end": 513.332
+  },
+  {
+   "t": "A successful robotaxi is a mobility service that makes every transition, finding, boarding, riding, and exiting, feel reliable.",
+   "start": 513.332,
+   "end": 521.457
+  },
+  {
+   "t": "Fifth, AI assistant UX.",
+   "start": 521.457,
+   "end": 523.657
+  },
+  {
+   "t": "The brief did not find a comparably significant new production automotive AI-assistant launch during November 10 through 16, so it compares two established directions instead of repeating older announcements as new.",
+   "start": 523.657,
+   "end": 536.971
+  },
+  {
+   "t": "Garmin Unified Cabin is a single integrated cockpit architecture supporting seat-aware interaction, multi-intent voice commands, display coordination, lighting, and audio.",
+   "start": 536.971,
+   "end": 547.846
+  },
+  {
+   "t": "The Bosch AI Extension Platform is an add-on computing approach using NVIDIA hardware to introduce more capable AI into existing cockpit architectures.",
+   "start": 547.846,
+   "end": 557.308
+  },
+  {
+   "t": "Should advanced AI capability be built into the vehicle's baseline compute at start of production, or should the architecture permit future computing expansion?",
+   "start": 557.308,
+   "end": 567.045
+  },
+  {
+   "t": "The first approach offers tighter integration and potentially simpler validation.",
+   "start": 567.045,
+   "end": 572.208
+  },
+  {
+   "t": "The second could preserve future AI flexibility but introduces cost, thermal, packaging, networking, and software-compatibility challenges.",
+   "start": 572.208,
+   "end": 581.033
+  },
+  {
+   "t": "The brief recommends separating AI functions into three categories.",
+   "start": 581.033,
+   "end": 585.458
+  },
+  {
+   "t": "Always-available vehicle functions, such as climate, defrost, basic controls, safety messaging, and essential vehicle status, should not depend on an unpredictable cloud conversation.",
+   "start": 585.458,
+   "end": 597.083
+  },
+  {
+   "t": "Contextual vehicle intelligence, such as trip preparation, diagnostics, charging advice, and personalization, can combine local vehicle data with carefully controlled AI reasoning.",
+   "start": 597.083,
+   "end": 608.596
+  },
+  {
+   "t": "General-purpose intelligence, such as search, recommendations, and productivity, can rely more heavily on cloud services, subject to privacy and connectivity.",
+   "start": 608.596,
+   "end": 618.77
+  },
+  {
+   "t": "The customer should experience one coherent assistant, but the engineering system should maintain clear boundaries between conversational reasoning and authorized vehicle control.",
+   "start": 618.77,
+   "end": 629.158
+  },
+  {
+   "t": "Sixth, standards and safety.",
+   "start": 629.158,
+   "end": 631.333
+  },
+  {
+   "t": "No major newly finalized AV-specific design standard was identified this week, but two existing regulatory developments remain important.",
+   "start": 631.333,
+   "end": 640.221
+  },
+  {
+   "t": "NHTSA's AV modernization effort is working toward performance standards for autonomous vehicles and updating safety requirements that assume a human driver, including controls and displays, mirrors, lighting, and braking.",
+   "start": 640.221,
+   "end": 653.658
+  },
+  {
+   "t": "NHTSA's crash-reporting framework continues to require reporting of certain incidents involving automated-driving systems and Level 2 driver assistance.",
+   "start": 653.658,
+   "end": 662.946
+  },
+  {
+   "t": "Reported incident counts alone are not a valid safety comparison between manufacturers without exposure and operating-domain context.",
+   "start": 662.946,
+   "end": 671.358
+  },
+  {
+   "t": "A purpose-built robotaxi needs to communicate with people who may never operate its controls: passengers, pedestrians, first responders, maintenance workers, and remote assistance personnel.",
+   "start": 671.358,
+   "end": 683.033
+  },
+  {
+   "t": "A pedestrian may need to know that a vehicle is yielding.",
+   "start": 683.033,
+   "end": 686.471
+  },
+  {
+   "t": "A passenger may need to know why it has stopped.",
+   "start": 686.471,
+   "end": 689.408
+  },
+  {
+   "t": "A remote operator may need a diagnostic explanation.",
+   "start": 689.408,
+   "end": 693.096
+  },
+  {
+   "t": "A first responder may need safe access and shutdown information.",
+   "start": 693.096,
+   "end": 697.346
+  },
+  {
+   "t": "These are different interfaces sharing one underlying vehicle state.",
+   "start": 697.346,
+   "end": 701.545
+  },
+  {
+   "t": "Autonomous-vehicle HMI extends beyond the cabin.",
+   "start": 701.545,
+   "end": 705.133
+  },
+  {
+   "t": "Seventh, the research watch.",
+   "start": 705.133,
+   "end": 707.245
+  },
+  {
+   "t": "A 2026 paper, CRASH: Cognitive Reasoning Agent for Safety Hazards in Autonomous Driving, examined 2,168 reported autonomous-vehicle incidents from 2021 to 2025.",
+   "start": 707.245,
+   "end": 720.995
+  },
+  {
+   "t": "The researchers developed an LLM-based agent to summarize incident reports and infer contributing causes.",
+   "start": 720.995,
+   "end": 727.783
+  },
+  {
+   "t": "They reported that approximately 64 percent of incidents were attributed to perception or planning failures, while around half involved rear-end collisions.",
+   "start": 727.783,
+   "end": 737.295
+  },
+  {
+   "t": "The agent achieved 86 percent accuracy in a limited expert-validation exercise.",
+   "start": 737.295,
+   "end": 743.083
+  },
+  {
+   "t": "These results are specific to the study's dataset and classification method, and do not establish industry-wide causal percentages or show that the tool is ready for safety certification.",
+   "start": 743.083,
+   "end": 754.321
+  },
+  {
+   "t": "The brief suggests combining incident analysis with human-factors research to distinguish incorrect vehicle behavior, correct but poorly communicated behavior, incorrect customer understanding, and inappropriate human intervention.",
+   "start": 754.321,
+   "end": 768.42
+  },
+  {
+   "t": "The brief's design concept this week is the Autonomous Experience Contract.",
+   "start": 768.42,
+   "end": 773.183
+  },
+  {
+   "t": "The Tesla, Mercedes, and Zoox announcements reveal a common problem: customers need to understand what intelligence they are actually receiving.",
+   "start": 773.183,
+   "end": 781.92
+  },
+  {
+   "t": "The contract is a consistent UX framework that explains capability, responsibility, availability, and commercial terms, for example what supervised driving requires of the driver and where it works.",
+   "start": 781.92,
+   "end": 794.903
+  },
+  {
+   "t": "It could live across the vehicle HMI, mobile app, onboarding, and release notes, so the customer always knows what the vehicle can do, what they must do, and what they are paying for.",
+   "start": 794.903,
+   "end": 805.478
+  },
+  {
+   "t": "The bottom line is that autonomous capability is becoming a commercial product with real customer expectations.",
+   "start": 805.478,
+   "end": 812.191
+  },
+  {
+   "t": "Tesla is experimenting with software-dependent vehicle ownership.",
+   "start": 812.191,
+   "end": 816.365
+  },
+  {
+   "t": "Mercedes is broadening supervised driving capability.",
+   "start": 816.365,
+   "end": 820.091
+  },
+  {
+   "t": "Zoox and Uber are turning driverless mobility into an increasingly integrated consumer service.",
+   "start": 820.091,
+   "end": 826.14
+  },
+  {
+   "t": "And suppliers are building platforms that allow automakers to deliver AI experiences across different computing architectures.",
+   "start": 826.14,
+   "end": 833.64
+  },
+  {
+   "t": "The brief's closing question is: what experience are we promising customers for the entire life of the vehicle, and how do we keep that promise as software, subscriptions, regulations, and AI capabilities evolve?",
+   "start": 833.64,
+   "end": 846.504
+  }
+ ]
+}

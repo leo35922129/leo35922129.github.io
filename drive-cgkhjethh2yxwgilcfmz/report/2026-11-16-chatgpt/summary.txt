@@ -1,0 +1,15 @@
+Automotive UX Weekly Brief, for the week of November 10 through November 16, 2026. This is the three-minute summary.
+
+The executive take this week is that autonomy is becoming a product customers can buy, subscribe to, and experience. Advanced driving intelligence is moving from engineering demonstrations into commercial products and customer-facing services.
+
+First, Tesla has begun offering its purpose-built Cybercab to select private customers, with a purchase price of 29,990 dollars and a separate autonomy subscription of 299 dollars a month. Over five years, that is 47,930 dollars, before taxes, insurance, maintenance, financing, and price changes. The Cybercab lacks ordinary manual-driving controls, and reporting on the agreement indicates that vehicle movement depends on maintaining an active subscription. The offering remains limited to selected customers. The brief's takeaway is that when software is essential to a product's basic function, subscription transparency becomes part of product safety and usability.
+
+Tesla also announced plans to invest approximately 3 billion euros, or 3.3 billion dollars, to expand its Grünheide plant near Berlin, targeting eventual capacity of up to one million Cybercabs a year. Construction is expected to begin in the first half of 2027, with production targeted for 2029. These are plans, not completed capacity or confirmed demand.
+
+Second, Mercedes-Benz unveiled two driver-assistance offerings. MB.Drive Assist Pro provides supervised point-to-point urban driving, and Hands-Free Highway Assist allows hands-free driving on approved highways at up to 85 miles per hour. The reported system uses 27 sensors, 254 TOPS of computing, and NVIDIA Drive AV software. Invite-only access is planned in California in December 2026, with a broader rollout in 2027. Pricing has not been announced.
+
+Third, Zoox robotaxis can now be matched to eligible Uber riders in Las Vegas, covering the Strip, downtown, and the Arts District, at no extra charge. The companies also announced a multiyear partnership with MGM Resorts, and Los Angeles is planned, with Uber integration expected in 2027. The UX problem is no longer whether a vehicle can drive itself, but whether customers can reliably discover, select, board, and trust an autonomous ride.
+
+The brief found no major new AI assistant launch and no newly finalized AV design standard this week.
+
+That is the week's core news. The deep dive covers mobility entitlement design, behavior as brand, robotaxi service maturity, assistant architecture, standards, research, and the brief's Autonomous Experience Contract.

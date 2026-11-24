@@ -1,0 +1,292 @@
+{
+  "headlines": [
+    {
+      "h": "Tesla Cybercab: The most consequential automotive business-model experiment this week",
+      "t": "Tesla's Cybercab is now being offered to select customers, marking a transition from a robotaxi concept to a restricted private-purchase offering: a $29,990 purchase price and a $299 per month autonomy subscription, or $47,930 over five years (purchase plus 60 months at the announced rate; excludes taxes, insurance, maintenance, financing, and price changes). Unlike a conventional FSD subscription, the Cybercab lacks ordinary manual-driving controls, and reporting on the agreement indicates that vehicle movement depends on maintaining an active autonomy subscription. The offering remains limited to selected customers; it is not evidence of unrestricted nationwide driverless operation.",
+      "why": "Cybercab introduces physical ownership plus continuously licensed mobility capability. Payment failures, connectivity interruptions, price increases, geographic restrictions, and resale all affect trust, onboarding, and mobile UX. When software is essential to a product's basic function, subscription transparency becomes part of product safety and usability, not simply commerce UX.",
+      "s": [
+        "reuters_cybercab"
+      ],
+      "tags": [
+        "Tesla"
+      ]
+    },
+    {
+      "h": "Tesla's Berlin expansion: A manufacturing bet on purpose-built autonomy",
+      "t": "On November 16, Tesla announced plans to invest approximately €3 billion ($3.3 billion) in an expansion at its Grünheide facility near Berlin. The proposed expansion targets eventual production capacity of up to one million Cybercabs annually. Construction is expected to begin in the first half of 2027, with production targeted for 2029. These are plans, not completed capacity or confirmed sales demand.",
+      "why": "A vehicle designed for autonomous use does not necessarily need conventional steering controls, an instrument cluster, or driver seating ergonomics, but eliminating them creates new dependencies on sensors, compute, electrical redundancy, communication, remote support, and fallback behavior. Hardware decisions must be driven by the intended operating model.",
+      "s": [
+        "reuters_berlin"
+      ],
+      "tags": [
+        "Tesla"
+      ]
+    },
+    {
+      "h": "Mercedes-Benz: A direct challenge to Tesla's supervised-driving experience",
+      "t": "Mercedes-Benz introduced two forthcoming driver-assistance offerings. MB.Drive Assist Pro provides supervised point-to-point urban driving, including intersections, traffic lights, lane changes, and highway exits, with hands on the wheel and the driver responsible for supervision. Hands-Free Highway Assist provides hands-free driving on approved highways, including automatic lane changes, at speeds up to 85 mph, with continued supervision. The reported system uses 27 sensors, 254 TOPS of computing performance, and NVIDIA Drive AV software. Mercedes plans invite-only access in California in December 2026, followed by a broader 2027 rollout. Subscription pricing has not yet been announced.",
+      "why": "Mercedes is prioritizing broader supervised-driving capability rather than immediately pushing Level 3 eyes-off driving across all environments; functional breadth and automation level are not the same thing. If multiple OEMs use similar underlying AI driving models, vehicle behavior itself can become part of the brand language.",
+      "s": [
+        "verge_mercedes"
+      ],
+      "tags": [
+        "Mercedes-Benz",
+        "Tesla",
+        "NVIDIA"
+      ]
+    },
+    {
+      "h": "Uber + Zoox: The robotaxi becomes a selectable mobility experience",
+      "t": "Zoox robotaxis can now be matched to eligible Uber riders in Las Vegas. The initial service covers tourist-oriented areas including the Strip, downtown, and the Arts District. Eligible Uber ride types can receive a Zoox vehicle at no extra charge, and riders can adjust preferences to improve their chances of matching with one. The companies also announced a multiyear partnership with MGM Resorts to improve pickup and drop-off around resort properties. Expansion to Los Angeles is planned, with Uber integration expected in 2027.",
+      "why": "Uber is preparing a dedicated robotaxi tier but has not yet introduced it in Las Vegas (the brief cites Axios). If customers cannot reliably choose the experience they want, the product may feel experimental even when the technology is impressive. A successful robotaxi is a mobility service that makes finding, boarding, riding, and exiting feel reliable.",
+      "s": [
+        "verge_zoox"
+      ],
+      "tags": [
+        "Uber",
+        "Zoox"
+      ]
+    }
+  ],
+  "watch": [
+    {
+      "t": "Mercedes-Benz plans invite-only access to MB.Drive Assist Pro in California in December 2026, followed by a broader 2027 rollout; subscription pricing has not been announced.",
+      "s": [
+        "verge_mercedes"
+      ],
+      "tags": [
+        "Mercedes-Benz"
+      ]
+    },
+    {
+      "t": "Zoox expansion to Los Angeles is planned, with Uber integration expected in 2027.",
+      "s": [
+        "verge_zoox"
+      ],
+      "tags": [
+        "Zoox",
+        "Uber"
+      ]
+    },
+    {
+      "t": "Uber's dedicated robotaxi tier has not yet been introduced in Las Vegas; Uber wants sufficient fleet availability and competitive pricing first (Axios, per the brief).",
+      "tags": [
+        "Uber"
+      ]
+    },
+    {
+      "t": "Tesla's Grünheide Cybercab expansion: construction expected to begin in the first half of 2027, production targeted for 2029.",
+      "s": [
+        "reuters_berlin"
+      ],
+      "tags": [
+        "Tesla"
+      ]
+    }
+  ],
+  "robotaxi_table": {
+    "columns": [
+      "Operator",
+      "This week",
+      "Notes"
+    ],
+    "rows": [
+      [
+        {
+          "t": "Tesla Cybercab",
+          "operator_id": "tesla"
+        },
+        {
+          "t": "Offered to select private customers: $29,990 purchase plus a $299 monthly autonomy subscription.",
+          "s": [
+            "reuters_cybercab"
+          ]
+        },
+        {
+          "t": "No ordinary manual-driving controls; reporting indicates movement depends on an active autonomy subscription. Limited to selected customers, not unrestricted nationwide driverless operation."
+        }
+      ],
+      [
+        {
+          "t": "Tesla (Berlin plan)",
+          "operator_id": "tesla"
+        },
+        {
+          "t": "About €3 billion ($3.3 billion) Grünheide expansion targeting up to one million Cybercabs a year.",
+          "s": [
+            "reuters_berlin"
+          ]
+        },
+        {
+          "t": "Construction expected in the first half of 2027, production targeted for 2029. Plans, not completed capacity or confirmed demand."
+        }
+      ],
+      [
+        {
+          "t": "Zoox + Uber",
+          "operator_id": "zoox"
+        },
+        {
+          "t": "Zoox robotaxis can be matched to eligible Uber riders in Las Vegas at no extra charge.",
+          "s": [
+            "verge_zoox"
+          ]
+        },
+        {
+          "t": "Covers the Strip, downtown, and the Arts District; multiyear MGM Resorts partnership; Los Angeles planned, Uber integration expected in 2027."
+        }
+      ]
+    ]
+  },
+  "adas_table": {
+    "columns": [
+      "Dimension",
+      "Tesla FSD (Supervised)",
+      "Mercedes MB.Drive Assist Pro"
+    ],
+    "rows": [
+      [
+        "Automation category",
+        "Level 2",
+        "Level 2"
+      ],
+      [
+        "Driver supervision",
+        "Continuous",
+        "Continuous"
+      ],
+      [
+        "Urban driving",
+        "Broad supervised capability",
+        "Planned point-to-point capability"
+      ],
+      [
+        "Hardware philosophy",
+        "Camera-centered",
+        "Multi-sensor architecture"
+      ],
+      [
+        "Differentiation",
+        "Broad software capability",
+        "Integrated assistance and brand behavior"
+      ],
+      [
+        "Availability",
+        "Existing eligible Tesla fleet",
+        "Limited access planned, wider 2027 rollout"
+      ]
+    ]
+  },
+  "deep": [
+    {
+      "h": "Mobility entitlement UX",
+      "tags": [
+        "Tesla"
+      ],
+      "items": [
+        {
+          "t": "The brief proposes a new experience layer that clearly communicates the customer's ability to use the vehicle: subscription status, geographic eligibility, upcoming restrictions, payment problems, and what assistance is available if service becomes unavailable. A customer should never discover a mobility restriction only after entering the vehicle.",
+          "s": [
+            "reuters_cybercab"
+          ]
+        }
+      ]
+    },
+    {
+      "h": "Behavior as Brand",
+      "tags": [
+        "Mercedes-Benz",
+        "Tesla"
+      ],
+      "items": [
+        {
+          "t": "The distinction that matters to UX is how confidently the system communicates its operating limits and how naturally it handles situations that still require human involvement. The brief offers design hypotheses, not announced brand settings: for Cadillac, smooth, predictable acceleration, early deceleration, and restrained communication; for Chevrolet, simple, approachable, highly legible assistance with minimal learning burden. The next ADAS design system should specify how the vehicle moves, communicates, and responds, not just what appears on the cluster.",
+          "s": [
+            "verge_mercedes"
+          ]
+        }
+      ]
+    },
+    {
+      "h": "From opportunistic to dependable autonomy",
+      "tags": [
+        "Uber",
+        "Zoox"
+      ],
+      "items": [
+        {
+          "t": "The brief describes three stages of maturity: opportunistic autonomy, where customers occasionally receive an autonomous vehicle through ordinary ride matching; selectable autonomy, where customers can specifically request a robotaxi with reasonable confidence one will arrive; and dependable autonomy, with predictable pickup, pricing, journey completion, accessibility, and assistance. The MGM partnership is useful because pickup and drop-off at large resorts, with multiple entrances, crowds, luggage, and ambiguous passenger locations, are often harder than the driving itself.",
+          "s": [
+            "verge_zoox"
+          ]
+        }
+      ]
+    },
+    {
+      "h": "AI assistant UX: a quieter launch week",
+      "tags": [
+        "Garmin",
+        "Bosch",
+        "NVIDIA"
+      ],
+      "items": [
+        {
+          "t": "The brief did not find a comparably significant new production automotive AI-assistant launch during November 10–16, and instead compares two established directions: Garmin Unified Cabin, a single integrated cockpit architecture with seat-aware interaction, multi-intent voice commands, and coordinated displays, lighting, and audio; and the Bosch AI Extension Platform, an add-on computing approach using NVIDIA hardware to bring more capable AI into existing cockpits. The question is whether advanced AI should be built into baseline compute at SOP or whether the architecture should permit future computing expansion."
+        },
+        {
+          "t": "Its recommendation is to separate AI functions into always-available vehicle functions (climate, defrost, basic controls, safety messaging, essential status), contextual vehicle intelligence (trip preparation, diagnostics, charging advice, personalization), and general-purpose intelligence (search, recommendations, productivity). The customer should experience one coherent assistant, with clear boundaries between conversational reasoning and authorized vehicle control."
+        }
+      ]
+    },
+    {
+      "h": "Standards and safety: beyond the cabin",
+      "tags": [],
+      "items": [
+        {
+          "t": "No major newly finalized AV-specific design standard was identified. The brief highlights NHTSA's AV modernization effort, working toward performance standards and updating requirements that assume a human driver, and NHTSA's crash-reporting framework, noting that reported incident counts alone are not a valid safety comparison between manufacturers without exposure and operating-domain context. A purpose-built robotaxi must communicate with passengers, pedestrians, first responders, maintenance workers, and remote assistance personnel: different interfaces sharing one underlying vehicle state."
+        }
+      ]
+    },
+    {
+      "h": "Research watch: AI-assisted incident analysis",
+      "tags": [],
+      "items": [
+        {
+          "t": "The 2026 paper CRASH: Cognitive Reasoning Agent for Safety Hazards in Autonomous Driving examined 2,168 reported autonomous-vehicle incidents from 2021 to 2025 using an LLM-based analysis agent. It reported that about 64% of incidents were attributed to perception or planning failures, around half involved rear-end collisions, and the agent achieved 86% accuracy in a limited expert-validation exercise. The results are specific to the study's dataset and method. The brief suggests combining incident analysis with human-factors research to distinguish incorrect vehicle behavior, correct but poorly communicated behavior, incorrect customer understanding, and inappropriate human intervention."
+        }
+      ]
+    },
+    {
+      "h": "Design concept in the brief: the Autonomous Experience Contract",
+      "tags": [
+        "Tesla",
+        "Mercedes-Benz",
+        "Zoox"
+      ],
+      "items": [
+        {
+          "t": "A consistent UX framework that explains capability, responsibility, availability, and commercial terms across supervised driving, eyes-off driving, and robotaxi use, living across the vehicle HMI, mobile app, onboarding, and release notes. The full concept would add subscription terms, vehicle-specific limitations, and OTA behavior changes, so the customer always knows what the vehicle can do, what they must do, and what they are paying for."
+        }
+      ]
+    }
+  ],
+  "before": [
+    {
+      "t": "Garmin Unified Cabin and the Bosch AI Extension Platform are established directions the brief compares rather than new launches this week.",
+      "tags": [
+        "Garmin",
+        "Bosch"
+      ]
+    },
+    {
+      "t": "NHTSA's AV modernization effort and crash-reporting framework are existing regulatory developments that remain important.",
+      "tags": []
+    }
+  ],
+  "analysis": [
+    "Tesla is experimenting with software-dependent vehicle ownership.",
+    "Mercedes is broadening supervised driving capability. Zoox and Uber are turning driverless mobility into an increasingly integrated consumer service.",
+    "Suppliers are building platforms that allow OEMs to deliver AI experiences across different computing architectures.",
+    "The brief's strategic model: hardware capability, validated intelligence, customer authority, experience design, commercial entitlement, OTA evolution. Its question: what experience are we promising customers for the entire life of the vehicle, and how do we keep that promise as software, subscriptions, regulations, and AI capabilities evolve?"
+  ]
+}

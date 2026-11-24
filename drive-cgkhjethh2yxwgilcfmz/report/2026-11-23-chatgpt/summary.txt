@@ -1,0 +1,17 @@
+Automotive UX Weekly Brief, for the week of November 17 through November 23, 2026. This is the three-minute summary.
+
+The executive take this week is that intelligent vehicle experiences are moving beyond premium EVs.
+
+On November 19, Aptiv introduced PRISM, its next-generation AI-powered ADAS platform. Aptiv claims performance comparable to leading hands-free driving systems at approximately half the cost. Independent production-level comparisons remain necessary. Aptiv positions PRISM as an open platform that lets automakers introduce increasingly capable automated-driving functions across different vehicle segments. If costs fall that far, sophisticated supervised driving could become a mainstream expectation rather than a premium differentiator.
+
+On November 18, Waymo temporarily suspended freeway robotaxi operations across its US markets after California's Department of Motor Vehicles prohibited its driverless freeway operations. The action followed incidents involving vehicles entering active construction zones. Waymo continues operating on surface streets while it evaluates freeway performance and works with regulators. The brief's lesson is that autonomous capability is reversible, so a mature software-defined vehicle must be designed to manage the temporary removal of capabilities responsibly.
+
+Genesis showed its G80 Hybrid and GV80 Hybrid in Los Angeles. Stay Mode provides cabin climate and multimedia without initially running the engine, alongside predictive energy control and smart regenerative braking. Stationary comfort could become a product category of its own, not an EV-exclusive feature.
+
+Hyundai introduced the redesigned 2027 Elantra to North America at the Los Angeles Auto Show. The Korean-market Avante previews Hyundai's next-generation Pleos Connect infotainment and Gleo AI assistant direction, though exact US software availability still warrants confirmation. The intelligent cockpit is moving into affordable vehicles.
+
+Future Market Insights forecast in-vehicle generative AI platforms growing from 1.9 billion dollars in 2026 to 18.9 billion dollars in 2036. The brief treats that forecast cautiously, and sees the bigger shift as AI moving from entertainment toward practical ownership services.
+
+The brief found no major newly finalized HMI standard this week.
+
+That is the week's core news. The deep dive covers lifecycle ADAS evaluation, capability availability design, stationary experiences across powertrains, mainstream versus premium UX, ownership intelligence, standards, takeover-readiness research, and the brief's powertrain-agnostic experience architecture.

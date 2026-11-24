@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-16",
+  "window": "Nov 10 – Nov 16, 2026",
+  "title": "Automotive UX Weekly Brief",
+  "source": "chatgpt",
+  "source_label": "ChatGPT · Automotive UX Weekly Brief",
+  "lead": "Autonomy is becoming a product customers can buy, subscribe to, and experience. Tesla began offering its purpose-built Cybercab to select private customers at $29,990 plus a $299 monthly autonomy subscription; Mercedes-Benz unveiled supervised point-to-point urban driving and hands-free highway assistance; and Uber and Zoox began integrating purpose-built robotaxis into Uber's Las Vegas service.",
+  "src": {
+    "reuters_cybercab": [
+      "Reuters, Nov 14",
+      "https://www.reuters.com/business/autos-transportation/tesla-invites-select-customers-buy-cybercab-personal-use-2026-11-14/"
+    ],
+    "verge_mercedes": [
+      "The Verge",
+      "https://www.theverge.com/transportation/1034321/mercedes-benz-mb-drive-assist-pro-hands-free-highway-assist-2027"
+    ],
+    "verge_zoox": [
+      "The Verge",
+      "https://www.theverge.com/transportation/1032984/uber-zoox-robotaxi-las-vegas-launch-mgm-resorts-los-angeles"
+    ],
+    "reuters_berlin": [
+      "Reuters, Nov 16",
+      "https://www.reuters.com/business/tesla-announces-33-billion-expansion-germany-plant-2026-11-16/"
+    ]
+  },
+  "audio": {
+    "summary": {
+      "file": "summary.mp3",
+      "duration_s": 176.376,
+      "label": "2:56",
+      "title": "3-min summary"
+    },
+    "deep": {
+      "file": "deep-dive.mp3",
+      "duration_s": 846.504,
+      "label": "14:06",
+      "title": "Deep dive"
+    }
+  }
+}
