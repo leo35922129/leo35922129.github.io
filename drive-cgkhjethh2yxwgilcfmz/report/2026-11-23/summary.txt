@@ -1,0 +1,21 @@
+Autonomy Weekly, for the week of November 16 to 23, 2026. This is the three-minute summary.
+
+Headline one. Tesla's FSD version 15 has started reaching owners. Build 2026.38.6.11, carrying FSD Supervised version 15.0.1, went to a small early-access group of HW4 cars on Saturday, November 21. Tesla's release notes describe a new vision encoder shared with Robotaxi and Optimus, which Tesla says improves the critical intervention rate by 25 times. That figure is Tesla's own claim, with no independent data. The update also adds Tesla Reality View, a live generated picture of the drive, plus learned navigation, speed camera slowdown, and better school zone speed handling. EVwire reports Musk saying wide release comes in December. The notes list the new Model Y, so Cybertruck eligibility is not confirmed.
+
+Headline two. For your truck, the wide software update 2026.44.1 now carries FSD version 14.3.13 on HW4, including Automatic Collision Evasion, according to Not a Tesla App.
+
+Headline three. Cybercab rides opened in Dallas on November 19, Tesla's second Cybercab city after Austin. Tesla has not published a fare or a fleet count. The Texas register now shows Tesla with 1,507 vehicles and Waymo with 1,364, as of Monday morning. Last week Waymo led by 15. Tesla added 201 vehicles on November 17. Registrations are not cars in service, and TechCrunch says Waymo likely still leads on driverless miles.
+
+Headline four. Waymo had a rough week. California's motor vehicle department barred it from freeways on November 11, and Waymo paused freeway rides in every market. On November 19 it filed two recalls with NHTSA, one for closed freeway lanes and one for manual traffic control at intersections. City street service continues, and NHTSA's school bus query is still open.
+
+Headline five. NVIDIA reported third quarter revenue of $115.8 billion, up 103 percent from a year ago, in its first report under interim chief executive Colette Kress. Automotive is no longer broken out; it sits inside an Edge Computing line of $8.2 billion. The board has hired Heidrick and Struggles to find a permanent CEO, and CFO Dive reports an SEC inquiry.
+
+Headline six. Zoox robotaxis joined the Uber app in Las Vegas on November 16, and began employee rides in Santa Monica on November 19.
+
+Headline seven. Italy approved Tesla Assisted Driving on November 20, the twelfth European country. Those twelve cover about 29 percent of the EU population, and the EU vote needs 65 percent. It is expected in December at the earliest.
+
+Headline eight. Pony.ai and WeRide both reported. Pony.ai has 2,768 robotaxis and revenue up 75 percent. WeRide has more than 2,300 robotaxis and revenue up 88 percent. Both still lose money.
+
+What to watch. NIO's tech day is Wednesday, November 25, in Guangzhou, where it is expected to show its NWM 3.0 world model. Also watch Waymo's freeway fix, Cybercab deliveries to customers in December, and the EU vote.
+
+That is the summary. The deep dive follows theme by theme.

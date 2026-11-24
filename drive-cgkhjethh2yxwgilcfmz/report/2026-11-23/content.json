@@ -1,0 +1,1082 @@
+{
+ "headlines": [
+  {
+   "h": "FSD v15 starts rolling out: Reality View, 'critical intervention rate improved 25x' (Tesla claim)",
+   "t": "Tesla began sending FSD (Supervised) v15.0.1 (build 2026.38.6.11) to early-access HW4 cars on Nov 21. Tesla's notes list an upgraded vision encoder shared by FSD, Robotaxi and Optimus that it says improves the critical intervention rate 25x, a generative Reality View display, learned navigation, personalized parking, speed-camera slowdown, Bike Rack Mode, and better handling of road signs, potholes and school-zone speeds. EVwire reports Musk saying wide release comes in December.",
+   "why": "This is the next FSD for your truck, but the first wave is small (TeslaFi counted 7 cars) and the notes name Model Y; Cybertruck eligibility is not confirmed. The 25x figure is Tesla's own claim with no independent data.",
+   "s": [
+    "nata_v15",
+    "evwire_v15"
+   ],
+   "tags": [
+    "Tesla"
+   ]
+  },
+  {
+   "h": "Cybercab rides open in Dallas, Tesla's second Cybercab city",
+   "t": "Tesla began public rides in driverless Cybercabs in Dallas on Nov 19, announced through an in-app notice and the Robotaxi account on X. Audacy reports the cars run in Dallas's roughly 81 square mile zone and carry an integrated Starlink dish; Tesla has not published a Cybercab fare or fleet count. TNW reports private Cybercab deliveries to Texas buyers are planned for December.",
+   "why": "The Dallas launch that was pending last week happened on time. Tesla has not said how many Cybercabs are in service; registrations are not the same as cars on the road.",
+   "s": [
+    "audacy_dallas",
+    "gettesla_dallas",
+    "insideevs_dallas",
+    "evwire_dallas",
+    "tnw_dallas"
+   ],
+   "tags": [
+    "Tesla"
+   ]
+  },
+  {
+   "h": "Tesla passes Waymo on the Texas register: 1,507 to 1,364",
+   "t": "Tesla added 201 vehicles to the Texas DMV register on Nov 17 (1,306 to 1,507), while Waymo grew 1,321 to 1,364 over the week. EVwire's Nov 23 reading (5:44 a.m. CT) has Avride at 344, Aurora 91 and Zoox 85 (up 22). TechCrunch notes Waymo likely still leads on commercial driverless miles and miles per vehicle.",
+   "why": "Last week the gap was 15 vehicles in Waymo's favour; now Tesla leads by 143 on registrations. Registrations are authorizations, not vehicles in service.",
+   "s": [
+    "evwire_tracker",
+    "evwire_changelog",
+    "tc_mobility"
+   ],
+   "tags": [
+    "Tesla",
+    "Waymo",
+    "Zoox",
+    "Aurora"
+   ]
+  },
+  {
+   "h": "Waymo: California freeway ban, nationwide freeway pause, two recalls",
+   "t": "The California DMV barred Waymo from freeways on Nov 11, calling it an imminent hazard after robotaxis entered construction closures and tried to bypass a CHP traffic break. Waymo paused freeway rides in all markets and on Nov 19 filed two NHTSA recalls: closed freeway lanes (remedy still in development, no collisions or injuries reported) and manual traffic control at intersections (update completed Nov 6). City-street service continues.",
+   "why": "It is the second freeway pause this year for the leading US operator, and NHTSA's school-bus recall query on nearly 3,000 vehicles is still open.",
+   "s": [
+    "reuters_recall",
+    "engadget_recall",
+    "fortune_ca"
+   ],
+   "tags": [
+    "Waymo",
+    "NHTSA"
+   ]
+  },
+  {
+   "h": "NVIDIA Q3: $115.8B revenue, no automotive line, Kress interim CEO",
+   "t": "NVIDIA reported Q3 FY2027 revenue of $115.8B (up 103% year on year) on Nov 17, with Data Center $107.6B and Edge Computing, which includes automotive and robotics, $8.2B (up 42%). It no longer breaks out Automotive. Interim CEO Colette Kress said Hyperion and Alpamayo are enabling Mercedes-Benz and Bolt with Lucid robotaxi fleets, and the board has hired Heidrick & Struggles for a permanent CEO search. CFO Dive reports a WSJ-sourced SEC inquiry.",
+   "why": "Leadership turmoil did not dent the numbers or the AV platform story, but automotive is invisible in the financials; the CEO pick and the reported SEC inquiry are the open risks.",
+   "s": [
+    "nvda_q3",
+    "nvda_cfo",
+    "nvda_call",
+    "cfodive_nvda",
+    "statista_nvda"
+   ],
+   "tags": [
+    "NVIDIA",
+    "Mercedes",
+    "Lucid"
+   ]
+  },
+  {
+   "h": "Zoox: on Uber in Las Vegas, first rides in Santa Monica",
+   "t": "Zoox robotaxis became available on the Uber app in Las Vegas on Nov 16 (matched on eligible UberX-class trips; no way to select one yet) alongside an MGM Resorts partnership. On Nov 19 Zoox began employee-and-friends rides in Santa Monica; its public waitlist and Uber in Los Angeles come in 2027.",
+   "why": "Zoox gets a distribution channel while it trails Tesla and Waymo; Uber says Las Vegas will be its first city with two driverless partners (Motional is the other).",
+   "s": [
+    "zoox_uber",
+    "tc_zoox_uber",
+    "zoox_la",
+    "latimes_zoox",
+    "tc_mobility"
+   ],
+   "tags": [
+    "Zoox",
+    "Uber"
+   ]
+  },
+  {
+   "h": "Italy approves Tesla Assisted Driving: 12 countries, about 29% of the EU",
+   "t": "Italy's transport ministry granted provisional national approval on Nov 20, the 12th country and the first big EU market, ahead of the EU committee vote expected in December at the earliest. Electrek says the approved version follows the Nov 16 RDW decision on stricter driver monitoring. The 12 countries cover about 28.7% of EU population against the 65% needed.",
+   "why": "Europe is the next FSD market. Italy nearly doubles coverage, but Electrek notes France and Spain are still holdouts and Germany plus the 12 would reach only about 47%.",
+   "s": [
+    "electrek_italy",
+    "tad_tracker"
+   ],
+   "tags": [
+    "Tesla"
+   ]
+  },
+  {
+   "h": "China robotaxi earnings: Pony.ai fleet 2,768, WeRide 2,300+ robotaxis",
+   "t": "Pony.ai (Nov 18) reported Q3 revenue of $44.6M, up 75.2%, robotaxi revenue up 165.4% and a fleet of 2,768 at Sep 30 against a 3,500 year-end target. WeRide (Nov 20) reported RMB321.5M revenue, up 88%, robotaxi revenue above RMB100M for the first time, more than 2,300 robotaxis at Oct 31 and Spain's first national L4 passenger permit. Both still lose money.",
+   "why": "Chinese operators are scaling fast and WeRide's revenue is nearly half overseas; the fleets are comparable in size to Tesla's and Waymo's Texas registers.",
+   "s": [
+    "pony_q3",
+    "weride_q3"
+   ],
+   "tags": [
+    "Pony.ai",
+    "WeRide"
+   ]
+  }
+ ],
+ "watch": [
+  {
+   "t": "Tesla FSD v15: Musk says wide release in December (reported by EVwire); watch for Cybertruck eligibility and the holiday update.",
+   "s": [
+    "evwire_v15",
+    "nata_44"
+   ],
+   "tags": [
+    "Tesla"
+   ]
+  },
+  {
+   "t": "Wed Nov 25: NIO IN 2026 tech day in Guangzhou, where NIO is expected to unveil its NWM 3.0 world model and new AI cockpit and driver-assist products; Guangzhou Auto Show opens Nov 27.",
+   "s": [
+    "nio_day",
+    "nio_ev"
+   ],
+   "tags": [
+    "NIO"
+   ]
+  },
+  {
+   "t": "Waymo: the closed-freeway-lane recall remedy, California DMV's conditions for restoring freeway service, and the NHTSA school-bus recall query.",
+   "s": [
+    "reuters_recall",
+    "fortune_ca",
+    "tc_waymo"
+   ],
+   "tags": [
+    "Waymo",
+    "NHTSA"
+   ]
+  },
+  {
+   "t": "Cybercab: private deliveries in Texas planned for December (reported); NHTSA matters on the Cybercab's FMVSS certification and school-zone speeding remain open with no finding.",
+   "s": [
+    "tnw_dallas",
+    "insideevs_dallas"
+   ],
+   "tags": [
+    "Tesla",
+    "NHTSA"
+   ]
+  },
+  {
+   "t": "Dec: EU committee vote on Tesla Assisted Driving no earlier than December; Dec 9 Rivian Autonomy & AI Day; Dec 10 FMVSS 108 comment deadline.",
+   "s": [
+    "electrek_italy",
+    "cnbc_rivian",
+    "fmvss108"
+   ],
+   "tags": [
+    "Tesla",
+    "Rivian",
+    "NHTSA"
+   ]
+  },
+  {
+   "t": "NVIDIA: permanent CEO search (Heidrick & Struggles) and the reported SEC inquiry.",
+   "s": [
+    "cfodive_nvda"
+   ],
+   "tags": [
+    "NVIDIA"
+   ]
+  },
+  {
+   "t": "Las Vegas: Uber says Motional will join Zoox as a second driverless partner on its app within weeks (reported).",
+   "s": [
+    "tc_mobility",
+    "axios_uber"
+   ],
+   "tags": [
+    "Uber",
+    "Zoox"
+   ]
+  }
+ ],
+ "robotaxi_table": {
+  "columns": [
+   "Operator",
+   "Where",
+   "Driverless status",
+   "Fleet",
+   "This week"
+  ],
+  "rows": [
+   [
+    {
+     "t": "Tesla",
+     "operator_id": "tesla"
+    },
+    {
+     "t": "9 US metros incl. Austin, Dallas, Houston, Fort Worth, San Antonio, Tampa, Orlando, Miami, Bay Area (supervised); Cybercab in Austin and Dallas",
+     "s": [
+      "insideevs_dallas"
+     ]
+    },
+    {
+     "t": "Driverless Model Y and Cybercab; Bay Area still has drivers",
+     "s": [
+      "insideevs_dallas"
+     ]
+    },
+    {
+     "t": "1,507 registered in Texas (Nov 23)",
+     "s": [
+      "evwire_tracker"
+     ]
+    },
+    {
+     "t": "Cybercab Dallas Nov 19; FSD v15 early access Nov 21",
+     "s": [
+      "audacy_dallas",
+      "nata_v15"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "Waymo",
+     "operator_id": "waymo"
+    },
+    {
+     "t": "14 paid-ride cities reported by CARC (Denver, San Diego, Tampa added); service areas grew in 5 cities",
+     "s": [
+      "carc_waymo14",
+      "waymo_oct27"
+     ]
+    },
+    {
+     "t": "Fully driverless, paid; freeways paused in all markets",
+     "s": [
+      "fortune_ca"
+     ]
+    },
+    {
+     "t": "4,000+ vehicles and 500,000+ paid rides a week (CARC); 1,364 registered in Texas",
+     "s": [
+      "carc_waymo14",
+      "evwire_changelog"
+     ]
+    },
+    {
+     "t": "California freeway ban; two NHTSA recalls Nov 19",
+     "s": [
+      "reuters_recall",
+      "engadget_recall"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "Zoox",
+     "operator_id": "zoox"
+    },
+    {
+     "t": "Las Vegas (app and Uber), San Francisco early riders; Santa Monica, Atlanta, Austin, Miami testing",
+     "s": [
+      "zoox_uber",
+      "zoox_la",
+      "latimes_zoox"
+     ]
+    },
+    {
+     "t": "Driverless, purpose-built; public in Las Vegas",
+     "s": [
+      "zoox_uber"
+     ]
+    },
+    {
+     "t": "85 registered in Texas (Nov 23)",
+     "s": [
+      "evwire_tracker"
+     ]
+    },
+    {
+     "t": "Uber Las Vegas Nov 16; Santa Monica employee rides Nov 19",
+     "s": [
+      "tc_zoox_uber",
+      "zoox_la"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "Baidu Apollo Go",
+     "operator_id": "baidu-apollo-go"
+    },
+    {
+     "t": "30 cities (Oct); Dubai, Hong Kong, London testing",
+     "s": [
+      "baidu_q3"
+     ]
+    },
+    {
+     "t": "390M+ fully autonomous km cumulative (carried from last week)",
+     "s": [
+      "baidu_q3"
+     ]
+    },
+    {
+     "t": "Not stated in the release"
+    },
+    {
+     "t": "No new filing this week; Q3 results were Nov 16",
+     "s": [
+      "baidu_q3"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "Pony.ai",
+     "operator_id": "pony-ai"
+    },
+    {
+     "t": "China tier-one cities; Guangzhou area now over 1,000 sq km; Zagreb test rides; London and Manchester planned",
+     "s": [
+      "pony_q3"
+     ]
+    },
+    {
+     "t": "Gen-7 fully driverless commercial in China; Zagreb invited riders",
+     "s": [
+      "pony_q3",
+      "pony_toyota"
+     ]
+    },
+    {
+     "t": "2,768 (Sep 30); target 3,500 by year end",
+     "s": [
+      "pony_q3"
+     ]
+    },
+    {
+     "t": "Q3 revenue $44.6M, up 75.2%",
+     "s": [
+      "pony_q3"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "WeRide",
+     "operator_id": "weride"
+    },
+    {
+     "t": "China plus overseas markets incl. Spain, Switzerland, Belgium and France; Slovakia road testing",
+     "s": [
+      "weride_q3"
+     ]
+    },
+    {
+     "t": "Guangzhou robotaxi operations at positive unit economics; overseas is over 90% of robotaxi revenue",
+     "s": [
+      "weride_q3"
+     ]
+    },
+    {
+     "t": "About 4,100 L4 vehicles, 2,300+ robotaxis (Oct 31)",
+     "s": [
+      "weride_q3"
+     ]
+    },
+    {
+     "t": "Q3 revenue RMB321.5M, up 88%; Spain L4 permit",
+     "s": [
+      "weride_q3"
+     ]
+    }
+   ]
+  ]
+ },
+ "adas_table": {
+  "columns": [
+   "System",
+   "What it does today",
+   "Next step"
+  ],
+  "rows": [
+   [
+    {
+     "t": "Tesla FSD (Supervised) v14.3.13 / v15",
+     "operator_id": "tesla"
+    },
+    {
+     "t": "2026.44.1 now wide: v14.3.13 on HW4 (with Automatic Collision Evasion) and v14.3 Lite on HW3; v15.0.1 early access since Nov 21 on HW4",
+     "s": [
+      "nata_44",
+      "oracle_44",
+      "nata_v15"
+     ]
+    },
+    {
+     "t": "v15 wide release in December (reported); EU vote no earlier than December; Italy approved Nov 20",
+     "s": [
+      "evwire_v15",
+      "electrek_italy"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "GM Super Cruise",
+     "operator_id": "gm"
+    },
+    {
+     "t": "Hands-free on mapped highways; about 750,000 enabled vehicles in North America (Nov 9 report)",
+     "s": [
+      "sc_eu"
+     ]
+    },
+    {
+     "t": "Europe from mid-December; eyes-off targeted for 2028",
+     "s": [
+      "sc_eu",
+      "gm_eyesoff"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "Rivian",
+     "operator_id": "rivian"
+    },
+    {
+     "t": "Invitation-only Autonomy Early Access program for Gen 2 R1 and R2 owners",
+     "s": [
+      "ev_rivian"
+     ]
+    },
+    {
+     "t": "Dec 9 event; broader release 2027",
+     "s": [
+      "cnbc_rivian"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "Mercedes MB.Drive Assist Pro",
+     "operator_id": "mercedes-benz"
+    },
+    {
+     "t": "Point-to-point L2; hands-free on highways, hand on wheel in cities; NVIDIA Hyperion and Alpamayo cited for robotaxi work",
+     "s": [
+      "mb",
+      "nvda_call"
+     ]
+    },
+    {
+     "t": "Broad rollout early next year incl. OTA for eligible cars",
+     "s": [
+      "mb"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "BMW",
+     "operator_id": "bmw"
+    },
+    {
+     "t": "City Assistant stops and starts at lights",
+     "s": [
+      "bmw"
+     ]
+    },
+    {
+     "t": "Navigation-guided city L2 in Germany from 2027",
+     "s": [
+      "bmw"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "Huawei ADS 5",
+     "operator_id": "huawei"
+    },
+    {
+     "t": "Qiankun ADS 5.0 began highway L3 validation on the BAIC Stelato V8 on Nov 17, up to 120 km/h, 38 sensors including four LiDARs (reported)",
+     "s": [
+      "carnews_l3"
+     ]
+    },
+    {
+     "t": "Stelato V8 goes on sale Nov 20; China L3 and L4 standard takes effect Jul 1, 2027 (reported)",
+     "s": [
+      "carnews_l3"
+     ]
+    }
+   ],
+   [
+    {
+     "t": "BYD God's Eye",
+     "operator_id": "byd"
+    },
+    {
+     "t": "Denza N8 (Nov 12) lists lidar-based God's Eye B and 5.0; launch claims only",
+     "s": [
+      "denza"
+     ]
+    },
+    {
+     "t": "No new item this week"
+    }
+   ],
+   [
+    {
+     "t": "Li Auto",
+     "operator_id": "li-auto"
+    },
+    {
+     "t": "OTA 9.2 (Nov 6) adds a 3D ViT perception model and Apple CarPlay",
+     "s": [
+      "li_ota"
+     ]
+    },
+    {
+     "t": "CEO said it brings Mach VLA 2.5; rollout detail not confirmed by Li Auto",
+     "s": [
+      "li_ota"
+     ]
+    }
+   ]
+  ]
+ },
+ "deep": [
+  {
+   "h": "Tesla FSD & Robotaxi",
+   "tags": [
+    "Tesla",
+    "Waymo"
+   ],
+   "items": [
+    {
+     "t": "FSD v15. Tesla's notes for v15.0.1 (build 2026.38.6.11, first cars Nov 21) describe an upgraded vision encoder shared between FSD, Robotaxi and Optimus, trained on millions of internet videos, which Tesla says improves the critical intervention rate 25x. It adds Tesla Reality View (a generated live view of the drive), learned start-and-end-of-trip navigation, personalized parking, speed-camera slowdown, Bike Rack Mode and better school-zone and weather speed handling.",
+     "s": [
+      "nata_v15",
+      "evwire_v15"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    },
+    {
+     "t": "Who gets v15. TeslaFi counted 7 cars (0.1% of the fleet) on Nov 21, and the notes list the new Model Y on HW4. EVwire says Musk said wide release comes in December and that Tesla has not said whether HW3 gets it; HW3 runs v14.3 Lite. Cybertruck eligibility is not confirmed.",
+     "s": [
+      "nata_v15",
+      "evwire_v15"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    },
+    {
+     "t": "2026.44.1 for everyone. Not a Tesla App reports the 2026.44.1 branch now carries FSD v14.3.13 on HW4 and v14.3 Lite on HW3, so new subscribers no longer wait on the FSD track. Tesla Oracle says the rollout began Nov 17 and went wide. Tessie lists Automatic Collision Evasion, which can engage FSD to avoid a frontal collision or when you are inattentive while driving manually.",
+     "s": [
+      "nata_44",
+      "oracle_44",
+      "tessie_ace"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    },
+    {
+     "t": "Cybercab in Dallas. Rides opened Nov 19 in the existing Dallas zone of about 81 square miles, booked in the Robotaxi app. Audacy reports the cars are called V1.5 by Tesla engineers, with a Starlink dish and a rear trunk camera, and that about 200 more Cybercabs were registered with Texas just before launch. EVwire quotes Ashok Elluswamy saying Dallas came at almost no extra engineering effort.",
+     "s": [
+      "audacy_dallas",
+      "evwire_dallas",
+      "gettesla_dallas"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    },
+    {
+     "t": "Texas scoreboard. The register on Nov 23 (5:44 a.m. CT) shows Tesla 1,507, Waymo 1,364, Avride 344, Aurora 91, Zoox 85, Gatik 64. Tesla's jump of 201 came on Nov 17; Waymo's came in small daily batches (+7, +17, +19).",
+     "s": [
+      "evwire_tracker",
+      "evwire_changelog"
+     ],
+     "tags": [
+      "Tesla",
+      "Waymo",
+      "Zoox",
+      "Aurora"
+     ]
+    },
+    {
+     "t": "Context on the count. TechCrunch says Waymo still likely leads on commercial driverless miles and miles per vehicle, and that the lead could shrink given Waymo's freeway setback and Tesla's Cybercab push.",
+     "s": [
+      "tc_mobility"
+     ],
+     "tags": [
+      "Tesla",
+      "Waymo"
+     ]
+    },
+    {
+     "t": "Cybercab ownership. TNW reports Tesla plans to start delivering Cybercabs to private buyers in Texas in December; the base price is $29,990 plus a required $299 a month autonomy subscription (Audacy, InsideEVs).",
+     "s": [
+      "tnw_dallas",
+      "audacy_dallas",
+      "insideevs_dallas"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Robotaxi & L4 (beyond Tesla)",
+   "tags": [
+    "Waymo",
+    "Zoox",
+    "Pony.ai",
+    "WeRide",
+    "Uber"
+   ],
+   "items": [
+    {
+     "t": "Waymo freeway pause. California's DMV barred Waymo from driverless operation and testing on freeways on Nov 11, citing entries into an active construction closure and an attempt to get around CHP cars. Waymo paused freeway rides in all its markets but still tests with specialists behind the wheel; surface-street service continues.",
+     "s": [
+      "fortune_ca",
+      "engadget_recall"
+     ],
+     "tags": [
+      "Waymo"
+     ]
+    },
+    {
+     "t": "Waymo recalls. Waymo says it filed two voluntary NHTSA recalls on Nov 19: closed freeway lanes (remedy still being developed, no collisions or injuries reported) and manual traffic control at intersections (the update was completed Nov 6 after a collision involving an officer directing traffic).",
+     "s": [
+      "reuters_recall",
+      "engadget_recall"
+     ],
+     "tags": [
+      "Waymo",
+      "NHTSA"
+     ]
+    },
+    {
+     "t": "Waymo scale. CARC reports paid service in Denver, San Diego and Tampa, a fleet above 4,000, over 500,000 paid rides a week and a goal of 1 million a week by year end. Waymo's own Oct 27 post added nearly 250 square miles in five cities.",
+     "s": [
+      "carc_waymo14",
+      "waymo_oct27"
+     ],
+     "tags": [
+      "Waymo"
+     ]
+    },
+    {
+     "t": "Zoox and Uber. Zoox rides appeared in the Uber app in Las Vegas on Nov 16 and Zoox and Uber became the robotaxi partners for MGM Resorts' Las Vegas properties. Uber will not provide maintenance for Zoox there, and riders cannot select a Zoox yet.",
+     "s": [
+      "zoox_uber",
+      "tc_zoox_uber"
+     ],
+     "tags": [
+      "Zoox",
+      "Uber"
+     ]
+    },
+    {
+     "t": "Zoox in California. The Santa Monica rollout started Nov 19 for employees, family and friends; the waitlist opens next year, and LA Times says Zoox has passed 1 million riders across San Francisco and Las Vegas.",
+     "s": [
+      "zoox_la",
+      "latimes_zoox"
+     ],
+     "tags": [
+      "Zoox"
+     ]
+    },
+    {
+     "t": "Zoox and F1. On Nov 5 Zoox announced a multi-year Las Vegas Grand Prix partnership, with rides to the circuit planned from 2027 (before the window, context).",
+     "s": [
+      "zoox_f1"
+     ],
+     "tags": [
+      "Zoox"
+     ]
+    },
+    {
+     "t": "Pony.ai. Q3 revenue was $44.6M (up 75.2%); robotaxi services revenue rose 165.4% to about 40% of the total. The fleet reached 2,768 vehicles at Sep 30 against a 3,500 target; its Guangzhou and Nansha areas merged into one zone over 1,000 square kilometres; insurance premiums per Gen-7 vehicle fell 19%.",
+     "s": [
+      "pony_q3"
+     ],
+     "tags": [
+      "Pony.ai"
+     ]
+    },
+    {
+     "t": "WeRide. Q3 revenue was RMB321.5M (US$48.0M), up 88%, with overseas 45.7% of the total and gross margin 43.0%. Robotaxi revenue topped RMB100M for the first time and Guangzhou reached positive unit economics. The net loss was RMB310.0M for the quarter.",
+     "s": [
+      "weride_q3"
+     ],
+     "tags": [
+      "WeRide"
+     ]
+    },
+    {
+     "t": "Las Vegas as a test bed. TechCrunch says Uber plans a dedicated autonomous option and that Las Vegas will be the first US city with two driverless partners on its app.",
+     "s": [
+      "tc_mobility",
+      "axios_uber"
+     ],
+     "tags": [
+      "Uber",
+      "Zoox"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Consumer ADAS / L2+",
+   "tags": [
+    "Tesla",
+    "Huawei",
+    "Rivian",
+    "GM"
+   ],
+   "items": [
+    {
+     "t": "Tesla. Besides v15, the 2026.44.1 notes point to a Grok button in navigation search and a Supercharger map redesign; Not a Tesla App expects bigger features in next month's holiday update.",
+     "s": [
+      "nata_44"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    },
+    {
+     "t": "Huawei and BAIC. CarNewsChina reports Stelato and Huawei began highway L3 validation of the Stelato V8 on Nov 17 using Qiankun ADS 5.0 (up to 120 km/h, 38 sensors, four LiDARs), after simulation and closed-track testing.",
+     "s": [
+      "carnews_l3"
+     ],
+     "tags": [
+      "Huawei"
+     ]
+    },
+    {
+     "t": "Rivian and GM (carry-over). Rivian's early access and Dec 9 event, and GM's Super Cruise Europe launch and 2028 eyes-off plan, are unchanged from last week.",
+     "s": [
+      "ev_rivian",
+      "cnbc_rivian",
+      "sc_eu",
+      "gm_eyesoff"
+     ],
+     "tags": [
+      "Rivian",
+      "GM"
+     ]
+    },
+    {
+     "t": "GM leadership. TechCrunch's Kirsten Korosec reports, citing sources and a Wall Street Journal scoop, that GM has hired Heidrick & Struggles to look for candidates to succeed CEO Mary Barra; GM declined to comment.",
+     "s": [
+      "tc_mobility"
+     ],
+     "tags": [
+      "GM"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Chips & compute",
+   "tags": [
+    "NVIDIA",
+    "Qualcomm",
+    "Mobileye",
+    "XPeng"
+   ],
+   "items": [
+    {
+     "t": "NVIDIA results. Revenue of $115.8B, up 20% on the quarter and 103% on the year; Data Center $107.6B; GAAP gross margin 74.8%; Vera Rubin NVL72 has shipped. NVIDIA raised its fiscal 2028 growth outlook to about 75% from 70%, per CFO Dive.",
+     "s": [
+      "nvda_q3",
+      "cfodive_nvda"
+     ],
+     "tags": [
+      "NVIDIA"
+     ]
+    },
+    {
+     "t": "Where automotive sits. NVIDIA reports only Data Center and Edge Computing; Edge was $8.2B, up 14% on the quarter. The release lists new Alpamayo tools, the Halos SAFE framework, partnerships with Mercedes-Benz and Volvo Cars, and Hyperion use cases with Bolt and Lucid, Mercedes-Benz, VW Commercial Vehicles and Einride.",
+     "s": [
+      "nvda_q3",
+      "nvda_cfo",
+      "statista_nvda"
+     ],
+     "tags": [
+      "NVIDIA",
+      "Mercedes"
+     ]
+    },
+    {
+     "t": "Transcript detail. A transcript on Exa has Kress saying physical AI revenue nearly tripled and is on track to exceed $25B for the year, and naming Waabi's L4 trucks and Volvo Cars as Hyperion and Alpamayo users.",
+     "s": [
+      "nvda_call"
+     ],
+     "tags": [
+      "NVIDIA"
+     ]
+    },
+    {
+     "t": "Leadership. Board chair Harvey Jones said the board will not reinstate Huang and has retained Heidrick & Struggles. CFO Dive reports Treasury Secretary Bessent urged a look outside the company, and WSJ reported an SEC inquiry into NVIDIA.",
+     "s": [
+      "cfodive_nvda"
+     ],
+     "tags": [
+      "NVIDIA"
+     ]
+    },
+    {
+     "t": "XPeng. Q3 revenue was RMB24.28B (US$3.62B) with 118,390 deliveries, gross margin 18.9% and a net loss of RMB0.87B.",
+     "s": [
+      "xpeng_q3ir"
+     ],
+     "tags": [
+      "XPeng"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "China",
+   "tags": [
+    "XPeng",
+    "Pony.ai",
+    "WeRide",
+    "Huawei",
+    "NIO"
+   ],
+   "items": [
+    {
+     "t": "NIO tech day. NIO IN 2026 is on Nov 25 in Guangzhou: an AI-native organization, new AI cockpit and driver-assist products, and per Electric-Vehicles.com the NWM 3.0 world model. It is the event's first edition since July 2024.",
+     "s": [
+      "nio_day",
+      "nio_ev"
+     ],
+     "tags": [
+      "NIO"
+     ]
+    },
+    {
+     "t": "NIO backdrop. CnEVPost says NIO's October deliveries of 34,246 fell 15.23% year on year, ending 31 months of growth, and that its chip NX9031X has shipped more than 300,000 units as of July.",
+     "s": [
+      "nio_day"
+     ],
+     "tags": [
+      "NIO"
+     ]
+    },
+    {
+     "t": "Guangzhou Auto Show. It opens Nov 27 (media day), where Mercedes' China-made VLE is expected to debut, per CarNewsChina.",
+     "s": [
+      "nio_day",
+      "carnews_l3"
+     ],
+     "tags": [
+      "Mercedes",
+      "NIO"
+     ]
+    },
+    {
+     "t": "Earnings pattern. XPeng, Pony.ai and WeRide all reported this week; the common thread is revenue growth with continued losses.",
+     "s": [
+      "xpeng_q3ir",
+      "pony_q3",
+      "weride_q3"
+     ],
+     "tags": [
+      "XPeng",
+      "Pony.ai",
+      "WeRide"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Regulation & safety",
+   "tags": [
+    "Tesla",
+    "Waymo",
+    "NHTSA"
+   ],
+   "items": [
+    {
+     "t": "California and NHTSA on Waymo. See the freeway ban and two recalls above; Reuters notes the school-bus recall query covers nearly 3,000 vehicles and that NHTSA and the NTSB have separate probes into a January Santa Monica child strike.",
+     "s": [
+      "reuters_recall",
+      "fortune_ca"
+     ],
+     "tags": [
+      "Waymo",
+      "NHTSA"
+     ]
+    },
+    {
+     "t": "Tesla open NHTSA matters. TNW says NHTSA is looking at how Tesla decided a car with no wheel or pedals meets safety rules (Tesla did not request an exemption, unlike Zoox) and at claims robotaxis sped in school zones. No finding is reported.",
+     "s": [
+      "tnw_dallas"
+     ],
+     "tags": [
+      "Tesla",
+      "NHTSA"
+     ]
+    },
+    {
+     "t": "EU path. Italy's approval is national and provisional; the EU committee vote is expected in December at the earliest and needs 15 of 27 states and 65% of population.",
+     "s": [
+      "electrek_italy",
+      "tad_tracker"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    },
+    {
+     "t": "RDW. Electrek says the RDW approved stricter driver monitoring on Nov 16, including hands on the wheel above 130 km/h, and the system is now called Tesla Assisted Driving in Europe.",
+     "s": [
+      "electrek_italy"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "SDV & OTA",
+   "tags": [
+    "Tesla",
+    "Li Auto",
+    "Qualcomm"
+   ],
+   "items": [
+    {
+     "t": "Tesla OTA cadence. Three builds in about ten days: 2026.38.5.13 (Nov 13-14), 2026.44.1 (Nov 17) and 2026.38.6.11 for v15 early access (Nov 21).",
+     "s": [
+      "tessie_ace",
+      "oracle_44",
+      "nata_v15"
+     ],
+     "tags": [
+      "Tesla"
+     ]
+    },
+    {
+     "t": "Li Auto OTA 9.2 (Nov 6, carry-over) adds a 3D ViT perception model and Apple CarPlay.",
+     "s": [
+      "li_ota"
+     ],
+     "tags": [
+      "Li Auto"
+     ]
+    },
+    {
+     "t": "Mobileye (carry-over). Q3 results and an Orlando robotaxi plan for 2027 were last week's news.",
+     "s": [
+      "mobileye"
+     ],
+     "tags": [
+      "Mobileye"
+     ]
+    }
+   ]
+  },
+  {
+   "h": "Funding & deals",
+   "tags": [
+    "Uber",
+    "Zoox",
+    "NVIDIA"
+   ],
+   "items": [
+    {
+     "t": "Uber and Zoox. First third-party platform for Zoox, plus an MGM Resorts partnership.",
+     "s": [
+      "zoox_uber",
+      "tc_zoox_uber"
+     ],
+     "tags": [
+      "Uber",
+      "Zoox"
+     ]
+    },
+    {
+     "t": "Uber and Motional. Uber says Motional should join the Uber app in Las Vegas within weeks, per Axios and TechCrunch.",
+     "s": [
+      "tc_mobility",
+      "axios_uber"
+     ],
+     "tags": [
+      "Uber"
+     ]
+    }
+   ]
+  }
+ ],
+ "before": [
+  {
+   "t": "Uber said (Nov 4) its Bay Area robotaxi launch with Nuro and Lucid slips to Q1 2027.",
+   "s": [
+    "servospace",
+    "uber_scd"
+   ],
+   "tags": [
+    "Uber",
+    "Nuro",
+    "Lucid"
+   ]
+  },
+  {
+   "t": "Waymo added Torrance, El Segundo and Manhattan Beach to its Los Angeles area (Nov 3).",
+   "s": [
+    "latimes_waymo"
+   ],
+   "tags": [
+    "Waymo"
+   ]
+  },
+  {
+   "t": "Mobileye reported Q3 and outlined an Orlando robotaxi plan for 2027.",
+   "s": [
+    "mobileye"
+   ],
+   "tags": [
+    "Mobileye"
+   ]
+  },
+  {
+   "t": "Aurora's Q3 letter (Oct 28) reported 500,000 driverless miles and a 500-truck MOU.",
+   "s": [
+    "aurora"
+   ],
+   "tags": [
+    "Aurora"
+   ]
+  },
+  {
+   "t": "NHTSA opened a recall query into Waymo over school buses (Nov 9); Baidu reported Q3 on Nov 16.",
+   "s": [
+    "tc_waymo",
+    "baidu_q3"
+   ],
+   "tags": [
+    "Waymo",
+    "Baidu",
+    "NHTSA"
+   ]
+  }
+ ],
+ "analysis": [
+  "The biggest story is Tesla's week: FSD v15 reached its first owners on Nov 21, Cybercab rides opened in Dallas, and Tesla's Texas register count passed Waymo's, while Waymo lost its freeway service and filed two recalls.",
+  "Registration counts are not service data. Tesla leads the Texas register by 143, but TechCrunch says Waymo likely still leads on driverless miles; the v15 25x figure is Tesla's own claim.",
+  "NVIDIA's numbers were strong despite the CEO exit, but automotive is no longer visible in them, so the AV signal comes from partner announcements, not revenue.",
+  "Europe is moving country by country: Italy makes 12, but the 65% population threshold still needs France or Spain, or both."
+ ]
+}

@@ -1,0 +1,240 @@
+{
+ "date": "2026-11-23",
+ "window": "Nov 16 – Nov 23, 2026",
+ "title": "Autonomy Weekly: AV, automotive AI & SDV",
+ "lead": "Tesla had the biggest week: FSD v15 reached its first owners on Nov 21 with Tesla Reality View and a claimed 25x better critical-intervention rate, Cybercab rides opened in Dallas on Nov 19, and Tesla (1,507) overtook Waymo (1,364) on the Texas register. Waymo went the other way: California barred it from freeways, it paused freeway rides everywhere and filed two NHTSA recalls. For your Cybertruck, FSD v14.3.13 with Automatic Collision Evasion is now in the wide 2026.44.1 release, and v15 is reported to go wide in December. NVIDIA reported $115.8 billion in revenue under interim CEO Colette Kress, Italy became the 12th European country to approve Tesla's system, and NIO's tech day is Nov 25.",
+ "src": {
+  "nata_v15": [
+   "Not a Tesla App, FSD v15 release notes (2026.38.6.11), Nov 21",
+   "https://www.notateslaapp.com/software-updates/version/2026.38.6.11/release-notes"
+  ],
+  "evwire_v15": [
+   "EVwire, Nov 23",
+   "https://evwire.com/p/tesla-fsd-v15-rollout-reality-view-release-notes"
+  ],
+  "nata_44": [
+   "Not a Tesla App, Nov 20",
+   "https://www.notateslaapp.com/news/5054/tesla-update-202644-brings-fsd-v143-and-v143-lite-to-every-owner"
+  ],
+  "oracle_44": [
+   "Tesla Oracle, Nov 18",
+   "https://www.teslaoracle.com/2026/11/18/tesla-update-2026-44-1-goes-wide-release-with-fsd-v14-3-lite-hw3-fsd-v14-3-13-hw4-and-charger-network-view-release-notes/"
+  ],
+  "tessie_ace": [
+   "Tessie release notes 2026.38.5.13",
+   "https://stats.tessie.com/versions/2026.38.5.13"
+  ],
+  "audacy_dallas": [
+   "Audacy KRLD, Nov 20",
+   "https://www.audacy.com/krld/news/local/teslas-cybercab-begins-picking-up-passengers-in-dallas"
+  ],
+  "gettesla_dallas": [
+   "GetTesla, Nov 19",
+   "https://gettesla.com/articles/tesla-cybercab-rides-open-to-the-public-in-dallas"
+  ],
+  "insideevs_dallas": [
+   "InsideEVs, Nov 19",
+   "https://insideevs.com/news/816139/tesla-cybercab-robotaxi-expands-to-dallas/"
+  ],
+  "evwire_dallas": [
+   "EVwire, Nov 20",
+   "https://evwire.com/p/tesla-cybercab-dallas-launch-second-city"
+  ],
+  "tnw_dallas": [
+   "The Next Web, Nov 20",
+   "https://thenextweb.com/news/tesla-cybercab-dallas-driverless-rides"
+  ],
+  "evwire_tracker": [
+   "EVwire Texas tracker, Nov 23 (5:44 a.m. CT)",
+   "https://tracker.evwire.com/charts/operators"
+  ],
+  "evwire_changelog": [
+   "EVwire register changelog, through Nov 20",
+   "https://tracker.evwire.com/changelog"
+  ],
+  "tc_mobility": [
+   "TechCrunch Mobility, Nov 22",
+   "https://techcrunch.com/2026/11/22/techcrunch-mobility-a-b-testing-robots-vs-humans/"
+  ],
+  "reuters_recall": [
+   "Reuters via Investing.com, Nov 20",
+   "https://www.investing.com/news/stock-market-news/waymo-recalls-selfdriving-cars-over-closed-freeway-lanes-manual-traffic-control-5042522"
+  ],
+  "engadget_recall": [
+   "Engadget, Nov 21",
+   "https://www.engadget.com/2324099/waymo-recalls-robotaxis-after-they-drove-into-closed-freeway-lanes/"
+  ],
+  "fortune_ca": [
+   "Fortune, Nov 19",
+   "https://fortune.com/2026/11/19/what-california-regulators-want-from-waymo/"
+  ],
+  "waymo_oct27": [
+   "Waymo blog, Oct 27",
+   "https://waymo.com/blog/shorts/more-places/"
+  ],
+  "carc_waymo14": [
+   "CARC, Nov 14",
+   "https://www.carc.com/news/waymo-paid-robotaxis-denver-san-diego-tampa-14-cities-november-2026"
+  ],
+  "nvda_q3": [
+   "NVIDIA Q3 FY2027 press release, Nov 17",
+   "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx"
+  ],
+  "nvda_cfo": [
+   "NVIDIA CFO commentary (SEC)",
+   "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000088/q3fy27cfocommentary.htm"
+  ],
+  "nvda_call": [
+   "Earnings call transcript via Exa",
+   "https://exa.ai/library/markets/stocks/NVDA/earnings/FY2027/Q3/transcript"
+  ],
+  "cfodive_nvda": [
+   "CFO Dive, Nov 17",
+   "https://www.cfodive.com/news/nvidia-projects-75-growth-leadership-upheaval-earnings/875000/"
+  ],
+  "statista_nvda": [
+   "Statista, updated Nov 19",
+   "https://www.statista.com/statistics/1120484/nvidia-quarterly-revenue-by-specialized-market/"
+  ],
+  "zoox_uber": [
+   "Zoox journal, Nov 16",
+   "https://zoox.com/journal/zoox-uber-partnership"
+  ],
+  "tc_zoox_uber": [
+   "TechCrunch, Nov 16",
+   "https://techcrunch.com/2026/11/16/zoox-robotaxis-are-now-on-the-uber-app-in-las-vegas/"
+  ],
+  "zoox_la": [
+   "Zoox journal, Nov 19",
+   "https://zoox.com/journal/zoox-robotaxi-in-los-angeles"
+  ],
+  "latimes_zoox": [
+   "Los Angeles Times, Nov 21",
+   "https://www.latimes.com/business/story/2026-11-21/zoox-launches-its-first-robotaxi-rides-in-la-county"
+  ],
+  "zoox_f1": [
+   "Zoox journal, Nov 5",
+   "https://zoox.com/journal/zoox-f1-las-vegas-grand-prix-partnership"
+  ],
+  "electrek_italy": [
+   "Electrek, Nov 20",
+   "https://electrek.co/2026/11/20/tesla-fsd-italy-approval-assisted-driving/"
+  ],
+  "tad_tracker": [
+   "TAD Tracker (EU approvals), as of Nov 22",
+   "https://tad-tracker.eu/en/"
+  ],
+  "pony_q3": [
+   "Pony.ai Q3 2026 release, Nov 18",
+   "https://ir.pony.ai/news-releases/news-release-details/pony-ai-inc-reports-third-quarter-2026-financial-results-total"
+  ],
+  "weride_q3": [
+   "WeRide Q3 2026 release, Nov 20",
+   "https://ir.weride.ai/news-releases/news-release-details/overseas-revenue-1715-yoy-contributing-nearly-half-total-revenue"
+  ],
+  "xpeng_q3ir": [
+   "XPeng Q3 2026 release, Nov 16",
+   "https://ir.xiaopeng.com/news-releases/news-release-details/xpeng-reports-third-quarter-2026-unaudited-financial-results"
+  ],
+  "carnews_l3": [
+   "CarNewsChina, Nov 18",
+   "https://carnewschina.com/2026/11/18/the-first-chinese-automaker-began-l3-autopilot-tests-on-highways/"
+  ],
+  "nio_ev": [
+   "Electric-Vehicles.com, NIO NWM 3.0 preview",
+   "https://eletric-vehicles.com/nio/nio-to-unveil-nwm-3-0-driving-model-at-november-25-tech-day/"
+  ],
+  "nio_day": [
+   "CnEVPost, Nov 4",
+   "https://cnevpost.com/2026/11/04/nio-to-hold-nio-in-2026-tech-day-nov-25-guangzhou/"
+  ],
+  "axios_uber": [
+   "Axios, Nov 16",
+   "https://www.axios.com/2026/11/16/uber-vegas-robotaxi-crapshoot"
+  ],
+  "cnbc_rivian": [
+   "CNBC, Nov 10",
+   "https://www.cnbc.com/2026/11/10/rivian-r2-autonomy-2027-rj-scaringe.html"
+  ],
+  "fmvss108": [
+   "Federal Register, Nov 16",
+   "https://www.federalregister.gov/documents/2026/11/16/2026-23239/federal-motor-vehicle-safety-standards-modernization-of-fmvss-no-108-to-accommodate-ads-equipped"
+  ],
+  "tc_waymo": [
+   "TechCrunch, Nov 9",
+   "https://techcrunch.com/2026/11/09/waymo-robotaxis-kept-illegally-passing-school-buses-after-software-fix-feds-say/"
+  ],
+  "baidu_q3": [
+   "Baidu Q3 2026 release, Nov 16",
+   "https://www.prnewswire.com/news-releases/baidu-announces-third-quarter-2026-results-302940183.html"
+  ],
+  "aurora": [
+   "Aurora Q3 shareholder letter, Oct 28",
+   "https://www.sec.gov/Archives/edgar/data/1828108/000182810826000092/aurora26q3shareholderlet.htm"
+  ],
+  "mobileye": [
+   "Israel Electronics News, Nov 2",
+   "https://techtime.news/2026/11/02/mobileye-25/"
+  ],
+  "li_ota": [
+   "SDV Sector, Nov 9",
+   "https://sdvsector.com/news/2026-11-09-li-auto-ota-9-2-3d-vit-perception-carplay"
+  ],
+  "sc_eu": [
+   "InsideEVs, Nov 9",
+   "https://insideevs.com/news/814815/gm-super-cruise-cadillac-europe/"
+  ],
+  "ev_rivian": [
+   "EV.com, Oct 21",
+   "https://ev.com/news/rivian-opens-early-access-to-point-to-point-hands-free-driving"
+  ],
+  "mb": [
+   "InsideEVs, Nov 9",
+   "https://insideevs.com/features/814729/mercedes-drive-assist-pro/"
+  ],
+  "bmw": [
+   "BMW Group, Nov 2",
+   "https://newsroom.bmwgroup.com/global/bmw-to-expand-urban-driver-assistance-functions-from-2027/"
+  ],
+  "denza": [
+   "China AI Wire, Nov 12",
+   "https://chinaaiwire.com/news/denza-n8-launch-driver-assistance-gods-eye-20261112"
+  ],
+  "gm_eyesoff": [
+   "CNBC, Oct 12",
+   "https://www.cnbc.com/2026/10/12/cramer-gm-eyes-off-driving-2028.html"
+  ],
+  "servospace": [
+   "ServoSpace, Nov 4",
+   "https://servospace.io/news/lucid-uber-nuro-gravity-robotaxi-bay-area-launch-delayed-q1-2027"
+  ],
+  "uber_scd": [
+   "Smart Cities Dive, Nov 6",
+   "https://www.smartcitiesdive.com/news/uber-ceo-outlines-growth-plans-for-robotaxis/873801/"
+  ],
+  "latimes_waymo": [
+   "Los Angeles Times, Nov 3",
+   "https://www.latimes.com/business/story/2026-11-03/waymo-expands-to-torrance-manhattan-beach-other-corners-of-la-county"
+  ],
+  "pony_toyota": [
+   "Pony.ai blog, Nov 16",
+   "https://blog.pony.ai/pony-ai-and-toyota-launch-fully-driverless-commercial-services-with-gen-7-bz4x-robotaxi/"
+  ]
+ },
+ "audio": {
+  "summary": {
+   "file": "summary.mp3",
+   "duration_s": 224.52,
+   "label": "3:44",
+   "title": "3-min summary"
+  },
+  "deep": {
+   "file": "deep-dive.mp3",
+   "duration_s": 1004.208,
+   "label": "16:44",
+   "title": "10-min deep dive"
+  }
+ },
+ "source": "cio",
+ "source_label": "CIO · Autonomy Weekly"
+}
