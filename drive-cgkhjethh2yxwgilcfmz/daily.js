@@ -241,6 +241,7 @@
         a.addEventListener('click', () => { if (S.mode !== 'daily') return; DAILY.archive = !DAILY.archive; renderDaily(); window.scrollTo(0, 0); });
       }
     }
+    if (typeof placeArchive === 'function') placeArchive();   // v143: the Archive pill moves onto the date row when you switch Summary -> Team Daily Reports (it only moved on a tab change before)
     const sub = document.getElementById('dailysub');
     if (sub) sub.textContent = ''; // v85: no subtitle under the page titles
   };
