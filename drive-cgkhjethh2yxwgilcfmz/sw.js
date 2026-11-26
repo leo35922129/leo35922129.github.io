@@ -1,5 +1,5 @@
-const C = 'ht-shell-v143';
-const SHELL = ['./', 'index.html', 'style.css?v=143', 'app.js?v=143', 'report.js?v=143', 'control.css?v=143', 'control.js?v=143', 'daily.css?v=143', 'daily.js?v=143', 'summary.js?v=143', 'trips.css?v=143', 'trips.js?v=143', 'maplibre-gl.js', 'maplibre-gl.css', 'manifest.webmanifest', 'icon-192.png'];
+const C = 'ht-shell-v144';
+const SHELL = ['./', 'index.html', 'style.css?v=144', 'app.js?v=144', 'report.js?v=144', 'control.css?v=144', 'control.js?v=144', 'daily.css?v=144', 'daily.js?v=144', 'summary.js?v=144', 'trips.css?v=144', 'trips.js?v=144', 'maplibre-gl.js', 'maplibre-gl.css', 'manifest.webmanifest', 'icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(C).then(c => c.addAll(SHELL)));
   self.skipWaiting();
@@ -44,7 +44,7 @@ self.addEventListener('push', e => {
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   const d = e.notification.data || {};
-  // Both actions only open the approval sheet; approving still needs the device token and the confirm word (+ PIN when live).
+  // Both actions only open the approval sheet; approving still needs the device token (+ the 8-digit PIN when live; v144: no typed word).
   const hash = d.approval ? ('#approve=' + encodeURIComponent(d.approval) + (e.action === 'skip' ? '&act=skip' : '')) : '#alerts';
   const url = self.registration.scope + hash;
   e.waitUntil((async () => {

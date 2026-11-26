@@ -179,7 +179,7 @@ function paintControlHome(main){
     </div>
 
     <div class="ctl-sec risk">Needs confirm</div>
-    <p class="ctl-soon">These require a typed confirm and your PIN each time.</p>
+    <p class="ctl-soon">These need your 8-digit PIN each time.</p>
     <div class="ctl-risk">
       ${rbtn('unlock', 'Unlock', 'Type UNLOCK and your PIN', ICONS.unlock)}
       ${rbtn('tonneau-open', 'Open tonneau', 'Type OPEN and your PIN', ICONS.tonneau)}
@@ -354,10 +354,8 @@ function paintConfirm(){
   body.innerHTML = `<div class="ctl-confirm">
     <h3>${ctlEsc(c.title)}</h3>
     <p>${ctlEsc(c.body)}</p>
-    <label for="ctlconfirm">Type ${ctlEsc(c.word)} to confirm</label>
-    <input id="ctlconfirm" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="${ctlEsc(c.word)}">
     <label for="ctlpin">8-digit PIN</label>
-    <input id="ctlpin" type="password" inputmode="numeric" maxlength="8" autocomplete="off" pattern="[0-9]*" placeholder="••••••••">
+    <input id="ctlpin" type="password" inputmode="numeric" maxlength="8" autocomplete="off" pattern="[0-9]*" enterkeyhint="go" placeholder="••••••••">
     <div class="row">
       <button type="button" class="cancel" data-act="confirm-cancel">Cancel</button>
       <button type="button" class="go" data-act="confirm-go" disabled>${ctlEsc(c.go)}</button>
@@ -365,18 +363,15 @@ function paintConfirm(){
   </div>`;
   sheet.classList.remove('hidden');
   sheet.classList.add('ctl-sheet');
-  const word = document.getElementById('ctlconfirm');
   const pin = document.getElementById('ctlpin');
   const go = body.querySelector('.ctl-confirm .go');
   const sync = () => {
-    const ok = (word.value || '').trim().toUpperCase() === c.word && /^\d{8}$/.test(pin.value || '');
+    const ok = /^\d{8}$/.test(pin.value || '');   // v144: PIN only, no typed word
     go.disabled = !ok || CONTROL.busy;
   };
-  word.addEventListener('input', sync);
   pin.addEventListener('input', sync);
-  word.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); pin.focus(); } });
   pin.addEventListener('keydown', ev => { if (ev.key === 'Enter' && !go.disabled) { ev.preventDefault(); go.click(); } });
-  setTimeout(() => word.focus(), 50);
+  setTimeout(() => pin.focus(), 50);
 }
 function closeConfirm(){
   CONTROL.confirm = null;
@@ -385,11 +380,11 @@ function closeConfirm(){
 }
 
 const RISK = {
-  unlock: {cmd:'unlock', title:'Unlock Happy Truck?', word:'UNLOCK', go:'Unlock', body:'This will unlock the truck. Type UNLOCK and enter your PIN to confirm.'},
-  'tonneau-open': {cmd:'tonneau-open', title:'Open the tonneau?', word:'OPEN', go:'Open tonneau', body:'The tonneau will open. Type OPEN and enter your PIN to confirm.'},
-  frunk: {cmd:'frunk-open', title:'Open the frunk?', word:'FRUNK', go:'Open frunk', body:'There is no remote frunk close. Type FRUNK and enter your PIN to confirm.'},
-  trunk: {cmd:'trunk', title:'Open the trunk?', word:'TRUNK', go:'Open trunk', body:'Type TRUNK and enter your PIN to confirm.'},
-  'windows-vent': {cmd:'windows-vent', title:'Vent the windows?', word:'VENT', go:'Vent windows', body:'The windows will vent. Type VENT and enter your PIN to confirm.'}
+  unlock: {cmd:'unlock', title:'Unlock Happy Truck?', word:'UNLOCK', go:'Unlock', body:'This will unlock the truck. Enter your PIN to confirm.'},
+  'tonneau-open': {cmd:'tonneau-open', title:'Open the tonneau?', word:'OPEN', go:'Open tonneau', body:'The tonneau will open. Enter your PIN to confirm.'},
+  frunk: {cmd:'frunk-open', title:'Open the frunk?', word:'FRUNK', go:'Open frunk', body:'There is no remote frunk close. Enter your PIN to confirm.'},
+  trunk: {cmd:'trunk', title:'Open the trunk?', word:'TRUNK', go:'Open trunk', body:'Enter your PIN to confirm.'},
+  'windows-vent': {cmd:'windows-vent', title:'Vent the windows?', word:'VENT', go:'Vent windows', body:'The windows will vent. Enter your PIN to confirm.'}
 };
 
 function handleControlClick(e){
@@ -800,7 +795,7 @@ async function sendCommand(payload){
   }
   if (res.status === 429) return {ok: false, error: 'Too many requests. Try again in a minute.'};
   if (res.status === 503) return {ok: false, error: 'Remote control is temporarily disabled.'};
-  if (res.status === 403) return {ok: false, error: d.error === 'confirm required' || d.error === 'confirm mismatch' ? 'Confirm word did not match.' : (d.error === 'pin required' || d.error === 'auth failed' ? 'PIN was not accepted.' : (d.error === 'risky disabled' ? 'Risky commands are locked. Ask me to reset them.' : (d.error || 'Command not allowed')))};
+  if (res.status === 403) return {ok: false, error: d.error === 'confirm required' || d.error === 'confirm mismatch' ? 'Please try again.' : (d.error === 'pin required' || d.error === 'auth failed' ? 'PIN was not accepted.' : (d.error === 'risky disabled' ? 'Risky commands are locked. Ask me to reset them.' : (d.error || 'Command not allowed')))};
   let applied = false;
   if (d.state) applied = !!applyCommandState(d.state);
   const confirmed = d.confirmed === true;
@@ -836,12 +831,10 @@ async function runSafeCommand(act){
 async function submitRiskyCommand(){
   const c = CONTROL.confirm;
   if (!c || CONTROL.busy) return;
-  const wordEl = document.getElementById('ctlconfirm');
   const pinEl = document.getElementById('ctlpin');
-  const word = (wordEl && wordEl.value || '').trim();
   const pin = (pinEl && pinEl.value || '');
-  if (word.toUpperCase() !== c.word || !/^\d{8}$/.test(pin)) return;
-  const payload = {cmd: c.cmd, confirm: c.word, pin: pin};
+  if (!/^\d{8}$/.test(pin)) return;
+  const payload = {cmd: c.cmd, pin: pin};   // v144: PIN only; the server no longer needs the typed word
   if (pinEl) pinEl.value = '';
   closeConfirm();
   CONTROL.busy = true;

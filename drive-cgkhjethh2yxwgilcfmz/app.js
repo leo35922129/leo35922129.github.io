@@ -1701,7 +1701,7 @@ function autoParamText(f) {
 function autoRunsBlock(f) {
   if (!f.rule) return f.note ? `<p class="auto-small">${esc(f.note)}</p>` : '';
   const modeTxt = f.klass === 'notify' ? 'Notify only. Sends you an alert and never touches the truck.'
-    : f.klass === 'ask' ? ('Asks you first. Nothing runs until you tap Approve and enter the confirm word' + (f.mode === 'live' ? ' and your PIN.' : '. Dry run now: approving won’t touch the truck.'))
+    : f.klass === 'ask' ? ('Asks you first. Nothing runs until you enter your PIN and tap Approve' + (f.mode === 'live' ? '.' : '. Dry run now: approving won’t touch the truck.'))
     : (f.mode === 'live' ? 'Runs on its own (climate, seat and wheel heat only).' : 'Dry run: decides and alerts you, but sends nothing to the truck.');
   const cmds = (f.command_labels || []).length ? `<div class="auto-lab">Can send:</div><p class="auto-act">${esc(f.command_labels.join(', '))}${f.klass === 'ask' ? ' (each needs your approval)' : ''}</p>` : '';
   const lr = f.last_run;
@@ -2013,8 +2013,7 @@ async function openApproval(aid, act) {
     <p class="auto-small" style="margin:0 0 6px">${esc(a.card_name)}</p>
     <p class="auto-act">${esc(a.body)}</p>
     ${a.dry_run ? '<p class="auto-small">Dry run: approving records what would happen and sends nothing to the truck.</p>' : ''}
-    ${pending ? `<label class="auto-field"><span>Type <b>${esc(a.confirm_word)}</b> to approve</span><input id="appr-confirm" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
-      ${a.needs_pin ? '<label class="auto-field"><span>Your 8-digit PIN</span><input id="appr-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="8"></label>' : ''}
+    ${pending ? `${a.needs_pin ? '<label class="auto-field"><span>Your 8-digit PIN</span><input id="appr-pin" type="password" inputmode="numeric" pattern="[0-9]*" enterkeyhint="go" autocomplete="off" maxlength="8"></label>' : ''}
       <p class="auto-err" id="appr-err" hidden></p>
       <div class="auto-rowbtns" style="margin:16px 0 0">
         <button type="button" class="auto-btn cancel" id="appr-skip">Skip</button>
@@ -2031,10 +2030,10 @@ async function openApproval(aid, act) {
   const err = m => { const el = $('#appr-err'); el.hidden = false; el.textContent = m; };
   const send = async decision => {
     const pin = $('#appr-pin') ? $('#appr-pin').value : '';
-    const confirmWord = $('#appr-confirm').value;
+    if (decision === 'approve' && $('#appr-pin') && !/^\d{8}$/.test(pin)) { err('Enter your 8-digit PIN.'); return; }   // v144: PIN only (no typed word)
     if ($('#appr-pin')) $('#appr-pin').value = '';
     try {
-      const r = await autoFetch('/approval', { id: a.id, decision, confirm: confirmWord, pin });
+      const r = await autoFetch('/approval', { id: a.id, decision, pin });
       bodyEl.innerHTML = `<h3 class="auto-sheet-h">${decision === 'skip' ? 'Skipped' : r.status === 'dry-run' ? 'Approved (dry run)' : r.status === 'ok' ? 'Done' : 'Not done'}</h3>
         <p class="auto-act">${decision === 'skip' ? 'Nothing was sent to the truck.' : r.status === 'dry-run' ? `Would have sent: ${esc(a.label)}. Nothing was sent to the truck.` : r.status === 'ok' ? `${esc(a.label)} sent${r.result && r.result.confirmed ? ' and confirmed.' : '. Not yet confirmed by the truck.'}` : esc((r.result && r.result.blocked) || 'The command didn’t go through.')}</p>
         <div class="auto-rowbtns" style="margin:16px 0 0"><button type="button" class="auto-btn cancel" id="appr-close">Close</button></div>`;
@@ -2042,13 +2041,14 @@ async function openApproval(aid, act) {
       $('#appr-close').onclick = closeApproval;
       void syncAutos(true);
     } catch (e) {
-      err(e.message === 'confirm mismatch' ? `Type ${a.confirm_word} exactly.` : e.message === 'auth failed' ? 'That PIN didn’t work.' : e.message === 'expired' ? 'This request expired.' : 'Couldn’t send: ' + e.message);
+      err(e.message === 'confirm mismatch' ? 'Please try again.' : e.message === 'auth failed' ? 'That PIN didn’t work.' : e.message === 'expired' ? 'This request expired.' : 'Couldn’t send: ' + e.message);
     }
   };
   $('#appr-go').onclick = () => send('approve');
   $('#appr-skip').onclick = () => send('skip');
   if (act === 'skip') setTimeout(() => $('#appr-skip') && $('#appr-skip').focus(), 50);
-  else setTimeout(() => $('#appr-confirm') && $('#appr-confirm').focus(), 50);
+  else setTimeout(() => { const el = $('#appr-pin') || $('#appr-go'); el && el.focus(); }, 50);
+  if ($('#appr-pin')) $('#appr-pin').addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); send('approve'); } });
 }
 
 /* ---- Web Push setup ---- */
