@@ -203,8 +203,22 @@ function paintControlHome(main){
       pinp.addEventListener('keydown', ev => {
         if (ev.key === 'Enter') { ev.preventDefault(); void submitEnable(); }
       });
-      if (!CONTROL.enableBusy) setTimeout(() => pinp.focus(), 50);
+      if (!CONTROL.enableBusy) {
+        // goMode() scrolls to top after render, and the form sits below the status+map
+        // (often under the tab bar). Reveal it after that scroll, and again after the map resizes.
+        setTimeout(ctlRevealEnable, 50);
+        setTimeout(ctlRevealEnable, 400);
+      }
     }
+  }
+}
+function ctlRevealEnable(){
+  if (!CONTROL.enablePrompt || ctlReady()) return;
+  const box = document.getElementById('ctl-enable');
+  if (box) box.scrollIntoView({ block: 'center', behavior: 'auto' });
+  const pinp = document.getElementById('ctlenablepass');
+  if (pinp && !CONTROL.enableBusy) {
+    try { pinp.focus(); } catch (e) {}
   }
 }
 
