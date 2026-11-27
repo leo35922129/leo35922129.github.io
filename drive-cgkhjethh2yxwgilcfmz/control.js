@@ -14,6 +14,7 @@ const CONTROL = {
   enableError: '',
   enableBusy: false
 };
+window.CONTROL = CONTROL;
 const CTL_API = 'https://146-190-255-1.sslip.io/control';
 const CTL_TOKEN_KEY = 'ht_control_token';
 
@@ -181,11 +182,11 @@ function paintControlHome(main){
     <div class="ctl-sec risk">Needs confirm</div>
     <p class="ctl-soon">These need your 8-digit PIN each time.</p>
     <div class="ctl-risk">
-      ${rbtn('unlock', 'Unlock', 'Type UNLOCK and your PIN', ICONS.unlock)}
-      ${rbtn('tonneau-open', 'Open tonneau', 'Type OPEN and your PIN', ICONS.tonneau)}
-      ${rbtn('frunk', 'Open frunk', 'There is no frunk close · type FRUNK and your PIN', ICONS.frunk)}
-      ${rbtn('trunk', 'Open trunk', 'Type TRUNK and your PIN', ICONS.trunk)}
-      ${rbtn('windows-vent', 'Vent windows', 'Type VENT and your PIN', ICONS.window)}
+      ${rbtn('unlock', 'Unlock', 'Needs your 8-digit PIN', ICONS.unlock)}
+      ${rbtn('tonneau-open', 'Open tonneau', 'Needs your 8-digit PIN', ICONS.tonneau)}
+      ${rbtn('frunk', 'Open frunk', 'There is no frunk close · needs your PIN', ICONS.frunk)}
+      ${rbtn('trunk', 'Open trunk', 'Needs your 8-digit PIN', ICONS.trunk)}
+      ${rbtn('windows-vent', 'Vent windows', 'Needs your 8-digit PIN', ICONS.window)}
     </div>
 
   `;
@@ -479,12 +480,15 @@ async function submitEnable(){
   CONTROL.enableBusy = true;
   CONTROL.enableError = '';
   renderControl();
+  let backToAuto = false;
   try {
     CONTROL._pass = pass;
     const ok = await mintControlSession();
     if (ok && ctlToken()) {
       CONTROL.enablePrompt = false;
       CONTROL.enableError = '';
+      backToAuto = CONTROL.enableFrom === 'automation';
+      CONTROL.enableFrom = '';
       setCtlResult(true, 'Remote controls enabled on this device.');
       CONTROL._statusOnce = true;
       void refreshStatus({wake: false, fromUser: false});
@@ -497,8 +501,13 @@ async function submitEnable(){
     CONTROL.enableError = 'Could not reach the command service.';
   } finally {
     CONTROL.enableBusy = false;
-    renderControl();
   }
+  if (backToAuto && typeof goMode === 'function') {
+    goMode('automation');
+    if (typeof syncAutos === 'function') void syncAutos(true);
+    return;
+  }
+  renderControl();
 }
 
 async function afterTrackerUnlock(pass){

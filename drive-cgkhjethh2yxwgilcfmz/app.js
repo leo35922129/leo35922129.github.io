@@ -1944,8 +1944,11 @@ function handleAutoClick(e) {
   if (tool) {
     const a = tool.dataset.auto;
     if (a === 'enable') {
-      if (window.CONTROL) { CONTROL.enablePrompt = true; CONTROL.enableError = ''; CONTROL.view = 'home'; }
-      S.mode = 'control'; localStorage.setItem('ht_mode', 'control'); render(); return;
+      // v145: CONTROL is a const in control.js, so it must be exported on window. Open the passcode form and switch to Control.
+      if (window.CONTROL) { CONTROL.enablePrompt = true; CONTROL.enableError = ''; CONTROL.view = 'home'; CONTROL.enableFrom = 'automation'; }
+      if (S.mode !== 'control') goMode('control');
+      else render();
+      return;
     }
     if (a === 'pause') { const p = !(AUTO.srv && AUTO.srv.paused); void autoPost('/pause', { paused: p }); return; }
     if (a === 'log' || a === 'alerts') { void autoOpenView(a); return; }

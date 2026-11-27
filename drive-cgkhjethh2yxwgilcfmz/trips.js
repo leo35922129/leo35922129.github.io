@@ -387,8 +387,12 @@
       <span class="trp-rmain"><span class="trp-rdate">${esc(range(t.dates).toUpperCase())}</span><b>${esc(t.title)}</b><small>${esc(right)}</small></span>
       <span class="tl-chev">${I(P.chev, 18)}</span></button>`;
   }
+  function subTabs(active) {
+    const tabs = [['upcoming', 'Upcoming'], ['past', 'Past']].map(([k, l]) => `<button type="button" class="auto-cat${active === k ? ' on' : ''}" data-sub="${k}">${l}</button>`).join('');
+    return `<div class="auto-cats trp-subs" role="tablist">${tabs}</div>`;
+  }
   function listHTML() {
-    const tabs = [['upcoming', 'Upcoming'], ['past', 'Past']].map(([k, l]) => `<button type="button" class="auto-cat${T.sub === k ? ' on' : ''}" data-sub="${k}">${l}</button>`).join('');
+    const tabs = subTabs(T.sub || 'upcoming');
     let body;
     if (T.sub === 'upcoming') {
       const u = upcoming();
@@ -400,12 +404,12 @@
       body = p.length ? `<div class="trp-note">Detected from your drives: leaves home and returns, 150+ mi.</div>` + p.map(t => rowHTML(t, 'past')).join('')
         : `<div class="card trp-blank">${I(tripP(), 28)}<b>No past trips yet</b><span>Road trips show up here after you drive 150+ mi away from home and back.</span></div>`;
     }
-    return `<div class="trp"><div class="auto-cats trp-subs" role="tablist">${tabs}</div>${body}</div>`;
+    return `<div class="trp">${tabs}${body}</div>`;
   }
   function tile(k, v, u) { return `<div class="trp-tile"><div class="k">${esc(k)}</div><div class="v">${v}${u ? `<small>${esc(u)}</small>` : ''}</div></div>`; }
   function detailHTML() {
     const { id, kind } = T.detail;
-    const back = `<button type="button" class="trp-back" data-act="back">${I(P.back, 22)}<span>${kind === 'past' ? 'Past' : 'Upcoming'}</span></button>`;
+    const back = subTabs(kind === 'past' ? 'past' : 'upcoming');   // v145: same Upcoming | Past bar as the list, in place of the blue back link
     if (kind === 'past') {
       const t = past().find(x => x.id === id); if (!t) { T.detail = null; return listHTML(); }
       const tiles = [tile('Miles', Math.round(t.miles), 'mi'), tile('Efficiency', t.wh_mi ?? '–', t.wh_mi ? 'Wh/mi' : ''), tile('Energy used', t.kwh != null ? Math.round(t.kwh) : '–', t.kwh != null ? 'kWh' : ''), tile('Fast-charge stops', t.stops ?? '–')].join('');
@@ -734,6 +738,6 @@
     const dy = t.closest('[data-day1]'); if (dy) { T.day = +dy.dataset.day1; renderTrips(); return; }
     const ad = t.closest('[data-add]'); if (ad) { openAdd(+ad.dataset.add); return; }
     if (tripEditClick(t)) return;
-    const row = t.closest('[data-trip]'); if (row) { T.detail = { id: row.dataset.trip, kind: row.dataset.kind }; T.day = 1; renderTrips(); scrollToTrip(row.dataset.kind === 'up' ? row.dataset.trip : null); }
+    const row = t.closest('[data-trip]'); if (row) { T.detail = { id: row.dataset.trip, kind: row.dataset.kind }; T.sub = row.dataset.kind === 'past' ? 'past' : 'upcoming'; T.day = 1; renderTrips(); scrollToTrip(row.dataset.kind === 'up' ? row.dataset.trip : null); }
   };
 })();
